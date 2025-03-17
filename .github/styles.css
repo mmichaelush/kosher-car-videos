@@ -1,9 +1,11 @@
+/* כללי */
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
     color: #333;
     margin: 0;
     padding: 0;
+    direction: rtl; /* הופך את הטקסט מימין לשמאל */
 }
 
 header {
@@ -21,13 +23,19 @@ header p {
     font-size: 1.2em;
 }
 
-.video-gallery {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
+video-gallery {
     padding: 20px;
 }
 
+/* גלריית הסרטונים */
+.video-gallery {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* ממורכז את הסרטונים */
+    gap: 20px; /* רווח בין הסרטונים */
+}
+
+/* כל סרטון */
 .video-item {
     background-color: white;
     margin: 10px;
@@ -50,6 +58,7 @@ iframe {
     border: none;
 }
 
+/* Footer */
 footer {
     background-color: #2b2b2b;
     color: white;
@@ -58,4 +67,23 @@ footer {
     position: fixed;
     bottom: 0;
     width: 100%;
+}
+
+/* עיצוב רספונסיבי למובייל */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2em;
+    }
+    
+    header p {
+        font-size: 1em;
+    }
+
+    .video-item {
+        max-width: 100%;
+    }
+
+    .video-gallery {
+        padding: 10px;
+    }
 }
