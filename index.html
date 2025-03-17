@@ -3,68 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>סרטוני ES6 בעברית</title>
+    <title>סרטוני רכב</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>סרטוני ES6 בעברית</h1>
-        <p>פלייליסט לימוד JavaScript - ES6</p>
+        <h1>סרטוני רכב</h1>
+        <nav>
+            <ul>
+                <li><a href="#sports-cars">רכבי ספורט</a></li>
+                <li><a href="#electric-cars">רכבים חשמליים</a></li>
+                <li><a href="#tuning">שיפוצים ושדרוגים</a></li>
+                <li><a href="#reviews">סקירות רכבים</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <section id="video-gallery" class="video-gallery">
-        <!-- הסרטונים יוצגו כאן על ידי JavaScript -->
-    </section>
+    <main>
+        <section id="sports-cars">
+            <h2>רכבי ספורט</h2>
+            <div class="video-container">
+                <div class="video-item">
+                    <h3>סקירה של פורשה 911</h3>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="video-item">
+                    <h3>מרצדס AMG GT</h3>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section id="electric-cars">
+            <h2>רכבים חשמליים</h2>
+            <div class="video-container">
+                <div class="video-item">
+                    <h3>סקירה של טסלה מודל 3</h3>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section id="tuning">
+            <h2>שיפוצים ושדרוגים</h2>
+            <div class="video-container">
+                <div class="video-item">
+                    <h3>שדרוג מערכת ההיגוי</h3>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/YOUR_VIDEO_ID" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </section>
+
+        <section id="reviews">
+            <h2>סקירות רכבים</h2>
+            <div class="video-container">
+                <div class="video-item">
+                    <h3>סקירה של פורד מוסטנג</h3>
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/6HHDmX317FA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </section>
+    </main>
 
     <footer>
-        <p>&copy; 2025 כל הזכויות שמורות</p>
+        <p>&copy; 2025 סרטוני רכב - כל הזכויות שמורות</p>
     </footer>
-
-    <script>
-        // אובייקט המידע עם הסרטונים
-        const playlist = {
-            name: "ES6 In Hebrew",
-            hebrewName: "ES6 בעברית",
-            category: "playlist",
-            tags: ["javascript"],
-            videoTutorials: [
-                { url: "6HHDmX317FA" },
-                { url: "y5p31F_dVJU" },
-                { url: "KOgX85CX_y0" },
-                { url: "J8W_JH1DEfk" },
-                { url: "iXIk9OLDBuw" },
-                { url: "I2gbVIBkhUk" },
-                { url: "wP07DeCbcAU" },
-                { url: "EJNiioVvMkA" },
-                { url: "hGfdDgonWFo" },
-                { url: "wUf-jpE2ul4" }
-            ]
-        };
-
-        // פונקציה להוסיף את הסרטונים לדף
-        function loadVideos() {
-            const videoGallery = document.getElementById('video-gallery');
-            playlist.videoTutorials.forEach(video => {
-                const videoElement = document.createElement('div');
-                videoElement.classList.add('video-item');
-
-                const iframe = document.createElement('iframe');
-                iframe.src = `https://www.youtube.com/embed/${video.url}`;
-                iframe.frameBorder = "0";
-                iframe.allowFullscreen = true;
-
-                const heading = document.createElement('h2');
-                heading.innerText = `סרטון - ${video.url}`;
-
-                videoElement.appendChild(heading);
-                videoElement.appendChild(iframe);
-
-                videoGallery.appendChild(videoElement);
-            });
-        }
-
-        // קוראים לפונקציה בהעלאת הדף
-        window.onload = loadVideos;
-    </script>
 </body>
 </html>
