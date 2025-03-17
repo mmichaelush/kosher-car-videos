@@ -7,26 +7,18 @@
 
 body {
     font-family: 'Arial', sans-serif;
-    background-color: #f4f4f4;
+    background-color: #f1f1f1;
     color: #333;
     direction: rtl;
-}
-
-h1, h2, h3 {
-    font-family: 'Helvetica Neue', sans-serif;
-    font-weight: 700;
-}
-
-a {
-    text-decoration: none;
+    line-height: 1.6;
 }
 
 /* עיצוב כותרת עליונה */
 header {
-    background-color: #2C3E50;
+    background: linear-gradient(to right, #ff5733, #ff914d);
     color: white;
     padding: 20px 0;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 header .container {
@@ -38,7 +30,8 @@ header .container {
 }
 
 header h1 {
-    font-size: 32px;
+    font-size: 36px;
+    font-weight: 700;
 }
 
 nav ul {
@@ -47,13 +40,15 @@ nav ul {
 
 nav ul li {
     display: inline-block;
-    margin-left: 20px;
+    margin-left: 30px;
 }
 
 nav ul li a {
     color: white;
-    font-size: 18px;
-    transition: color 0.3s;
+    font-size: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
 }
 
 nav ul li a:hover {
@@ -62,101 +57,5 @@ nav ul li a:hover {
 
 /* עיצוב ראשי */
 main {
-    width: 90%;
-    margin: 40px auto;
-}
-
-.video-category {
-    margin-bottom: 60px;
-}
-
-.video-category h2 {
-    font-size: 28px;
-    color: #2C3E50;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.video-container {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 30px;
-}
-
-.video-item {
-    width: 100%;
-    max-width: 500px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    overflow: hidden;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.video-item:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
-}
-
-.video-item iframe {
-    width: 100%;
-    height: 315px;
-    border: none;
-}
-
-.video-item h3 {
-    background-color: #18BC9C;
-    color: white;
-    text-align: center;
-    padding: 15px;
-    font-size: 20px;
-}
-
-/* עיצוב תחתון */
-footer {
-    background-color: #2C3E50;
-    color: white;
-    text-align: center;
-    padding: 10px;
-    margin-top: 60px;
-}
-
-footer p {
-    font-size: 14px;
-}
-
-/* רספונסיביות */
-@media (max-width: 768px) {
-    header .container {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    nav ul {
-        margin-top: 10px;
-    }
-
-    .video-container {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .video-item {
-        max-width: 100%;
-    }
-}
-
-@media (max-width: 480px) {
-    header h1 {
-        font-size: 26px;
-    }
-
-    nav ul li a {
-        font-size: 16px;
-    }
-
-    .video-item h3 {
-        font-size: 18px;
-    }
-}
+    width: 80%;
+    margin: 40px
