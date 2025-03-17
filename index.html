@@ -3,31 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>סרטוני רכב כשרים</title>
+    <title>סרטוני ES6 בעברית</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <h1>סרטוני רכב כשרים</h1>
-        <p>אוסף סרטונים כשרים על רכבים</p>
+        <h1>סרטוני ES6 בעברית</h1>
+        <p>פלייליסט לימוד JavaScript - ES6</p>
     </header>
 
-    <section class="video-gallery">
-        <div class="video-item">
-            <h2>סרטון 1</h2>
-            <iframe src="https://www.youtube.com/embed/y5p31F_dVJU" frameborder="0" allowfullscreen></iframe>
-        </div>
-
-        <div class="video-item">
-            <h2>סרטון 2</h2>
-            <iframe src="https://www.youtube.com/embed/ID_של_הסרטון2" frameborder="0" allowfullscreen></iframe>
-        </div>
-
-        <!-- הוסף עוד סרטונים כאן -->
+    <section id="video-gallery" class="video-gallery">
+        <!-- הסרטונים יוצגו כאן על ידי JavaScript -->
     </section>
 
     <footer>
         <p>&copy; 2025 כל הזכויות שמורות</p>
     </footer>
+
+    <script>
+        // אובייקט המידע עם הסרטונים
+        const playlist = {
+            name: "ES6 In Hebrew",
+            hebrewName: "ES6 בעברית",
+            category: "playlist",
+            tags: ["javascript"],
+            videoTutorials: [
+                { url: "6HHDmX317FA" },
+                { url: "y5p31F_dVJU" },
+                { url: "KOgX85CX_y0" },
+                { url: "J8W_JH1DEfk" },
+                { url: "iXIk9OLDBuw" },
+                { url: "I2gbVIBkhUk" },
+                { url: "wP07DeCbcAU" },
+                { url: "EJNiioVvMkA" },
+                { url: "hGfdDgonWFo" },
+                { url: "wUf-jpE2ul4" }
+            ]
+        };
+
+        // פונקציה להוסיף את הסרטונים לדף
+        function loadVideos() {
+            const videoGallery = document.getElementById('video-gallery');
+            playlist.videoTutorials.forEach(video => {
+                const videoElement = document.createElement('div');
+                videoElement.classList.add('video-item');
+
+                const iframe = document.createElement('iframe');
+                iframe.src = `https://www.youtube.com/embed/${video.url}`;
+                iframe.frameBorder = "0";
+                iframe.allowFullscreen = true;
+
+                const heading = document.createElement('h2');
+                heading.innerText = `סרטון - ${video.url}`;
+
+                videoElement.appendChild(heading);
+                videoElement.appendChild(iframe);
+
+                videoGallery.appendChild(videoElement);
+            });
+        }
+
+        // קוראים לפונקציה בהעלאת הדף
+        window.onload = loadVideos;
+    </script>
 </body>
 </html>
