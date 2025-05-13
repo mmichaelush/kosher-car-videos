@@ -6,33 +6,65 @@
     <title>אוטו ויז'ן - סרטוני רכב באיכות גבוהה</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
         
         body {
             font-family: 'Rubik', sans-serif;
             background-color: #f8fafc;
+            color: #1e293b;
         }
         
         .hero-gradient {
             background: linear-gradient(135deg, #1e3a8a 0%, #0ea5e9 100%);
         }
         
+        .video-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        
         .video-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+        }
+        
+        .category-btn {
+            transition: all 0.2s ease;
+            border-radius: 24px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            background-color: #f1f5f9;
+            color: #64748b;
         }
         
         .category-btn.active {
-            background-color: #3b82f6;
+            background-color: var(--primary);
             color: white;
+        }
+        
+        .category-btn:hover:not(.active) {
+            background-color: #e2e8f0;
         }
         
         .video-container {
             position: relative;
-            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            padding-bottom: 56.25%;
             height: 0;
             overflow: hidden;
+            background: #000;
         }
         
         .video-container iframe {
@@ -41,27 +73,58 @@
             left: 0;
             width: 100%;
             height: 100%;
+            border: none;
+        }
+        
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 0;
+            margin: 0 0.75rem;
+            font-weight: 500;
+            color: #64748b;
         }
         
         .nav-link:hover {
-            color: #3b82f6;
+            color: var(--primary);
+        }
+        
+        .nav-link.active:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+        }
+        
+        .search-input {
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            padding: 0.5rem 2.5rem 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background-color: #f8fafc;
         }
         
         .search-input:focus {
             outline: none;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background-color: white;
         }
         
         .tag {
             display: inline-flex;
             align-items: center;
+            transition: all 0.2s ease;
             background-color: #e0f2fe;
             color: #0369a1;
-            padding: 0.25rem 0.5rem;
+            padding: 0.25rem 0.75rem;
             border-radius: 9999px;
             font-size: 0.75rem;
-            margin-right: 0.25rem;
-            margin-bottom: 0.25rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            margin-bottom: 0.5rem;
         }
         
         .tag:hover {
@@ -70,61 +133,179 @@
         }
         
         .tag i {
-            margin-right: 0.25rem;
+            margin-left: 0.25rem;
+            font-size: 0.65rem;
         }
         
         .tag-input {
+            transition: all 0.2s ease;
             border: 1px dashed #cbd5e1;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
             width: 100%;
+            background-color: #f8fafc;
         }
         
         .tag-input:focus {
             outline: none;
-            border-color: #3b82f6;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background-color: white;
+            border-style: solid;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 500;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary);
+            font-weight: 500;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            border: 1px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f1f5f9;
+            transform: translateY(-1px);
+        }
+        
+        .swiper {
+            width: 100%;
+            padding: 1.5rem 0 2.5rem !important;
+        }
+        
+        .swiper-slide {
+            width: auto !important;
+        }
+        
+        .swiper-pagination-bullet {
+            background: #cbd5e1 !important;
+            opacity: 1 !important;
+        }
+        
+        .swiper-pagination-bullet-active {
+            background: var(--primary) !important;
+        }
+        
+        .dark-overlay {
+            position: relative;
+        }
+        
+        .dark-overlay:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+            z-index: 1;
+        }
+        
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        
+        .backdrop {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-heading {
+                font-size: 2.25rem !important;
+            }
         }
     </style>
 </head>
-<body>
+<body class="relative">
+    <!-- Mobile Menu Backdrop -->
+    <div class="backdrop fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu fixed inset-y-0 right-0 w-64 bg-white shadow-xl z-50 p-4">
+        <div class="flex justify-between items-center mb-8">
+            <div class="flex items-center">
+                <i class="fas fa-car text-blue-500 text-xl ml-2"></i>
+                <span class="text-lg font-bold">אוטו ויז'ן</span>
+            </div>
+            <button id="close-menu" class="text-gray-500 hover:text-gray-700">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <nav class="flex flex-col space-y-4">
+            <a href="#" class="nav-link active text-gray-900">בית</a>
+            <a href="#" class="nav-link text-gray-700">פופולריים</a>
+            <a href="#" class="nav-link text-gray-700">אוספים</a>
+            <a href="#" class="nav-link text-gray-700">ערוצים</a>
+            <a href="#" class="nav-link text-gray-700">אודות</a>
+            <a href="#" class="nav-link text-gray-700">צור קשר</a>
+        </nav>
+        <div class="absolute bottom-4 right-4 left-4">
+            <button class="btn-primary w-full py-3">
+                <i class="fas fa-sign-in-alt ml-2"></i> התחברות
+            </button>
+        </div>
+    </div>
+    
     <!-- Navigation -->
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
+    <nav class="bg-white shadow-sm sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0 flex items-center">
                         <i class="fas fa-car text-blue-500 text-2xl ml-2"></i>
-                        <span class="text-xl font-bold text-gray-900">אוטו ויז'ן</span>
+                        <span class="text-xl font-bold text-gray-900 hidden sm:block">אוטו ויז'ן</span>
                     </div>
                     <div class="hidden md:mr-10 md:flex md:space-x-8">
-                        <a href="#" class="nav-link text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-blue-500 text-sm font-medium">
-                            בית
-                        </a>
-                        <a href="#" class="nav-link text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-gray-300 text-sm font-medium">
-                            פופולריים
-                        </a>
-                        <a href="#" class="nav-link text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-gray-300 text-sm font-medium">
-                            אוספים
-                        </a>
-                        <a href="#" class="nav-link text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 border-transparent hover:border-gray-300 text-sm font-medium">
-                            ערוצים
-                        </a>
+                        <a href="#" class="nav-link active text-gray-900">בית</a>
+                        <a href="#" class="nav-link">פופולריים</a>
+                        <a href="#" class="nav-link">אוספים</a>
+                        <a href="#" class="nav-link">ערוצים</a>
                     </div>
                 </div>
                 <div class="flex items-center">
-                    <div class="flex-shrink-0">
+                    <div class="hidden md:block flex-shrink-0 mr-4">
                         <div class="relative rounded-md shadow-sm">
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                 <i class="fas fa-search text-gray-400"></i>
                             </div>
-                            <input type="text" class="search-input block w-full pr-10 pl-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 sm:text-sm" placeholder="חיפוש סרטוני רכב...">
+                            <input type="text" class="search-input block w-64 pr-10 pl-3 py-2 text-sm" placeholder="חיפוש סרטוני רכב...">
                         </div>
                     </div>
-                    <div class="hidden md:mr-4 md:flex-shrink-0 md:flex md:items-center">
-                        <button class="mr-4 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150 ease-in-out">
-                            התחברות
+                    <div class="hidden md:block md:flex-shrink-0">
+                        <button class="btn-primary px-4 py-2 text-sm">
+                            <i class="fas fa-sign-in-alt ml-2"></i> התחברות
                         </button>
                     </div>
+                    <button id="open-menu" class="md:hidden text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
                 </div>
             </div>
         </div>
@@ -132,19 +313,19 @@
 
     <!-- Hero Section -->
     <div class="hero-gradient text-white">
-        <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto py-20 px-4 sm:py-24 sm:px-6 lg:px-8">
             <div class="text-center">
-                <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+                <h1 class="hero-heading text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
                     גלו את עולם הרכב במלוא הדרו
                 </h1>
-                <p class="mt-6 max-w-lg mx-auto text-xl">
+                <p class="mt-6 max-w-lg mx-auto text-xl opacity-90">
                     סרטונים באיכות גבוהה של המכוניות המרהיבות ביותר, מקלאסיקות ועד היפר-קארים, הכל במקום אחד.
                 </p>
-                <div class="mt-10 flex justify-center space-x-4">
-                    <button class="bg-white text-blue-600 px-6 py-3 rounded-md text-lg font-medium hover:bg-gray-100 transition duration-150 ease-in-out">
+                <div class="mt-10 flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                    <button class="btn-secondary px-6 py-3 text-lg">
                         <i class="fas fa-play ml-2"></i> צפו עכשיו
                     </button>
-                    <button class="bg-blue-700 bg-opacity-80 text-white px-6 py-3 rounded-md text-lg font-medium hover:bg-opacity-100 transition duration-150 ease-in-out">
+                    <button class="btn-primary px-6 py-3 text-lg">
                         <i class="fas fa-th-list ml-2"></i> עיון בקטגוריות
                     </button>
                 </div>
@@ -152,46 +333,59 @@
         </div>
     </div>
 
+    <!-- Floating Search (Mobile) -->
+    <div class="md:hidden px-4 -mt-6 mb-8">
+        <div class="relative rounded-lg shadow-lg">
+            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                <i class="fas fa-search text-gray-400"></i>
+            </div>
+            <input type="text" class="search-input block w-full pr-10 pl-4 py-3" placeholder="חיפוש סרטוני רכב...">
+        </div>
+    </div>
+
     <!-- Main Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <!-- Categories -->
-        <div class="mb-12">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Categories Swiper -->
+        <div class="mb-10">
             <h2 class="text-2xl font-bold text-gray-900 mb-6">עיון לפי קטגוריה</h2>
-            <div class="flex flex-wrap gap-3">
-                <button class="category-btn active px-4 py-2 rounded-full bg-gray-100 text-gray-800 font-medium text-sm hover:bg-gray-200 transition duration-150 ease-in-out">
-                    הכל
-                </button>
-                <button class="category-btn px-4 py-2 rounded-full bg-gray-100 text-gray-800 font-medium text-sm hover:bg-gray-200 transition duration-150 ease-in-out">
-                    סופר-קארים
-                </button>
-                <button class="category-btn px-4 py-2 rounded-full bg-gray-100 text-gray-800 font-medium text-sm hover:bg-gray-200 transition duration-150 ease-in-out">
-                    רכב קלאסי
-                </button>
-                <button class="category-btn px-4 py-2 rounded-full bg-gray-100 text-gray-800 font-medium text-sm hover:bg-gray-200 transition duration-150 ease-in-out">
-                    רכב שטח
-                </button>
-                <button class="category-btn px-4 py-2 rounded-full bg-gray-100 text-gray-800 font-medium text-sm hover:bg-gray-200 transition duration-150 ease-in-out">
-                    רכב חשמלי
-                </button>
-                <button class="category-btn px-4 py-2 rounded-full bg-gray-100 text-gray-800 font-medium text-sm hover:bg-gray-200 transition duration-150 ease-in-out">
-                    אופנועים
-                </button>
-                <button class="category-btn px-4 py-2 rounded-full bg-gray-100 text-gray-800 font-medium text-sm hover:bg-gray-200 transition duration-150 ease-in-out">
-                    תיקונים
-                </button>
-                <button class="category-btn px-4 py-2 rounded-full bg-gray-100 text-gray-800 font-medium text-sm hover:bg-gray-200 transition duration-150 ease-in-out">
-                    טיפולים
-                </button>
-                <button class="category-btn px-4 py-2 rounded-full bg-gray-100 text-gray-800 font-medium text-sm hover:bg-gray-200 transition duration-150 ease-in-out">
-                    הדרכות
-                </button>
+            <div class="swiper categories-swiper">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <button class="category-btn active">הכל</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">סופר-קארים</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">רכב קלאסי</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">רכב שטח</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">רכב חשמלי</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">אופנועים</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">תיקונים</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">טיפולים</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">הדרכות</button>
+                    </div>
+                </div>
+                <div class="swiper-pagination"></div>
             </div>
         </div>
 
         <!-- Tag Search -->
-        <div class="mb-8 bg-white p-4 rounded-lg shadow">
-            <h3 class="text-lg font-medium text-gray-900 mb-3">חיפוש לפי תגיות</h3>
-            <div class="flex flex-wrap mb-3" id="popular-tags">
+        <div class="mb-10 bg-white p-5 rounded-xl shadow-sm">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">חיפוש לפי תגיות</h3>
+            <div class="flex flex-wrap mb-4" id="popular-tags">
                 <span class="tag" onclick="searchByTag('מנוע')"><i class="fas fa-cog"></i> מנוע</span>
                 <span class="tag" onclick="searchByTag('בלמים')"><i class="fas fa-stop-circle"></i> בלמים</span>
                 <span class="tag" onclick="searchByTag('תיבת הילוכים')"><i class="fas fa-cogs"></i> תיבת הילוכים</span>
@@ -203,25 +397,35 @@
             </div>
             <div class="relative">
                 <input type="text" id="tag-search" class="tag-input" placeholder="הקלד תגית לחיפוש...">
-                <button onclick="addTagToSearch()" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-2 py-1 rounded text-sm">הוסף</button>
+                <button onclick="addTagToSearch()" class="absolute left-3 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600">הוסף</button>
             </div>
-            <div class="mt-2 flex flex-wrap" id="selected-tags"></div>
+            <div class="mt-3 flex flex-wrap" id="selected-tags"></div>
         </div>
 
         <!-- Featured Videos -->
         <div class="mb-12">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-900">סרטונים מומלצים</h2>
-                <a href="#" class="text-blue-500 hover:text-blue-700 font-medium">הצג הכל</a>
+                <a href="#" class="text-blue-500 hover:text-blue-700 font-medium flex items-center">
+                    הצג הכל <i class="fas fa-chevron-left mr-1 text-sm"></i>
+                </a>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Video Card 1 -->
-                <div class="video-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300 ease-in-out">
+                <div class="video-card group">
                     <div class="video-container">
                         <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">בוגאטי שירון סופר ספורט 2023 - סקירה מלאה</h3>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">בוגאטי שירון סופר ספורט 2023 - סקירה מלאה</h3>
+                                <p class="text-gray-600 text-sm">AutoVision</p>
+                            </div>
+                        </div>
                         <p class="text-gray-600 text-sm mb-3">סקירה מעמיקה של המכונית המהירה ביותר בעולם עם כל הפרטים הטכניים.</p>
                         <div class="flex flex-wrap mb-3">
                             <span class="tag"><i class="fas fa-tag"></i> בוגאטי</span>
@@ -237,12 +441,20 @@
                 </div>
                 
                 <!-- Video Card 2 -->
-                <div class="video-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300 ease-in-out">
+                <div class="video-card group">
                     <div class="video-container">
                         <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">שיקום פורד מוסטנג 1967</h3>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">שיקום פורד מוסטנג 1967</h3>
+                                <p class="text-gray-600 text-sm">Classic Restorations</p>
+                            </div>
+                        </div>
                         <p class="text-gray-600 text-sm mb-3">תיעוד מלא של תהליך השיקום של המוסטנג הקלאסית האמריקאית.</p>
                         <div class="flex flex-wrap mb-3">
                             <span class="tag"><i class="fas fa-tag"></i> פורד</span>
@@ -259,12 +471,20 @@
                 </div>
                 
                 <!-- Video Card 3 -->
-                <div class="video-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300 ease-in-out">
+                <div class="video-card group">
                     <div class="video-container">
                         <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">טסלה סייברטראק - מבחן שטח</h3>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">טסלה סייברטראק - מבחן שטח</h3>
+                                <p class="text-gray-600 text-sm">EV Adventures</p>
+                            </div>
+                        </div>
                         <p class="text-gray-600 text-sm mb-3">מבחן שטח מקיף למכונית החשמלית השנויה במחלוקת בתנאים קיצוניים.</p>
                         <div class="flex flex-wrap mb-3">
                             <span class="tag"><i class="fas fa-tag"></i> טסלה</span>
@@ -273,7 +493,7 @@
                         </div>
                         <div class="flex items-center text-gray-500 text-sm">
                             <span><i class="fas fa-eye ml-1"></i> 3.7M צפיות</span>
-                            <span class="mx-2"></span>
+                            <span class="mx-2">•</span>
                             <span><i class="far fa-clock ml-1"></i> לפני יומיים</span>
                         </div>
                     </div>
@@ -285,16 +505,26 @@
         <div class="mb-12">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-900">מדריכי תיקונים וטיפולים</h2>
-                <a href="#" class="text-blue-500 hover:text-blue-700 font-medium">הצג הכל</a>
+                <a href="#" class="text-blue-500 hover:text-blue-700 font-medium flex items-center">
+                    הצג הכל <i class="fas fa-chevron-left mr-1 text-sm"></i>
+                </a>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Video Card 4 -->
-                <div class="video-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300 ease-in-out">
+                <div class="video-card group">
                     <div class="video-container">
                         <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">החלפת שמן מנוע - מדריך מלא</h3>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">החלפת שמן מנוע - מדריך מלא</h3>
+                                <p class="text-gray-600 text-sm">Car DIY</p>
+                            </div>
+                        </div>
                         <p class="text-gray-600 text-sm mb-3">מדריך מפורט להחלפת שמן מנוע לכל סוגי הרכבים, כולל טיפים מקצועיים.</p>
                         <div class="flex flex-wrap mb-3">
                             <span class="tag"><i class="fas fa-tag"></i> מנוע</span>
@@ -311,12 +541,20 @@
                 </div>
                 
                 <!-- Video Card 5 -->
-                <div class="video-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300 ease-in-out">
+                <div class="video-card group">
                     <div class="video-container">
                         <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">תיקון תקלות במזגן רכב</h3>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/men/76.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">תיקון תקלות במזגן רכב</h3>
+                                <p class="text-gray-600 text-sm">Auto Clinic</p>
+                            </div>
+                        </div>
                         <p class="text-gray-600 text-sm mb-3">כיצד לאבחן ולתקן תקלות נפוצות במערכת המיזוג של הרכב שלך.</p>
                         <div class="flex flex-wrap mb-3">
                             <span class="tag"><i class="fas fa-tag"></i> מזגן</span>
@@ -332,12 +570,20 @@
                 </div>
                 
                 <!-- Video Card 6 -->
-                <div class="video-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300 ease-in-out">
+                <div class="video-card group">
                     <div class="video-container">
                         <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">החלפת בלמים - צעד אחר צעד</h3>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">החלפת בלמים - צעד אחר צעד</h3>
+                                <p class="text-gray-600 text-sm">Mechanic Pro</p>
+                            </div>
+                        </div>
                         <p class="text-gray-600 text-sm mb-3">מדריך ויזואלי להחלפת רפידות ודיסקי בלמים בכל סוגי הרכבים.</p>
                         <div class="flex flex-wrap mb-3">
                             <span class="tag"><i class="fas fa-tag"></i> בלמים</span>
@@ -358,16 +604,26 @@
         <div class="mb-12">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-900">אוסף רכבים קלאסיים</h2>
-                <a href="#" class="text-blue-500 hover:text-blue-700 font-medium">הצג הכל</a>
+                <a href="#" class="text-blue-500 hover:text-blue-700 font-medium flex items-center">
+                    הצג הכל <i class="fas fa-chevron-left mr-1 text-sm"></i>
+                </a>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Video Card 7 -->
-                <div class="video-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300 ease-in-out">
+                <div class="video-card group">
                     <div class="video-container">
                         <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">שברולט בלה אייר 1957 - שיקום מלא</h3>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">שברולט בלה אייר 1957 - שיקום מלא</h3>
+                                <p class="text-gray-600 text-sm">Classic Dreams</p>
+                            </div>
+                        </div>
                         <p class="text-gray-600 text-sm mb-3">משלדה חלודה ועד למצב תצוגה - התהליך המלא של שיקום הרכב הקלאסי.</p>
                         <div class="flex flex-wrap mb-3">
                             <span class="tag"><i class="fas fa-tag"></i> שברולט</span>
@@ -383,13 +639,21 @@
                 </div>
                 
                 <!-- Video Card 8 -->
-                <div class="video-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300 ease-in-out">
+                <div class="video-card group">
                     <div class="video-container">
                         <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">יגואר E-Type - המכונית היפה בעולם?</h3>
-                        <p class="text-gray-600 text-sm mb-3">מדוע אנzo פרארי כינה את ה-E-Type כמכונית היפה ביותר בעולם.</p>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">יגואר E-Type - המכונית היפה בעולם?</h3>
+                                <p class="text-gray-600 text-sm">British Classics</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">מדוע אנריקו פרארי כינה את ה-E-Type כמכונית היפה ביותר בעולם.</p>
                         <div class="flex flex-wrap mb-3">
                             <span class="tag"><i class="fas fa-tag"></i> יגואר</span>
                             <span class="tag"><i class="fas fa-tag"></i> קלאסי</span>
@@ -404,12 +668,20 @@
                 </div>
                 
                 <!-- Video Card 9 -->
-                <div class="video-card bg-white rounded-lg overflow-hidden shadow-md transition duration-300 ease-in-out">
+                <div class="video-card group">
                     <div class="video-container">
                         <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
-                    <div class="p-4">
-                        <h3 class="font-bold text-lg mb-2">מרצדס 300SL גאלווינג - חווית נהיגה</h3>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/men/89.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">מרצדס 300SL גאלווינג - חווית נהיגה</h3>
+                                <p class="text-gray-600 text-sm">Vintage Rides</p>
+                            </div>
+                        </div>
                         <p class="text-gray-600 text-sm mb-3">איך זה לנהוג באגדה הגרמנית משנות ה-50 עם דלתות כנף?</p>
                         <div class="flex flex-wrap mb-3">
                             <span class="tag"><i class="fas fa-tag"></i> מרצדס</span>
@@ -427,20 +699,82 @@
         </div>
     </main>
 
+    <!-- Featured Channels -->
+    <div class="bg-gray-50 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">הערוצים המובילים שלנו</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                <!-- Channel 1 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Channel" class="h-full w-full object-cover">
+                    </div>
+                    <h3 class="font-medium text-gray-900">AutoVision</h3>
+                    <p class="text-gray-500 text-sm">1.2M עוקבים</p>
+                </div>
+                
+                <!-- Channel 2 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
+                        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Channel" class="h-full w-full object-cover">
+                    </div>
+                    <h3 class="font-medium text-gray-900">Classic Restorations</h3>
+                    <p class="text-gray-500 text-sm">850K עוקבים</p>
+                </div>
+                
+                <!-- Channel 3 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Channel" class="h-full w-full object-cover">
+                    </div>
+                    <h3 class="font-medium text-gray-900">EV Adventures</h3>
+                    <p class="text-gray-500 text-sm">1.5M עוקבים</p>
+                </div>
+                
+                <!-- Channel 4 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
+                        <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Channel" class="h-full w-full object-cover">
+                    </div>
+                    <h3 class="font-medium text-gray-900">Car DIY</h3>
+                    <p class="text-gray-500 text-sm">2.3M עוקבים</p>
+                </div>
+                
+                <!-- Channel 5 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
+                        <img src="https://randomuser.me/api/portraits/men/76.jpg" alt="Channel" class="h-full w-full object-cover">
+                    </div>
+                    <h3 class="font-medium text-gray-900">Auto Clinic</h3>
+                    <p class="text-gray-500 text-sm">1.8M עוקבים</p>
+                </div>
+                
+                <!-- Channel 6 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Channel" class="h-full w-full object-cover">
+                    </div>
+                    <h3 class="font-medium text-gray-900">Mechanic Pro</h3>
+                    <p class="text-gray-500 text-sm">3.1M עוקבים</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Newsletter -->
     <div class="bg-gray-100 py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="lg:flex lg:items-center lg:justify-between">
+            <div class="lg:flex lg:items-center lg:justify-between bg-white rounded-xl p-8 shadow-sm">
                 <div class="lg:w-0 lg:flex-1">
-                    <h2 class="text-3xl font-extrabold text-gray-900">הישארו מעודכנים עם סרטוני הרכב האחרונים</h2>
-                    <p class="mt-4 max-w-3xl text-lg text-gray-500">
+                    <h2 class="text-2xl font-extrabold text-gray-900">הישארו מעודכנים עם סרטוני הרכב האחרונים</h2>
+                    <p class="mt-3 max-w-3xl text-gray-600">
                         הירשמו לניוזלטר שלנו וקבלו עדכונים שבועיים על סרטונים חדשים, תוכן בלעדי וכתבות מיוחדות.
                     </p>
                 </div>
                 <div class="mt-8 lg:mt-0 lg:mr-8">
                     <form class="sm:flex">
                         <label for="email-address" class="sr-only">אימייל</label>
-                        <input id="email-address" name="email" type="email" autocomplete="email" required class="w-full px-5 py-3 border border-gray-300 shadow-sm placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500 sm:max-w-xs rounded-md" placeholder="הכנס את האימייל שלך">
+                        <input id="email-address" name="email" type="email" autocomplete="email" required class="w-full px-5 py-3 border border-gray-300 shadow-sm placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500 rounded-md" placeholder="הכנס את האימייל שלך">
                         <div class="mt-3 rounded-md shadow sm:mt-0 sm:mr-3 sm:flex-shrink-0">
                             <button type="submit" class="w-full flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                 הרשמה
@@ -449,7 +783,7 @@
                     </form>
                     <p class="mt-3 text-sm text-gray-500">
                         אנו מכבדים את הפרטיות שלך. קרא את
-                        <a href="#" class="font-medium text-gray-900 underline">מדיניות הפרטיות</a> שלנו.
+                        <a href="#" class="font-medium text-blue-600 hover:text-blue-500">מדיניות הפרטיות</a> שלנו.
                     </p>
                 </div>
             </div>
@@ -457,15 +791,18 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-800">
+    <footer class="bg-gray-800 text-gray-300">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="text-white text-sm font-semibold tracking-wider uppercase">אוטו ויז'ן</h3>
-                    <p class="mt-4 text-gray-300 text-sm">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-car text-blue-500 text-xl ml-2"></i>
+                        <span class="text-lg font-bold text-white">אוטו ויז'ן</span>
+                    </div>
+                    <p class="text-sm">
                         היעד המוביל לסרטוני רכב באיכות גבוהה מכל רחבי העולם.
                     </p>
-                    <div class="mt-4 flex space-x-6">
+                    <div class="mt-4 flex space-x-4">
                         <a href="#" class="text-gray-400 hover:text-white">
                             <i class="fab fa-facebook-f"></i>
                         </a>
@@ -481,61 +818,108 @@
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-white text-sm font-semibold tracking-wider uppercase">קטגוריות</h3>
-                    <ul class="mt-4 space-y-2">
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">סופר-קארים</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">רכב קלאסי</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">רכב שטח</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">תיקונים וטיפולים</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">הדרכות</a></li>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">קטגוריות</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-sm hover:text-white">סופר-קארים</a></li>
+                        <li><a href="#" class="text-sm hover:text-white">רכב קלאסי</a></li>
+                        <li><a href="#" class="text-sm hover:text-white">רכב שטח</a></li>
+                        <li><a href="#" class="text-sm hover:text-white">תיקונים וטיפולים</a></li>
+                        <li><a href="#" class="text-sm hover:text-white">הדרכות</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-white text-sm font-semibold tracking-wider uppercase">חברה</h3>
-                    <ul class="mt-4 space-y-2">
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">אודות</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">בלוג</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">קריירה</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">עיתונות</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">שותפים</a></li>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">חברה</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-sm hover:text-white">אודות</a></li>
+                        <li><a href="#" class="text-sm hover:text-white">בלוג</a></li>
+                        <li><a href="#" class="text-sm hover:text-white">קריירה</a></li>
+                        <li><a href="#" class="text-sm hover:text-white">עיתונות</a></li>
+                        <li><a href="#" class="text-sm hover:text-white">שותפים</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-white text-sm font-semibold tracking-wider uppercase">משפטי</h3>
-                    <ul class="mt-4 space-y-2">
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">פרטיות</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">תנאים</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">מדיניות עוגיות</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">GDPR</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white text-sm">צור קשר</a></li>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">משפטי</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-sm hover:text-white">פרטיות</a></li>
+                        <li><a href="#" class="text-sm hover:text-white">תנאים</a></li>
+                        <li><a href="#" class="text-sm hover:text-white">מדיניות עוגיות</a></li>
+                        <li><a href="#" class="text-sm hover:text-white">GDPR</a></li>
+                        <li><a href="#" class="text-sm hover:text-white">צור קשר</a></li>
                     </ul>
                 </div>
             </div>
             <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between">
-                <p class="text-gray-400 text-sm">
+                <p class="text-sm">
                     &copy; 2023 אוטו ויז'ן. כל הזכויות שמורות.
                 </p>
                 <div class="mt-4 md:mt-0 flex space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-white text-sm">מדיניות פרטיות</a>
-                    <a href="#" class="text-gray-400 hover:text-white text-sm">תנאי שימוש</a>
-                    <a href="#" class="text-gray-400 hover:text-white text-sm">מפת אתר</a>
+                    <a href="#" class="text-sm hover:text-white">מדיניות פרטיות</a>
+                    <a href="#" class="text-sm hover:text-white">תנאי שימוש</a>
+                    <a href="#" class="text-sm hover:text-white">מפת אתר</a>
                 </div>
             </div>
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script>
-        // Simple category filter functionality
+        // Initialize Swiper
+        const swiper = new Swiper('.categories-swiper', {
+            slidesPerView: 'auto',
+            spaceBetween: 8,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            breakpoints: {
+                640: {
+                    spaceBetween: 12,
+                },
+                1024: {
+                    spaceBetween: 16,
+                }
+            }
+        });
+        
+        // Mobile menu toggle
+        const openMenuBtn = document.getElementById('open-menu');
+        const closeMenuBtn = document.getElementById('close-menu');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const backdrop = document.querySelector('.backdrop');
+        
+        openMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('open');
+            backdrop.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+            backdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        
+        backdrop.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+            backdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        
+        // Category filter functionality
         document.addEventListener('DOMContentLoaded', function() {
             const categoryButtons = document.querySelectorAll('.category-btn');
             
             categoryButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     // Remove active class from all buttons
-                    categoryButtons.forEach(btn => btn.classList.remove('active', 'bg-blue-500', 'text-white'));
+                    categoryButtons.forEach(btn => {
+                        btn.classList.remove('active', 'bg-blue-500', 'text-white');
+                        btn.classList.add('bg-gray-100', 'text-gray-800');
+                    });
                     
                     // Add active class to clicked button
                     this.classList.add('active', 'bg-blue-500', 'text-white');
+                    this.classList.remove('bg-gray-100', 'text-gray-800');
                     
                     // In a real app, you would filter videos here based on the category
                     console.log('Filtering by:', this.textContent.trim());
@@ -574,12 +958,15 @@
             const selectedTagsContainer = document.getElementById('selected-tags');
             
             // Check if tag is already selected
-            const existingTags = Array.from(selectedTagsContainer.children).map(span => span.textContent.trim());
+            const existingTags = Array.from(selectedTagsContainer.children).map(span => {
+                return span.textContent.trim().replace('×', '').trim();
+            });
+            
             if (existingTags.includes(tag)) return;
             
             const tagElement = document.createElement('span');
-            tagElement.className = 'tag';
-            tagElement.innerHTML = `<i class="fas fa-tag"></i> ${tag} <i class="fas fa-times ml-1" onclick="removeTag(this)"></i>`;
+            tagElement.className = 'tag bg-blue-100 text-blue-800';
+            tagElement.innerHTML = `${tag} <i class="fas fa-times cursor-pointer hover:text-blue-600" onclick="removeTag(this)"></i>`;
             
             selectedTagsContainer.appendChild(tagElement);
         }
