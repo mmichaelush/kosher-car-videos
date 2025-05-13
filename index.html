@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>אוטו ויז'ן - סרטוני רכב באיכות גבוהה</title>
+    <title>אוטו ויז'ן - קסם הרכב במלוא הדרו</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
@@ -11,8 +11,8 @@
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
         
         :root {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
+            --primary: #7c3aed;
+            --primary-dark: #6d28d9;
             --dark: #1e293b;
             --light: #f8fafc;
         }
@@ -24,20 +24,38 @@
         }
         
         .hero-gradient {
-            background: linear-gradient(135deg, #1e3a8a 0%, #0ea5e9 100%);
+            background: linear-gradient(135deg, #4c1d95 0%, #7e22ce 100%);
         }
         
         .video-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 12px;
+            border-radius: 16px;
             overflow: hidden;
             background: white;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
+            position: relative;
         }
         
         .video-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(124, 58, 237, 0.15);
+        }
+        
+        .video-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.5));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+        }
+        
+        .video-card:hover:before {
+            opacity: 1;
         }
         
         .category-btn {
@@ -46,17 +64,19 @@
             font-weight: 500;
             font-size: 0.875rem;
             padding: 0.5rem 1rem;
-            background-color: #f1f5f9;
-            color: #64748b;
+            background-color: #f5f3ff;
+            color: #7c3aed;
+            border: 1px solid #ddd6fe;
         }
         
         .category-btn.active {
             background-color: var(--primary);
             color: white;
+            box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.2), 0 2px 4px -1px rgba(124, 58, 237, 0.1);
         }
         
         .category-btn:hover:not(.active) {
-            background-color: #e2e8f0;
+            background-color: #ede9fe;
         }
         
         .video-container {
@@ -82,10 +102,16 @@
             margin: 0 0.75rem;
             font-weight: 500;
             color: #64748b;
+            transition: all 0.2s ease;
         }
         
         .nav-link:hover {
             color: var(--primary);
+        }
+        
+        .nav-link.active {
+            color: var(--primary);
+            font-weight: 600;
         }
         
         .nav-link.active:after {
@@ -100,16 +126,17 @@
         
         .search-input {
             transition: all 0.2s ease;
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 0.5rem 2.5rem 0.5rem 1rem;
             border: 1px solid #e2e8f0;
             background-color: #f8fafc;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
         
         .search-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
             background-color: white;
         }
         
@@ -117,19 +144,21 @@
             display: inline-flex;
             align-items: center;
             transition: all 0.2s ease;
-            background-color: #e0f2fe;
-            color: #0369a1;
-            padding: 0.25rem 0.75rem;
+            background-color: #ede9fe;
+            color: #5b21b6;
+            padding: 0.375rem 0.875rem;
             border-radius: 9999px;
             font-size: 0.75rem;
             font-weight: 500;
             margin-left: 0.5rem;
             margin-bottom: 0.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
         
         .tag:hover {
-            background-color: #bae6fd;
+            background-color: #ddd6fe;
             cursor: pointer;
+            transform: translateY(-1px);
         }
         
         .tag i {
@@ -140,8 +169,8 @@
         .tag-input {
             transition: all 0.2s ease;
             border: 1px dashed #cbd5e1;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
             width: 100%;
             background-color: #f8fafc;
         }
@@ -149,7 +178,7 @@
         .tag-input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
             background-color: white;
             border-style: solid;
         }
@@ -158,29 +187,33 @@
             background-color: var(--primary);
             color: white;
             font-weight: 500;
-            padding: 0.625rem 1.25rem;
-            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
             transition: all 0.2s ease;
+            box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.2), 0 2px 4px -1px rgba(124, 58, 237, 0.1);
         }
         
         .btn-primary:hover {
             background-color: var(--primary-dark);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.2), 0 4px 6px -2px rgba(124, 58, 237, 0.1);
         }
         
         .btn-secondary {
             background-color: white;
             color: var(--primary);
             font-weight: 500;
-            padding: 0.625rem 1.25rem;
-            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
             transition: all 0.2s ease;
             border: 1px solid var(--primary);
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
         
         .btn-secondary:hover {
-            background-color: #f1f5f9;
-            transform: translateY(-1px);
+            background-color: #f5f3ff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
         
         .swiper {
@@ -199,21 +232,6 @@
         
         .swiper-pagination-bullet-active {
             background: var(--primary) !important;
-        }
-        
-        .dark-overlay {
-            position: relative;
-        }
-        
-        .dark-overlay:after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
-            z-index: 1;
         }
         
         .mobile-menu {
@@ -236,10 +254,95 @@
             visibility: visible;
         }
         
+        .channel-card {
+            transition: all 0.3s ease;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .channel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(124, 58, 237, 0.1), 0 10px 10px -5px rgba(124, 58, 237, 0.04);
+        }
+        
+        .channel-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, transparent 0%, rgba(124, 58, 237, 0.1) 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .channel-card:hover:before {
+            opacity: 1;
+        }
+        
         @media (max-width: 768px) {
             .hero-heading {
                 font-size: 2.25rem !important;
             }
+        }
+        
+        /* Magic sparkle effect */
+        .magic-sparkle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 10;
+            animation: sparkle 1s ease-out forwards;
+        }
+        
+        @keyframes sparkle {
+            0% {
+                transform: scale(0);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1.5);
+                opacity: 0;
+            }
+        }
+        
+        /* Floating animation */
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+        
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Pulse animation */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .pulse:hover {
+            animation: pulse 2s infinite;
         }
     </style>
 </head>
@@ -251,7 +354,7 @@
     <div class="mobile-menu fixed inset-y-0 right-0 w-64 bg-white shadow-xl z-50 p-4">
         <div class="flex justify-between items-center mb-8">
             <div class="flex items-center">
-                <i class="fas fa-car text-blue-500 text-xl ml-2"></i>
+                <i class="fas fa-car text-purple-600 text-xl ml-2"></i>
                 <span class="text-lg font-bold">אוטו ויז'ן</span>
             </div>
             <button id="close-menu" class="text-gray-500 hover:text-gray-700">
@@ -266,11 +369,6 @@
             <a href="#" class="nav-link text-gray-700">אודות</a>
             <a href="#" class="nav-link text-gray-700">צור קשר</a>
         </nav>
-        <div class="absolute bottom-4 right-4 left-4">
-            <button class="btn-primary w-full py-3">
-                <i class="fas fa-sign-in-alt ml-2"></i> התחברות
-            </button>
-        </div>
     </div>
     
     <!-- Navigation -->
@@ -279,7 +377,7 @@
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
                     <div class="flex-shrink-0 flex items-center">
-                        <i class="fas fa-car text-blue-500 text-2xl ml-2"></i>
+                        <i class="fas fa-car text-purple-600 text-2xl ml-2"></i>
                         <span class="text-xl font-bold text-gray-900 hidden sm:block">אוטו ויז'ן</span>
                     </div>
                     <div class="hidden md:mr-10 md:flex md:space-x-8">
@@ -298,11 +396,6 @@
                             <input type="text" class="search-input block w-64 pr-10 pl-3 py-2 text-sm" placeholder="חיפוש סרטוני רכב...">
                         </div>
                     </div>
-                    <div class="hidden md:block md:flex-shrink-0">
-                        <button class="btn-primary px-4 py-2 text-sm">
-                            <i class="fas fa-sign-in-alt ml-2"></i> התחברות
-                        </button>
-                    </div>
                     <button id="open-menu" class="md:hidden text-gray-500 hover:text-gray-700">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
@@ -312,21 +405,27 @@
     </nav>
 
     <!-- Hero Section -->
-    <div class="hero-gradient text-white">
-        <div class="max-w-7xl mx-auto py-20 px-4 sm:py-24 sm:px-6 lg:px-8">
+    <div class="hero-gradient text-white relative overflow-hidden">
+        <!-- Floating elements -->
+        <div class="absolute top-1/4 left-1/4 w-16 h-16 rounded-full bg-purple-400 opacity-20 filter blur-xl floating"></div>
+        <div class="absolute bottom-1/3 right-1/3 w-24 h-24 rounded-full bg-indigo-400 opacity-20 filter blur-xl floating" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/3 right-1/4 w-20 h-20 rounded-full bg-pink-400 opacity-20 filter blur-xl floating" style="animation-delay: 4s;"></div>
+        
+        <div class="max-w-7xl mx-auto py-20 px-4 sm:py-24 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center">
                 <h1 class="hero-heading text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
-                    גלו את עולם הרכב במלוא הדרו
+                    <span class="block">קסם הרכב</span>
+                    <span class="block text-purple-200">במלוא הדרו</span>
                 </h1>
                 <p class="mt-6 max-w-lg mx-auto text-xl opacity-90">
-                    סרטונים באיכות גבוהה של המכוניות המרהיבות ביותר, מקלאסיקות ועד היפר-קארים, הכל במקום אחד.
+                    מסע ויזואלי מרהיב אל עולם הרכב המהפנט, מקלאסיקות נוסטלגיות ועד להיפר-קארים עתידניים.
                 </p>
                 <div class="mt-10 flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
-                    <button class="btn-secondary px-6 py-3 text-lg">
+                    <button class="btn-secondary px-6 py-3 text-lg pulse">
                         <i class="fas fa-play ml-2"></i> צפו עכשיו
                     </button>
-                    <button class="btn-primary px-6 py-3 text-lg">
-                        <i class="fas fa-th-list ml-2"></i> עיון בקטגוריות
+                    <button class="btn-primary px-6 py-3 text-lg pulse">
+                        <i class="fas fa-magic ml-2"></i> גלו קסם
                     </button>
                 </div>
             </div>
@@ -383,8 +482,10 @@
         </div>
 
         <!-- Tag Search -->
-        <div class="mb-10 bg-white p-5 rounded-xl shadow-sm">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">חיפוש לפי תגיות</h3>
+        <div class="mb-10 bg-white p-6 rounded-xl shadow-sm border border-purple-50">
+            <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
+                <i class="fas fa-tags text-purple-500 ml-2"></i> חיפוש לפי תגיות
+            </h3>
             <div class="flex flex-wrap mb-4" id="popular-tags">
                 <span class="tag" onclick="searchByTag('מנוע')"><i class="fas fa-cog"></i> מנוע</span>
                 <span class="tag" onclick="searchByTag('בלמים')"><i class="fas fa-stop-circle"></i> בלמים</span>
@@ -397,7 +498,7 @@
             </div>
             <div class="relative">
                 <input type="text" id="tag-search" class="tag-input" placeholder="הקלד תגית לחיפוש...">
-                <button onclick="addTagToSearch()" class="absolute left-3 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600">הוסף</button>
+                <button onclick="addTagToSearch()" class="absolute left-3 top-1/2 transform -translate-y-1/2 bg-purple-500 text-white px-3 py-1 rounded-md text-sm hover:bg-purple-600 transition">הוסף</button>
             </div>
             <div class="mt-3 flex flex-wrap" id="selected-tags"></div>
         </div>
@@ -405,8 +506,10 @@
         <!-- Featured Videos -->
         <div class="mb-12">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">סרטונים מומלצים</h2>
-                <a href="#" class="text-blue-500 hover:text-blue-700 font-medium flex items-center">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                    <i class="fas fa-star text-purple-500 ml-2"></i> סרטונים מומלצים
+                </h2>
+                <a href="#" class="text-purple-600 hover:text-purple-800 font-medium flex items-center">
                     הצג הכל <i class="fas fa-chevron-left mr-1 text-sm"></i>
                 </a>
             </div>
@@ -422,7 +525,7 @@
                                 <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Channel" class="h-full w-full object-cover">
                             </div>
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">בוגאטי שירון סופר ספורט 2023 - סקירה מלאה</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">בוגאטי שירון סופר ספורט 2023 - סקירה מלאה</h3>
                                 <p class="text-gray-600 text-sm">AutoVision</p>
                             </div>
                         </div>
@@ -451,7 +554,7 @@
                                 <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Channel" class="h-full w-full object-cover">
                             </div>
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">שיקום פורד מוסטנג 1967</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">שיקום פורד מוסטנג 1967</h3>
                                 <p class="text-gray-600 text-sm">Classic Restorations</p>
                             </div>
                         </div>
@@ -481,7 +584,7 @@
                                 <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Channel" class="h-full w-full object-cover">
                             </div>
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">טסלה סייברטראק - מבחן שטח</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">טסלה סייברטראק - מבחן שטח</h3>
                                 <p class="text-gray-600 text-sm">EV Adventures</p>
                             </div>
                         </div>
@@ -504,8 +607,10 @@
         <!-- Repair Videos -->
         <div class="mb-12">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">מדריכי תיקונים וטיפולים</h2>
-                <a href="#" class="text-blue-500 hover:text-blue-700 font-medium flex items-center">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                    <i class="fas fa-tools text-purple-500 ml-2"></i> מדריכי תיקונים וטיפולים
+                </h2>
+                <a href="#" class="text-purple-600 hover:text-purple-800 font-medium flex items-center">
                     הצג הכל <i class="fas fa-chevron-left mr-1 text-sm"></i>
                 </a>
             </div>
@@ -521,7 +626,7 @@
                                 <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Channel" class="h-full w-full object-cover">
                             </div>
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">החלפת שמן מנוע - מדריך מלא</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">החלפת שמן מנוע - מדריך מלא</h3>
                                 <p class="text-gray-600 text-sm">Car DIY</p>
                             </div>
                         </div>
@@ -551,7 +656,7 @@
                                 <img src="https://randomuser.me/api/portraits/men/76.jpg" alt="Channel" class="h-full w-full object-cover">
                             </div>
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">תיקון תקלות במזגן רכב</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">תיקון תקלות במזגן רכב</h3>
                                 <p class="text-gray-600 text-sm">Auto Clinic</p>
                             </div>
                         </div>
@@ -580,7 +685,7 @@
                                 <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Channel" class="h-full w-full object-cover">
                             </div>
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">החלפת בלמים - צעד אחר צעד</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">החלפת בלמים - צעד אחר צעד</h3>
                                 <p class="text-gray-600 text-sm">Mechanic Pro</p>
                             </div>
                         </div>
@@ -603,8 +708,10 @@
         <!-- Classic Cars Collection -->
         <div class="mb-12">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">אוסף רכבים קלאסיים</h2>
-                <a href="#" class="text-blue-500 hover:text-blue-700 font-medium flex items-center">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                    <i class="fas fa-history text-purple-500 ml-2"></i> אוסף רכבים קלאסיים
+                </h2>
+                <a href="#" class="text-purple-600 hover:text-purple-800 font-medium flex items-center">
                     הצג הכל <i class="fas fa-chevron-left mr-1 text-sm"></i>
                 </a>
             </div>
@@ -620,7 +727,7 @@
                                 <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="Channel" class="h-full w-full object-cover">
                             </div>
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">שברולט בלה אייר 1957 - שיקום מלא</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">שברולט בלה אייר 1957 - שיקום מלא</h3>
                                 <p class="text-gray-600 text-sm">Classic Dreams</p>
                             </div>
                         </div>
@@ -649,7 +756,7 @@
                                 <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Channel" class="h-full w-full object-cover">
                             </div>
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">יגואר E-Type - המכונית היפה בעולם?</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">יגואר E-Type - המכונית היפה בעולם?</h3>
                                 <p class="text-gray-600 text-sm">British Classics</p>
                             </div>
                         </div>
@@ -678,7 +785,7 @@
                                 <img src="https://randomuser.me/api/portraits/men/89.jpg" alt="Channel" class="h-full w-full object-cover">
                             </div>
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">מרצדס 300SL גאלווינג - חווית נהיגה</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">מרצדס 300SL גאלווינג - חווית נהיגה</h3>
                                 <p class="text-gray-600 text-sm">Vintage Rides</p>
                             </div>
                         </div>
@@ -700,103 +807,97 @@
     </main>
 
     <!-- Featured Channels -->
-    <div class="bg-gray-50 py-12">
+    <div class="bg-purple-50 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">הערוצים המובילים שלנו</h2>
+            <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center flex items-center justify-center">
+                <i class="fas fa-heart text-purple-500 mr-2"></i> הערוצים המובילים שלנו
+            </h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
                 <!-- Channel 1 -->
-                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                <div class="channel-card bg-white p-4 rounded-xl shadow-sm text-center">
                     <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
                         <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Channel" class="h-full w-full object-cover">
                     </div>
                     <h3 class="font-medium text-gray-900">AutoVision</h3>
-                    <p class="text-gray-500 text-sm">1.2M עוקבים</p>
+                    <p class="text-purple-600 text-sm">1.2M עוקבים</p>
                 </div>
                 
                 <!-- Channel 2 -->
-                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                <div class="channel-card bg-white p-4 rounded-xl shadow-sm text-center">
                     <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
                         <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Channel" class="h-full w-full object-cover">
                     </div>
                     <h3 class="font-medium text-gray-900">Classic Restorations</h3>
-                    <p class="text-gray-500 text-sm">850K עוקבים</p>
+                    <p class="text-purple-600 text-sm">850K עוקבים</p>
                 </div>
                 
                 <!-- Channel 3 -->
-                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                <div class="channel-card bg-white p-4 rounded-xl shadow-sm text-center">
                     <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
                         <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Channel" class="h-full w-full object-cover">
                     </div>
                     <h3 class="font-medium text-gray-900">EV Adventures</h3>
-                    <p class="text-gray-500 text-sm">1.5M עוקבים</p>
+                    <p class="text-purple-600 text-sm">1.5M עוקבים</p>
                 </div>
                 
                 <!-- Channel 4 -->
-                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                <div class="channel-card bg-white p-4 rounded-xl shadow-sm text-center">
                     <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
                         <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Channel" class="h-full w-full object-cover">
                     </div>
                     <h3 class="font-medium text-gray-900">Car DIY</h3>
-                    <p class="text-gray-500 text-sm">2.3M עוקבים</p>
+                    <p class="text-purple-600 text-sm">2.3M עוקבים</p>
                 </div>
                 
                 <!-- Channel 5 -->
-                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                <div class="channel-card bg-white p-4 rounded-xl shadow-sm text-center">
                     <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
                         <img src="https://randomuser.me/api/portraits/men/76.jpg" alt="Channel" class="h-full w-full object-cover">
                     </div>
                     <h3 class="font-medium text-gray-900">Auto Clinic</h3>
-                    <p class="text-gray-500 text-sm">1.8M עוקבים</p>
+                    <p class="text-purple-600 text-sm">1.8M עוקבים</p>
                 </div>
                 
                 <!-- Channel 6 -->
-                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                <div class="channel-card bg-white p-4 rounded-xl shadow-sm text-center">
                     <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
                         <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Channel" class="h-full w-full object-cover">
                     </div>
                     <h3 class="font-medium text-gray-900">Mechanic Pro</h3>
-                    <p class="text-gray-500 text-sm">3.1M עוקבים</p>
+                    <p class="text-purple-600 text-sm">3.1M עוקבים</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Newsletter -->
-    <div class="bg-gray-100 py-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="lg:flex lg:items-center lg:justify-between bg-white rounded-xl p-8 shadow-sm">
-                <div class="lg:w-0 lg:flex-1">
-                    <h2 class="text-2xl font-extrabold text-gray-900">הישארו מעודכנים עם סרטוני הרכב האחרונים</h2>
-                    <p class="mt-3 max-w-3xl text-gray-600">
-                        הירשמו לניוזלטר שלנו וקבלו עדכונים שבועיים על סרטונים חדשים, תוכן בלעדי וכתבות מיוחדות.
-                    </p>
-                </div>
-                <div class="mt-8 lg:mt-0 lg:mr-8">
-                    <form class="sm:flex">
-                        <label for="email-address" class="sr-only">אימייל</label>
-                        <input id="email-address" name="email" type="email" autocomplete="email" required class="w-full px-5 py-3 border border-gray-300 shadow-sm placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500 rounded-md" placeholder="הכנס את האימייל שלך">
-                        <div class="mt-3 rounded-md shadow sm:mt-0 sm:mr-3 sm:flex-shrink-0">
-                            <button type="submit" class="w-full flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                הרשמה
-                            </button>
-                        </div>
-                    </form>
-                    <p class="mt-3 text-sm text-gray-500">
-                        אנו מכבדים את הפרטיות שלך. קרא את
-                        <a href="#" class="font-medium text-blue-600 hover:text-blue-500">מדיניות הפרטיות</a> שלנו.
-                    </p>
-                </div>
+    <!-- Inspiration Section -->
+    <div class="bg-gradient-to-r from-purple-900 to-indigo-800 text-white py-16 relative overflow-hidden">
+        <!-- Floating elements -->
+        <div class="absolute top-1/4 left-1/4 w-16 h-16 rounded-full bg-purple-400 opacity-20 filter blur-xl floating"></div>
+        <div class="absolute bottom-1/3 right-1/3 w-24 h-24 rounded-full bg-indigo-400 opacity-20 filter blur-xl floating" style="animation-delay: 2s;"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold mb-6">
+                    <i class="fas fa-magic mr-2"></i> מקור השראה לאוהבי רכב
+                </h2>
+                <p class="text-xl max-w-3xl mx-auto opacity-90 mb-8">
+                    גלו את הקסם שמאחורי המכוניות המרהיבות ביותר בעולם. הצטרפו למסע ויזואלי שלא יישכח.
+                </p>
+                <button class="btn-primary px-8 py-4 text-lg pulse">
+                    <i class="fas fa-play-circle mr-2"></i> התחילו את החוויה
+                </button>
             </div>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-gray-300">
+    <footer class="bg-gray-900 text-gray-300">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div>
                     <div class="flex items-center mb-4">
-                        <i class="fas fa-car text-blue-500 text-xl ml-2"></i>
+                        <i class="fas fa-car text-purple-500 text-xl ml-2"></i>
                         <span class="text-lg font-bold text-white">אוטו ויז'ן</span>
                     </div>
                     <p class="text-sm">
@@ -820,42 +921,42 @@
                 <div>
                     <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">קטגוריות</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-sm hover:text-white">סופר-קארים</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">רכב קלאסי</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">רכב שטח</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">תיקונים וטיפולים</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">הדרכות</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">סופר-קארים</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">רכב קלאסי</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">רכב שטח</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">תיקונים וטיפולים</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">הדרכות</a></li>
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">חברה</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-sm hover:text-white">אודות</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">בלוג</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">קריירה</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">עיתונות</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">שותפים</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">אודות</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">בלוג</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">קריירה</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">עיתונות</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">שותפים</a></li>
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">משפטי</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-sm hover:text-white">פרטיות</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">תנאים</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">מדיניות עוגיות</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">GDPR</a></li>
-                        <li><a href="#" class="text-sm hover:text-white">צור קשר</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">פרטיות</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">תנאים</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">מדיניות עוגיות</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">GDPR</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">צור קשר</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between">
+            <div class="mt-12 border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between">
                 <p class="text-sm">
                     &copy; 2023 אוטו ויז'ן. כל הזכויות שמורות.
                 </p>
                 <div class="mt-4 md:mt-0 flex space-x-6">
-                    <a href="#" class="text-sm hover:text-white">מדיניות פרטיות</a>
-                    <a href="#" class="text-sm hover:text-white">תנאי שימוש</a>
-                    <a href="#" class="text-sm hover:text-white">מפת אתר</a>
+                    <a href="#" class="text-sm hover:text-purple-300">מדיניות פרטיות</a>
+                    <a href="#" class="text-sm hover:text-purple-300">תנאי שימוש</a>
+                    <a href="#" class="text-sm hover:text-purple-300">מפת אתר</a>
                 </div>
             </div>
         </div>
@@ -913,13 +1014,13 @@
                 button.addEventListener('click', function() {
                     // Remove active class from all buttons
                     categoryButtons.forEach(btn => {
-                        btn.classList.remove('active', 'bg-blue-500', 'text-white');
-                        btn.classList.add('bg-gray-100', 'text-gray-800');
+                        btn.classList.remove('active', 'bg-purple-600', 'text-white');
+                        btn.classList.add('bg-purple-50', 'text-purple-700');
                     });
                     
                     // Add active class to clicked button
-                    this.classList.add('active', 'bg-blue-500', 'text-white');
-                    this.classList.remove('bg-gray-100', 'text-gray-800');
+                    this.classList.add('active', 'bg-purple-600', 'text-white');
+                    this.classList.remove('bg-purple-50', 'text-purple-700');
                     
                     // In a real app, you would filter videos here based on the category
                     console.log('Filtering by:', this.textContent.trim());
@@ -965,8 +1066,8 @@
             if (existingTags.includes(tag)) return;
             
             const tagElement = document.createElement('span');
-            tagElement.className = 'tag bg-blue-100 text-blue-800';
-            tagElement.innerHTML = `${tag} <i class="fas fa-times cursor-pointer hover:text-blue-600" onclick="removeTag(this)"></i>`;
+            tagElement.className = 'tag bg-purple-100 text-purple-800';
+            tagElement.innerHTML = `${tag} <i class="fas fa-times cursor-pointer hover:text-purple-600" onclick="removeTag(this)"></i>`;
             
             selectedTagsContainer.appendChild(tagElement);
         }
@@ -975,6 +1076,20 @@
             const tagElement = icon.parentElement;
             tagElement.remove();
         }
+        
+        // Magic sparkle effect
+        document.addEventListener('click', function(e) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'magic-sparkle';
+            sparkle.style.left = `${e.clientX - 4}px`;
+            sparkle.style.top = `${e.clientY - 4}px`;
+            document.body.appendChild(sparkle);
+            
+            // Remove after animation
+            setTimeout(() => {
+                sparkle.remove();
+            }, 1000);
+        });
     </script>
 </body>
 </html>
