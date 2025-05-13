@@ -7,7 +7,241 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
+        
+        body {
+            font-family: 'Rubik', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #1e3a8a 0%, #0ea5e9 100%);
+        }
+        
+        .video-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 12px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        }
+        
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
+        }
+        
+        .category-btn {
+            transition: all 0.2s ease;
+            border-radius: 24px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            padding: 0.5rem 1rem;
+            background-color: #f1f5f9;
+            color: #64748b;
+        }
+        
+        .category-btn.active {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .category-btn:hover:not(.active) {
+            background-color: #e2e8f0;
+        }
+        
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            background: #000;
+        }
+        
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 0;
+            margin: 0 0.75rem;
+            font-weight: 500;
+            color: #64748b;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .nav-link.active:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary);
+        }
+        
+        .search-input {
+            transition: all 0.2s ease;
+            border-radius: 8px;
+            padding: 0.5rem 2.5rem 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background-color: white;
+        }
+        
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s ease;
+            background-color: #e0f2fe;
+            color: #0369a1;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .tag:hover {
+            background-color: #bae6fd;
+            cursor: pointer;
+        }
+        
+        .tag i {
+            margin-left: 0.25rem;
+            font-size: 0.65rem;
+        }
+        
+        .tag-input {
+            transition: all 0.2s ease;
+            border: 1px dashed #cbd5e1;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            width: 100%;
+            background-color: #f8fafc;
+        }
+        
+        .tag-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            background-color: white;
+            border-style: solid;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 500;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background-color: white;
+            color: var(--primary);
+            font-weight: 500;
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            border: 1px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #f1f5f9;
+            transform: translateY(-1px);
+        }
+        
+        .swiper {
+            width: 100%;
+            padding: 1.5rem 0 2.5rem !important;
+        }
+        
+        .swiper-slide {
+            width: auto !important;
+        }
+        
+        .swiper-pagination-bullet {
+            background: #cbd5e1 !important;
+            opacity: 1 !important;
+        }
+        
+        .swiper-pagination-bullet-active {
+            background: var(--primary) !important;
+        }
+        
+        .dark-overlay {
+            position: relative;
+        }
+        
+        .dark-overlay:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 50%, transparent 100%);
+            z-index: 1;
+        }
+        
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        
+        .backdrop {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-heading {
+                font-size: 2.25rem !important;
+            }
+        }
+    </style>
 </head>
 <body class="relative">
     <!-- Mobile Menu Backdrop -->
@@ -32,6 +266,11 @@
             <a href="#" class="nav-link text-gray-700">אודות</a>
             <a href="#" class="nav-link text-gray-700">צור קשר</a>
         </nav>
+        <div class="absolute bottom-4 right-4 left-4">
+            <button class="btn-primary w-full py-3">
+                <i class="fas fa-sign-in-alt ml-2"></i> התחברות
+            </button>
+        </div>
     </div>
     
     <!-- Navigation -->
@@ -58,6 +297,11 @@
                             </div>
                             <input type="text" class="search-input block w-64 pr-10 pl-3 py-2 text-sm" placeholder="חיפוש סרטוני רכב...">
                         </div>
+                    </div>
+                    <div class="hidden md:block md:flex-shrink-0">
+                        <button class="btn-primary px-4 py-2 text-sm">
+                            <i class="fas fa-sign-in-alt ml-2"></i> התחברות
+                        </button>
                     </div>
                     <button id="open-menu" class="md:hidden text-gray-500 hover:text-gray-700">
                         <i class="fas fa-bars text-xl"></i>
@@ -105,8 +349,34 @@
         <div class="mb-10">
             <h2 class="text-2xl font-bold text-gray-900 mb-6">עיון לפי קטגוריה</h2>
             <div class="swiper categories-swiper">
-                <div class="swiper-wrapper" id="categories-container">
-                    <!-- Categories will be loaded from JS -->
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <button class="category-btn active">הכל</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">סופר-קארים</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">רכב קלאסי</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">רכב שטח</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">רכב חשמלי</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">אופנועים</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">תיקונים</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">טיפולים</button>
+                    </div>
+                    <div class="swiper-slide">
+                        <button class="category-btn">הדרכות</button>
+                    </div>
                 </div>
                 <div class="swiper-pagination"></div>
             </div>
@@ -116,7 +386,14 @@
         <div class="mb-10 bg-white p-5 rounded-xl shadow-sm">
             <h3 class="text-lg font-medium text-gray-900 mb-4">חיפוש לפי תגיות</h3>
             <div class="flex flex-wrap mb-4" id="popular-tags">
-                <!-- Tags will be loaded from JS -->
+                <span class="tag" onclick="searchByTag('מנוע')"><i class="fas fa-cog"></i> מנוע</span>
+                <span class="tag" onclick="searchByTag('בלמים')"><i class="fas fa-stop-circle"></i> בלמים</span>
+                <span class="tag" onclick="searchByTag('תיבת הילוכים')"><i class="fas fa-cogs"></i> תיבת הילוכים</span>
+                <span class="tag" onclick="searchByTag('חשמל')"><i class="fas fa-bolt"></i> חשמל</span>
+                <span class="tag" onclick="searchByTag('צמיגים')"><i class="fas fa-tire"></i> צמיגים</span>
+                <span class="tag" onclick="searchByTag('מזגן')"><i class="fas fa-snowflake"></i> מזגן</span>
+                <span class="tag" onclick="searchByTag('שמן')"><i class="fas fa-oil-can"></i> שמן</span>
+                <span class="tag" onclick="searchByTag('טיפוח')"><i class="fas fa-spa"></i> טיפוח</span>
             </div>
             <div class="relative">
                 <input type="text" id="tag-search" class="tag-input" placeholder="הקלד תגית לחיפוש...">
@@ -133,8 +410,94 @@
                     הצג הכל <i class="fas fa-chevron-left mr-1 text-sm"></i>
                 </a>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="featured-videos">
-                <!-- Videos will be loaded from JS -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Video Card 1 -->
+                <div class="video-card group">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">בוגאטי שירון סופר ספורט 2023 - סקירה מלאה</h3>
+                                <p class="text-gray-600 text-sm">AutoVision</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">סקירה מעמיקה של המכונית המהירה ביותר בעולם עם כל הפרטים הטכניים.</p>
+                        <div class="flex flex-wrap mb-3">
+                            <span class="tag"><i class="fas fa-tag"></i> בוגאטי</span>
+                            <span class="tag"><i class="fas fa-tag"></i> סופר-קאר</span>
+                            <span class="tag"><i class="fas fa-tag"></i> ביצועים</span>
+                        </div>
+                        <div class="flex items-center text-gray-500 text-sm">
+                            <span><i class="fas fa-eye ml-1"></i> 2.4M צפיות</span>
+                            <span class="mx-2">•</span>
+                            <span><i class="far fa-clock ml-1"></i> לפני 3 ימים</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Video Card 2 -->
+                <div class="video-card group">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">שיקום פורד מוסטנג 1967</h3>
+                                <p class="text-gray-600 text-sm">Classic Restorations</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">תיעוד מלא של תהליך השיקום של המוסטנג הקלאסית האמריקאית.</p>
+                        <div class="flex flex-wrap mb-3">
+                            <span class="tag"><i class="fas fa-tag"></i> פורד</span>
+                            <span class="tag"><i class="fas fa-tag"></i> מוסטנג</span>
+                            <span class="tag"><i class="fas fa-tag"></i> שיקום</span>
+                            <span class="tag"><i class="fas fa-tag"></i> קלאסי</span>
+                        </div>
+                        <div class="flex items-center text-gray-500 text-sm">
+                            <span><i class="fas fa-eye ml-1"></i> 1.1M צפיות</span>
+                            <span class="mx-2">•</span>
+                            <span><i class="far fa-clock ml-1"></i> לפני שבוע</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Video Card 3 -->
+                <div class="video-card group">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">טסלה סייברטראק - מבחן שטח</h3>
+                                <p class="text-gray-600 text-sm">EV Adventures</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">מבחן שטח מקיף למכונית החשמלית השנויה במחלוקת בתנאים קיצוניים.</p>
+                        <div class="flex flex-wrap mb-3">
+                            <span class="tag"><i class="fas fa-tag"></i> טסלה</span>
+                            <span class="tag"><i class="fas fa-tag"></i> חשמלי</span>
+                            <span class="tag"><i class="fas fa-tag"></i> שטח</span>
+                        </div>
+                        <div class="flex items-center text-gray-500 text-sm">
+                            <span><i class="fas fa-eye ml-1"></i> 3.7M צפיות</span>
+                            <span class="mx-2">•</span>
+                            <span><i class="far fa-clock ml-1"></i> לפני יומיים</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -146,8 +509,94 @@
                     הצג הכל <i class="fas fa-chevron-left mr-1 text-sm"></i>
                 </a>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="repair-videos">
-                <!-- Videos will be loaded from JS -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Video Card 4 -->
+                <div class="video-card group">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">החלפת שמן מנוע - מדריך מלא</h3>
+                                <p class="text-gray-600 text-sm">Car DIY</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">מדריך מפורט להחלפת שמן מנוע לכל סוגי הרכבים, כולל טיפים מקצועיים.</p>
+                        <div class="flex flex-wrap mb-3">
+                            <span class="tag"><i class="fas fa-tag"></i> מנוע</span>
+                            <span class="tag"><i class="fas fa-tag"></i> שמן</span>
+                            <span class="tag"><i class="fas fa-tag"></i> טיפול</span>
+                            <span class="tag"><i class="fas fa-tag"></i> הדרכה</span>
+                        </div>
+                        <div class="flex items-center text-gray-500 text-sm">
+                            <span><i class="fas fa-eye ml-1"></i> 450K צפיות</span>
+                            <span class="mx-2">•</span>
+                            <span><i class="far fa-clock ml-1"></i> לפני חודש</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Video Card 5 -->
+                <div class="video-card group">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/men/76.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">תיקון תקלות במזגן רכב</h3>
+                                <p class="text-gray-600 text-sm">Auto Clinic</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">כיצד לאבחן ולתקן תקלות נפוצות במערכת המיזוג של הרכב שלך.</p>
+                        <div class="flex flex-wrap mb-3">
+                            <span class="tag"><i class="fas fa-tag"></i> מזגן</span>
+                            <span class="tag"><i class="fas fa-tag"></i> חשמל</span>
+                            <span class="tag"><i class="fas fa-tag"></i> תיקון</span>
+                        </div>
+                        <div class="flex items-center text-gray-500 text-sm">
+                            <span><i class="fas fa-eye ml-1"></i> 320K צפיות</span>
+                            <span class="mx-2">•</span>
+                            <span><i class="far fa-clock ml-1"></i> לפני 3 שבועות</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Video Card 6 -->
+                <div class="video-card group">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">החלפת בלמים - צעד אחר צעד</h3>
+                                <p class="text-gray-600 text-sm">Mechanic Pro</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">מדריך ויזואלי להחלפת רפידות ודיסקי בלמים בכל סוגי הרכבים.</p>
+                        <div class="flex flex-wrap mb-3">
+                            <span class="tag"><i class="fas fa-tag"></i> בלמים</span>
+                            <span class="tag"><i class="fas fa-tag"></i> בטיחות</span>
+                            <span class="tag"><i class="fas fa-tag"></i> תיקון</span>
+                        </div>
+                        <div class="flex items-center text-gray-500 text-sm">
+                            <span><i class="fas fa-eye ml-1"></i> 680K צפיות</span>
+                            <span class="mx-2">•</span>
+                            <span><i class="far fa-clock ml-1"></i> לפני שבועיים</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -159,8 +608,93 @@
                     הצג הכל <i class="fas fa-chevron-left mr-1 text-sm"></i>
                 </a>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="classic-videos">
-                <!-- Videos will be loaded from JS -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Video Card 7 -->
+                <div class="video-card group">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">שברולט בלה אייר 1957 - שיקום מלא</h3>
+                                <p class="text-gray-600 text-sm">Classic Dreams</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">משלדה חלודה ועד למצב תצוגה - התהליך המלא של שיקום הרכב הקלאסי.</p>
+                        <div class="flex flex-wrap mb-3">
+                            <span class="tag"><i class="fas fa-tag"></i> שברולט</span>
+                            <span class="tag"><i class="fas fa-tag"></i> קלאסי</span>
+                            <span class="tag"><i class="fas fa-tag"></i> שיקום</span>
+                        </div>
+                        <div class="flex items-center text-gray-500 text-sm">
+                            <span><i class="fas fa-eye ml-1"></i> 980K צפיות</span>
+                            <span class="mx-2">•</span>
+                            <span><i class="far fa-clock ml-1"></i> לפני שבועיים</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Video Card 8 -->
+                <div class="video-card group">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">יגואר E-Type - המכונית היפה בעולם?</h3>
+                                <p class="text-gray-600 text-sm">British Classics</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">מדוע אנריקו פרארי כינה את ה-E-Type כמכונית היפה ביותר בעולם.</p>
+                        <div class="flex flex-wrap mb-3">
+                            <span class="tag"><i class="fas fa-tag"></i> יגואר</span>
+                            <span class="tag"><i class="fas fa-tag"></i> קלאסי</span>
+                            <span class="tag"><i class="fas fa-tag"></i> עיצוב</span>
+                        </div>
+                        <div class="flex items-center text-gray-500 text-sm">
+                            <span><i class="fas fa-eye ml-1"></i> 1.2M צפיות</span>
+                            <span class="mx-2">•</span>
+                            <span><i class="far fa-clock ml-1"></i> לפני שבוע</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Video Card 9 -->
+                <div class="video-card group">
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex items-start mb-3">
+                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
+                                <img src="https://randomuser.me/api/portraits/men/89.jpg" alt="Channel" class="h-full w-full object-cover">
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-blue-500">מרצדס 300SL גאלווינג - חווית נהיגה</h3>
+                                <p class="text-gray-600 text-sm">Vintage Rides</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-3">איך זה לנהוג באגדה הגרמנית משנות ה-50 עם דלתות כנף?</p>
+                        <div class="flex flex-wrap mb-3">
+                            <span class="tag"><i class="fas fa-tag"></i> מרצדס</span>
+                            <span class="tag"><i class="fas fa-tag"></i> קלאסי</span>
+                            <span class="tag"><i class="fas fa-tag"></i> נהיגה</span>
+                        </div>
+                        <div class="flex items-center text-gray-500 text-sm">
+                            <span><i class="fas fa-eye ml-1"></i> 1.6M צפיות</span>
+                            <span class="mx-2">•</span>
+                            <span><i class="far fa-clock ml-1"></i> לפני 5 ימים</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -169,8 +703,89 @@
     <div class="bg-gray-50 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">הערוצים המובילים שלנו</h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6" id="featured-channels">
-                <!-- Channels will be loaded from JS -->
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                <!-- Channel 1 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Channel" class="h-full w-full object-cover">
+                    </div>
+                    <h3 class="font-medium text-gray-900">AutoVision</h3>
+                    <p class="text-gray-500 text-sm">1.2M עוקבים</p>
+                </div>
+                
+                <!-- Channel 2 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
+                        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Channel" class="h-full w-full object-cover">
+                    </div>
+                    <h3 class="font-medium text-gray-900">Classic Restorations</h3>
+                    <p class="text-gray-500 text-sm">850K עוקבים</p>
+                </div>
+                
+                <!-- Channel 3 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Channel" class="h-full w-full object-cover">
+                    </div>
+                    <h3 class="font-medium text-gray-900">EV Adventures</h3>
+                    <p class="text-gray-500 text-sm">1.5M עוקבים</p>
+                </div>
+                
+                <!-- Channel 4 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
+                        <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Channel" class="h-full w-full object-cover">
+                    </div>
+                    <h3 class="font-medium text-gray-900">Car DIY</h3>
+                    <p class="text-gray-500 text-sm">2.3M עוקבים</p>
+                </div>
+                
+                <!-- Channel 5 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
+                        <img src="https://randomuser.me/api/portraits/men/76.jpg" alt="Channel" class="h-full w-full object-cover">
+                    </div>
+                    <h3 class="font-medium text-gray-900">Auto Clinic</h3>
+                    <p class="text-gray-500 text-sm">1.8M עוקבים</p>
+                </div>
+                
+                <!-- Channel 6 -->
+                <div class="bg-white p-4 rounded-xl shadow-sm text-center hover:shadow-md transition duration-300">
+                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Channel" class="h-full w-full object-cover">
+                    </div>
+                    <h3 class="font-medium text-gray-900">Mechanic Pro</h3>
+                    <p class="text-gray-500 text-sm">3.1M עוקבים</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="bg-gray-100 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="lg:flex lg:items-center lg:justify-between bg-white rounded-xl p-8 shadow-sm">
+                <div class="lg:w-0 lg:flex-1">
+                    <h2 class="text-2xl font-extrabold text-gray-900">הישארו מעודכנים עם סרטוני הרכב האחרונים</h2>
+                    <p class="mt-3 max-w-3xl text-gray-600">
+                        הירשמו לניוזלטר שלנו וקבלו עדכונים שבועיים על סרטונים חדשים, תוכן בלעדי וכתבות מיוחדות.
+                    </p>
+                </div>
+                <div class="mt-8 lg:mt-0 lg:mr-8">
+                    <form class="sm:flex">
+                        <label for="email-address" class="sr-only">אימייל</label>
+                        <input id="email-address" name="email" type="email" autocomplete="email" required class="w-full px-5 py-3 border border-gray-300 shadow-sm placeholder-gray-500 focus:ring-blue-500 focus:border-blue-500 rounded-md" placeholder="הכנס את האימייל שלך">
+                        <div class="mt-3 rounded-md shadow sm:mt-0 sm:mr-3 sm:flex-shrink-0">
+                            <button type="submit" class="w-full flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                הרשמה
+                            </button>
+                        </div>
+                    </form>
+                    <p class="mt-3 text-sm text-gray-500">
+                        אנו מכבדים את הפרטיות שלך. קרא את
+                        <a href="#" class="font-medium text-blue-600 hover:text-blue-500">מדיניות הפרטיות</a> שלנו.
+                    </p>
+                </div>
             </div>
         </div>
     </div>
@@ -247,7 +862,119 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-    <script src="data.js"></script>
-    <script src="script.js"></script>
+    <script>
+        // Initialize Swiper
+        const swiper = new Swiper('.categories-swiper', {
+            slidesPerView: 'auto',
+            spaceBetween: 8,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            breakpoints: {
+                640: {
+                    spaceBetween: 12,
+                },
+                1024: {
+                    spaceBetween: 16,
+                }
+            }
+        });
+        
+        // Mobile menu toggle
+        const openMenuBtn = document.getElementById('open-menu');
+        const closeMenuBtn = document.getElementById('close-menu');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const backdrop = document.querySelector('.backdrop');
+        
+        openMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('open');
+            backdrop.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        closeMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+            backdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        
+        backdrop.addEventListener('click', () => {
+            mobileMenu.classList.remove('open');
+            backdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+        
+        // Category filter functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    categoryButtons.forEach(btn => {
+                        btn.classList.remove('active', 'bg-blue-500', 'text-white');
+                        btn.classList.add('bg-gray-100', 'text-gray-800');
+                    });
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active', 'bg-blue-500', 'text-white');
+                    this.classList.remove('bg-gray-100', 'text-gray-800');
+                    
+                    // In a real app, you would filter videos here based on the category
+                    console.log('Filtering by:', this.textContent.trim());
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    // In a real app, you would search videos here
+                    console.log('Searching for:', this.value);
+                }
+            });
+        });
+        
+        // Tag search functionality
+        function searchByTag(tag) {
+            console.log('Searching by tag:', tag);
+            // In a real app, you would filter videos by this tag
+            // For now, we'll just add it to the selected tags
+            addSelectedTag(tag);
+        }
+        
+        function addTagToSearch() {
+            const tagInput = document.getElementById('tag-search');
+            const tag = tagInput.value.trim();
+            
+            if (tag) {
+                addSelectedTag(tag);
+                tagInput.value = '';
+            }
+        }
+        
+        function addSelectedTag(tag) {
+            const selectedTagsContainer = document.getElementById('selected-tags');
+            
+            // Check if tag is already selected
+            const existingTags = Array.from(selectedTagsContainer.children).map(span => {
+                return span.textContent.trim().replace('×', '').trim();
+            });
+            
+            if (existingTags.includes(tag)) return;
+            
+            const tagElement = document.createElement('span');
+            tagElement.className = 'tag bg-blue-100 text-blue-800';
+            tagElement.innerHTML = `${tag} <i class="fas fa-times cursor-pointer hover:text-blue-600" onclick="removeTag(this)"></i>`;
+            
+            selectedTagsContainer.appendChild(tagElement);
+        }
+        
+        function removeTag(icon) {
+            const tagElement = icon.parentElement;
+            tagElement.remove();
+        }
+    </script>
 </body>
 </html>
