@@ -1,10 +1,10 @@
-// js/main.js
+/ js/main.js
 document.addEventListener('DOMContentLoaded', function() {
     // --- DOM Element Selectors ---
     const videoCardsContainer = document.getElementById('video-cards-container');
     const loadingPlaceholder = document.getElementById('loading-videos-placeholder');
     const noVideosFoundMessage = document.getElementById('no-videos-found');
-    const categoriesWrapper = document.getElementById('categories-wrapper'); // If loading categories dynamically
+    // const categoriesWrapper = document.getElementById('categories-wrapper'); // Keep if categories are dynamic
     const popularTagsContainer = document.getElementById('popular-tags-container');
     const tagSearchInput = document.getElementById('tag-search-input');
     const customTagForm = document.getElementById('custom-tag-form');
@@ -16,22 +16,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const desktopSearchForm = document.getElementById('desktop-search-form');
     const mobileSearchForm = document.getElementById('mobile-search-form');
 
-    let allVideos = []; // To store all videos fetched from JSON
+    let allVideos = [];
     let currentFilters = {
         category: 'all',
         tags: [],
         searchTerm: ''
     };
+    const MAX_POPULAR_TAGS = 20; // הגבל את מספר התגיות הפופולריות שיוצגו
 
     // --- Initialization ---
     initializePage();
 
     async function initializePage() {
         setupEventListeners();
-        await loadVideos();
-        // loadCategories(); // Optional: if categories are also dynamic
-        // loadPopularTags(); // Optional: if popular tags are dynamic
-        renderVideos(); // Initial render of all videos
+        await loadVideos(); // חשוב לטעון את הסרטונים לפני טעינת התגיות
+        loadPopularTags();  // טען תגיות פופולריות מהנתונים
+        renderVideos();
         initializeSwiper();
         updateFooterYear();
     }
@@ -39,24 +39,68 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Data Loading ---
     async function loadVideos() {
         try {
-            const response = await fetch('data/videos.json');
+            // ודא שהנתיב לקובץ ה-JSON נכון
+            const response = await fetch('../data/videos.json'); // שינוי נתיב אם הקובץ בתיקיית data
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw new Error(`HTTP error! status: ${response.status}, while fetching videos.json`);
             }
             allVideos = await response.json();
             console.log('Videos loaded:', allVideos.length);
             if (loadingPlaceholder) loadingPlaceholder.style.display = 'none';
         } catch (error) {
             console.error("Could not load videos:", error);
-            if (loadingPlaceholder) loadingPlaceholder.textContent = 'שגיאה בטעינת הסרטונים.';
-            // Potentially display a more user-friendly error message on the page
+            if (loadingPlaceholder) loadingPlaceholder.textContent = 'שגיאה בטעינת הסרטונים. בדוק את ה-console.';
         }
     }
 
+    function loadPopularTags() {
+        if (!popularTagsContainer || allVideos.length === 0) return;
+
+        const tagCounts = {};
+        allVideos.forEach(video => {
+            video.tags.forEach(tag => {
+                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+            });
+        });
+
+        const sortedTags = Object.entries(tagCounts)
+            .sort(([,a],[,b]) => b - a) // Sort by count descending
+            .slice(0, MAX_POPULAR_TAGS) // Take top N tags
+            .map(([tag]) => tag); // Get just the tag name
+
+        popularTagsContainer.innerHTML = ''; // Clear existing static tags
+        sortedTags.forEach(tag => {
+            const tagElement = document.createElement('button'); // Changed to button for accessibility
+            tagElement.className = 'tag focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-1';
+            tagElement.dataset.tagValue = tag;
+            // מציאת אייקון מתאים יכולה להיות מורכבת כאן, נשאיר פשוט לעת עתה
+            // או שתשמור מילון של תגיות ואייקונים
+            const iconClass = getIconForTag(tag); // פונקציית עזר (דוגמה)
+            tagElement.innerHTML = `<i class="fas ${iconClass} ml-1"></i> ${escapeHTML(tag)}`;
+            popularTagsContainer.appendChild(tagElement);
+        });
+    }
+
+    function getIconForTag(tag) {
+        // מילון דוגמה. תצטרך להרחיב אותו.
+        const tagIcons = {
+            "מנוע": "fa-cogs",
+            "בלמים": "fa-hand-paper",
+            "חשמל": "fa-bolt",
+            "טסלה": "fa-car-battery", // Just an example
+            // ... הוסף עוד מיפויים
+        };
+        return tagIcons[tag] || "fa-tag"; // Default icon
+    }
+
+
     // --- Rendering Functions ---
     function renderVideos() {
-        if (!videoCardsContainer) return;
-        videoCardsContainer.innerHTML = ''; // Clear previous videos
+        if (!videoCardsContainer) {
+            console.error("videoCardsContainer not found");
+            return;
+        }
+        videoCardsContainer.innerHTML = '';
 
         const filteredVideos = getFilteredVideos();
 
@@ -74,26 +118,29 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function createVideoCardElement(video) {
         const article = document.createElement('article');
-        article.className = 'video-card group bg-white rounded-xl shadow-lg overflow-hidden flex flex-col';
-        // Add data attributes for filtering
+        article.className = 'video-card group bg-white rounded-xl shadow-lg overflow-hidden flex flex-col transition-all duration-300 hover:shadow-2xl hover:-translate-y-1';
         article.dataset.category = video.category;
         article.dataset.tags = video.tags.join(',');
 
-
-        // Sanitize inputs to prevent XSS if data comes from untrusted sources
-        // For this example, assuming data/videos.json is trusted.
-        // In a real app with user-generated content, use a sanitization library.
         const sanitizedTitle = escapeHTML(video.title);
         const sanitizedChannelName = escapeHTML(video.channelName);
         const sanitizedDescription = escapeHTML(video.description);
 
+        // לקבלת תמונה ממוזערת איכותית יותר מיוטיוב
+        const thumbnailUrl = `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
+
+
         article.innerHTML = `
-            <div class="video-container">
-                <iframe loading="lazy" src="https://www.youtube.com/embed/${video.id}" title="${sanitizedTitle}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            <div class="video-container aspect-video bg-black group"> <!-- aspect-video עוזר לשמור על יחס גובה-רוחב -->
+                <img src="${thumbnailUrl}" alt="תמונה ממוזערת עבור ${sanitizedTitle}" class="absolute top-0 left-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-110">
+                <button aria-label="נגן את הסרטון ${sanitizedTitle}" data-video-id="${video.id}" class="play-video-button absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                    <i class="fas fa-play-circle fa-5x text-white text-opacity-80"></i>
+                </button>
+                <iframe class="hidden absolute top-0 left-0 w-full h-full" loading="lazy" title="${sanitizedTitle}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div class="p-5 flex flex-col flex-grow">
                 <div class="flex items-start mb-3">
-                    <img src="${escapeHTML(video.channelImage || 'assets/images/default-channel.png')}" alt="Channel: ${sanitizedChannelName}" class="flex-shrink-0 h-10 w-10 rounded-full object-cover mr-3 border">
+                    <img src="${escapeHTML(video.channelImage || 'assets/images/default-channel.png')}" alt="ערוץ: ${sanitizedChannelName}" class="flex-shrink-0 h-10 w-10 rounded-full object-cover mr-3 border">
                     <div>
                         <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600 transition-colors leading-tight">
                             <a href="https://www.youtube.com/watch?v=${video.id}" target="_blank" rel="noopener noreferrer" class="hover:underline focus:outline-none focus:ring-1 focus:ring-purple-500 rounded">
@@ -103,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <p class="text-gray-600 text-sm">${sanitizedChannelName}</p>
                     </div>
                 </div>
-                <p class="text-gray-700 text-sm mb-3 leading-relaxed flex-grow">${sanitizedDescription}</p>
+                <p class="text-gray-700 text-sm mb-3 leading-relaxed flex-grow line-clamp-3">${sanitizedDescription}</p> <!-- line-clamp-3 לקיצור טקסט ארוך -->
                 <div class="flex flex-wrap mb-3 gap-1">
                     ${video.tags.map(tag => `<span class="tag !text-xs !py-0.5 !px-2 bg-purple-100 text-purple-700">${escapeHTML(tag)}</span>`).join('')}
                 </div>
@@ -114,8 +161,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             </div>
         `;
+        // הוספת event listener לכפתור הנגינה
+        const playButton = article.querySelector('.play-video-button');
+        if(playButton) {
+            playButton.addEventListener('click', handlePlayVideo);
+        }
         return article;
     }
+
+    function handlePlayVideo(event) {
+        const button = event.currentTarget;
+        const videoId = button.dataset.videoId;
+        const videoCard = button.closest('.video-card');
+        const iframe = videoCard.querySelector('iframe');
+        const thumbnail = videoCard.querySelector('.video-container img');
+
+        if (iframe && videoId) {
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`; // הוספת autoplay
+            iframe.classList.remove('hidden');
+            if (thumbnail) thumbnail.classList.add('hidden'); // הסתר תמונה ממוזערת
+            button.classList.add('hidden'); // הסתר כפתור נגינה
+        }
+    }
+
 
     function renderSelectedTagsChips() {
         if (!selectedTagsContainer) return;
@@ -143,18 +211,20 @@ document.addEventListener('DOMContentLoaded', function() {
         return allVideos.filter(video => {
             const categoryMatch = currentFilters.category === 'all' || video.category === currentFilters.category;
             const tagsMatch = currentFilters.tags.length === 0 || currentFilters.tags.every(tag => video.tags.includes(tag));
-            const searchTermMatch = currentFilters.searchTerm === '' ||
-                video.title.toLowerCase().includes(currentFilters.searchTerm.toLowerCase()) ||
-                video.description.toLowerCase().includes(currentFilters.searchTerm.toLowerCase()) ||
-                video.tags.some(tag => tag.toLowerCase().includes(currentFilters.searchTerm.toLowerCase())) ||
-                video.channelName.toLowerCase().includes(currentFilters.searchTerm.toLowerCase());
-
+            
+            let searchTermMatch = true;
+            if (currentFilters.searchTerm !== '') {
+                const term = currentFilters.searchTerm.toLowerCase();
+                searchTermMatch = video.title.toLowerCase().includes(term) ||
+                    video.description.toLowerCase().includes(term) ||
+                    video.tags.some(tag => tag.toLowerCase().includes(term)) ||
+                    video.channelName.toLowerCase().includes(term);
+            }
             return categoryMatch && tagsMatch && searchTermMatch;
         });
     }
 
     function updateFiltersAndRender() {
-        // This function can be called after any filter change
         renderVideos();
     }
 
@@ -165,18 +235,30 @@ document.addEventListener('DOMContentLoaded', function() {
         if (closeMenuBtn) closeMenuBtn.addEventListener('click', closeMobileMenu);
         if (backdrop) backdrop.addEventListener('click', closeMobileMenu);
         document.querySelectorAll('#mobile-menu .nav-link').forEach(link => {
-            link.addEventListener('click', () => setTimeout(closeMobileMenu, 150));
-        });
-
-        // Category Buttons (assuming they are static in HTML for now)
-        document.querySelectorAll('.categories-swiper .category-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                document.querySelectorAll('.categories-swiper .category-btn').forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                currentFilters.category = this.dataset.category;
-                updateFiltersAndRender();
+            link.addEventListener('click', () => {
+                const targetId = link.getAttribute('href');
+                if (targetId && targetId.startsWith('#')) {
+                    // Close menu slightly after to allow scroll to start
+                    setTimeout(closeMobileMenu, 150);
+                } else {
+                    closeMobileMenu(); // For external links or non-hash links
+                }
             });
         });
+
+        // Category Buttons
+        const categoryButtonsContainer = document.querySelector('.categories-swiper .swiper-wrapper');
+        if (categoryButtonsContainer) {
+            categoryButtonsContainer.addEventListener('click', function(event) {
+                const button = event.target.closest('.category-btn');
+                if (button) {
+                    document.querySelectorAll('.categories-swiper .category-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    currentFilters.category = button.dataset.category;
+                    updateFiltersAndRender();
+                }
+            });
+        }
         
         // Popular Tags (Event Delegation)
         if (popularTagsContainer) {
@@ -195,14 +277,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 const newTagName = tagSearchInput.value.trim();
                 if (newTagName) {
                     if (!currentFilters.tags.includes(newTagName)) {
-                        // Optional: Add to popular tags visually if not already there
-                        // addCustomTagToPopularDisplay(newTagName); 
-                        const newPopularTag = popularTagsContainer ? popularTagsContainer.querySelector(`.tag[data-tag-value="${newTagName}"]`) : null;
-                        toggleTagSelection(newTagName, newPopularTag);
-                    } else {
-                        // If tag already selected, maybe just highlight it or do nothing
-                        const existingPopularTag = popularTagsContainer ? popularTagsContainer.querySelector(`.tag.active-search-tag[data-tag-value="${newTagName}"]`) : null;
-                        if (existingPopularTag) existingPopularTag.focus(); // Example: focus if already selected
+                        // If you want to add the new tag to the popular list visually (temporary):
+                        // if (!popularTagsContainer.querySelector(`.tag[data-tag-value="${newTagName}"]`)) {
+                        //     const newPopularTagElement = document.createElement('button');
+                        //     newPopularTagElement.className = 'tag focus:outline-none focus:ring-2 focus:ring-purple-400 focus:ring-offset-1';
+                        //     newPopularTagElement.dataset.tagValue = newTagName;
+                        //     newPopularTagElement.innerHTML = `<i class="fas fa-tag ml-1"></i> ${escapeHTML(newTagName)}`;
+                        //     popularTagsContainer.appendChild(newPopularTagElement);
+                        //     toggleTagSelection(newTagName, newPopularTagElement);
+                        // } else {
+                        //     const existingTagEl = popularTagsContainer.querySelector(`.tag[data-tag-value="${newTagName}"]`);
+                        //     toggleTagSelection(newTagName, existingTagEl);
+                        // }
+                        toggleTagSelection(newTagName, popularTagsContainer.querySelector(`.tag[data-tag-value="${newTagName}"]`));
                     }
                 }
                 tagSearchInput.value = '';
@@ -210,39 +297,42 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Search Forms
-        if (desktopSearchForm) {
-            desktopSearchForm.addEventListener('submit', handleSearchSubmit);
-        }
-        if (mobileSearchForm) {
-            mobileSearchForm.addEventListener('submit', handleSearchSubmit);
-        }
-        // Optional: live search on input
         const desktopSearchInput = document.getElementById('desktop-search-input');
         const mobileSearchInput = document.getElementById('mobile-search-input');
-        if(desktopSearchInput) desktopSearchInput.addEventListener('input', handleSearchInput);
-        if(mobileSearchInput) mobileSearchInput.addEventListener('input', handleSearchInput);
+
+        if (desktopSearchForm) desktopSearchForm.addEventListener('submit', (e) => handleSearchSubmit(e, desktopSearchInput));
+        if (mobileSearchForm) mobileSearchForm.addEventListener('submit', (e) => handleSearchSubmit(e, mobileSearchInput));
+        
+        if(desktopSearchInput) desktopSearchInput.addEventListener('input', (e) => handleSearchInputDebounced(e.target.value));
+        if(mobileSearchInput) mobileSearchInput.addEventListener('input', (e) => handleSearchInputDebounced(e.target.value));
+
 
         // Magic Sparkle (Mouse Move)
         document.addEventListener('mousemove', handleSparkleEffect);
+
+        // Update active nav link on scroll
+        // (This is a more complex feature, consider IntersectionObserver for accuracy)
+        // For now, keep it simple with click-based active state for main nav
+        const mainNavLinks = document.querySelectorAll('header nav .nav-link');
+        mainNavLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                mainNavLinks.forEach(lnk => lnk.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
     }
 
     // --- Event Handlers ---
     function openMobileMenu() {
-        if (mobileMenu) mobileMenu.classList.remove('translate-x-full');
-        if (backdrop) {
-            backdrop.classList.remove('invisible', 'opacity-0');
-            backdrop.classList.add('visible', 'opacity-100');
-        }
+        if (mobileMenu) mobileMenu.classList.add('open'); // Uses CSS transform
+        if (backdrop) backdrop.classList.add('active'); // Uses CSS opacity/visibility
         document.body.style.overflow = 'hidden';
         if (openMenuBtn) openMenuBtn.setAttribute('aria-expanded', 'true');
     }
 
     function closeMobileMenu() {
-        if (mobileMenu) mobileMenu.classList.add('translate-x-full');
-        if (backdrop) {
-            backdrop.classList.remove('visible', 'opacity-100');
-            backdrop.classList.add('invisible', 'opacity-0');
-        }
+        if (mobileMenu) mobileMenu.classList.remove('open');
+        if (backdrop) backdrop.classList.remove('active');
         document.body.style.overflow = '';
         if (openMenuBtn) openMenuBtn.setAttribute('aria-expanded', 'false');
     }
@@ -261,24 +351,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     let searchDebounceTimer;
-    function handleSearchInput(event) {
-        const searchTerm = event.target.value;
+    function handleSearchInputDebounced(searchTerm) {
         clearTimeout(searchDebounceTimer);
         searchDebounceTimer = setTimeout(() => {
-            currentFilters.searchTerm = searchTerm;
+            currentFilters.searchTerm = searchTerm.trim();
             updateFiltersAndRender();
-        }, 300); // Debounce for 300ms
+        }, 300);
     }
 
-    function handleSearchSubmit(event) {
+    function handleSearchSubmit(event, searchInputElement) {
         event.preventDefault();
-        const searchInput = event.target.querySelector('input[type="search"]');
-        currentFilters.searchTerm = searchInput.value.trim();
+        currentFilters.searchTerm = searchInputElement.value.trim();
         updateFiltersAndRender();
     }
     
     function handleSparkleEffect(e) {
-        if (Math.random() < 0.05) { // Reduced frequency
+        if (Math.random() < 0.03) { // Further reduced frequency
             if (e.target.closest('button, input, a, .swiper-slide, .tag, textarea, select, iframe')) {
                 return;
             }
@@ -293,24 +381,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Utility Functions ---
     function initializeSwiper() {
-        const categoriesSwiper = new Swiper('.categories-swiper', {
-            slidesPerView: 'auto',
-            spaceBetween: 10,
-            pagination: { el: '.swiper-pagination', clickable: true },
-            breakpoints: { 640: { spaceBetween: 12 }, 1024: { spaceBetween: 16 } }
-        });
+        // ודא שה-Swiper מאותחל רק אם האלמנט קיים
+        if (document.querySelector('.categories-swiper')) {
+            const categoriesSwiper = new Swiper('.categories-swiper', {
+                slidesPerView: 'auto',
+                spaceBetween: 10,
+                pagination: { el: '.swiper-pagination', clickable: true },
+                breakpoints: { 640: { spaceBetween: 12 }, 1024: { spaceBetween: 16 } }
+            });
+        }
     }
 
     function updateFooterYear() {
-        const yearSpan = document.getElementById('current-year-footer');
+        const yearSpan = document.getElementById('current-year-footer'); // Changed ID to be specific
         if (yearSpan) yearSpan.textContent = new Date().getFullYear();
     }
 
     function escapeHTML(str) {
-        if (typeof str !== 'string') return str; // Return non-strings as is
-        const div = document.createElement('div');
-        div.appendChild(document.createTextNode(str));
-        return div.innerHTML;
+        if (typeof str !== 'string') return str;
+        const p = document.createElement('p');
+        p.appendChild(document.createTextNode(str));
+        return p.innerHTML;
     }
 
     console.log("CAR-טיב: Scripts loaded and DOM fully parsed.");
