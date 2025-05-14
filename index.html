@@ -5,16 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAR-טיב - סרטוני רכבים כשרים</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> <!-- Updated to latest FontAwesome -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
         
         :root {
-            --primary: #7c3aed;
-            --primary-dark: #6d28d9;
-            --dark: #1e293b;
-            --light: #f8fafc;
+            --primary: #7c3aed; /* סגול ראשי */
+            --primary-dark: #6d28d9; /* סגול ראשי כהה */
+            --dark: #1e293b; /* טקסט כהה / רקעים כהים */
+            --light: #f8fafc; /* רקע בהיר */
+            --secondary: #ede9fe; /* סגול בהיר משני */
+            --border-color: #e2e8f0; /* צבע גבולות עדין */
         }
         
         html {
@@ -23,8 +25,9 @@
 
         body {
             font-family: 'Rubik', sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6; /* שיפור קריאות */
         }
         
         .hero-gradient {
@@ -32,8 +35,8 @@
         }
         
         .video-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 16px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 1rem; /* 16px */
             overflow: hidden;
             background: white;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
@@ -45,7 +48,7 @@
             box-shadow: 0 25px 50px -12px rgba(124, 58, 237, 0.15);
         }
         
-        .video-card:before {
+        .video-card::before { /* שימוש ב-::before במקום :before מודרני יותר */
             content: '';
             position: absolute;
             top: 0;
@@ -56,39 +59,43 @@
             opacity: 0;
             transition: opacity 0.3s ease;
             z-index: 1;
+            pointer-events: none; /* כדי לא להפריע לאינטראקציה עם האלמנטים מתחת */
         }
         
-        .video-card:hover:before {
+        .video-card:hover::before {
             opacity: 1;
         }
         
         .category-btn {
-            transition: all 0.2s ease;
-            border-radius: 24px;
+            transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            border-radius: 1.5rem; /* 24px */
             font-weight: 500;
             font-size: 0.875rem;
             padding: 0.5rem 1rem;
-            background-color: #f5f3ff;
-            color: #7c3aed;
+            background-color: var(--secondary);
+            color: var(--primary);
             border: 1px solid #ddd6fe;
         }
         
         .category-btn.active {
             background-color: var(--primary);
             color: white;
+            border-color: var(--primary); /* לוודא שהגבול לא נעלם */
             box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.2), 0 2px 4px -1px rgba(124, 58, 237, 0.1);
         }
         
         .category-btn:hover:not(.active) {
-            background-color: #ede9fe;
+            background-color: #ddd6fe; /* קצת יותר כהה מ-secondary */
+            border-color: #c4b5fd;
         }
         
         .video-container {
             position: relative;
-            padding-bottom: 56.25%;
+            padding-bottom: 56.25%; /* יחס 16:9 */
             height: 0;
             overflow: hidden;
-            background: #000;
+            background: #000; /* רקע בזמן טעינת ה-iframe */
+            border-radius: 0.5rem 0.5rem 0 0; /* עיגול פינות עליונות אם יש צורך */
         }
         
         .video-container iframe {
@@ -105,12 +112,14 @@
             padding: 0.5rem 0;
             margin: 0 0.75rem;
             font-weight: 500;
-            color: #64748b;
-            transition: all 0.2s ease;
+            color: #64748b; /* אפור-כחלחל */
+            transition: color 0.2s ease;
         }
         
-        .nav-link:hover {
+        .nav-link:hover,
+        .nav-link:focus { /* הוספת :focus לנגישות */
             color: var(--primary);
+            outline: none; /* הסרת קו מתאר דיפולטיבי, הוסף חלופה אם צריך */
         }
         
         .nav-link.active {
@@ -118,22 +127,23 @@
             font-weight: 600;
         }
         
-        .nav-link.active:after {
+        .nav-link.active::after { /* שימוש ב-::after */
             content: '';
             position: absolute;
-            bottom: 0;
+            bottom: -2px; /* מיקום הקו קצת מתחת לטקסט */
             right: 0;
             width: 100%;
             height: 2px;
             background-color: var(--primary);
+            border-radius: 1px; /* עיגול קצוות הקו */
         }
         
         .search-input {
-            transition: all 0.2s ease;
-            border-radius: 12px;
-            padding: 0.75rem 2.5rem 0.75rem 1rem; /* Adjusted padding for consistency */
-            border: 1px solid #e2e8f0;
-            background-color: #f8fafc;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            border-radius: 0.75rem; /* 12px */
+            padding: 0.75rem 2.5rem 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            background-color: var(--light);
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
         
@@ -147,9 +157,9 @@
         .tag {
             display: inline-flex;
             align-items: center;
-            transition: all 0.2s ease;
-            background-color: #ede9fe;
-            color: #5b21b6;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            background-color: var(--secondary);
+            color: #5b21b6; /* סגול עמוק יותר */
             padding: 0.375rem 0.875rem;
             border-radius: 9999px;
             font-size: 0.75rem;
@@ -157,12 +167,19 @@
             margin-left: 0.5rem;
             margin-bottom: 0.5rem;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            cursor: pointer; /* להבהיר שניתן ללחוץ */
         }
         
-        .tag:hover {
+        .tag:hover,
+        .tag.selected-tag { /* הוספת class לתגית שנבחרה */
             background-color: #ddd6fe;
-            cursor: pointer;
             transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.07);
+        }
+
+        .tag.active-search-tag { /* סימון תגית שנבחרה לחיפוש */
+             background-color: var(--primary);
+             color: white;
         }
         
         .tag i {
@@ -171,12 +188,12 @@
         }
         
         .tag-input {
-            transition: all 0.2s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
             border: 1px dashed #cbd5e1;
             padding: 0.75rem 1rem;
-            border-radius: 12px;
+            border-radius: 0.75rem; /* 12px */
             width: 100%;
-            background-color: #f8fafc;
+            background-color: var(--light);
         }
         
         .tag-input:focus {
@@ -187,42 +204,47 @@
             border-style: solid;
         }
         
+        .btn-primary, .btn-secondary {
+            font-weight: 500;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem; /* 12px */
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            display: inline-flex; /* כדי שה-icon והטקסט יהיו באותה שורה ויפה */
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem; /* רווח בין האייקון לטקסט */
+        }
+
         .btn-primary {
             background-color: var(--primary);
             color: white;
-            font-weight: 500;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            transition: all 0.2s ease;
             box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.2), 0 2px 4px -1px rgba(124, 58, 237, 0.1);
         }
         
-        .btn-primary:hover {
+        .btn-primary:hover, .btn-primary:focus {
             background-color: var(--primary-dark);
             transform: translateY(-2px);
             box-shadow: 0 10px 15px -3px rgba(124, 58, 237, 0.2), 0 4px 6px -2px rgba(124, 58, 237, 0.1);
+            outline: none;
         }
         
         .btn-secondary {
             background-color: white;
             color: var(--primary);
-            font-weight: 500;
-            padding: 0.75rem 1.5rem;
-            border-radius: 12px;
-            transition: all 0.2s ease;
             border: 1px solid var(--primary);
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
         
-        .btn-secondary:hover {
-            background-color: #f5f3ff;
+        .btn-secondary:hover, .btn-secondary:focus {
+            background-color: #f5f3ff; /* סגול בהיר מאוד */
             transform: translateY(-2px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            outline: none;
         }
         
         .swiper {
             width: 100%;
-            padding: 1.5rem 0 2.5rem !important;
+            padding: 1.5rem 0 2.5rem !important; /* חשוב לשמור על !important אם יש התנגשויות */
         }
         
         .swiper-slide {
@@ -240,7 +262,7 @@
         
         .mobile-menu {
             transform: translateX(100%);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease-in-out; /* שינוי קל ב-easing */
         }
         
         .mobile-menu.open {
@@ -250,7 +272,7 @@
         .backdrop {
             opacity: 0;
             visibility: hidden;
-            transition: all 0.3s ease;
+            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
         }
         
         .backdrop.active {
@@ -259,10 +281,11 @@
         }
         
         .channel-card {
-            transition: all 0.3s ease;
-            border-radius: 16px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 1rem; /* 16px */
             overflow: hidden;
             position: relative;
+            background-color: white; /* רקע לכרטיס */
         }
         
         .channel-card:hover {
@@ -270,7 +293,7 @@
             box-shadow: 0 20px 25px -5px rgba(124, 58, 237, 0.1), 0 10px 10px -5px rgba(124, 58, 237, 0.04);
         }
         
-        .channel-card:before {
+        .channel-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -280,19 +303,23 @@
             background: linear-gradient(to bottom, transparent 0%, rgba(124, 58, 237, 0.1) 100%);
             opacity: 0;
             transition: opacity 0.3s ease;
+            pointer-events: none;
         }
         
-        .channel-card:hover:before {
+        .channel-card:hover::before {
             opacity: 1;
         }
         
         @media (max-width: 768px) {
             .hero-heading {
-                font-size: 2.25rem !important;
+                font-size: 2.25rem !important; /* 36px */
+            }
+            .nav-link.active::after { /* הסרת קו תחתון בניווט במובייל, תלוי העדפה */
+                 display: none;
             }
         }
         
-        /* Magic sparkle effect */
+        /* Magic sparkle effect - ללא שינוי משמעותי, נראה טוב */
         .magic-sparkle {
             position: absolute;
             width: 8px;
@@ -300,124 +327,123 @@
             background-color: rgba(255, 255, 255, 0.8);
             border-radius: 50%;
             pointer-events: none;
-            z-index: 10;
+            z-index: 9999; /* לוודא שהוא מעל הכל */
             animation: sparkle 1s ease-out forwards;
         }
         
         @keyframes sparkle {
-            0% {
-                transform: scale(0);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(1.5);
-                opacity: 0;
-            }
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
         }
         
-        /* Floating animation */
+        /* Floating animation - ללא שינוי, נראה טוב */
         @keyframes float {
-            0% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-10px);
-            }
-            100% {
-                transform: translateY(0px);
-            }
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
         }
         
         .floating {
             animation: float 6s ease-in-out infinite;
         }
         
-        /* Pulse animation */
+        /* Pulse animation - ללא שינוי, נראה טוב */
         @keyframes pulse {
-            0% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
         
-        .pulse:hover {
+        .pulse:hover, .pulse:focus { /* הוספת focus */
             animation: pulse 2s infinite;
+            outline: none;
         }
+
+        /* Utility class for screen readers only */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
     </style>
 </head>
-<body class="relative">
+<body class="relative bg-gray-50"> <!-- שינוי קל ברקע הכללי */ -->
     <!-- Mobile Menu Backdrop -->
-    <div class="backdrop fixed inset-0 bg-black bg-opacity-50 z-40"></div>
+    <div id="mobile-menu-backdrop" class="backdrop fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"></div>
     
     <!-- Mobile Menu -->
-    <div class="mobile-menu fixed inset-y-0 right-0 w-64 bg-white shadow-xl z-50 p-4">
+    <div id="mobile-menu" class="mobile-menu fixed inset-y-0 right-0 w-64 bg-white shadow-xl z-50 p-4 md:hidden">
         <div class="flex justify-between items-center mb-8">
-            <div class="flex items-center">
+            <a href="#" class="flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 rounded">
                 <i class="fas fa-car text-purple-600 text-xl ml-2"></i>
                 <span class="text-lg font-bold">CAR-טיב</span>
-            </div>
-            <button id="close-menu" class="text-gray-500 hover:text-gray-700">
+            </a>
+            <button id="close-menu" aria-label="סגירת תפריט" class="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded">
                 <i class="fas fa-times text-xl"></i>
             </button>
         </div>
-        <nav class="flex flex-col space-y-4">
-            <a href="#" class="nav-link active text-gray-900">בית</a>
-            <a href="#categories-swiper-container" class="nav-link text-gray-700">קטגוריות</a>
-            <a href="#featured-channels-section" class="nav-link text-gray-700">ערוצים</a>
-            <a href="#about-section" class="nav-link text-gray-700">אודות</a>
-            <a href="#forum-inspiration-section" class="nav-link text-gray-700">שאלות והתיעצות</a>
-            <a href="#contact-section" class="nav-link text-gray-700">צור קשר</a>
-            <a href="#site-footer" class="nav-link text-gray-700">מפת האתר</a>
+        <nav class="flex flex-col space-y-1"> <!-- הקטנת רווחים */ -->
+            <a href="#" class="nav-link active text-gray-900 py-2 px-3 hover:bg-purple-50 rounded-md">בית</a>
+            <a href="#categories-swiper-container" class="nav-link text-gray-700 py-2 px-3 hover:bg-purple-50 rounded-md">קטגוריות</a>
+            <a href="#featured-channels-section" class="nav-link text-gray-700 py-2 px-3 hover:bg-purple-50 rounded-md">ערוצים</a>
+            <a href="#about-section" class="nav-link text-gray-700 py-2 px-3 hover:bg-purple-50 rounded-md">אודות</a>
+            <a href="#forum-inspiration-section" class="nav-link text-gray-700 py-2 px-3 hover:bg-purple-50 rounded-md">שאלות והתייעצות</a>
+            <a href="#contact-section" class="nav-link text-gray-700 py-2 px-3 hover:bg-purple-50 rounded-md">צור קשר</a>
+            <a href="#site-footer" class="nav-link text-gray-700 py-2 px-3 hover:bg-purple-50 rounded-md">מפת האתר</a>
         </nav>
     </div>
     
     <!-- Navigation -->
-    <nav class="bg-white shadow-sm sticky top-0 z-30">
+    <header class="bg-white shadow-sm sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex items-center">
-                    <div class="flex-shrink-0 flex items-center">
+                    <a href="#" class="flex-shrink-0 flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 rounded">
                         <i class="fas fa-car text-purple-600 text-2xl ml-2"></i>
                         <span class="text-xl font-bold text-gray-900 hidden sm:block">CAR-טיב</span>
-                    </div>
-                    <div class="hidden md:mr-10 md:flex md:space-x-8">
-                        <a href="#" class="nav-link active text-gray-900">בית</a>
+                        <span class="sr-only sm:hidden">CAR-טיב - דף הבית</span>
+                    </a>
+                    <nav class="hidden md:mr-10 md:flex md:space-x-8">
+                        <a href="#" class="nav-link active">בית</a>
                         <a href="#categories-swiper-container" class="nav-link">קטגוריות</a>
                         <a href="#featured-channels-section" class="nav-link">ערוצים</a>
                         <a href="#about-section" class="nav-link">אודות</a>
-                        <a href="#forum-inspiration-section" class="nav-link">שאלות והתיעצות</a>
+                        <a href="#forum-inspiration-section" class="nav-link">שאלות והתייעצות</a>
                         <a href="#contact-section" class="nav-link">צור קשר</a>
                         <a href="#site-footer" class="nav-link">מפת האתר</a>
-                    </div>
+                    </nav>
                 </div>
                 <div class="flex items-center">
                     <div class="hidden md:block flex-shrink-0 mr-4">
-                        <div class="relative rounded-md shadow-sm">
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <i class="fas fa-search text-gray-400"></i>
+                        <form role="search" onsubmit="performSearch(event)">
+                            <div class="relative rounded-md shadow-sm">
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-search text-gray-400"></i>
+                                </div>
+                                <input type="search" id="desktop-search-input" class="search-input block w-64 pr-10 pl-3 py-2 text-sm" placeholder="חיפוש סרטוני רכב...">
                             </div>
-                            <input type="text" class="search-input block w-64 pr-10 pl-3 py-2 text-sm" placeholder="חיפוש סרטוני רכב...">
-                        </div>
+                        </form>
                     </div>
-                    <button id="open-menu" class="md:hidden text-gray-500 hover:text-gray-700">
+                    <button id="open-menu" aria-label="פתיחת תפריט" class="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
             </div>
         </div>
-    </nav>
+    </header>
 
     <!-- Hero Section -->
-    <div class="hero-gradient text-white relative overflow-hidden">
-        <!-- Floating elements -->
-        <div class="absolute top-1/4 left-1/4 w-16 h-16 rounded-full bg-purple-400 opacity-20 filter blur-xl floating"></div>
-        <div class="absolute bottom-1/3 right-1/3 w-24 h-24 rounded-full bg-indigo-400 opacity-20 filter blur-xl floating" style="animation-delay: 2s;"></div>
-        <div class="absolute top-1/3 right-1/4 w-20 h-20 rounded-full bg-pink-400 opacity-20 filter blur-xl floating" style="animation-delay: 4s;"></div>
+    <section class="hero-gradient text-white relative overflow-hidden">
+        <div class="absolute top-1/4 left-1/4 w-16 h-16 rounded-full bg-purple-400 opacity-20 filter blur-xl floating" aria-hidden="true"></div>
+        <div class="absolute bottom-1/3 right-1/3 w-24 h-24 rounded-full bg-indigo-400 opacity-20 filter blur-xl floating" style="animation-delay: 2s;" aria-hidden="true"></div>
+        <div class="absolute top-1/3 right-1/4 w-20 h-20 rounded-full bg-pink-400 opacity-20 filter blur-xl floating" style="animation-delay: 4s;" aria-hidden="true"></div>
         
         <div class="max-w-7xl mx-auto py-20 px-4 sm:py-24 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center">
@@ -426,632 +452,568 @@
                     <span class="block text-purple-200">כשרים</span>
                 </h1>
                 <p class="mt-6 max-w-lg mx-auto text-xl opacity-90">
-                   .מאגר ענק של סרטוני רכבים כשרים, שנבדקו ואושרו בנטפרי
+                   מאגר ענק של סרטוני רכבים כשרים, שנבדקו ואושרו בנטפרי.
                 </p>
-                <div class="mt-10 flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
-                    <a href="#" class="btn-secondary px-6 py-3 text-lg pulse inline-flex items-center justify-center">
-                        <i class="fas fa-play ml-2"></i> צפו עכשיו
+                <div class="mt-10 flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4 sm:space-x-reverse">
+                    <a href="#featured-videos-section" class="btn-secondary px-6 py-3 text-lg pulse">
+                        <i class="fas fa-play"></i> צפו עכשיו
                     </a>
-                    <a href="#about-section" class="btn-primary px-6 py-3 text-lg pulse inline-flex items-center justify-center">
-                        <i class="fas fa-info-circle ml-2"></i> אודות
+                    <a href="#about-section" class="btn-primary px-6 py-3 text-lg pulse">
+                        <i class="fas fa-info-circle"></i> אודות
                     </a>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Floating Search (Mobile) -->
-    <div class="md:hidden px-4 -mt-6 mb-8">
-        <div class="relative rounded-lg shadow-lg">
-            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <i class="fas fa-search text-gray-400"></i>
+    <div class="md:hidden px-4 -mt-8 mb-8 relative z-20"> <!-- ה-mt-8 כדי "להרים" אותו מעל ה-hero */ -->
+        <form role="search" onsubmit="performSearch(event)">
+            <div class="relative rounded-lg shadow-lg">
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <input type="search" id="mobile-search-input" class="search-input block w-full pr-10 pl-4 py-3 text-base" placeholder="חיפוש סרטוני רכב...">
             </div>
-            <input type="text" class="search-input block w-full pr-10 pl-4 py-3" placeholder="חיפוש סרטוני רכב...">
-        </div>
+        </form>
     </div>
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Categories Swiper -->
-        <div id="categories-swiper-container" class="mb-10">
+        <section id="categories-swiper-container" class="mb-12">
             <h2 class="text-2xl font-bold text-gray-900 mb-6">עיון לפי קטגוריה</h2>
             <div class="swiper categories-swiper">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <button class="category-btn active">הכל</button>
-                    </div>
-                    <div class="swiper-slide">
-                        <button class="category-btn">סקירת והשוואת רכב</button>
-                    </div>
-                    <div class="swiper-slide">
-                        <button class="category-btn">טיפולים שוטפים</button>
-                    </div>
-                    <div class="swiper-slide">
-                        <button class="category-btn">תיקון תקלות ובעיות</button>
-                    </div>
-                    <div class="swiper-slide">
-                        <button class="category-btn">מבנה הרכב ומערכותיו</button>
-                    </div>
-                    <div class="swiper-slide">
-                        <button class="category-btn">עשה זאת בעצמך</button>
-                    </div>
-                    <div class="swiper-slide">
-                        <button class="category-btn">תחזוקה מונעת</button>
-                    </div>
-                    <div class="swiper-slide">
-                        <button class="category-btn">תיעוד תאונות</button>
-                    </div>
-                    <div class="swiper-slide">
-                        <button class="category-btn">רכבי אספנות</button>
-                    </div>
+                    <div class="swiper-slide"><button class="category-btn active" data-category="all">הכל</button></div>
+                    <div class="swiper-slide"><button class="category-btn" data-category="review">סקירת והשוואת רכב</button></div>
+                    <div class="swiper-slide"><button class="category-btn" data-category="maintenance">טיפולים שוטפים</button></div>
+                    <div class="swiper-slide"><button class="category-btn" data-category="troubleshooting">תיקון תקלות ובעיות</button></div>
+                    <div class="swiper-slide"><button class="category-btn" data-category="systems">מבנה הרכב ומערכותיו</button></div>
+                    <div class="swiper-slide"><button class="category-btn" data-category="diy">עשה זאת בעצמך</button></div>
+                    <div class="swiper-slide"><button class="category-btn" data-category="preventive">תחזוקה מונעת</button></div>
+                    <div class="swiper-slide"><button class="category-btn" data-category="accidents">תיעוד תאונות</button></div>
+                    <div class="swiper-slide"><button class="category-btn" data-category="collectors">רכבי אספנות</button></div>
                 </div>
                 <div class="swiper-pagination"></div>
             </div>
-        </div>
+        </section>
 
         <!-- Tag Search -->
-        <div class="mb-10 bg-white p-6 rounded-xl shadow-sm border border-purple-50">
+        <section class="mb-12 bg-white p-6 rounded-xl shadow-sm border border-purple-50">
             <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
                 <i class="fas fa-tags text-purple-500 ml-2"></i> חיפוש לפי תגיות
             </h3>
-            <div class="flex flex-wrap mb-4" id="popular-tags">
-                <span class="tag" onclick="searchByTag('מנוע')"><i class="fas fa-cogs"></i> מנוע</span>
-                <span class="tag" onclick="searchByTag('תיבת הילוכים')"><i class="fas fa-exchange-alt"></i> תיבת הילוכים</span>
-                <span class="tag" onclick="searchByTag('בלמים')"><i class="fas fa-hand-paper"></i> בלמים</span>
-                <span class="tag" onclick="searchByTag('רפידות בלם')"><i class="fas fa-ellipsis-h"></i> רפידות בלם</span>
-                <span class="tag" onclick="searchByTag('צלחות בלם')"><i class="fas fa-compact-disc"></i> צלחות בלם</span>
-                <span class="tag" onclick="searchByTag('נוזל בלמים')"><i class="fas fa-tint"></i> נוזל בלמים</span>
-                <span class="tag" onclick="searchByTag('מערכת ABS')"><i class="fas fa-car-crash"></i> מערכת ABS</span>
-                <span class="tag" onclick="searchByTag('חשמל')"><i class="fas fa-bolt"></i> חשמל</span>
-                <span class="tag" onclick="searchByTag('מצבר')"><i class="fas fa-car-battery"></i> מצבר</span>
-                <span class="tag" onclick="searchByTag('פיוזים')"><i class="fas fa-plug"></i> פיוזים</span>
-                <span class="tag" onclick="searchByTag('חוטי חשמל')"><i class="fas fa-ethernet"></i> חוטי חשמל</span>
-                <span class="tag" onclick="searchByTag('סטרטר')"><i class="fas fa-power-off"></i> סטרטר</span>
-                <span class="tag" onclick="searchByTag('אלטרנטור')"><i class="fas fa-sync-alt"></i> אלטרנטור</span>
-                <span class="tag" onclick="searchByTag('מזגן')"><i class="fas fa-snowflake"></i> מזגן</span>
-                <span class="tag" onclick="searchByTag('מדחס מזגן')"><i class="fas fa-fan"></i> מדחס מזגן</span>
-                <span class="tag" onclick="searchByTag('מאוורר')"><i class="fas fa-wind"></i> מאוורר</span>
-                <span class="tag" onclick="searchByTag('רדיאטור')"><i class="fas fa-water"></i> רדיאטור</span>
-                <span class="tag" onclick="searchByTag('תרמוסטט')"><i class="fas fa-thermometer-half"></i> תרמוסטט</span>
-                <span class="tag" onclick="searchByTag('צינור מים')"><i class="fas fa-grip-lines-vertical"></i> צינור מים</span>
-                <span class="tag" onclick="searchByTag('מים לרדיאטור')"><i class="fas fa-tint"></i> מים לרדיאטור</span>
-                <span class="tag" onclick="searchByTag('שמן מנוע')"><i class="fas fa-oil-can"></i> שמן מנוע</span>
-                <span class="tag" onclick="searchByTag('שמן גיר')"><i class="fas fa-oil-can"></i> שמן גיר</span>
-                <span class="tag" onclick="searchByTag('פילטר שמן')"><i class="fas fa-filter"></i> פילטר שמן</span>
-                <span class="tag" onclick="searchByTag('פילטר אוויר')"><i class="fas fa-filter"></i> פילטר אוויר</span>
-                <span class="tag" onclick="searchByTag('פילטר מזגן')"><i class="fas fa-filter"></i> פילטר מזגן</span>
-                <span class="tag" onclick="searchByTag('מערכת פליטה')"><i class="fas fa-smog"></i> מערכת פליטה</span>
-                <span class="tag" onclick="searchByTag('אגזוז')"><i class="fas fa-wind"></i> אגזוז</span>
-                <span class="tag" onclick="searchByTag('מערכת דלק')"><i class="fas fa-gas-pump"></i> מערכת דלק</span>
-                <span class="tag" onclick="searchByTag('משאבת דלק')"><i class="fas fa-gas-pump"></i> משאבת דלק</span>
-                <span class="tag" onclick="searchByTag('מזרקים')"><i class="fas fa-syringe"></i> מזרקים</span>
-                <span class="tag" onclick="searchByTag('מראות צד')"><i class="fas fa-eye"></i> מראות צד</span>
-                <span class="tag" onclick="searchByTag('פנסים קדמיים')"><i class="fas fa-lightbulb"></i> פנסים קדמיים</span>
-                <span class="tag" onclick="searchByTag('פנסי בלם')"><i class="fas fa-lightbulb"></i> פנסי בלם</span>
-                <span class="tag" onclick="searchByTag('וישרים')"><i class="fas fa-wind"></i> וישרים</span>
-                <span class="tag" onclick="searchByTag('שמשות')"><i class="fas fa-window-maximize"></i> שמשות</span>
-                <span class="tag" onclick="searchByTag('צמיגים')"><i class="fas fa-circle-notch"></i> צמיגים</span>
-                <span class="tag" onclick="searchByTag('חישוקים')"><i class="fas fa-dot-circle"></i> חישוקים</span>
-                <span class="tag" onclick="searchByTag('מושבים')"><i class="fas fa-chair"></i> מושבים</span>
-                <span class="tag" onclick="searchByTag('ריפודים')"><i class="fas fa-couch"></i> ריפודים</span>
-                <span class="tag" onclick="searchByTag('נעילה ושלטים')"><i class="fas fa-key"></i> נעילה ושלטים</span>
-                <span class="tag" onclick="searchByTag('מולטימדיה')"><i class="fas fa-music"></i> מולטימדיה</span>
-                <span class="tag" onclick="searchByTag('מצלמת רוורס')"><i class="fas fa-video"></i> מצלמת רוורס</span>
-                <span class="tag" onclick="searchByTag('חיישני רוורס')"><i class="fas fa-dot-circle"></i> חיישני רוורס</span>
-                <span class="tag" onclick="searchByTag('GPS')"><i class="fas fa-map-marker-alt"></i> GPS</span>
-                <span class="tag" onclick="searchByTag('טיפוח')"><i class="fas fa-spray-can"></i> טיפוח</span>
-                <span class="tag" onclick="searchByTag('פוליש')"><i class="fas fa-brush"></i> פוליש</span>
-                <span class="tag" onclick="searchByTag('ווקס')"><i class="fas fa-star"></i> ווקס</span>
-                <span class="tag" onclick="searchByTag('ערכת שטיפה')"><i class="fas fa-shower"></i> ערכת שטיפה</span>
-                <span class="tag" onclick="searchByTag('אביזרים')"><i class="fas fa-tools"></i> אביזרים</span>
-                <span class="tag" onclick="searchByTag('ערכת תיקון פנצ׳ר')"><i class="fas fa-toolbox"></i> ערכת תיקון פנצ׳ר</span>
-                <span class="tag" onclick="searchByTag('ערכת עזרה ראשונה')"><i class="fas fa-first-aid"></i> עזרה ראשונה</span>
-                <span class="tag" onclick="searchByTag('חגורות בטיחות')"><i class="fas fa-lock"></i> חגורות בטיחות</span>
-                <span class="tag" onclick="searchByTag('כסא בטיחות')"><i class="fas fa-lock"></i> כסא בטיחות</span>
-                <span class="tag" onclick="searchByTag('כריות אוויר')"><i class="fas fa-shield-alt"></i> כריות אוויר</span>
-                <span class="tag" onclick="searchByTag('דשבורד')"><i class="fas fa-tachometer-alt"></i> דשבורד</span>
-                <span class="tag" onclick="searchByTag('הגה')"><i class="fas fa-dharmachakra"></i> הגה</span>
-                <span class="tag" onclick="searchByTag('בלם יד')"><i class="fas fa-hand-rock"></i> בלם יד</span>
-                <span class="tag" onclick="searchByTag('ידית הילוכים')"><i class="fas fa-sliders-h"></i> ידית הילוכים</span>
-                <span class="tag" onclick="searchByTag('כיסויי מושבים')"><i class="fas fa-th-large"></i> כיסויי מושבים</span>
-                <span class="tag" onclick="searchByTag('שטיחים לרכב')"><i class="fas fa-border-style"></i> שטיחים לרכב</span>
-                <span class="tag" onclick="searchByTag('מגן שמש')"><i class="fas fa-sun"></i> מגן שמש</span>
-                <span class="tag" onclick="searchByTag('מגבים אחוריים')"><i class="fas fa-angle-double-down"></i> מגבים אחוריים</span>
-                <span class="tag" onclick="searchByTag('לוח שעונים')"><i class="fas fa-tachometer-alt"></i> לוח שעונים</span>
-                <span class="tag" onclick="searchByTag('חיישן טמפ')"><i class="fas fa-thermometer-quarter"></i> חיישן טמפ'</span>
-                <span class="tag" onclick="searchByTag('חיישן חמצן')"><i class="fas fa-wind"></i> חיישן חמצן</span>
-                <span class="tag" onclick="searchByTag('כפתורי שליטה')"><i class="fas fa-sliders-h"></i> כפתורי שליטה</span>
-                <span class="tag" onclick="searchByTag('תושבות מנוע')"><i class="fas fa-anchor"></i> תושבות מנוע</span>
-                <span class="tag" onclick="searchByTag('זרועות מתלה')"><i class="fas fa-project-diagram"></i> זרועות מתלה</span>
-                <span class="tag" onclick="searchByTag('בולמים')"><i class="fas fa-expand-arrows-alt"></i> בולמים</span>
-                <span class="tag" onclick="searchByTag('ציריות')"><i class="fas fa-random"></i> ציריות</span>
-                <span class="tag" onclick="searchByTag('גומיות ציריה')"><i class="fas fa-draw-polygon"></i> גומיות ציריה</span>
-                <span class="tag" onclick="searchByTag('זרועות מגבים')"><i class="fas fa-arrows-alt-h"></i> זרועות מגבים</span>
-                <span class="tag" onclick="searchByTag('תא מטען')"><i class="fas fa-box-open"></i> תא מטען</span>
-                <span class="tag" onclick="searchByTag('קפיצים')"><i class="fas fa-compress-alt"></i> קפיצים</span>
-                <span class="tag" onclick="searchByTag('צילינדר דלת')"><i class="fas fa-unlock-alt"></i> צילינדר דלת</span>
-                <span class="tag" onclick="searchByTag('איטום דלתות')"><i class="fas fa-water"></i> איטום דלתות</span>
-                <span class="tag" onclick="searchByTag('חוטי הצתה')"><i class="fas fa-bolt"></i> חוטי הצתה</span>
-                <span class="tag" onclick="searchByTag('סליל הצתה')"><i class="fas fa-fire-alt"></i> סליל הצתה</span>
-                <span class="tag" onclick="searchByTag('פקקים')"><i class="fas fa-times-circle"></i> פקקים</span>
-                <span class="tag" onclick="searchByTag('מערכת בקרת שיוט')"><i class="fas fa-road"></i> מערכת בקרת שיוט</span>
-                <span class="tag" onclick="searchByTag('בקרת יציבות')"><i class="fas fa-car-side"></i> בקרת יציבות</span>
-                <span class="tag" onclick="searchByTag('חיישן לחץ אוויר בצמיגים')"><i class="fas fa-compress-arrows-alt"></i> חיישן לחץ אוויר בצמיגים</span>
-                <span class="tag" onclick="searchByTag('מערכת חניה אוטומטית')"><i class="fas fa-parking"></i> מערכת חניה אוטומטית</span>
-                <span class="tag" onclick="searchByTag('מערכת חימום במושבים')"><i class="fas fa-thermometer-full"></i> חימום מושבים</span>
-                <span class="tag" onclick="searchByTag('מצלמת דרך')"><i class="fas fa-video"></i> מצלמת דרך</span>
-                <span class="tag" onclick="searchByTag('מובילאיי')"><i class="fas fa-eye"></i> מובילאיי</span>
-                <span class="tag" onclick="searchByTag('תוסף דלק')"><i class="fas fa-prescription-bottle-alt"></i> תוסף דלק</span>
-                <span class="tag" onclick="searchByTag('תוסף שמן')"><i class="fas fa-prescription-bottle-alt"></i> תוסף שמן</span>
-                <span class="tag" onclick="searchByTag('שקע טעינה USB')"><i class="fas fa-usb"></i> שקע טעינה USB</span>
-                <span class="tag" onclick="searchByTag('מחזיק לטלפון')"><i class="fas fa-mobile-alt"></i> מחזיק לטלפון</span>
-                <span class="tag" onclick="searchByTag('מטען לרכב')"><i class="fas fa-bolt"></i> מטען לרכב</span>
-                <span class="tag" onclick="searchByTag('מערכת אזעקה')"><i class="fas fa-bell"></i> מערכת אזעקה</span>
-                <span class="tag" onclick="searchByTag('כיסוי הגה')"><i class="fas fa-circle-notch"></i> כיסוי הגה</span>
-                <span class="tag" onclick="searchByTag('קודן לרכב')"><i class="fas fa-keyboard"></i> קודן לרכב</span>
-                <span class="tag" onclick="searchByTag('תושבת תיבת הילוכים')"><i class="fas fa-anchor"></i> תושבת גיר</span>
-                <span class="tag" onclick="searchByTag('סט קלאץ׳')"><i class="fas fa-cogs"></i> סט קלאץ׳</span>
-                <span class="tag" onclick="searchByTag('מיסבים')"><i class="fas fa-circle"></i> מיסבים</span>
-                <span class="tag" onclick="searchByTag('סרן')"><i class="fas fa-align-center"></i> סרן</span>
-                <span class="tag" onclick="searchByTag('מטען אלחוטי לרכב')"><i class="fas fa-battery-full"></i> מטען אלחוטי לרכב</span>
-                <span class="tag" onclick="searchByTag('מערכת בלוטות׳')"><i class="fas fa-bluetooth"></i> מערכת בלוטות׳</span>
-                <span class="tag" onclick="searchByTag('דיבורית לרכב')"><i class="fas fa-headset"></i> דיבורית לרכב</span>
-                <span class="tag" onclick="searchByTag('מתאם AUX')"><i class="fas fa-headphones-alt"></i> מתאם AUX</span>
-                <span class="tag" onclick="searchByTag('מסך מולטימדיה')"><i class="fas fa-tv"></i> מסך מולטימדיה</span>
-                <span class="tag" onclick="searchByTag('נורות פנים')"><i class="fas fa-lightbulb"></i> נורות פנים</span>
-                <span class="tag" onclick="searchByTag('נורות לדים')"><i class="fas fa-lightbulb"></i> נורות לדים</span>
-                <span class="tag" onclick="searchByTag('פנס ערפל')"><i class="fas fa-cloud"></i> פנס ערפל</span>
-                <span class="tag" onclick="searchByTag('חיישני גשם')"><i class="fas fa-cloud-rain"></i> חיישני גשם</span>
-                <span class="tag" onclick="searchByTag('משולש אזהרה')"><i class="fas fa-exclamation-triangle"></i> משולש אזהרה</span>
-                <span class="tag" onclick="searchByTag('אפוד זוהר')"><i class="fas fa-user-vest"></i> אפוד זוהר</span>
-                <span class="tag" onclick="searchByTag('כיסוי שמשות')"><i class="fas fa-sun"></i> כיסוי שמשות</span>
-                <span class="tag" onclick="searchByTag('מתקן תלייה לרכב')"><i class="fas fa-hands-helping"></i> מתקן תלייה לרכב</span>
-                <span class="tag" onclick="searchByTag('ארגונית לרכב')"><i class="fas fa-box"></i> ארגונית לרכב</span>
-                <span class="tag" onclick="searchByTag('רצועת טיימינג')"><i class="fas fa-stopwatch"></i> רצועת טיימינג</span>
-                <span class="tag" onclick="searchByTag('פלאגים')"><i class="fas fa-bolt"></i> פלאגים</span>
-                <span class="tag" onclick="searchByTag('אינפוזיה למנוע')"><i class="fas fa-syringe"></i> אינפוזיה למנוע</span>
-                <span class="tag" onclick="searchByTag('מפתח גלגלים')"><i class="fas fa-wrench"></i> מפתח גלגלים</span>
-<span class="tag" onclick="searchByTag('ג'ק לרכב')"><i class="fas fa-car"></i> ג'ק לרכב</span>
-                
+            <div id="popular-tags-container" class="flex flex-wrap mb-4">
+                <!-- התגיות יטענו כאן על ידי JavaScript או יוגדרו ישירות -->
+                 <span class="tag" data-tag-value="מנוע"><i class="fas fa-cogs"></i> מנוע</span>
+                <span class="tag" data-tag-value="תיבת הילוכים"><i class="fas fa-exchange-alt"></i> תיבת הילוכים</span>
+                <span class="tag" data-tag-value="בלמים"><i class="fas fa-hand-paper"></i> בלמים</span>
+                <span class="tag" data-tag-value="רפידות בלם"><i class="fas fa-ellipsis-h"></i> רפידות בלם</span>
+                <span class="tag" data-tag-value="צלחות בלם"><i class="fas fa-compact-disc"></i> צלחות בלם</span>
+                <span class="tag" data-tag-value="נוזל בלמים"><i class="fas fa-tint"></i> נוזל בלמים</span>
+                <span class="tag" data-tag-value="מערכת ABS"><i class="fas fa-car-crash"></i> מערכת ABS</span>
+                <span class="tag" data-tag-value="חשמל"><i class="fas fa-bolt"></i> חשמל</span>
+                <span class="tag" data-tag-value="מצבר"><i class="fas fa-car-battery"></i> מצבר</span>
+                <span class="tag" data-tag-value="פיוזים"><i class="fas fa-plug"></i> פיוזים</span>
+                <span class="tag" data-tag-value="חוטי חשמל"><i class="fas fa-ethernet"></i> חוטי חשמל</span>
+                <span class="tag" data-tag-value="סטרטר"><i class="fas fa-power-off"></i> סטרטר</span>
+                <span class="tag" data-tag-value="אלטרנטור"><i class="fas fa-sync-alt"></i> אלטרנטור</span>
+                <span class="tag" data-tag-value="מזגן"><i class="fas fa-snowflake"></i> מזגן</span>
+                <span class="tag" data-tag-value="מדחס מזגן"><i class="fas fa-fan"></i> מדחס מזגן</span>
+                <span class="tag" data-tag-value="מאוורר"><i class="fas fa-wind"></i> מאוורר</span>
+                <span class="tag" data-tag-value="רדיאטור"><i class="fas fa-water"></i> רדיאטור</span>
+                <span class="tag" data-tag-value="תרמוסטט"><i class="fas fa-thermometer-half"></i> תרמוסטט</span>
+                <span class="tag" data-tag-value="צינור מים"><i class="fas fa-grip-lines-vertical"></i> צינור מים</span>
+                <span class="tag" data-tag-value="מים לרדיאטור"><i class="fas fa-tint"></i> מים לרדיאטור</span>
+                <span class="tag" data-tag-value="שמן מנוע"><i class="fas fa-oil-can"></i> שמן מנוע</span>
+                <span class="tag" data-tag-value="שמן גיר"><i class="fas fa-oil-can"></i> שמן גיר</span>
+                <span class="tag" data-tag-value="פילטר שמן"><i class="fas fa-filter"></i> פילטר שמן</span>
+                <span class="tag" data-tag-value="פילטר אוויר"><i class="fas fa-filter"></i> פילטר אוויר</span>
+                <span class="tag" data-tag-value="פילטר מזגן"><i class="fas fa-filter"></i> פילטר מזגן</span>
+                <span class="tag" data-tag-value="מערכת פליטה"><i class="fas fa-smog"></i> מערכת פליטה</span>
+                <span class="tag" data-tag-value="אגזוז"><i class="fas fa-wind"></i> אגזוז</span>
+                <span class="tag" data-tag-value="מערכת דלק"><i class="fas fa-gas-pump"></i> מערכת דלק</span>
+                <span class="tag" data-tag-value="משאבת דלק"><i class="fas fa-gas-pump"></i> משאבת דלק</span>
+                <span class="tag" data-tag-value="מזרקים"><i class="fas fa-syringe"></i> מזרקים</span>
+                <span class="tag" data-tag-value="מראות צד"><i class="fas fa-eye"></i> מראות צד</span>
+                <span class="tag" data-tag-value="פנסים קדמיים"><i class="fas fa-lightbulb"></i> פנסים קדמיים</span>
+                <span class="tag" data-tag-value="פנסי בלם"><i class="fas fa-lightbulb"></i> פנסי בלם</span>
+                <span class="tag" data-tag-value="וישרים"><i class="fas fa-wind"></i> וישרים</span>
+                <span class="tag" data-tag-value="שמשות"><i class="fas fa-window-maximize"></i> שמשות</span>
+                <span class="tag" data-tag-value="צמיגים"><i class="fas fa-circle-notch"></i> צמיגים</span>
+                <span class="tag" data-tag-value="חישוקים"><i class="fas fa-dot-circle"></i> חישוקים</span>
+                <span class="tag" data-tag-value="מושבים"><i class="fas fa-chair"></i> מושבים</span>
+                <span class="tag" data-tag-value="ריפודים"><i class="fas fa-couch"></i> ריפודים</span>
+                <span class="tag" data-tag-value="נעילה ושלטים"><i class="fas fa-key"></i> נעילה ושלטים</span>
+                <span class="tag" data-tag-value="מולטימדיה"><i class="fas fa-music"></i> מולטימדיה</span>
+                <span class="tag" data-tag-value="מצלמת רוורס"><i class="fas fa-video"></i> מצלמת רוורס</span>
+                <span class="tag" data-tag-value="חיישני רוורס"><i class="fas fa-dot-circle"></i> חיישני רוורס</span>
+                <span class="tag" data-tag-value="GPS"><i class="fas fa-map-marker-alt"></i> GPS</span>
+                <span class="tag" data-tag-value="טיפוח"><i class="fas fa-spray-can"></i> טיפוח</span>
+                <span class="tag" data-tag-value="פוליש"><i class="fas fa-brush"></i> פוליש</span>
+                <span class="tag" data-tag-value="ווקס"><i class="fas fa-star"></i> ווקס</span>
+                <span class="tag" data-tag-value="ערכת שטיפה"><i class="fas fa-shower"></i> ערכת שטיפה</span>
+                <span class="tag" data-tag-value="אביזרים"><i class="fas fa-tools"></i> אביזרים</span>
+                <span class="tag" data-tag-value="ערכת תיקון פנצ׳ר"><i class="fas fa-toolbox"></i> ערכת תיקון פנצ׳ר</span>
+                <span class="tag" data-tag-value="ערכת עזרה ראשונה"><i class="fas fa-first-aid"></i> עזרה ראשונה</span>
+                <span class="tag" data-tag-value="חגורות בטיחות"><i class="fas fa-lock"></i> חגורות בטיחות</span>
+                <span class="tag" data-tag-value="כסא בטיחות"><i class="fas fa-lock"></i> כסא בטיחות</span>
+                <span class="tag" data-tag-value="כריות אוויר"><i class="fas fa-shield-alt"></i> כריות אוויר</span>
+                <span class="tag" data-tag-value="דשבורד"><i class="fas fa-tachometer-alt"></i> דשבורד</span>
+                <span class="tag" data-tag-value="הגה"><i class="fas fa-dharmachakra"></i> הגה</span>
+                <span class="tag" data-tag-value="בלם יד"><i class="fas fa-hand-rock"></i> בלם יד</span>
+                <span class="tag" data-tag-value="ידית הילוכים"><i class="fas fa-sliders-h"></i> ידית הילוכים</span>
+                <span class="tag" data-tag-value="כיסויי מושבים"><i class="fas fa-th-large"></i> כיסויי מושבים</span>
+                <span class="tag" data-tag-value="שטיחים לרכב"><i class="fas fa-border-style"></i> שטיחים לרכב</span>
+                <span class="tag" data-tag-value="מגן שמש"><i class="fas fa-sun"></i> מגן שמש</span>
+                <span class="tag" data-tag-value="מגבים אחוריים"><i class="fas fa-angle-double-down"></i> מגבים אחוריים</span>
+                <span class="tag" data-tag-value="לוח שעונים"><i class="fas fa-tachometer-alt"></i> לוח שעונים</span>
+                <span class="tag" data-tag-value="חיישן טמפ'"><i class="fas fa-thermometer-quarter"></i> חיישן טמפ'</span>
+                <span class="tag" data-tag-value="חיישן חמצן"><i class="fas fa-wind"></i> חיישן חמצן</span>
+                <span class="tag" data-tag-value="כפתורי שליטה"><i class="fas fa-sliders-h"></i> כפתורי שליטה</span>
+                <span class="tag" data-tag-value="תושבות מנוע"><i class="fas fa-anchor"></i> תושבות מנוע</span>
+                <span class="tag" data-tag-value="זרועות מתלה"><i class="fas fa-project-diagram"></i> זרועות מתלה</span>
+                <span class="tag" data-tag-value="בולמים"><i class="fas fa-expand-arrows-alt"></i> בולמים</span>
+                <span class="tag" data-tag-value="ציריות"><i class="fas fa-random"></i> ציריות</span>
+                <span class="tag" data-tag-value="גומיות ציריה"><i class="fas fa-draw-polygon"></i> גומיות ציריה</span>
+                <span class="tag" data-tag-value="זרועות מגבים"><i class="fas fa-arrows-alt-h"></i> זרועות מגבים</span>
+                <span class="tag" data-tag-value="תא מטען"><i class="fas fa-box-open"></i> תא מטען</span>
+                <span class="tag" data-tag-value="קפיצים"><i class="fas fa-compress-alt"></i> קפיצים</span>
+                <span class="tag" data-tag-value="צילינדר דלת"><i class="fas fa-unlock-alt"></i> צילינדר דלת</span>
+                <span class="tag" data-tag-value="איטום דלתות"><i class="fas fa-water"></i> איטום דלתות</span>
+                <span class="tag" data-tag-value="חוטי הצתה"><i class="fas fa-bolt"></i> חוטי הצתה</span>
+                <span class="tag" data-tag-value="סליל הצתה"><i class="fas fa-fire-alt"></i> סליל הצתה</span>
+                <span class="tag" data-tag-value="פקקים"><i class="fas fa-times-circle"></i> פקקים</span>
+                <span class="tag" data-tag-value="מערכת בקרת שיוט"><i class="fas fa-road"></i> מערכת בקרת שיוט</span>
+                <span class="tag" data-tag-value="בקרת יציבות"><i class="fas fa-car-side"></i> בקרת יציבות</span>
+                <span class="tag" data-tag-value="חיישן לחץ אוויר בצמיגים"><i class="fas fa-compress-arrows-alt"></i> חיישן לחץ אוויר בצמיגים</span>
+                <span class="tag" data-tag-value="מערכת חניה אוטומטית"><i class="fas fa-parking"></i> מערכת חניה אוטומטית</span>
+                <span class="tag" data-tag-value="מערכת חימום במושבים"><i class="fas fa-thermometer-full"></i> חימום מושבים</span>
+                <span class="tag" data-tag-value="מצלמת דרך"><i class="fas fa-video"></i> מצלמת דרך</span>
+                <span class="tag" data-tag-value="מובילאיי"><i class="fas fa-eye"></i> מובילאיי</span>
+                <span class="tag" data-tag-value="תוסף דלק"><i class="fas fa-prescription-bottle-alt"></i> תוסף דלק</span>
+                <span class="tag" data-tag-value="תוסף שמן"><i class="fas fa-prescription-bottle-alt"></i> תוסף שמן</span>
+                <span class="tag" data-tag-value="שקע טעינה USB"><i class="fas fa-usb"></i> שקע טעינה USB</span>
+                <span class="tag" data-tag-value="מחזיק לטלפון"><i class="fas fa-mobile-alt"></i> מחזיק לטלפון</span>
+                <span class="tag" data-tag-value="מטען לרכב"><i class="fas fa-bolt"></i> מטען לרכב</span>
+                <span class="tag" data-tag-value="מערכת אזעקה"><i class="fas fa-bell"></i> מערכת אזעקה</span>
+                <span class="tag" data-tag-value="כיסוי הגה"><i class="fas fa-circle-notch"></i> כיסוי הגה</span>
+                <span class="tag" data-tag-value="קודן לרכב"><i class="fas fa-keyboard"></i> קודן לרכב</span>
+                <span class="tag" data-tag-value="תושבת תיבת הילוכים"><i class="fas fa-anchor"></i> תושבת גיר</span>
+                <span class="tag" data-tag-value="סט קלאץ׳"><i class="fas fa-cogs"></i> סט קלאץ׳</span>
+                <span class="tag" data-tag-value="מיסבים"><i class="fas fa-circle"></i> מיסבים</span>
+                <span class="tag" data-tag-value="סרן"><i class="fas fa-align-center"></i> סרן</span>
+                <span class="tag" data-tag-value="מטען אלחוטי לרכב"><i class="fas fa-battery-full"></i> מטען אלחוטי לרכב</span>
+                <span class="tag" data-tag-value="מערכת בלוטות׳"><i class="fab fa-bluetooth-b"></i> מערכת בלוטות׳</span> <!-- שימוש באייקון ממותג של בלוטות' -->
+                <span class="tag" data-tag-value="דיבורית לרכב"><i class="fas fa-headset"></i> דיבורית לרכב</span>
+                <span class="tag" data-tag-value="מתאם AUX"><i class="fas fa-headphones-alt"></i> מתאם AUX</span>
+                <span class="tag" data-tag-value="מסך מולטימדיה"><i class="fas fa-tv"></i> מסך מולטימדיה</span>
+                <span class="tag" data-tag-value="נורות פנים"><i class="fas fa-lightbulb"></i> נורות פנים</span>
+                <span class="tag" data-tag-value="נורות לדים"><i class="far fa-lightbulb"></i> נורות לדים</span> <!-- אייקון קצת שונה ללדים */ -->
+                <span class="tag" data-tag-value="פנס ערפל"><i class="fas fa-cloud"></i> פנס ערפל</span>
+                <span class="tag" data-tag-value="חיישני גשם"><i class="fas fa-cloud-rain"></i> חיישני גשם</span>
+                <span class="tag" data-tag-value="משולש אזהרה"><i class="fas fa-exclamation-triangle"></i> משולש אזהרה</span>
+                <span class="tag" data-tag-value="אפוד זוהר"><i class="fas fa-vest"></i> אפוד זוהר</span> <!-- שינוי אייקון אפוד */ -->
+                <span class="tag" data-tag-value="כיסוי שמשות"><i class="fas fa-sun"></i> כיסוי שמשות</span>
+                <span class="tag" data-tag-value="מתקן תלייה לרכב"><i class="fas fa-hands-helping"></i> מתקן תלייה לרכב</span>
+                <span class="tag" data-tag-value="ארגונית לרכב"><i class="fas fa-box"></i> ארגונית לרכב</span>
+                <span class="tag" data-tag-value="רצועת טיימינג"><i class="fas fa-stopwatch"></i> רצועת טיימינג</span>
+                <span class="tag" data-tag-value="פלאגים"><i class="fas fa-plug"></i> פלאגים</span> <!-- שינוי אייקון פלאגים למתאים יותר */ -->
+                <span class="tag" data-tag-value="אינפוזיה למנוע"><i class="fas fa-syringe"></i> אינפוזיה למנוע</span>
+                <span class="tag" data-tag-value="מפתח גלגלים"><i class="fas fa-wrench"></i> מפתח גלגלים</span>
+                <span class="tag" data-tag-value="ג'ק לרכב"><i class="fas fa-tools"></i> ג'ק לרכב</span> <!-- שינוי אייקון ג'ק למתאים יותר */ -->
             </div>
 
-            <div class="relative">
-                <input type="text" id="tag-search" class="tag-input" placeholder="הקלד תגית לחיפוש...">
-                <button onclick="addTagToSearch()" class="absolute left-3 top-1/2 transform -translate-y-1/2 bg-purple-500 text-white px-3 py-1 rounded-md text-sm hover:bg-purple-600 transition">הוסף</button>
+            <form id="custom-tag-form" class="relative mt-4">
+                <input type="text" id="tag-search-input" class="tag-input pr-24" placeholder="הקלד תגית לחיפוש והוספה...">
+                <button type="submit" class="absolute left-3 top-1/2 transform -translate-y-1/2 bg-purple-500 text-white px-3 py-1.5 rounded-md text-sm hover:bg-purple-600 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-400">הוסף</button>
+            </form>
+            <div class="mt-3 flex flex-wrap" id="selected-tags-container">
+                <!-- תגיות שנבחרו יוצגו כאן -->
             </div>
-            <div class="mt-3 flex flex-wrap" id="selected-tags"></div>
-        </div>
+        </section>
 
         <!-- Featured Videos -->
-        <div class="mb-12">
+        <section id="featured-videos-section" class="mb-12">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-900 flex items-center">
                     <i class="fas fa-star text-purple-500 ml-2"></i> סרטונים מומלצים
                 </h2>
-                <a href="#" class="text-purple-600 hover:text-purple-800 font-medium flex items-center">
-                    הצג הכל <i class="fas fa-chevron-left mr-1 text-sm"></i>
+                <a href="#" class="text-purple-600 hover:text-purple-800 font-medium flex items-center group">
+                    הצג הכל <i class="fas fa-chevron-left mr-1 text-sm group-hover:animate-pulse"></i>
                 </a>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Video Card 1 -->
-                <div class="video-card group">
+                <article class="video-card group">
                     <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe loading="lazy" src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Video 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="p-5">
                         <div class="flex items-start mb-3">
-                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
-                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Channel" class="h-full w-full object-cover">
-                            </div>
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="AutoVision channel" class="flex-shrink-0 h-10 w-10 rounded-full object-cover mr-3">
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">בוגאטי שירון סופר ספורט 2023 - סקירה מלאה</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600 transition-colors">בוגאטי שירון סופר ספורט 2023 - סקירה מלאה</h3>
                                 <p class="text-gray-600 text-sm">AutoVision</p>
                             </div>
                         </div>
-                        <p class="text-gray-600 text-sm mb-3">סקירה מעמיקה של המכונית המהירה ביותר בעולם עם כל הפרטים הטכניים.</p>
+                        <p class="text-gray-700 text-sm mb-3 leading-relaxed">סקירה מעמיקה של המכונית המהירה ביותר בעולם עם כל הפרטים הטכניים.</p>
                         <div class="flex flex-wrap mb-3">
-                            <span class="tag"><i class="fas fa-tag"></i> בוגאטי</span>
-                            <span class="tag"><i class="fas fa-tag"></i> סופר-קאר</span>
-                            <span class="tag"><i class="fas fa-tag"></i> ביצועים</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> בוגאטי</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> סופר-קאר</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> ביצועים</span>
                         </div>
                         <div class="flex items-center text-gray-500 text-sm">
                             <span><i class="fas fa-eye ml-1"></i> 2.4M צפיות</span>
-                            <span class="mx-2">•</span>
+                            <span class="mx-2" aria-hidden="true">•</span>
                             <span><i class="far fa-clock ml-1"></i> לפני 3 ימים</span>
                         </div>
                     </div>
-                </div>
+                </article>
                 
-                <!-- Video Card 2 -->
-                <div class="video-card group">
+                <article class="video-card group">
                     <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe loading="lazy" src="https://www.youtube.com/embed/y6120QOlsfU" title="Video 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="p-5">
                         <div class="flex items-start mb-3">
-                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
-                                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Channel" class="h-full w-full object-cover">
-                            </div>
+                           <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Classic Restorations channel" class="flex-shrink-0 h-10 w-10 rounded-full object-cover mr-3">
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">שיקום פורד מוסטנג 1967</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600 transition-colors">שיקום פורד מוסטנג 1967</h3>
                                 <p class="text-gray-600 text-sm">Classic Restorations</p>
                             </div>
                         </div>
-                        <p class="text-gray-600 text-sm mb-3">תיעוד מלא של תהליך השיקום של המוסטנג הקלאסית האמריקאית.</p>
+                        <p class="text-gray-700 text-sm mb-3 leading-relaxed">תיעוד מלא של תהליך השיקום של המוסטנג הקלאסית האמריקאית.</p>
                         <div class="flex flex-wrap mb-3">
-                            <span class="tag"><i class="fas fa-tag"></i> פורד</span>
-                            <span class="tag"><i class="fas fa-tag"></i> מוסטנג</span>
-                            <span class="tag"><i class="fas fa-tag"></i> שיקום</span>
-                            <span class="tag"><i class="fas fa-tag"></i> קלאסי</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> פורד</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> מוסטנג</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> שיקום</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> קלאסי</span>
                         </div>
                         <div class="flex items-center text-gray-500 text-sm">
                             <span><i class="fas fa-eye ml-1"></i> 1.1M צפיות</span>
-                            <span class="mx-2">•</span>
+                            <span class="mx-2" aria-hidden="true">•</span>
                             <span><i class="far fa-clock ml-1"></i> לפני שבוע</span>
                         </div>
                     </div>
-                </div>
+                </article>
                 
-                <!-- Video Card 3 -->
-                <div class="video-card group">
+                <article class="video-card group">
                     <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe loading="lazy" src="https://www.youtube.com/embed/3gOHn3n7mP8" title="Video 3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="p-5">
                         <div class="flex items-start mb-3">
-                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
-                                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Channel" class="h-full w-full object-cover">
-                            </div>
+                           <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="EV Adventures channel" class="flex-shrink-0 h-10 w-10 rounded-full object-cover mr-3">
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">טסלה סייברטראק - מבחן שטח</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600 transition-colors">טסלה סייברטראק - מבחן שטח</h3>
                                 <p class="text-gray-600 text-sm">EV Adventures</p>
                             </div>
                         </div>
-                        <p class="text-gray-600 text-sm mb-3">מבחן שטח מקיף למכונית החשמלית השנויה במחלוקת בתנאים קיצוניים.</p>
+                        <p class="text-gray-700 text-sm mb-3 leading-relaxed">מבחן שטח מקיף למכונית החשמלית השנויה במחלוקת בתנאים קיצוניים.</p>
                         <div class="flex flex-wrap mb-3">
-                            <span class="tag"><i class="fas fa-tag"></i> טסלה</span>
-                            <span class="tag"><i class="fas fa-tag"></i> חשמלי</span>
-                            <span class="tag"><i class="fas fa-tag"></i> שטח</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> טסלה</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> חשמלי</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> שטח</span>
                         </div>
                         <div class="flex items-center text-gray-500 text-sm">
                             <span><i class="fas fa-eye ml-1"></i> 3.7M צפיות</span>
-                            <span class="mx-2">•</span>
+                            <span class="mx-2" aria-hidden="true">•</span>
                             <span><i class="far fa-clock ml-1"></i> לפני יומיים</span>
                         </div>
                     </div>
-                </div>
+                </article>
             </div>
-        </div>
+        </section>
 
         <!-- Repair Videos -->
-        <div class="mb-12">
+        <section class="mb-12">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-900 flex items-center">
                     <i class="fas fa-tools text-purple-500 ml-2"></i> מדריכי תיקונים וטיפולים
                 </h2>
-                <a href="#" class="text-purple-600 hover:text-purple-800 font-medium flex items-center">
-                    הצג הכל <i class="fas fa-chevron-left mr-1 text-sm"></i>
+                <a href="#" class="text-purple-600 hover:text-purple-800 font-medium flex items-center group">
+                    הצג הכל <i class="fas fa-chevron-left mr-1 text-sm group-hover:animate-pulse"></i>
                 </a>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Video Card 4 -->
-                <div class="video-card group">
+                 <article class="video-card group">
                     <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe loading="lazy" src="https://www.youtube.com/embed/exampleVideoId4" title="Video 4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="p-5">
                         <div class="flex items-start mb-3">
-                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
-                                <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Channel" class="h-full w-full object-cover">
-                            </div>
+                            <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Car DIY channel" class="flex-shrink-0 h-10 w-10 rounded-full object-cover mr-3">
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">החלפת שמן מנוע - מדריך מלא</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600 transition-colors">החלפת שמן מנוע - מדריך מלא</h3>
                                 <p class="text-gray-600 text-sm">Car DIY</p>
                             </div>
                         </div>
-                        <p class="text-gray-600 text-sm mb-3">מדריך מפורט להחלפת שמן מנוע לכל סוגי הרכבים, כולל טיפים מקצועיים.</p>
+                        <p class="text-gray-700 text-sm mb-3 leading-relaxed">מדריך מפורט להחלפת שמן מנוע לכל סוגי הרכבים, כולל טיפים מקצועיים.</p>
                         <div class="flex flex-wrap mb-3">
-                            <span class="tag"><i class="fas fa-tag"></i> מנוע</span>
-                            <span class="tag"><i class="fas fa-tag"></i> שמן</span>
-                            <span class="tag"><i class="fas fa-tag"></i> טיפול</span>
-                            <span class="tag"><i class="fas fa-tag"></i> הדרכה</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> מנוע</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> שמן</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> טיפול</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> הדרכה</span>
                         </div>
                         <div class="flex items-center text-gray-500 text-sm">
                             <span><i class="fas fa-eye ml-1"></i> 450K צפיות</span>
-                            <span class="mx-2">•</span>
+                            <span class="mx-2" aria-hidden="true">•</span>
                             <span><i class="far fa-clock ml-1"></i> לפני חודש</span>
                         </div>
                     </div>
-                </div>
+                </article>
                 
-                <!-- Video Card 5 -->
-                <div class="video-card group">
+                <article class="video-card group">
                     <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                         <iframe loading="lazy" src="https://www.youtube.com/embed/exampleVideoId5" title="Video 5" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="p-5">
                         <div class="flex items-start mb-3">
-                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
-                                <img src="https://randomuser.me/api/portraits/men/76.jpg" alt="Channel" class="h-full w-full object-cover">
-                            </div>
+                             <img src="https://randomuser.me/api/portraits/men/76.jpg" alt="Auto Clinic channel" class="flex-shrink-0 h-10 w-10 rounded-full object-cover mr-3">
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">תיקון תקלות במזגן רכב</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600 transition-colors">תיקון תקלות במזגן רכב</h3>
                                 <p class="text-gray-600 text-sm">Auto Clinic</p>
                             </div>
                         </div>
-                        <p class="text-gray-600 text-sm mb-3">כיצד לאבחן ולתקן תקלות נפוצות במערכת המיזוג של הרכב שלך.</p>
+                        <p class="text-gray-700 text-sm mb-3 leading-relaxed">כיצד לאבחן ולתקן תקלות נפוצות במערכת המיזוג של הרכב שלך.</p>
                         <div class="flex flex-wrap mb-3">
-                            <span class="tag"><i class="fas fa-tag"></i> מזגן</span>
-                            <span class="tag"><i class="fas fa-tag"></i> חשמל</span>
-                            <span class="tag"><i class="fas fa-tag"></i> תיקון</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> מזגן</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> חשמל</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> תיקון</span>
                         </div>
                         <div class="flex items-center text-gray-500 text-sm">
                             <span><i class="fas fa-eye ml-1"></i> 320K צפיות</span>
-                            <span class="mx-2">•</span>
+                            <span class="mx-2" aria-hidden="true">•</span>
                             <span><i class="far fa-clock ml-1"></i> לפני 3 שבועות</span>
                         </div>
                     </div>
-                </div>
+                </article>
                 
-                <!-- Video Card 6 -->
-                <div class="video-card group">
+                <article class="video-card group">
                     <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe loading="lazy" src="https://www.youtube.com/embed/exampleVideoId6" title="Video 6" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="p-5">
                         <div class="flex items-start mb-3">
-                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
-                                <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Channel" class="h-full w-full object-cover">
-                            </div>
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Mechanic Pro channel" class="flex-shrink-0 h-10 w-10 rounded-full object-cover mr-3">
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">החלפת בלמים - צעד אחר צעד</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600 transition-colors">החלפת בלמים - צעד אחר צעד</h3>
                                 <p class="text-gray-600 text-sm">Mechanic Pro</p>
                             </div>
                         </div>
-                        <p class="text-gray-600 text-sm mb-3">מדריך ויזואלי להחלפת רפידות ודיסקי בלמים בכל סוגי הרכבים.</p>
+                        <p class="text-gray-700 text-sm mb-3 leading-relaxed">מדריך ויזואלי להחלפת רפידות ודיסקי בלמים בכל סוגי הרכבים.</p>
                         <div class="flex flex-wrap mb-3">
-                            <span class="tag"><i class="fas fa-tag"></i> בלמים</span>
-                            <span class="tag"><i class="fas fa-tag"></i> בטיחות</span>
-                            <span class="tag"><i class="fas fa-tag"></i> תיקון</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> בלמים</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> בטיחות</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> תיקון</span>
                         </div>
                         <div class="flex items-center text-gray-500 text-sm">
                             <span><i class="fas fa-eye ml-1"></i> 680K צפיות</span>
-                            <span class="mx-2">•</span>
+                            <span class="mx-2" aria-hidden="true">•</span>
                             <span><i class="far fa-clock ml-1"></i> לפני שבועיים</span>
                         </div>
                     </div>
-                </div>
+                </article>
             </div>
-        </div>
+        </section>
 
         <!-- Classic Cars Collection -->
-        <div class="mb-12">
+        <section class="mb-12">
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-gray-900 flex items-center">
                     <i class="fas fa-history text-purple-500 ml-2"></i> אוסף רכבים קלאסיים
                 </h2>
-                <a href="#" class="text-purple-600 hover:text-purple-800 font-medium flex items-center">
-                    הצג הכל <i class="fas fa-chevron-left mr-1 text-sm"></i>
+                <a href="#" class="text-purple-600 hover:text-purple-800 font-medium flex items-center group">
+                    הצג הכל <i class="fas fa-chevron-left mr-1 text-sm group-hover:animate-pulse"></i>
                 </a>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Video Card 7 -->
-                <div class="video-card group">
+                <article class="video-card group">
                     <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe loading="lazy" src="https://www.youtube.com/embed/exampleVideoId7" title="Video 7" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="p-5">
                         <div class="flex items-start mb-3">
-                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
-                                <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="Channel" class="h-full w-full object-cover">
-                            </div>
+                            <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="Classic Dreams channel" class="flex-shrink-0 h-10 w-10 rounded-full object-cover mr-3">
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">שברולט בלה אייר 1957 - שיקום מלא</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600 transition-colors">שברולט בלה אייר 1957 - שיקום מלא</h3>
                                 <p class="text-gray-600 text-sm">Classic Dreams</p>
                             </div>
                         </div>
-                        <p class="text-gray-600 text-sm mb-3">משלדה חלודה ועד למצב תצוגה - התהליך המלא של שיקום הרכב הקלאסי.</p>
+                        <p class="text-gray-700 text-sm mb-3 leading-relaxed">משלדה חלודה ועד למצב תצוגה - התהליך המלא של שיקום הרכב הקלאסי.</p>
                         <div class="flex flex-wrap mb-3">
-                            <span class="tag"><i class="fas fa-tag"></i> שברולט</span>
-                            <span class="tag"><i class="fas fa-tag"></i> קלאסי</span>
-                            <span class="tag"><i class="fas fa-tag"></i> שיקום</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> שברולט</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> קלאסי</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> שיקום</span>
                         </div>
                         <div class="flex items-center text-gray-500 text-sm">
                             <span><i class="fas fa-eye ml-1"></i> 980K צפיות</span>
-                            <span class="mx-2">•</span>
+                            <span class="mx-2" aria-hidden="true">•</span>
                             <span><i class="far fa-clock ml-1"></i> לפני שבועיים</span>
                         </div>
                     </div>
-                </div>
+                </article>
                 
-                <!-- Video Card 8 -->
-                <div class="video-card group">
+                 <article class="video-card group">
                     <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe loading="lazy" src="https://www.youtube.com/embed/exampleVideoId8" title="Video 8" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="p-5">
                         <div class="flex items-start mb-3">
-                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
-                                <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Channel" class="h-full w-full object-cover">
-                            </div>
+                            <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="British Classics channel" class="flex-shrink-0 h-10 w-10 rounded-full object-cover mr-3">
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">יגואר E-Type - המכונית היפה בעולם?</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600 transition-colors">יגואר E-Type - המכונית היפה בעולם?</h3>
                                 <p class="text-gray-600 text-sm">British Classics</p>
                             </div>
                         </div>
-                        <p class="text-gray-600 text-sm mb-3">מדוע אנריקו פרארי כינה את ה-E-Type כמכונית היפה ביותר בעולם.</p>
+                        <p class="text-gray-700 text-sm mb-3 leading-relaxed">מדוע אנריקו פרארי כינה את ה-E-Type כמכונית היפה ביותר בעולם.</p>
                         <div class="flex flex-wrap mb-3">
-                            <span class="tag"><i class="fas fa-tag"></i> יגואר</span>
-                            <span class="tag"><i class="fas fa-tag"></i> קלאסי</span>
-                            <span class="tag"><i class="fas fa-tag"></i> עיצוב</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> יגואר</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> קלאסי</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> עיצוב</span>
                         </div>
                         <div class="flex items-center text-gray-500 text-sm">
                             <span><i class="fas fa-eye ml-1"></i> 1.2M צפיות</span>
-                            <span class="mx-2">•</span>
+                            <span class="mx-2" aria-hidden="true">•</span>
                             <span><i class="far fa-clock ml-1"></i> לפני שבוע</span>
                         </div>
                     </div>
-                </div>
+                </article>
                 
-                <!-- Video Card 9 -->
-                <div class="video-card group">
+                <article class="video-card group">
                     <div class="video-container">
-                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                        <iframe loading="lazy" src="https://www.youtube.com/embed/exampleVideoId9" title="Video 9" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
                     </div>
                     <div class="p-5">
                         <div class="flex items-start mb-3">
-                            <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 overflow-hidden mr-3">
-                                <img src="https://randomuser.me/api/portraits/men/89.jpg" alt="Channel" class="h-full w-full object-cover">
-                            </div>
+                             <img src="https://randomuser.me/api/portraits/men/89.jpg" alt="Vintage Rides channel" class="flex-shrink-0 h-10 w-10 rounded-full object-cover mr-3">
                             <div>
-                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600">מרצדס 300SL גאלווינג - חווית נהיגה</h3>
+                                <h3 class="font-bold text-lg mb-1 group-hover:text-purple-600 transition-colors">מרצדס 300SL גאלווינג - חווית נהיגה</h3>
                                 <p class="text-gray-600 text-sm">Vintage Rides</p>
                             </div>
                         </div>
-                        <p class="text-gray-600 text-sm mb-3">איך זה לנהוג באגדה הגרמנית משנות ה-50 עם דלתות כנף?</p>
+                        <p class="text-gray-700 text-sm mb-3 leading-relaxed">איך זה לנהוג באגדה הגרמנית משנות ה-50 עם דלתות כנף?</p>
                         <div class="flex flex-wrap mb-3">
-                            <span class="tag"><i class="fas fa-tag"></i> מרצדס</span>
-                            <span class="tag"><i class="fas fa-tag"></i> קלאסי</span>
-                            <span class="tag"><i class="fas fa-tag"></i> נהיגה</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> מרצדס</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> קלאסי</span>
+                            <span class="tag !text-xs !py-1 !px-2"><i class="fas fa-tag"></i> נהיגה</span>
                         </div>
                         <div class="flex items-center text-gray-500 text-sm">
                             <span><i class="fas fa-eye ml-1"></i> 1.6M צפיות</span>
-                            <span class="mx-2">•</span>
+                            <span class="mx-2" aria-hidden="true">•</span>
                             <span><i class="far fa-clock ml-1"></i> לפני 5 ימים</span>
                         </div>
                     </div>
-                </div>
+                </article>
             </div>
-        </div>
+        </section>
     </main>
 
     <!-- Featured Channels -->
-    <div id="featured-channels-section" class="bg-purple-50 py-12">
+    <section id="featured-channels-section" class="bg-purple-50 py-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center flex items-center justify-center">
-                <i class="fas fa-tv text-purple-500 mr-2"></i> ערוצים מומלצים 
+            <h2 class="text-3xl font-bold text-gray-900 mb-10 text-center flex items-center justify-center">
+                <i class="fas fa-tv text-purple-600 mr-3"></i> ערוצים מומלצים 
             </h2>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                <!-- Channel 1 -->
-                <div class="channel-card bg-white p-4 rounded-xl shadow-sm text-center">
-                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
-                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Channel" class="h-full w-full object-cover">
-                    </div>
-                    <h3 class="font-medium text-gray-900">AutoVision</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-x-6 gap-y-8">
+                <a href="#" class="channel-card p-4 text-center block hover:no-underline group">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="AutoVision" class="h-20 w-20 mx-auto rounded-full object-cover mb-3 border-2 border-transparent group-hover:border-purple-400 transition-all">
+                    <h3 class="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">AutoVision</h3>
                     <p class="text-purple-600 text-sm">1.2M עוקבים</p>
-                </div>
-                
-                <!-- Channel 2 -->
-                <div class="channel-card bg-white p-4 rounded-xl shadow-sm text-center">
-                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
-                        <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Channel" class="h-full w-full object-cover">
-                    </div>
-                    <h3 class="font-medium text-gray-900">Classic Restorations</h3>
+                </a>
+                <a href="#" class="channel-card p-4 text-center block hover:no-underline group">
+                    <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Classic Restorations" class="h-20 w-20 mx-auto rounded-full object-cover mb-3 border-2 border-transparent group-hover:border-purple-400 transition-all">
+                    <h3 class="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">Classic Restorations</h3>
                     <p class="text-purple-600 text-sm">850K עוקבים</p>
-                </div>
-                
-                <!-- Channel 3 -->
-                <div class="channel-card bg-white p-4 rounded-xl shadow-sm text-center">
-                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
-                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Channel" class="h-full w-full object-cover">
-                    </div>
-                    <h3 class="font-medium text-gray-900">EV Adventures</h3>
+                </a>
+                 <a href="#" class="channel-card p-4 text-center block hover:no-underline group">
+                    <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="EV Adventures" class="h-20 w-20 mx-auto rounded-full object-cover mb-3 border-2 border-transparent group-hover:border-purple-400 transition-all">
+                    <h3 class="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">EV Adventures</h3>
                     <p class="text-purple-600 text-sm">1.5M עוקבים</p>
-                </div>
-                
-                <!-- Channel 4 -->
-                <div class="channel-card bg-white p-4 rounded-xl shadow-sm text-center">
-                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
-                        <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Channel" class="h-full w-full object-cover">
-                    </div>
-                    <h3 class="font-medium text-gray-900">Car DIY</h3>
+                </a>
+                 <a href="#" class="channel-card p-4 text-center block hover:no-underline group">
+                    <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Car DIY" class="h-20 w-20 mx-auto rounded-full object-cover mb-3 border-2 border-transparent group-hover:border-purple-400 transition-all">
+                    <h3 class="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">Car DIY</h3>
                     <p class="text-purple-600 text-sm">2.3M עוקבים</p>
-                </div>
-                
-                <!-- Channel 5 -->
-                <div class="channel-card bg-white p-4 rounded-xl shadow-sm text-center">
-                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
-                        <img src="https://randomuser.me/api/portraits/men/76.jpg" alt="Channel" class="h-full w-full object-cover">
-                    </div>
-                    <h3 class="font-medium text-gray-900">Auto Clinic</h3>
+                </a>
+                <a href="#" class="channel-card p-4 text-center block hover:no-underline group">
+                    <img src="https://randomuser.me/api/portraits/men/76.jpg" alt="Auto Clinic" class="h-20 w-20 mx-auto rounded-full object-cover mb-3 border-2 border-transparent group-hover:border-purple-400 transition-all">
+                    <h3 class="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">Auto Clinic</h3>
                     <p class="text-purple-600 text-sm">1.8M עוקבים</p>
-                </div>
-                
-                <!-- Channel 6 -->
-                <div class="channel-card bg-white p-4 rounded-xl shadow-sm text-center">
-                    <div class="h-16 w-16 mx-auto rounded-full bg-gray-200 overflow-hidden mb-3">
-                        <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Channel" class="h-full w-full object-cover">
-                    </div>
-                    <h3 class="font-medium text-gray-900">Mechanic Pro</h3>
+                </a>
+                <a href="#" class="channel-card p-4 text-center block hover:no-underline group">
+                    <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Mechanic Pro" class="h-20 w-20 mx-auto rounded-full object-cover mb-3 border-2 border-transparent group-hover:border-purple-400 transition-all">
+                    <h3 class="font-semibold text-gray-900 group-hover:text-purple-600 transition-colors">Mechanic Pro</h3>
                     <p class="text-purple-600 text-sm">3.1M עוקבים</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Inspiration Section -->
-    <div id="forum-inspiration-section" class="bg-gradient-to-r from-purple-900 to-indigo-800 text-white py-16 relative overflow-hidden">
-        <!-- Floating elements -->
-        <div class="absolute top-1/4 left-1/4 w-16 h-16 rounded-full bg-purple-400 opacity-20 filter blur-xl floating"></div>
-        <div class="absolute bottom-1/3 right-1/3 w-24 h-24 rounded-full bg-indigo-400 opacity-20 filter blur-xl floating" style="animation-delay: 2s;"></div>
-        
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="text-center">
-                <h2 class="text-3xl font-bold mb-6">
-                    <i class="fas fa-question-circle mr-2"></i> יש לכם שאלה בנושא רכב והמסתעף?
-                </h2>
-                <p class="text-xl max-w-3xl mx-auto opacity-90 mb-8">
-                    כנסו להתייעץ בפורום שלנו - פורום רכבים זה לזה.
-                </p>
-                <a href="https://rechavimzelaze.ovh/" target="_blank" rel="noopener noreferrer" class="btn-primary px-8 py-4 text-lg pulse inline-flex items-center justify-center">
-                    <i class="fas fa-comments mr-2"></i> כנסו עכשיו לפורום
                 </a>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Inspiration Section / Forum CTA -->
+    <section id="forum-inspiration-section" class="bg-gradient-to-br from-purple-800 to-indigo-700 text-white py-20 relative overflow-hidden">
+        <div class="absolute top-0 left-0 w-32 h-32 rounded-full bg-purple-500 opacity-20 filter blur-2xl floating" aria-hidden="true"></div>
+        <div class="absolute bottom-0 right-0 w-48 h-48 rounded-full bg-indigo-500 opacity-20 filter blur-2xl floating" style="animation-delay: 2s;" aria-hidden="true"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center">
+                <h2 class="text-4xl font-extrabold mb-6">
+                    <i class="fas fa-comments mr-3 opacity-80"></i> יש לכם שאלה בנושא רכב והמסתעף?
+                </h2>
+                <p class="text-xl max-w-3xl mx-auto opacity-90 mb-10">
+                    כנסו להתייעץ בפורום הפעיל שלנו - "רכבים זה לזה", וקבלו תשובות ממומחים וחובבי רכב כמוכם.
+                </p>
+                <a href="https://rechavimzelaze.ovh/" target="_blank" rel="noopener noreferrer" class="btn-primary px-10 py-4 text-xl pulse !bg-white !text-purple-700 hover:!bg-purple-50 focus:!ring-purple-300">
+                    <i class="fas fa-external-link-alt"></i> כניסה לפורום
+                </a>
+            </div>
+        </div>
+    </section>
 
     <!-- About Us Section -->
-    <section id="about-section" class="py-16 bg-white">
+    <section id="about-section" class="py-20 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-                    <i class="fas fa-info-circle text-purple-600 mr-2"></i>
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold text-gray-900">
+                    <i class="fas fa-info-circle text-purple-600 mr-3"></i>
                     אודות CAR-טיב
                 </h2>
                 <p class="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
-                    מגלים את עולם הרכב הכשר, סרטון אחר סרטון.
+                    מגלים את עולם הרכב הכשר, סרטון אחר סרטון, בסביבה בטוחה ונקייה.
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 items-center">
-                <div>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">המשימה שלנו</h3>
-                    <p class="text-lg text-gray-700 mb-6 leading-relaxed">
-                        ב-CAR-טיב, אנו מחויבים לספק פלטפורמה ייחודית ונגישה לחובבי רכב מהמגזר הדתי והחרדי, המעוניינים לצרוך תוכן וידאו איכותי ומסונן. אנו מבינים את הצורך בתוכן "כשר" התואם את ערכי הקהילה, ולכן כל סרטון באתר נבדק בקפידה שאושר על ידי מערכת הסינון של נטפרי.
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12 items-center">
+                <div class="prose prose-lg prose-purple text-gray-700 max-w-none"> <!-- Tailwind Typography plugin for nice text styling -->
+                    <h3>המשימה שלנו</h3>
+                    <p>
+                        ב-CAR-טיב, אנו מחויבים לספק פלטפורמה ייחודית ונגישה לחובבי רכב מהמגזר הדתי והחרדי, המעוניינים לצרוך תוכן וידאו איכותי ומסונן. אנו מבינים את הצורך בתוכן "כשר" התואם את ערכי הקהילה, ולכן כל סרטון באתר נבדק בקפידה ומאושר על ידי מערכת הסינון של נטפרי.
                     </p>
-                    <h3 class="text-2xl font-bold text-gray-900 mb-4">מה תמצאו אצלנו?</h3>
-                    <p class="text-lg text-gray-700 mb-6 leading-relaxed">
-                        האתר מרכז מגוון רחב של סרטונים בנושאי רכב: החל מסקירות דגמים חדשים ויד שנייה, דרך מדריכי "עשה זאת בעצמך" לתחזוקה ותיקונים קלים, ועד לטיפים לבחירת הרכב המשפחתי המושלם. אנו שואפים להעשיר את הידע שלכם, לחסוך לכם זמן וכסף, והכל – בסביבה נקייה וכשרה
+                    <h3>מה תמצאו אצלנו?</h3>
+                    <p>
+                        האתר מרכז מגוון רחב של סרטונים בנושאי רכב: החל מסקירות דגמים חדשים ויד שנייה, דרך מדריכי "עשה זאת בעצמך" לתחזוקה ותיקונים קלים, ועד לטיפים לבחירת הרכב המשפחתי המושלם. אנו שואפים להעשיר את הידע שלכם, לחסוך לכם זמן וכסף, והכל – בסביבה נקייה וכשרה.
                     </p>
-                     <a href="#contact-section" class="btn-primary inline-flex items-center">
-                        <i class="fas fa-envelope mr-2"></i> דברו איתנו
+                     <a href="#contact-section" class="btn-primary mt-6 no-underline">
+                        <i class="fas fa-envelope"></i> דברו איתנו
                     </a>
                 </div>
-                <div class="relative order-first md:order-last">
-                    <img src="https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="מכונית מודרנית על כביש" class="rounded-xl shadow-2xl object-cover w-full h-auto max-h-[400px]">
-                    <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-purple-600 rounded-lg opacity-75 transform rotate-12 -z-10 hidden sm:block"></div>
-                    <div class="absolute -top-4 -left-4 w-20 h-20 bg-indigo-500 rounded-full opacity-50 filter blur-sm -z-10 hidden sm:block"></div>
+                <div class="relative order-first md:order-last group">
+                    <img src="https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="מכונית מודרנית כסופה על כביש עם נוף הררי" class="rounded-xl shadow-2xl object-cover w-full h-auto max-h-[450px] transition-transform duration-500 group-hover:scale-105">
+                    <div class="absolute -bottom-5 -right-5 w-28 h-28 bg-purple-600 rounded-lg opacity-60 transform rotate-12 -z-10 hidden sm:block transition-all duration-500 group-hover:opacity-80 group-hover:rotate-6" aria-hidden="true"></div>
+                    <div class="absolute -top-5 -left-5 w-24 h-24 bg-indigo-500 rounded-full opacity-40 filter blur-md -z-10 hidden sm:block transition-all duration-500 group-hover:opacity-60 group-hover:-translate-x-2 group-hover:-translate-y-2" aria-hidden="true"></div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Contact Us Section -->
-    <section id="contact-section" class="py-16 bg-purple-50">
+    <section id="contact-section" class="py-20 bg-purple-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-                    <i class="fas fa-paper-plane text-purple-600 mr-2"></i>
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-extrabold text-gray-900">
+                    <i class="fas fa-paper-plane text-purple-600 mr-3"></i>
                     צרו איתנו קשר
                 </h2>
                 <p class="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
@@ -1059,274 +1021,422 @@
                 </p>
             </div>
 
-            <div class="max-w-3xl mx-auto bg-white p-8 sm:p-10 rounded-xl shadow-xl">
-                <form action="#" method="POST" class="space-y-6">
+            <div class="max-w-2xl mx-auto bg-white p-8 sm:p-12 rounded-xl shadow-xl">
+                <form action="https://formspree.io/f/yourFormId" method="POST" class="space-y-6"> <!-- החלף עם ה-ID שלך מ-Formspree או שירות אחר -->
                     <div>
-                        <label for="contact-name" class="block text-sm font-medium text-gray-700">שם מלא</label>
-                        <div class="mt-1">
-                            <input type="text" name="contact-name" id="contact-name" autocomplete="name" required
-                                   class="py-3 px-4 block w-full shadow-sm focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md search-input">
-                        </div>
+                        <label for="contact-name" class="block text-sm font-medium text-gray-700 mb-1">שם מלא</label>
+                        <input type="text" name="name" id="contact-name" autocomplete="name" required
+                               class="search-input py-3 px-4 block w-full shadow-sm focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md">
                     </div>
                     <div>
-                        <label for="contact-email" class="block text-sm font-medium text-gray-700">כתובת אימייל</label>
-                        <div class="mt-1">
-                            <input id="contact-email" name="email" type="email" autocomplete="email" required
-                                   class="py-3 px-4 block w-full shadow-sm focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md search-input">
-                        </div>
+                        <label for="contact-email" class="block text-sm font-medium text-gray-700 mb-1">כתובת אימייל</label>
+                        <input id="contact-email" name="email" type="email" autocomplete="email" required
+                               class="search-input py-3 px-4 block w-full shadow-sm focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md">
                     </div>
                     <div>
-                        <label for="contact-subject" class="block text-sm font-medium text-gray-700">נושא הפנייה</label>
-                        <div class="mt-1">
-                            <input type="text" name="contact-subject" id="contact-subject" required
-                                   class="py-3 px-4 block w-full shadow-sm focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md search-input">
-                        </div>
+                        <label for="contact-subject" class="block text-sm font-medium text-gray-700 mb-1">נושא הפנייה</label>
+                        <input type="text" name="subject" id="contact-subject" required
+                               class="search-input py-3 px-4 block w-full shadow-sm focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md">
                     </div>
                     <div>
-                        <label for="contact-message" class="block text-sm font-medium text-gray-700">הודעה</label>
-                        <div class="mt-1">
-                            <textarea id="contact-message" name="message" rows="4" required
-                                      class="py-3 px-4 block w-full shadow-sm focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md search-input"></textarea>
-                        </div>
+                        <label for="contact-message" class="block text-sm font-medium text-gray-700 mb-1">הודעה</label>
+                        <textarea id="contact-message" name="message" rows="5" required
+                                  class="search-input py-3 px-4 block w-full shadow-sm focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md"></textarea>
                     </div>
-                    <div class="text-center">
+                    <div class="text-center pt-2">
                         <button type="submit"
-                                class="btn-primary inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                            <i class="fas fa-paper-plane mr-2"></i> שלח הודעה
+                                class="btn-primary px-10 py-3 text-lg">
+                            <i class="fas fa-paper-plane"></i> שלח הודעה
                         </button>
                     </div>
                 </form>
             </div>
             
-            <div class="mt-12 text-center">
+            <div class="mt-16 text-center">
                 <p class="text-lg text-gray-700">ניתן גם ליצור קשר ישירות דרך האימייל:</p>
-                <a href="mailto:info@car-tiv.example.com" class="text-purple-600 hover:text-purple-800 font-medium text-lg">
-                    <i class="fas fa-envelope mr-1"></i> michaelush613@gmail.com
+                <a href="mailto:michaelush613@gmail.com" class="text-purple-600 hover:text-purple-800 font-semibold text-xl group inline-block mt-2">
+                    <i class="fas fa-envelope mr-2 group-hover:animate-pulse"></i> michaelush613@gmail.com
                 </a>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer id="site-footer" class="bg-gray-900 text-gray-300">
-        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
-                <div>
-                    <div class="flex items-center mb-4">
-                        <i class="fas fa-car text-purple-500 text-xl ml-2"></i>
-                        <span class="text-lg font-bold text-white">CAR-טיב</span>
-                    </div>
-                    <p class="text-sm">
-                        האתר המוביל לסרטוני רכב כשרים באיכות גבוהה, שאושרו על ידי נטפרי
+    <footer id="site-footer" class="bg-gray-900 text-gray-400">
+        <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
+                <div class="sm:col-span-2 md:col-span-1">
+                    <a href="#" class="flex items-center mb-4 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded">
+                        <i class="fas fa-car text-purple-500 text-2xl ml-2"></i>
+                        <span class="text-xl font-bold text-white">CAR-טיב</span>
+                    </a>
+                    <p class="text-sm leading-relaxed">
+                        האתר המוביל לסרטוני רכב כשרים באיכות גבוהה, מאושרים על ידי נטפרי.
                     </p>
-                    <div class="mt-4 flex space-x-4">
-                        <!-- Social media icons can go here if needed -->
+                    <!-- Social media icons can go here if needed 
+                    <div class="mt-6 flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-purple-400"><i class="fab fa-facebook-f"></i><span class="sr-only">Facebook</span></a>
+                        <a href="#" class="text-gray-400 hover:text-purple-400"><i class="fab fa-twitter"></i><span class="sr-only">Twitter</span></a>
                     </div>
+                    -->
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">קטגוריות נבחרות</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-sm hover:text-purple-300">סקירת רכב</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">טיפולים שוטפים</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">תיקון תקלות ובעיות</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">עשה זאת בעצמך</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">רכבי אספנות</a></li>
+                    <h3 class="text-base font-semibold text-white uppercase tracking-wider mb-5">קטגוריות נבחרות</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#categories-swiper-container" class="text-sm hover:text-purple-300 transition-colors">סקירת רכב</a></li>
+                        <li><a href="#categories-swiper-container" class="text-sm hover:text-purple-300 transition-colors">טיפולים שוטפים</a></li>
+                        <li><a href="#categories-swiper-container" class="text-sm hover:text-purple-300 transition-colors">תיקון תקלות ובעיות</a></li>
+                        <li><a href="#categories-swiper-container" class="text-sm hover:text-purple-300 transition-colors">עשה זאת בעצמך</a></li>
+                        <li><a href="#categories-swiper-container" class="text-sm hover:text-purple-300 transition-colors">רכבי אספנות</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">אתר</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#about-section" class="text-sm hover:text-purple-300">אודותינו</a></li>
-                        <li><a href="https://rechavimzelaze.ovh/" target="_blank" rel="noopener noreferrer" class="text-sm hover:text-purple-300">פורום רכבים זה לזה</a></li>
-                        <li><a href="https://github.com/mmichaelush/kosher-car-videos.io" target="_blank" rel="noopener noreferrer" class="text-sm hover:text-purple-300">הפרויקט ב-GitHub</a></li>
-                        <li><a href="#contact-section" class="text-sm hover:text-purple-300">צור קשר</a></li>
+                    <h3 class="text-base font-semibold text-white uppercase tracking-wider mb-5">ניווט מהיר</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#about-section" class="text-sm hover:text-purple-300 transition-colors">אודותינו</a></li>
+                        <li><a href="https://rechavimzelaze.ovh/" target="_blank" rel="noopener noreferrer" class="text-sm hover:text-purple-300 transition-colors">פורום רכבים זה לזה</a></li>
+                        <li><a href="https://github.com/mmichaelush/kosher-car-videos.io" target="_blank" rel="noopener noreferrer" class="text-sm hover:text-purple-300 transition-colors">הפרויקט ב-GitHub</a></li>
+                        <li><a href="#contact-section" class="text-sm hover:text-purple-300 transition-colors">צור קשר</a></li>
+                        <li><a href="#site-footer" class="text-sm hover:text-purple-300 transition-colors">מפת אתר</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">משפטי</h3>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-sm hover:text-purple-300">מדיניות פרטיות</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">תנאי שימוש</a></li>
-                         <li><a href="#" class="text-sm hover:text-purple-300">דיווח על תוכן</a></li>
+                    <h3 class="text-base font-semibold text-white uppercase tracking-wider mb-5">משפטי</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-sm hover:text-purple-300 transition-colors">מדיניות פרטיות</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300 transition-colors">תנאי שימוש</a></li>
+                         <li><a href="#contact-section" class="text-sm hover:text-purple-300 transition-colors">דיווח על תוכן</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="mt-12 border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
-                <p class="text-sm">
-                    © 2025 CAR-טיב. כל הזכויות שמורות.
+            <div class="mt-12 border-t border-gray-700 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-sm text-center md:text-right">
+                    © <span id="current-year">2024</span> CAR-טיב. כל הזכויות שמורות.
                 </p>
-                <div class="mt-4 md:mt-0 flex space-x-6">
-                    <a href="#site-footer" class="text-sm hover:text-purple-300"> מפת אתר </a>
-                </div>
+                <p class="text-sm mt-4 md:mt-0 text-center md:text-left">
+                    פותח באהבה <i class="fas fa-heart text-purple-400"></i> על ידי <a href="https://github.com/mmichaelush" target="_blank" rel="noopener noreferrer" class="hover:text-purple-300 underline">מיכאל אושקי</a>
+                </p>
             </div>
         </div>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script>
-        // Initialize Swiper
-        const swiper = new Swiper('.categories-swiper', {
-            slidesPerView: 'auto',
-            spaceBetween: 8,
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            breakpoints: {
-                640: {
-                    spaceBetween: 12,
-                },
-                1024: {
-                    spaceBetween: 16,
-                }
-            }
-        });
-        
-        // Mobile menu toggle
-        const openMenuBtn = document.getElementById('open-menu');
-        const closeMenuBtn = document.getElementById('close-menu');
-        const mobileMenu = document.querySelector('.mobile-menu');
-        const backdrop = document.querySelector('.backdrop');
-        
-        function closeMobileMenu() {
-            mobileMenu.classList.remove('open');
-            backdrop.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        openMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.add('open');
-            backdrop.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        });
-        
-        closeMenuBtn.addEventListener('click', closeMobileMenu);
-        backdrop.addEventListener('click', closeMobileMenu);
-        
-        // Close mobile menu on link click
-        const mobileNavLinks = document.querySelectorAll('.mobile-menu .nav-link');
-        mobileNavLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                // Small delay to allow navigation before closing
-                setTimeout(closeMobileMenu, 100); 
-            });
-        });
-
-        // Category filter functionality
         document.addEventListener('DOMContentLoaded', function() {
-            const categoryButtons = document.querySelectorAll('.category-btn');
+            // Initialize Swiper
+            const categoriesSwiper = new Swiper('.categories-swiper', {
+                slidesPerView: 'auto',
+                spaceBetween: 10, // קצת יותר רווח
+                pagination: {
+                    el: '.swiper-pagination',
+                    clickable: true,
+                },
+                // Navigation (optional, if you want arrows)
+                // navigation: {
+                //   nextEl: '.swiper-button-next',
+                //   prevEl: '.swiper-button-prev',
+                // },
+                breakpoints: {
+                    640: { spaceBetween: 12, },
+                    1024: { spaceBetween: 16, }
+                }
+            });
             
+            // --- Mobile Menu ---
+            const openMenuBtn = document.getElementById('open-menu');
+            const closeMenuBtn = document.getElementById('close-menu');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const backdrop = document.getElementById('mobile-menu-backdrop');
+            
+            function openMobileMenu() {
+                mobileMenu.classList.add('open');
+                backdrop.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent background scroll
+            }
+
+            function closeMobileMenu() {
+                mobileMenu.classList.remove('open');
+                backdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+
+            if (openMenuBtn) openMenuBtn.addEventListener('click', openMobileMenu);
+            if (closeMenuBtn) closeMenuBtn.addEventListener('click', closeMobileMenu);
+            if (backdrop) backdrop.addEventListener('click', closeMobileMenu);
+            
+            // Close mobile menu on link click
+            const mobileNavLinks = document.querySelectorAll('#mobile-menu .nav-link');
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', () => setTimeout(closeMobileMenu, 150));
+            });
+
+            // --- Active Nav Link Highlighting (for non-hash links, more complex for single page with hashes) ---
+            // This is a simplified version. For robust active link highlighting on scroll, IntersectionObserver is better.
+            const mainNavLinks = document.querySelectorAll('nav:not(.mobile-menu nav) .nav-link');
+            mainNavLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mainNavLinks.forEach(lnk => lnk.classList.remove('active'));
+                    this.classList.add('active');
+                    // For mobile menu, we might want to sync this, or handle it separately
+                });
+            });
+
+            // --- Category Filter ---
+            const categoryButtons = document.querySelectorAll('.category-btn');
             categoryButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    categoryButtons.forEach(btn => {
-                        btn.classList.remove('active');
-                    });
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
                     this.classList.add('active');
-                    console.log('Filtering by:', this.textContent.trim());
+                    const category = this.dataset.category;
+                    console.log('Filtering by category:', category);
+                    // TODO: Implement actual video filtering based on category
+                    // filterVideos({ category: category, tags: currentSelectedTags });
                 });
             });
             
-            // Search functionality (example)
-            const searchInputs = document.querySelectorAll('.search-input[type="text"]'); // Selects text search inputs
-            searchInputs.forEach(searchInput => {
-                searchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault(); // Prevent form submission if it's in a form
-                        console.log('Searching for:', this.value);
-                        // Add search logic here
+            // --- Tag Search Functionality ---
+            const popularTagsContainer = document.getElementById('popular-tags-container');
+            const customTagForm = document.getElementById('custom-tag-form');
+            const tagSearchInput = document.getElementById('tag-search-input');
+            const selectedTagsContainer = document.getElementById('selected-tags-container');
+            let currentSelectedTags = [];
+
+            // Event listener for popular tags (using event delegation)
+            if (popularTagsContainer) {
+                popularTagsContainer.addEventListener('click', function(event) {
+                    const clickedTagElement = event.target.closest('.tag');
+                    if (clickedTagElement) {
+                        const tagValue = clickedTagElement.dataset.tagValue;
+                        if (tagValue) {
+                            toggleTagSelection(tagValue, clickedTagElement);
+                        }
                     }
                 });
-            });
-        });
-        
-        // Tag search functionality
-        let currentSelectedTags = [];
+            }
 
-        function searchByTag(tag) {
-            console.log('Searching by popular tag:', tag);
-            addSelectedTag(tag);
-            filterVideosByTags();
-        }
-        
-        function addTagToSearch() {
-            const tagInput = document.getElementById('tag-search');
-            const tag = tagInput.value.trim();
+            // Event listener for adding custom tags
+            if (customTagForm) {
+                customTagForm.addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const newTagName = tagSearchInput.value.trim();
+                    if (newTagName && !currentSelectedTags.includes(newTagName)) {
+                        addCustomTagToDisplay(newTagName); // Add to popular tags visually (optional)
+                        toggleTagSelection(newTagName); // Select it
+                    }
+                    tagSearchInput.value = '';
+                });
+            }
             
-            if (tag) {
-                addSelectedTag(tag);
-                tagInput.value = '';
+            function toggleTagSelection(tagName, tagElement = null) {
+                const index = currentSelectedTags.indexOf(tagName);
+                if (index > -1) { // Tag is already selected, so unselect it
+                    currentSelectedTags.splice(index, 1);
+                    if (tagElement) tagElement.classList.remove('active-search-tag');
+                } else { // Tag is not selected, so select it
+                    currentSelectedTags.push(tagName);
+                    if (tagElement) tagElement.classList.add('active-search-tag');
+                }
+                renderSelectedTags();
                 filterVideosByTags();
             }
-        }
-        
-        function addSelectedTag(tag) {
-            if (currentSelectedTags.includes(tag)) return; // Avoid duplicates
 
-            currentSelectedTags.push(tag);
-            renderSelectedTags();
-        }
-        
-        function removeTag(tagToRemove) {
-            currentSelectedTags = currentSelectedTags.filter(tag => tag !== tagToRemove);
-            renderSelectedTags();
-            filterVideosByTags();
-        }
-
-        function renderSelectedTags() {
-            const selectedTagsContainer = document.getElementById('selected-tags');
-            selectedTagsContainer.innerHTML = ''; // Clear existing tags
-
-            currentSelectedTags.forEach(tag => {
-                const tagElement = document.createElement('span');
-                tagElement.className = 'tag bg-purple-200 text-purple-800'; // Slightly different color for selected
-                tagElement.innerHTML = `${tag} <i class="fas fa-times cursor-pointer hover:text-purple-600" onclick="removeTag('${tag.replace(/'/g, "\\'")}')"></i>`; // Handle quotes in tag names
-                selectedTagsContainer.appendChild(tagElement);
-            });
-        }
-
-        function filterVideosByTags() {
-            console.log('Filtering videos by selected tags:', currentSelectedTags);
-            // In a real app, you would implement the logic to filter and display videos
-            // based on the `currentSelectedTags` array.
-            // For example, iterate through all video cards, check their tags, and hide/show accordingly.
-        }
-        
-        // Magic sparkle effect
-        document.addEventListener('click', function(e) {
-            // Avoid sparkles on interactive elements like buttons, inputs, links for better UX
-            if (e.target.closest('button, input, a, .swiper-slide, .tag')) {
-                return;
+            function addCustomTagToDisplay(tagName) {
+                // Optional: If you want to add the custom tag to the "popular tags" list visually
+                // This doesn't make it permanently popular, just for the current session's UI
+                if (!document.querySelector(`.tag[data-tag-value="${tagName}"]`)) {
+                    const newTagElement = document.createElement('span');
+                    newTagElement.className = 'tag';
+                    newTagElement.dataset.tagValue = tagName;
+                    // Find a generic icon or allow tags without icons
+                    newTagElement.innerHTML = `<i class="fas fa-tag"></i> ${tagName}`;
+                    popularTagsContainer.appendChild(newTagElement);
+                }
+            }
+            
+            function renderSelectedTags() {
+                selectedTagsContainer.innerHTML = ''; // Clear previous
+                currentSelectedTags.forEach(tagName => {
+                    const tagChip = document.createElement('span');
+                    tagChip.className = 'tag bg-purple-600 text-white hover:bg-purple-700'; // Style for selected tags
+                    tagChip.textContent = tagName;
+                    
+                    const removeIcon = document.createElement('i');
+                    removeIcon.className = 'fas fa-times mr-2 cursor-pointer text-xs'; // Adjusted margin
+                    removeIcon.onclick = () => {
+                        // When removing a chip, also unselect from popular tags if it's there
+                        const popularTagEl = document.querySelector(`.tag[data-tag-value="${tagName}"]`);
+                        toggleTagSelection(tagName, popularTagEl); 
+                    };
+                    
+                    tagChip.prepend(removeIcon); // Add icon before text
+                    selectedTagsContainer.appendChild(tagChip);
+                });
             }
 
-            const sparkle = document.createElement('div');
-            sparkle.className = 'magic-sparkle';
-            // Adjust position to be relative to the page, not viewport, for consistency on scroll
-            sparkle.style.left = `${e.pageX - 4}px`; 
-            sparkle.style.top = `${e.pageY - 4}px`;
-            document.body.appendChild(sparkle);
+            function filterVideosByTags() {
+                console.log('Filtering videos by current tags:', currentSelectedTags);
+                // TODO: Implement actual video filtering logic here.
+                // This function should look at `currentSelectedTags` and the active category.
+                // filterVideos({ category: document.querySelector('.category-btn.active')?.dataset.category, tags: currentSelectedTags });
+            }
+
+            // Placeholder for a combined filter function
+            // function filterVideos(filters) {
+            //     console.log("Applying filters:", filters);
+            //     const { category, tags } = filters;
+            //     // Iterate over all video cards
+            //     // Check if video card matches category (if 'all' or matches data-category)
+            //     // Check if video card matches ALL selected tags (if tags array is not empty)
+            //     // Show/hide video card accordingly
+            // }
+
+            // --- Search Functionality (Placeholder) ---
+            window.performSearch = function(event) { // Make it global for onsubmit
+                event.preventDefault();
+                const searchInput = event.target.querySelector('input[type="search"]');
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    console.log('Performing search for:', searchTerm);
+                    // TODO: Implement search logic (e.g., redirect to a search results page or filter current view)
+                }
+            }
             
-            setTimeout(() => {
-                sparkle.remove();
-            }, 1000);
+            // --- Magic Sparkle Effect ---
+            document.addEventListener('mousemove', function(e) { // Changed to mousemove for more sparkles
+                 if (Math.random() < 0.1) { // Add some randomness to reduce density
+                    // Avoid sparkles on interactive elements for better UX
+                    if (e.target.closest('button, input, a, .swiper-slide, .tag, textarea, select')) {
+                        return;
+                    }
+
+                    const sparkle = document.createElement('div');
+                    sparkle.className = 'magic-sparkle';
+                    sparkle.style.left = `${e.pageX - 4}px`; 
+                    sparkle.style.top = `${e.pageY - 4}px`;
+                    document.body.appendChild(sparkle);
+                    
+                    setTimeout(() => sparkle.remove(), 1000);
+                }
+            });
+
+            // --- Update current year in footer ---
+            const yearSpan = document.getElementById('current-year');
+            if (yearSpan) {
+                yearSpan.textContent = new Date().getFullYear();
+            }
+
+            // --- Smooth scroll for all hash links (already handled by CSS `scroll-behavior: smooth;`) ---
+            // The JavaScript version below is a fallback if CSS is not supported or for more control.
+            // document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            //     anchor.addEventListener('click', function (e) {
+            //         const href = this.getAttribute('href');
+            //         if (href.length > 1 && href.startsWith('#')) {
+            //             const targetElement = document.querySelector(href);
+            //             if (targetElement) {
+            //                 e.preventDefault();
+            //                 targetElement.scrollIntoView({ behavior: 'smooth' });
+            //             }
+            //         }
+            //     });
+            // });
+
+            console.log("CAR-טיב scripts loaded and initialized.");
         });
-
-         Smooth scroll for nav links (alternative to CSS scroll-behavior for wider browser support if needed)
-         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-             anchor.addEventListener('click', function (e) {
-                 const href = this.getAttribute('href');
-                 // Ensure it's an internal link and not just '#'
-                 if (href.length > 1 && href.startsWith('#')) {
-                     e.preventDefault();
-                     const targetElement = document.querySelector(href);
-                     if (targetElement) {
-                         targetElement.scrollIntoView({
-                             behavior: 'smooth'
-                         });
-                     }
-                 }
-             });
-         });
-
     </script>
 </body>
 </html>
+
+// --- Tag Search Functionality ---
+            const popularTagsContainer = document.getElementById('popular-tags-container');
+            const customTagForm = document.getElementById('custom-tag-form');
+            const tagSearchInput = document.getElementById('tag-search-input');
+            const selectedTagsContainer = document.getElementById('selected-tags-container');
+            let currentSelectedTags = []; // מערך שיחזיק את התגיות שנבחרו כרגע
+
+            // Event listener for popular tags (using event delegation for better performance)
+            if (popularTagsContainer) {
+                popularTagsContainer.addEventListener('click', function(event) {
+                    // ודא שהקליק היה על אלמנט תגית או בתוכו
+                    const clickedTagElement = event.target.closest('.tag');
+                    if (clickedTagElement) {
+                        const tagValue = clickedTagElement.dataset.tagValue; // קבל את שם התגית מה-data attribute
+                        if (tagValue) {
+                            toggleTagSelection(tagValue, clickedTagElement);
+                        }
+                    }
+                });
+            }
+
+            // Event listener for adding custom tags from input field
+            if (customTagForm) {
+                customTagForm.addEventListener('submit', function(event) {
+                    event.preventDefault(); // מנע ריענון דף
+                    const newTagName = tagSearchInput.value.trim();
+                    if (newTagName && !currentSelectedTags.includes(newTagName)) {
+                        // אופציונלי: אם רוצים להוסיף את התגית החדשה גם לרשימת התגיות הפופולריות (ויזואלית)
+                        // addCustomTagToPopularDisplay(newTagName); 
+                        toggleTagSelection(newTagName); // בחר את התגית החדשה
+                    }
+                    tagSearchInput.value = ''; // נקה את שדה הקלט
+                });
+            }
+            
+            // פונקציה שמטפלת בבחירה/ביטול בחירה של תגית
+            function toggleTagSelection(tagName, tagElement = null) {
+                const index = currentSelectedTags.indexOf(tagName);
+                if (index > -1) { // אם התגית כבר בחורה, הסר אותה
+                    currentSelectedTags.splice(index, 1);
+                    if (tagElement) tagElement.classList.remove('active-search-tag'); // הסר סימון ויזואלי
+                } else { // אם התגית לא בחורה, הוסף אותה
+                    currentSelectedTags.push(tagName);
+                    if (tagElement) tagElement.classList.add('active-search-tag'); // הוסף סימון ויזואלי
+                }
+                renderSelectedTagsChips(); // עדכן את התצוגה של התגיות הנבחרות (ה"צ'יפים")
+                filterVideosByActiveFilters(); // בצע סינון של הווידאו עם התגיות והקטגוריה המעודכנים
+            }
+
+            // אופציונלי: פונקציה להוספת תגית שהוקלדה ידנית גם לרשימת התגיות הפופולריות
+            // function addCustomTagToPopularDisplay(tagName) {
+            //     if (!document.querySelector(`.tag[data-tag-value="${tagName}"]`)) {
+            //         const newTagElement = document.createElement('span');
+            //         newTagElement.className = 'tag';
+            //         newTagElement.dataset.tagValue = tagName;
+            //         newTagElement.innerHTML = `<i class="fas fa-tag"></i> ${tagName}`;
+            //         popularTagsContainer.appendChild(newTagElement);
+            //     }
+            // }
+            
+            // פונקציה לרנדור התגיות שנבחרו כ"צ'יפים" מתחת לשדה החיפוש
+            function renderSelectedTagsChips() {
+                selectedTagsContainer.innerHTML = ''; // נקה את התגיות הקודמות
+                currentSelectedTags.forEach(tagName => {
+                    const tagChip = document.createElement('span');
+                    tagChip.className = 'tag bg-purple-600 text-white hover:bg-purple-700 cursor-default'; // עיצוב שונה לצ'יפ
+                    
+                    const removeIcon = document.createElement('i');
+                    removeIcon.className = 'fas fa-times ml-2 cursor-pointer text-xs opacity-75 hover:opacity-100'; // אייקון X להסרה
+                    removeIcon.onclick = () => {
+                        // בעת הסרת צ'יפ, גם בטל את הבחירה שלו מרשימת התגיות הפופולריות (אם הוא שם)
+                        const popularTagEl = document.querySelector(`.tag[data-tag-value="${tagName}"]`);
+                        toggleTagSelection(tagName, popularTagEl); 
+                    };
+                    
+                    tagChip.textContent = tagName; // הטקסט של התגית
+                    tagChip.appendChild(removeIcon); // הוסף את אייקון ה-X לצ'יפ
+                    selectedTagsContainer.appendChild(tagChip);
+                });
+            }
+
+            // פונקציה ראשית לסינון וידאו
+            function filterVideosByActiveFilters() {
+                const activeCategoryElement = document.querySelector('.category-btn.active');
+                const currentCategory = activeCategoryElement ? activeCategoryElement.dataset.category : 'all';
+                
+                console.log('Filtering videos by:', {
+                    category: currentCategory,
+                    tags: currentSelectedTags
+                });
+                // כאן תוסיף את הלוגיקה האמיתית של סינון הווידאו.
+                // עליך לעבור על כל כרטיסיות הווידאו, לבדוק אם הן תואמות לקטגוריה הפעילה
+                // ולכל התגיות שבמערך currentSelectedTags, ולהציג/להסתיר אותן בהתאם.
+            }
