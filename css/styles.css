@@ -1,0 +1,259 @@
+/* css/styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+    --primary: #7c3aed; /* סגול ראשי */
+    --primary-dark: #6d28d9; /* סגול ראשי כהה */
+    --dark: #1e293b; /* טקסט כהה / רקעים כהים */
+    --light: #f8fafc; /* רקע בהיר */
+    --secondary: #ede9fe; /* סגול בהיר משני */
+    --border-color: #e2e8f0; /* צבע גבולות עדין */
+    --text-muted: #64748b; /* טקסט אפור-כחלחל */
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Rubik', sans-serif;
+    background-color: var(--light);
+    color: var(--dark);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased; /* לשיפור החלקות של הפונט בדפדפני WebKit */
+    -moz-osx-font-smoothing: grayscale; /* לשיפור החלקות של הפונט ב-Firefox */
+}
+
+.hero-gradient {
+    background: linear-gradient(135deg, #4c1d95 0%, #7e22ce 100%);
+}
+
+.video-card {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border-radius: 1rem; /* 16px */
+    overflow: hidden;
+    background: white;
+    /* הצללה תגיע מ-Tailwind או שתוגדר כאן אם צריך משהו מיוחד */
+    position: relative;
+}
+
+.video-card:hover {
+    /* transform והצללה מוגדרים ב-Tailwind */
+}
+
+.video-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent 60%, rgba(0,0,0,0.5));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.video-card:hover::before {
+    opacity: 1;
+}
+
+.category-btn {
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    border-radius: 1.5rem; /* 24px */
+    font-weight: 500;
+    font-size: 0.875rem; /* 14px */
+    padding: 0.5rem 1rem;
+    background-color: var(--secondary);
+    color: var(--primary);
+    border: 1px solid #ddd6fe; /* גבול תואם */
+}
+
+.category-btn.active {
+    background-color: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    /* box-shadow יגיע מ-Tailwind, או הוסף כאן אם יש צורך */
+}
+
+.category-btn:hover:not(.active) {
+    background-color: #ddd6fe;
+    border-color: #c4b5fd;
+}
+
+.video-container {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    background: #000; /* Placeholder background */
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.nav-link {
+    position: relative;
+    padding-top: 0.5rem; /* אם הקישורים בתפריט הראשי צריכים ריווח אנכי */
+    padding-bottom: 0.5rem;
+    margin: 0 0.5rem; /* קצת פחות רווח מהצדדים בתפריט הראשי */
+    font-weight: 500;
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+    text-decoration: none; /* לוודא שאין קו תחתון */
+}
+
+.nav-link:hover,
+.nav-link:focus {
+    color: var(--primary);
+    outline: none;
+}
+/* רק עבור הניווט הראשי (לא התפריט הנייד) */
+header nav .nav-link.active {
+    color: var(--primary);
+    font-weight: 600;
+}
+
+header nav .nav-link.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0; /* הצמדה לתחתית הקישור */
+    right: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary);
+    border-radius: 1px;
+}
+
+/* סגנונות ל-input ו-tag מגיעים בעיקר מ-Tailwind, אך ניתן להוסיף כאן override אם צריך */
+.search-input {
+    /* סגנונות בסיסיים מ-Tailwind. הוסף כאן אם יש צורך בשינויים */
+}
+.search-input:focus {
+    /* סגנונות בסיסיים מ-Tailwind. הוסף כאן אם יש צורך בשינויים */
+}
+
+.tag {
+    /* סגנונות בסיסיים מ-Tailwind. הוסף כאן אם יש צורך בשינויים */
+}
+.tag:hover {
+    /* סגנונות בסיסיים מ-Tailwind. הוסף כאן אם יש צורך בשינויים */
+}
+.tag.active-search-tag {
+    background-color: var(--primary) !important; /* לוודא דריסה אם יש התנגשות */
+    color: white !important;
+}
+
+
+/* כפתורים - יכולים להגיע מ-Tailwind או להיות מוגדרים כאן */
+.btn-primary, .btn-secondary {
+    /* סגנונות בסיסיים מ-Tailwind. הוסף כאן אם יש צורך בשינויים */
+}
+
+/* Swiper - סגנונות בסיסיים מגיעים מהספרייה, ניתן לדרוס פה */
+.swiper {
+    /* padding כבר מוגדר ב-Tailwind או ב-inline style */
+}
+
+.swiper-pagination-bullet {
+    /* ... */
+}
+.swiper-pagination-bullet-active {
+    /* ... */
+}
+
+/* Mobile Menu specific styles - בנוסף ל-Tailwind */
+.mobile-menu.open {
+    transform: translateX(0);
+}
+.backdrop.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+
+/* Channel Card - אם יש צורך בסגנונות מעבר ל-Tailwind */
+.channel-card {
+    /* ... */
+}
+
+/* Magic sparkle effect */
+.magic-sparkle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    animation: sparkle 1s ease-out forwards;
+}
+
+@keyframes sparkle {
+    0% { transform: scale(0); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* Floating animation */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+.floating {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Pulse animation */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pulse:hover, .pulse:focus {
+    animation: pulse 2s infinite;
+    /* outline: none; (כבר מוגדר ב-Tailwind לרוב) */
+}
+
+/* Utility class for screen readers only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Prose styles for About section - אם משתמשים ב-Tailwind Typography */
+/* .prose { ... } אם לא מוגדר ב-JS של Tailwind */
+
+
+/* התאמות קטנות נוספות אם צריך */
+#video-cards-container > p { /* Placeholder text styling */
+    font-size: 1.125rem; /* text-lg */
+}
+
+#no-videos-found i {
+    display: block; /* Center the icon */
+    margin-bottom: 1rem; /* Add space below icon */
+}
+
+/* Responsive adjustments for search inputs if needed */
+@media (max-width: 768px) {
+    .hero-heading {
+        font-size: 2.25rem !important; /* 36px */
+    }
+}
