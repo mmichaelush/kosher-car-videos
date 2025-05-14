@@ -17,6 +17,10 @@
             --light: #f8fafc;
         }
         
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Rubik', sans-serif;
             background-color: #f8fafc;
@@ -127,7 +131,7 @@
         .search-input {
             transition: all 0.2s ease;
             border-radius: 12px;
-            padding: 0.5rem 2.5rem 0.5rem 1rem;
+            padding: 0.75rem 2.5rem 0.75rem 1rem; /* Adjusted padding for consistency */
             border: 1px solid #e2e8f0;
             background-color: #f8fafc;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -363,12 +367,12 @@
         </div>
         <nav class="flex flex-col space-y-4">
             <a href="#" class="nav-link active text-gray-900">בית</a>
-            <a href="#" class="nav-link text-gray-700">קטגוריות</a>
-            <a href="#" class="nav-link text-gray-700">ערוצים</a>
-            <a href="#" class="nav-link text-gray-700">אודות</a>
-            <a href="#" class="nav-link text-gray-700">שאלות</a>
-            <a href="#" class="nav-link text-gray-700">צור קשר</a>
-            <a href="#" class="nav-link text-gray-700">מפת האתר</a>
+            <a href="#categories-swiper-container" class="nav-link text-gray-700">קטגוריות</a>
+            <a href="#featured-channels-section" class="nav-link text-gray-700">ערוצים</a>
+            <a href="#about-section" class="nav-link text-gray-700">אודות</a>
+            <a href="#forum-inspiration-section" class="nav-link text-gray-700">שאלות</a>
+            <a href="#contact-section" class="nav-link text-gray-700">צור קשר</a>
+            <a href="#site-footer" class="nav-link text-gray-700">מפת האתר</a>
         </nav>
     </div>
     
@@ -383,12 +387,12 @@
                     </div>
                     <div class="hidden md:mr-10 md:flex md:space-x-8">
                         <a href="#" class="nav-link active text-gray-900">בית</a>
-                        <a href="#" class="nav-link">קטגוריות</a>
-                        <a href="#" class="nav-link">ערוצים</a>
-                        <a href="#" class="nav-link">אודות</a>
-                        <a href="#" class="nav-link">שאלות</a>
-                        <a href="#" class="nav-link">צור קשר</a>
-                        <a href="#" class="nav-link">מפת האתר</a>
+                        <a href="#categories-swiper-container" class="nav-link">קטגוריות</a>
+                        <a href="#featured-channels-section" class="nav-link">ערוצים</a>
+                        <a href="#about-section" class="nav-link">אודות</a>
+                        <a href="#forum-inspiration-section" class="nav-link">שאלות</a>
+                        <a href="#contact-section" class="nav-link">צור קשר</a>
+                        <a href="#site-footer" class="nav-link">מפת האתר</a>
                     </div>
                 </div>
                 <div class="flex items-center">
@@ -425,12 +429,12 @@
                    .מאגר ענק של סרטוני רכבים כשרים, שנבדקו ואושרו בנטפרי
                 </p>
                 <div class="mt-10 flex flex-col sm:flex-row justify-center space-y-3 sm:space-y-0 sm:space-x-4">
-                    <button class="btn-secondary px-6 py-3 text-lg pulse">
+                    <a href="#" class="btn-secondary px-6 py-3 text-lg pulse inline-flex items-center justify-center">
                         <i class="fas fa-play ml-2"></i> צפו עכשיו
-                    </button>
-                    <button class="btn-primary px-6 py-3 text-lg pulse">
-                        <i class="fas fa-magic ml-2"></i> אודות
-                    </button>
+                    </a>
+                    <a href="#about-section" class="btn-primary px-6 py-3 text-lg pulse inline-flex items-center justify-center">
+                        <i class="fas fa-info-circle ml-2"></i> אודות
+                    </a>
                 </div>
             </div>
         </div>
@@ -449,7 +453,7 @@
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Categories Swiper -->
-        <div class="mb-10">
+        <div id="categories-swiper-container" class="mb-10">
             <h2 class="text-2xl font-bold text-gray-900 mb-6">עיון לפי קטגוריה</h2>
             <div class="swiper categories-swiper">
                 <div class="swiper-wrapper">
@@ -490,87 +494,87 @@
             <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
                 <i class="fas fa-tags text-purple-500 ml-2"></i> חיפוש לפי תגיות
             </h3>
-<div class="flex flex-wrap mb-4" id="popular-tags">
-    <span class="tag" onclick="searchByTag('מנוע')"><i class="fas fa-cogs"></i> מנוע</span>
-    <span class="tag" onclick="searchByTag('תיבת הילוכים')"><i class="fas fa-exchange-alt"></i> תיבת הילוכים</span>
-    <span class="tag" onclick="searchByTag('בלמים')"><i class="fas fa-hand-paper"></i> בלמים</span>
-    <span class="tag" onclick="searchByTag('רפידות בלם')"><i class="fas fa-ellipsis-h"></i> רפידות בלם</span>
-    <span class="tag" onclick="searchByTag('צלחות בלם')"><i class="fas fa-compact-disc"></i> צלחות בלם</span>
-    <span class="tag" onclick="searchByTag('נוזל בלמים')"><i class="fas fa-tint"></i> נוזל בלמים</span>
-    <span class="tag" onclick="searchByTag('מערכת ABS')"><i class="fas fa-car-crash"></i> מערכת ABS</span>
-    <span class="tag" onclick="searchByTag('חשמל')"><i class="fas fa-bolt"></i> חשמל</span>
-    <span class="tag" onclick="searchByTag('מצבר')"><i class="fas fa-car-battery"></i> מצבר</span>
-    <span class="tag" onclick="searchByTag('פיוזים')"><i class="fas fa-plug"></i> פיוזים</span>
-    <span class="tag" onclick="searchByTag('חוטי חשמל')"><i class="fas fa-ethernet"></i> חוטי חשמל</span>
-    <span class="tag" onclick="searchByTag('סטרטר')"><i class="fas fa-power-off"></i> סטרטר</span>
-    <span class="tag" onclick="searchByTag('אלטרנטור')"><i class="fas fa-sync-alt"></i> אלטרנטור</span>
-    <span class="tag" onclick="searchByTag('מזגן')"><i class="fas fa-snowflake"></i> מזגן</span>
-    <span class="tag" onclick="searchByTag('מדחס מזגן')"><i class="fas fa-fan"></i> מדחס מזגן</span>
-    <span class="tag" onclick="searchByTag('מאוורר')"><i class="fas fa-wind"></i> מאוורר</span>
-    <span class="tag" onclick="searchByTag('רדיאטור')"><i class="fas fa-water"></i> רדיאטור</span>
-    <span class="tag" onclick="searchByTag('תרמוסטט')"><i class="fas fa-thermometer-half"></i> תרמוסטט</span>
-    <span class="tag" onclick="searchByTag('צינור מים')"><i class="fas fa-grip-lines-vertical"></i> צינור מים</span>
-    <span class="tag" onclick="searchByTag('מים לרדיאטור')"><i class="fas fa-tint"></i> מים לרדיאטור</span>
-    <span class="tag" onclick="searchByTag('שמן מנוע')"><i class="fas fa-oil-can"></i> שמן מנוע</span>
-    <span class="tag" onclick="searchByTag('שמן גיר')"><i class="fas fa-oil-can"></i> שמן גיר</span>
-    <span class="tag" onclick="searchByTag('פילטר שמן')"><i class="fas fa-filter"></i> פילטר שמן</span>
-    <span class="tag" onclick="searchByTag('פילטר אוויר')"><i class="fas fa-filter"></i> פילטר אוויר</span>
-    <span class="tag" onclick="searchByTag('פילטר מזגן')"><i class="fas fa-filter"></i> פילטר מזגן</span>
-    <span class="tag" onclick="searchByTag('מערכת פליטה')"><i class="fas fa-smog"></i> מערכת פליטה</span>
-    <span class="tag" onclick="searchByTag('אגזוז')"><i class="fas fa-wind"></i> אגזוז</span>
-    <span class="tag" onclick="searchByTag('מערכת דלק')"><i class="fas fa-gas-pump"></i> מערכת דלק</span>
-    <span class="tag" onclick="searchByTag('משאבת דלק')"><i class="fas fa-gas-pump"></i> משאבת דלק</span>
-    <span class="tag" onclick="searchByTag('מזרקים')"><i class="fas fa-syringe"></i> מזרקים</span>
-    <span class="tag" onclick="searchByTag('מראות צד')"><i class="fas fa-eye"></i> מראות צד</span>
-    <span class="tag" onclick="searchByTag('פנסים קדמיים')"><i class="fas fa-lightbulb"></i> פנסים קדמיים</span>
-    <span class="tag" onclick="searchByTag('פנסי בלם')"><i class="fas fa-lightbulb"></i> פנסי בלם</span>
-    <span class="tag" onclick="searchByTag('וישרים')"><i class="fas fa-wind"></i> וישרים</span>
-    <span class="tag" onclick="searchByTag('שמשות')"><i class="fas fa-window-maximize"></i> שמשות</span>
-    <span class="tag" onclick="searchByTag('צמיגים')"><i class="fas fa-circle-notch"></i> צמיגים</span>
-    <span class="tag" onclick="searchByTag('חישוקים')"><i class="fas fa-dot-circle"></i> חישוקים</span>
-    <span class="tag" onclick="searchByTag('מושבים')"><i class="fas fa-chair"></i> מושבים</span>
-    <span class="tag" onclick="searchByTag('ריפודים')"><i class="fas fa-couch"></i> ריפודים</span>
-    <span class="tag" onclick="searchByTag('נעילה ושלטים')"><i class="fas fa-key"></i> נעילה ושלטים</span>
-    <span class="tag" onclick="searchByTag('מולטימדיה')"><i class="fas fa-music"></i> מולטימדיה</span>
-    <span class="tag" onclick="searchByTag('מצלמת רוורס')"><i class="fas fa-video"></i> מצלמת רוורס</span>
-    <span class="tag" onclick="searchByTag('חיישני רוורס')"><i class="fas fa-dot-circle"></i> חיישני רוורס</span>
-    <span class="tag" onclick="searchByTag('GPS')"><i class="fas fa-map-marker-alt"></i> GPS</span>
-    <span class="tag" onclick="searchByTag('טיפוח')"><i class="fas fa-spray-can"></i> טיפוח</span>
-    <span class="tag" onclick="searchByTag('פוליש')"><i class="fas fa-brush"></i> פוליש</span>
-    <span class="tag" onclick="searchByTag('ווקס')"><i class="fas fa-star"></i> ווקס</span>
-    <span class="tag" onclick="searchByTag('ערכת שטיפה')"><i class="fas fa-shower"></i> ערכת שטיפה</span>
-    <span class="tag" onclick="searchByTag('אביזרים')"><i class="fas fa-tools"></i> אביזרים</span>
-    <span class="tag" onclick="searchByTag('ערכת תיקון פנצ׳ר')"><i class="fas fa-toolbox"></i> ערכת תיקון פנצ׳ר</span>
-    <span class="tag" onclick="searchByTag('ערכת עזרה ראשונה')"><i class="fas fa-first-aid"></i> עזרה ראשונה</span>
-    <span class="tag" onclick="searchByTag('חגורות בטיחות')"><i class="fas fa-lock"></i> חגורות בטיחות</span>
-    <span class="tag" onclick="searchByTag('חגורות בטיחות')"><i class="fas fa-lock"></i> חגורות בטיחות</span>
-    <span class="tag" onclick="searchByTag('כריות אוויר')"><i class="fas fa-shield-alt"></i> כריות אוויר</span>
-    <span class="tag" onclick="searchByTag('דשבורד')"><i class="fas fa-tachometer-alt"></i> דשבורד</span>
-    <span class="tag" onclick="searchByTag('הגה')"><i class="fas fa-dharmachakra"></i> הגה</span>
-    <span class="tag" onclick="searchByTag('בלם יד')"><i class="fas fa-hand-rock"></i> בלם יד</span>
-    <span class="tag" onclick="searchByTag('ידית הילוכים')"><i class="fas fa-sliders-h"></i> ידית הילוכים</span>
-    <span class="tag" onclick="searchByTag('כיסויי מושבים')"><i class="fas fa-th-large"></i> כיסויי מושבים</span>
-    <span class="tag" onclick="searchByTag('שטיחים לרכב')"><i class="fas fa-border-style"></i> שטיחים לרכב</span>
-    <span class="tag" onclick="searchByTag('מגן שמש')"><i class="fas fa-sun"></i> מגן שמש</span>
-    <span class="tag" onclick="searchByTag('מגבים אחוריים')"><i class="fas fa-angle-double-down"></i> מגבים אחוריים</span>
-    <span class="tag" onclick="searchByTag('לוח שעונים')"><i class="fas fa-tachometer-alt"></i> לוח שעונים</span>
-    <span class="tag" onclick="searchByTag('חיישן טמפ')"><i class="fas fa-thermometer-quarter"></i> חיישן טמפ'</span>
-    <span class="tag" onclick="searchByTag('חיישן חמצן')"><i class="fas fa-wind"></i> חיישן חמצן</span>
-    <span class="tag" onclick="searchByTag('כפתורי שליטה')"><i class="fas fa-sliders-h"></i> כפתורי שליטה</span>
-    <span class="tag" onclick="searchByTag('תושבות מנוע')"><i class="fas fa-anchor"></i> תושבות מנוע</span>
-    <span class="tag" onclick="searchByTag('זרועות מתלה')"><i class="fas fa-project-diagram"></i> זרועות מתלה</span>
-    <span class="tag" onclick="searchByTag('בולמים')"><i class="fas fa-expand-arrows-alt"></i> בולמים</span>
-    <span class="tag" onclick="searchByTag('ציריות')"><i class="fas fa-random"></i> ציריות</span>
-    <span class="tag" onclick="searchByTag('גומיות ציריה')"><i class="fas fa-draw-polygon"></i> גומיות ציריה</span>
-    <span class="tag" onclick="searchByTag('זרועות מגבים')"><i class="fas fa-arrows-alt-h"></i> זרועות מגבים</span>
-    <span class="tag" onclick="searchByTag('תא מטען')"><i class="fas fa-box-open"></i> תא מטען</span>
-    <span class="tag" onclick="searchByTag('קפיצים')"><i class="fas fa-compress-alt"></i> קפיצים</span>
-    <span class="tag" onclick="searchByTag('צילינדר דלת')"><i class="fas fa-unlock-alt"></i> צילינדר דלת</span>
-    <span class="tag" onclick="searchByTag('איטום דלתות')"><i class="fas fa-water"></i> איטום דלתות</span>
-    <span class="tag" onclick="searchByTag('חוטי הצתה')"><i class="fas fa-bolt"></i> חוטי הצתה</span>
-    <span class="tag" onclick="searchByTag('סליל הצתה')"><i class="fas fa-fire-alt"></i> סליל הצתה</span>
-    <span class="tag" onclick="searchByTag('פקקים')"><i class="fas fa-times-circle"></i> פקקים</span>
-</div>
+            <div class="flex flex-wrap mb-4" id="popular-tags">
+                <span class="tag" onclick="searchByTag('מנוע')"><i class="fas fa-cogs"></i> מנוע</span>
+                <span class="tag" onclick="searchByTag('תיבת הילוכים')"><i class="fas fa-exchange-alt"></i> תיבת הילוכים</span>
+                <span class="tag" onclick="searchByTag('בלמים')"><i class="fas fa-hand-paper"></i> בלמים</span>
+                <span class="tag" onclick="searchByTag('רפידות בלם')"><i class="fas fa-ellipsis-h"></i> רפידות בלם</span>
+                <span class="tag" onclick="searchByTag('צלחות בלם')"><i class="fas fa-compact-disc"></i> צלחות בלם</span>
+                <span class="tag" onclick="searchByTag('נוזל בלמים')"><i class="fas fa-tint"></i> נוזל בלמים</span>
+                <span class="tag" onclick="searchByTag('מערכת ABS')"><i class="fas fa-car-crash"></i> מערכת ABS</span>
+                <span class="tag" onclick="searchByTag('חשמל')"><i class="fas fa-bolt"></i> חשמל</span>
+                <span class="tag" onclick="searchByTag('מצבר')"><i class="fas fa-car-battery"></i> מצבר</span>
+                <span class="tag" onclick="searchByTag('פיוזים')"><i class="fas fa-plug"></i> פיוזים</span>
+                <span class="tag" onclick="searchByTag('חוטי חשמל')"><i class="fas fa-ethernet"></i> חוטי חשמל</span>
+                <span class="tag" onclick="searchByTag('סטרטר')"><i class="fas fa-power-off"></i> סטרטר</span>
+                <span class="tag" onclick="searchByTag('אלטרנטור')"><i class="fas fa-sync-alt"></i> אלטרנטור</span>
+                <span class="tag" onclick="searchByTag('מזגן')"><i class="fas fa-snowflake"></i> מזגן</span>
+                <span class="tag" onclick="searchByTag('מדחס מזגן')"><i class="fas fa-fan"></i> מדחס מזגן</span>
+                <span class="tag" onclick="searchByTag('מאוורר')"><i class="fas fa-wind"></i> מאוורר</span>
+                <span class="tag" onclick="searchByTag('רדיאטור')"><i class="fas fa-water"></i> רדיאטור</span>
+                <span class="tag" onclick="searchByTag('תרמוסטט')"><i class="fas fa-thermometer-half"></i> תרמוסטט</span>
+                <span class="tag" onclick="searchByTag('צינור מים')"><i class="fas fa-grip-lines-vertical"></i> צינור מים</span>
+                <span class="tag" onclick="searchByTag('מים לרדיאטור')"><i class="fas fa-tint"></i> מים לרדיאטור</span>
+                <span class="tag" onclick="searchByTag('שמן מנוע')"><i class="fas fa-oil-can"></i> שמן מנוע</span>
+                <span class="tag" onclick="searchByTag('שמן גיר')"><i class="fas fa-oil-can"></i> שמן גיר</span>
+                <span class="tag" onclick="searchByTag('פילטר שמן')"><i class="fas fa-filter"></i> פילטר שמן</span>
+                <span class="tag" onclick="searchByTag('פילטר אוויר')"><i class="fas fa-filter"></i> פילטר אוויר</span>
+                <span class="tag" onclick="searchByTag('פילטר מזגן')"><i class="fas fa-filter"></i> פילטר מזגן</span>
+                <span class="tag" onclick="searchByTag('מערכת פליטה')"><i class="fas fa-smog"></i> מערכת פליטה</span>
+                <span class="tag" onclick="searchByTag('אגזוז')"><i class="fas fa-wind"></i> אגזוז</span>
+                <span class="tag" onclick="searchByTag('מערכת דלק')"><i class="fas fa-gas-pump"></i> מערכת דלק</span>
+                <span class="tag" onclick="searchByTag('משאבת דלק')"><i class="fas fa-gas-pump"></i> משאבת דלק</span>
+                <span class="tag" onclick="searchByTag('מזרקים')"><i class="fas fa-syringe"></i> מזרקים</span>
+                <span class="tag" onclick="searchByTag('מראות צד')"><i class="fas fa-eye"></i> מראות צד</span>
+                <span class="tag" onclick="searchByTag('פנסים קדמיים')"><i class="fas fa-lightbulb"></i> פנסים קדמיים</span>
+                <span class="tag" onclick="searchByTag('פנסי בלם')"><i class="fas fa-lightbulb"></i> פנסי בלם</span>
+                <span class="tag" onclick="searchByTag('וישרים')"><i class="fas fa-wind"></i> וישרים</span>
+                <span class="tag" onclick="searchByTag('שמשות')"><i class="fas fa-window-maximize"></i> שמשות</span>
+                <span class="tag" onclick="searchByTag('צמיגים')"><i class="fas fa-circle-notch"></i> צמיגים</span>
+                <span class="tag" onclick="searchByTag('חישוקים')"><i class="fas fa-dot-circle"></i> חישוקים</span>
+                <span class="tag" onclick="searchByTag('מושבים')"><i class="fas fa-chair"></i> מושבים</span>
+                <span class="tag" onclick="searchByTag('ריפודים')"><i class="fas fa-couch"></i> ריפודים</span>
+                <span class="tag" onclick="searchByTag('נעילה ושלטים')"><i class="fas fa-key"></i> נעילה ושלטים</span>
+                <span class="tag" onclick="searchByTag('מולטימדיה')"><i class="fas fa-music"></i> מולטימדיה</span>
+                <span class="tag" onclick="searchByTag('מצלמת רוורס')"><i class="fas fa-video"></i> מצלמת רוורס</span>
+                <span class="tag" onclick="searchByTag('חיישני רוורס')"><i class="fas fa-dot-circle"></i> חיישני רוורס</span>
+                <span class="tag" onclick="searchByTag('GPS')"><i class="fas fa-map-marker-alt"></i> GPS</span>
+                <span class="tag" onclick="searchByTag('טיפוח')"><i class="fas fa-spray-can"></i> טיפוח</span>
+                <span class="tag" onclick="searchByTag('פוליש')"><i class="fas fa-brush"></i> פוליש</span>
+                <span class="tag" onclick="searchByTag('ווקס')"><i class="fas fa-star"></i> ווקס</span>
+                <span class="tag" onclick="searchByTag('ערכת שטיפה')"><i class="fas fa-shower"></i> ערכת שטיפה</span>
+                <span class="tag" onclick="searchByTag('אביזרים')"><i class="fas fa-tools"></i> אביזרים</span>
+                <span class="tag" onclick="searchByTag('ערכת תיקון פנצ׳ר')"><i class="fas fa-toolbox"></i> ערכת תיקון פנצ׳ר</span>
+                <span class="tag" onclick="searchByTag('ערכת עזרה ראשונה')"><i class="fas fa-first-aid"></i> עזרה ראשונה</span>
+                <span class="tag" onclick="searchByTag('חגורות בטיחות')"><i class="fas fa-lock"></i> חגורות בטיחות</span>
+                <span class="tag" onclick="searchByTag('כסא בטיחות')"><i class="fas fa-lock"></i> כסא בטיחות</span>
+                <span class="tag" onclick="searchByTag('כריות אוויר')"><i class="fas fa-shield-alt"></i> כריות אוויר</span>
+                <span class="tag" onclick="searchByTag('דשבורד')"><i class="fas fa-tachometer-alt"></i> דשבורד</span>
+                <span class="tag" onclick="searchByTag('הגה')"><i class="fas fa-dharmachakra"></i> הגה</span>
+                <span class="tag" onclick="searchByTag('בלם יד')"><i class="fas fa-hand-rock"></i> בלם יד</span>
+                <span class="tag" onclick="searchByTag('ידית הילוכים')"><i class="fas fa-sliders-h"></i> ידית הילוכים</span>
+                <span class="tag" onclick="searchByTag('כיסויי מושבים')"><i class="fas fa-th-large"></i> כיסויי מושבים</span>
+                <span class="tag" onclick="searchByTag('שטיחים לרכב')"><i class="fas fa-border-style"></i> שטיחים לרכב</span>
+                <span class="tag" onclick="searchByTag('מגן שמש')"><i class="fas fa-sun"></i> מגן שמש</span>
+                <span class="tag" onclick="searchByTag('מגבים אחוריים')"><i class="fas fa-angle-double-down"></i> מגבים אחוריים</span>
+                <span class="tag" onclick="searchByTag('לוח שעונים')"><i class="fas fa-tachometer-alt"></i> לוח שעונים</span>
+                <span class="tag" onclick="searchByTag('חיישן טמפ')"><i class="fas fa-thermometer-quarter"></i> חיישן טמפ'</span>
+                <span class="tag" onclick="searchByTag('חיישן חמצן')"><i class="fas fa-wind"></i> חיישן חמצן</span>
+                <span class="tag" onclick="searchByTag('כפתורי שליטה')"><i class="fas fa-sliders-h"></i> כפתורי שליטה</span>
+                <span class="tag" onclick="searchByTag('תושבות מנוע')"><i class="fas fa-anchor"></i> תושבות מנוע</span>
+                <span class="tag" onclick="searchByTag('זרועות מתלה')"><i class="fas fa-project-diagram"></i> זרועות מתלה</span>
+                <span class="tag" onclick="searchByTag('בולמים')"><i class="fas fa-expand-arrows-alt"></i> בולמים</span>
+                <span class="tag" onclick="searchByTag('ציריות')"><i class="fas fa-random"></i> ציריות</span>
+                <span class="tag" onclick="searchByTag('גומיות ציריה')"><i class="fas fa-draw-polygon"></i> גומיות ציריה</span>
+                <span class="tag" onclick="searchByTag('זרועות מגבים')"><i class="fas fa-arrows-alt-h"></i> זרועות מגבים</span>
+                <span class="tag" onclick="searchByTag('תא מטען')"><i class="fas fa-box-open"></i> תא מטען</span>
+                <span class="tag" onclick="searchByTag('קפיצים')"><i class="fas fa-compress-alt"></i> קפיצים</span>
+                <span class="tag" onclick="searchByTag('צילינדר דלת')"><i class="fas fa-unlock-alt"></i> צילינדר דלת</span>
+                <span class="tag" onclick="searchByTag('איטום דלתות')"><i class="fas fa-water"></i> איטום דלתות</span>
+                <span class="tag" onclick="searchByTag('חוטי הצתה')"><i class="fas fa-bolt"></i> חוטי הצתה</span>
+                <span class="tag" onclick="searchByTag('סליל הצתה')"><i class="fas fa-fire-alt"></i> סליל הצתה</span>
+                <span class="tag" onclick="searchByTag('פקקים')"><i class="fas fa-times-circle"></i> פקקים</span>
+            </div>
 
             <div class="relative">
                 <input type="text" id="tag-search" class="tag-input" placeholder="הקלד תגית לחיפוש...">
@@ -883,10 +887,10 @@
     </main>
 
     <!-- Featured Channels -->
-    <div class="bg-purple-50 py-12">
+    <div id="featured-channels-section" class="bg-purple-50 py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center flex items-center justify-center">
-                <i class="fas fa-heart text-purple-500 mr-2"></i> ערוצים מומלצים בעברית
+                <i class="fas fa-tv text-purple-500 mr-2"></i> ערוצים מומלצים 
             </h2>
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
                 <!-- Channel 1 -->
@@ -947,7 +951,7 @@
     </div>
 
     <!-- Inspiration Section -->
-    <div class="bg-gradient-to-r from-purple-900 to-indigo-800 text-white py-16 relative overflow-hidden">
+    <div id="forum-inspiration-section" class="bg-gradient-to-r from-purple-900 to-indigo-800 text-white py-16 relative overflow-hidden">
         <!-- Floating elements -->
         <div class="absolute top-1/4 left-1/4 w-16 h-16 rounded-full bg-purple-400 opacity-20 filter blur-xl floating"></div>
         <div class="absolute bottom-1/3 right-1/3 w-24 h-24 rounded-full bg-indigo-400 opacity-20 filter blur-xl floating" style="animation-delay: 2s;"></div>
@@ -955,20 +959,118 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center">
                 <h2 class="text-3xl font-bold mb-6">
-                    <i class="fas fa-magic mr-2"></i> יש לכם שאלה בנושא רכב והמסתעף ?
+                    <i class="fas fa-question-circle mr-2"></i> יש לכם שאלה בנושא רכב והמסתעף?
                 </h2>
                 <p class="text-xl max-w-3xl mx-auto opacity-90 mb-8">
                     כנסו להתייעץ בפורום שלנו - פורום רכבים זה לזה.
                 </p>
-                <button class="btn-primary px-8 py-4 text-lg pulse">
-                    <i class="fas fa-play-circle mr-2"></i> כנסו עכשיו
-                </button>
+                <a href="https://forum.example.com" target="_blank" rel="noopener noreferrer" class="btn-primary px-8 py-4 text-lg pulse inline-flex items-center justify-center">
+                    <i class="fas fa-comments mr-2"></i> כנסו עכשיו לפורום
+                </a>
             </div>
         </div>
     </div>
 
+    <!-- About Us Section -->
+    <section id="about-section" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                    <i class="fas fa-info-circle text-purple-600 mr-2"></i>
+                    אודות CAR-טיב
+                </h2>
+                <p class="mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
+                    מגלים את עולם הרכב הכשר, סרטון אחר סרטון.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 items-center">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">המשימה שלנו</h3>
+                    <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+                        ב-CAR-טיב, אנו מחויבים לספק פלטפורמה ייחודית ונגישה לחובבי רכב מהמגזר הדתי והחרדי, המעוניינים לצרוך תוכן וידאו איכותי ומסונן. אנו מבינים את הצורך בתוכן "כשר" התואם את ערכי הקהילה, ולכן כל סרטון באתר נבדק בקפידה ומאושר על ידי מערכת הסינון של נטפרי.
+                    </p>
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">מה תמצאו אצלנו?</h3>
+                    <p class="text-lg text-gray-700 mb-6 leading-relaxed">
+                        האתר מרכז מגוון רחב של סרטונים בנושאי רכב: החל מסקירות דגמים חדשים ויד שנייה, דרך מדריכי "עשה זאת בעצמך" לתחזוקה ותיקונים קלים, ועד לטיפים לבחירת הרכב המשפחתי המושלם. אנו שואפים להעשיר את הידע שלכם, לחסוך לכם זמן וכסף, והכל – בסביבה נקייה ובטוחה.
+                    </p>
+                     <a href="#contact-section" class="btn-primary inline-flex items-center">
+                        <i class="fas fa-envelope mr-2"></i> דברו איתנו
+                    </a>
+                </div>
+                <div class="relative order-first md:order-last">
+                    <img src="https://images.pexels.com/photos/170811/pexels-photo-170811.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="מכונית מודרנית על כביש" class="rounded-xl shadow-2xl object-cover w-full h-auto max-h-[400px]">
+                    <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-purple-600 rounded-lg opacity-75 transform rotate-12 -z-10 hidden sm:block"></div>
+                    <div class="absolute -top-4 -left-4 w-20 h-20 bg-indigo-500 rounded-full opacity-50 filter blur-sm -z-10 hidden sm:block"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Us Section -->
+    <section id="contact-section" class="py-16 bg-purple-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                    <i class="fas fa-paper-plane text-purple-600 mr-2"></i>
+                    צרו איתנו קשר
+                </h2>
+                <p class="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
+                    יש לכם שאלה, הצעה, דיווח על סרטון או שאתם רוצים לשתף פעולה? נשמח לשמוע מכם!
+                </p>
+            </div>
+
+            <div class="max-w-3xl mx-auto bg-white p-8 sm:p-10 rounded-xl shadow-xl">
+                <form action="#" method="POST" class="space-y-6">
+                    <div>
+                        <label for="contact-name" class="block text-sm font-medium text-gray-700">שם מלא</label>
+                        <div class="mt-1">
+                            <input type="text" name="contact-name" id="contact-name" autocomplete="name" required
+                                   class="py-3 px-4 block w-full shadow-sm focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md search-input">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="contact-email" class="block text-sm font-medium text-gray-700">כתובת אימייל</label>
+                        <div class="mt-1">
+                            <input id="contact-email" name="email" type="email" autocomplete="email" required
+                                   class="py-3 px-4 block w-full shadow-sm focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md search-input">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="contact-subject" class="block text-sm font-medium text-gray-700">נושא הפנייה</label>
+                        <div class="mt-1">
+                            <input type="text" name="contact-subject" id="contact-subject" required
+                                   class="py-3 px-4 block w-full shadow-sm focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md search-input">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="contact-message" class="block text-sm font-medium text-gray-700">הודעה</label>
+                        <div class="mt-1">
+                            <textarea id="contact-message" name="message" rows="4" required
+                                      class="py-3 px-4 block w-full shadow-sm focus:ring-purple-500 focus:border-purple-500 border-gray-300 rounded-md search-input"></textarea>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit"
+                                class="btn-primary inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                            <i class="fas fa-paper-plane mr-2"></i> שלח הודעה
+                        </button>
+                    </div>
+                </form>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-lg text-gray-700">ניתן גם ליצור קשר ישירות דרך האימייל:</p>
+                <a href="mailto:info@car-tiv.example.com" class="text-purple-600 hover:text-purple-800 font-medium text-lg">
+                    <i class="fas fa-envelope mr-1"></i> info@car-tiv.example.com
+                </a>
+                 <p class="mt-4 text-sm text-gray-500"> (כתובת אימייל לדוגמה)</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-300">
+    <footer id="site-footer" class="bg-gray-900 text-gray-300">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div>
@@ -977,51 +1079,46 @@
                         <span class="text-lg font-bold text-white">CAR-טיב</span>
                     </div>
                     <p class="text-sm">
-                        האתר המוביל לסרטוני רכב כשרים באיכות גבוהה.
+                        האתר המוביל לסרטוני רכב כשרים באיכות גבוהה, מאושרים גלישה בנטפרי.
                     </p>
                     <div class="mt-4 flex space-x-4">
-                        </a>
+                        <!-- Social media icons can go here if needed -->
                     </div>
                 </div>
                 <div>
-                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">קטגוריות</h3>
+                    <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">קטגוריות נבחרות</h3>
                     <ul class="space-y-2">
                         <li><a href="#" class="text-sm hover:text-purple-300">סקירת רכב</a></li>
                         <li><a href="#" class="text-sm hover:text-purple-300">טיפולים שוטפים</a></li>
                         <li><a href="#" class="text-sm hover:text-purple-300">תיקון תקלות ובעיות</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">תיקונים וטיפולים</a></li>
                         <li><a href="#" class="text-sm hover:text-purple-300">עשה זאת בעצמך</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">תחזוקה מונעת</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">תיעוד תאונות</a></li>
                         <li><a href="#" class="text-sm hover:text-purple-300">רכבי אספנות</a></li>
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">אתר</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-sm hover:text-purple-300">אודות</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">פורום רכבים זה לזה</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">הפרויקט ב github</a></li>
+                        <li><a href="#about-section" class="text-sm hover:text-purple-300">אודותינו</a></li>
+                        <li><a href="#forum-inspiration-section" class="text-sm hover:text-purple-300">פורום רכבים</a></li>
+                        <li><a href="https://github.com/yourusername/car-tiv-project" target="_blank" rel="noopener noreferrer" class="text-sm hover:text-purple-300">הפרויקט ב-GitHub</a></li>
+                         <li><a href="#contact-section" class="text-sm hover:text-purple-300">צור קשר</a></li>
                     </ul>
                 </div>
                 <div>
                     <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">משפטי</h3>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-sm hover:text-purple-300">פרטיות</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">תנאים</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">רשיון</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">צור קשר</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">מדיניות פרטיות</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">תנאי שימוש</a></li>
+                         <li><a href="#" class="text-sm hover:text-purple-300">דיווח על תוכן</a></li>
                     </ul>
                 </div>
             </div>
-            <div class="mt-12 border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between">
+            <div class="mt-12 border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
                 <p class="text-sm">
-                    &copy; 2025 CAR-טיב. כל הזכויות שמורות.
+                    © 2025 CAR-טיב. כל הזכויות שמורות.
                 </p>
                 <div class="mt-4 md:mt-0 flex space-x-6">
-                    <a href="#" class="text-sm hover:text-purple-300"> מדיניות פרטיות </a>
-                    <a href="#" class="text-sm hover:text-purple-300"> תנאי שימוש </a>
-                    <a href="#" class="text-sm hover:text-purple-300"> מפת אתר </a>
+                    <a href="#site-footer" class="text-sm hover:text-purple-300"> מפת אתר </a>
                 </div>
             </div>
         </div>
@@ -1053,61 +1150,64 @@
         const mobileMenu = document.querySelector('.mobile-menu');
         const backdrop = document.querySelector('.backdrop');
         
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('open');
+            backdrop.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
         openMenuBtn.addEventListener('click', () => {
             mobileMenu.classList.add('open');
             backdrop.classList.add('active');
             document.body.style.overflow = 'hidden';
         });
         
-        closeMenuBtn.addEventListener('click', () => {
-            mobileMenu.classList.remove('open');
-            backdrop.classList.remove('active');
-            document.body.style.overflow = '';
-        });
+        closeMenuBtn.addEventListener('click', closeMobileMenu);
+        backdrop.addEventListener('click', closeMobileMenu);
         
-        backdrop.addEventListener('click', () => {
-            mobileMenu.classList.remove('open');
-            backdrop.classList.remove('active');
-            document.body.style.overflow = '';
+        // Close mobile menu on link click
+        const mobileNavLinks = document.querySelectorAll('.mobile-menu .nav-link');
+        mobileNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                // Small delay to allow navigation before closing
+                setTimeout(closeMobileMenu, 100); 
+            });
         });
-        
+
         // Category filter functionality
         document.addEventListener('DOMContentLoaded', function() {
             const categoryButtons = document.querySelectorAll('.category-btn');
             
             categoryButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    // Remove active class from all buttons
                     categoryButtons.forEach(btn => {
-                        btn.classList.remove('active', 'bg-purple-600', 'text-white');
-                        btn.classList.add('bg-purple-50', 'text-purple-700');
+                        btn.classList.remove('active');
                     });
-                    
-                    // Add active class to clicked button
-                    this.classList.add('active', 'bg-purple-600', 'text-white');
-                    this.classList.remove('bg-purple-50', 'text-purple-700');
-                    
-                    // In a real app, you would filter videos here based on the category
+                    this.classList.add('active');
                     console.log('Filtering by:', this.textContent.trim());
                 });
             });
             
-            // Search functionality
-            const searchInput = document.querySelector('.search-input');
-            searchInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    // In a real app, you would search videos here
-                    console.log('Searching for:', this.value);
-                }
+            // Search functionality (example)
+            const searchInputs = document.querySelectorAll('.search-input[type="text"]'); // Selects text search inputs
+            searchInputs.forEach(searchInput => {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault(); // Prevent form submission if it's in a form
+                        console.log('Searching for:', this.value);
+                        // Add search logic here
+                    }
+                });
             });
         });
         
         // Tag search functionality
+        let currentSelectedTags = [];
+
         function searchByTag(tag) {
-            console.log('Searching by tag:', tag);
-            // In a real app, you would filter videos by this tag
-            // For now, we'll just add it to the selected tags
+            console.log('Searching by popular tag:', tag);
             addSelectedTag(tag);
+            filterVideosByTags();
         }
         
         function addTagToSearch() {
@@ -1117,44 +1217,78 @@
             if (tag) {
                 addSelectedTag(tag);
                 tagInput.value = '';
+                filterVideosByTags();
             }
         }
         
         function addSelectedTag(tag) {
-            const selectedTagsContainer = document.getElementById('selected-tags');
-            
-            // Check if tag is already selected
-            const existingTags = Array.from(selectedTagsContainer.children).map(span => {
-                return span.textContent.trim().replace('×', '').trim();
-            });
-            
-            if (existingTags.includes(tag)) return;
-            
-            const tagElement = document.createElement('span');
-            tagElement.className = 'tag bg-purple-100 text-purple-800';
-            tagElement.innerHTML = `${tag} <i class="fas fa-times cursor-pointer hover:text-purple-600" onclick="removeTag(this)"></i>`;
-            
-            selectedTagsContainer.appendChild(tagElement);
+            if (currentSelectedTags.includes(tag)) return; // Avoid duplicates
+
+            currentSelectedTags.push(tag);
+            renderSelectedTags();
         }
         
-        function removeTag(icon) {
-            const tagElement = icon.parentElement;
-            tagElement.remove();
+        function removeTag(tagToRemove) {
+            currentSelectedTags = currentSelectedTags.filter(tag => tag !== tagToRemove);
+            renderSelectedTags();
+            filterVideosByTags();
+        }
+
+        function renderSelectedTags() {
+            const selectedTagsContainer = document.getElementById('selected-tags');
+            selectedTagsContainer.innerHTML = ''; // Clear existing tags
+
+            currentSelectedTags.forEach(tag => {
+                const tagElement = document.createElement('span');
+                tagElement.className = 'tag bg-purple-200 text-purple-800'; // Slightly different color for selected
+                tagElement.innerHTML = `${tag} <i class="fas fa-times cursor-pointer hover:text-purple-600" onclick="removeTag('${tag.replace(/'/g, "\\'")}')"></i>`; // Handle quotes in tag names
+                selectedTagsContainer.appendChild(tagElement);
+            });
+        }
+
+        function filterVideosByTags() {
+            console.log('Filtering videos by selected tags:', currentSelectedTags);
+            // In a real app, you would implement the logic to filter and display videos
+            // based on the `currentSelectedTags` array.
+            // For example, iterate through all video cards, check their tags, and hide/show accordingly.
         }
         
         // Magic sparkle effect
         document.addEventListener('click', function(e) {
+            // Avoid sparkles on interactive elements like buttons, inputs, links for better UX
+            if (e.target.closest('button, input, a, .swiper-slide, .tag')) {
+                return;
+            }
+
             const sparkle = document.createElement('div');
             sparkle.className = 'magic-sparkle';
-            sparkle.style.left = `${e.clientX - 4}px`;
-            sparkle.style.top = `${e.clientY - 4}px`;
+            // Adjust position to be relative to the page, not viewport, for consistency on scroll
+            sparkle.style.left = `${e.pageX - 4}px`; 
+            sparkle.style.top = `${e.pageY - 4}px`;
             document.body.appendChild(sparkle);
             
-            // Remove after animation
             setTimeout(() => {
                 sparkle.remove();
             }, 1000);
         });
+
+        // Smooth scroll for nav links (alternative to CSS scroll-behavior for wider browser support if needed)
+        // document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        //     anchor.addEventListener('click', function (e) {
+        //         const href = this.getAttribute('href');
+        //         // Ensure it's an internal link and not just '#'
+        //         if (href.length > 1 && href.startsWith('#')) {
+        //             e.preventDefault();
+        //             const targetElement = document.querySelector(href);
+        //             if (targetElement) {
+        //                 targetElement.scrollIntoView({
+        //                     behavior: 'smooth'
+        //                 });
+        //             }
+        //         }
+        //     });
+        // });
+
     </script>
 </body>
 </html>
