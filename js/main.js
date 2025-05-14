@@ -1,4 +1,4 @@
-/ js/main.js
+// js/main.js
 document.addEventListener('DOMContentLoaded', function() {
     // --- DOM Element Selectors ---
     const videoCardsContainer = document.getElementById('video-cards-container');
