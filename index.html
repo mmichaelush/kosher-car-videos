@@ -1342,21 +1342,18 @@
 
             console.log("CAR-טיב scripts loaded and initialized.");
         });
-    </script>
-</body>
-</html>
 
-// --- Tag Search Functionality ---
+
             const popularTagsContainer = document.getElementById('popular-tags-container');
             const customTagForm = document.getElementById('custom-tag-form');
             const tagSearchInput = document.getElementById('tag-search-input');
             const selectedTagsContainer = document.getElementById('selected-tags-container');
             let currentSelectedTags = []; // מערך שיחזיק את התגיות שנבחרו כרגע
 
-            // Event listener for popular tags (using event delegation for better performance)
+
             if (popularTagsContainer) {
                 popularTagsContainer.addEventListener('click', function(event) {
-                    // ודא שהקליק היה על אלמנט תגית או בתוכו
+
                     const clickedTagElement = event.target.closest('.tag');
                     if (clickedTagElement) {
                         const tagValue = clickedTagElement.dataset.tagValue; // קבל את שם התגית מה-data attribute
@@ -1367,21 +1364,21 @@
                 });
             }
 
-            // Event listener for adding custom tags from input field
+
             if (customTagForm) {
                 customTagForm.addEventListener('submit', function(event) {
                     event.preventDefault(); // מנע ריענון דף
                     const newTagName = tagSearchInput.value.trim();
                     if (newTagName && !currentSelectedTags.includes(newTagName)) {
-                        // אופציונלי: אם רוצים להוסיף את התגית החדשה גם לרשימת התגיות הפופולריות (ויזואלית)
-                        // addCustomTagToPopularDisplay(newTagName); 
+
+                         addCustomTagToPopularDisplay(newTagName); 
                         toggleTagSelection(newTagName); // בחר את התגית החדשה
                     }
                     tagSearchInput.value = ''; // נקה את שדה הקלט
                 });
             }
             
-            // פונקציה שמטפלת בבחירה/ביטול בחירה של תגית
+
             function toggleTagSelection(tagName, tagElement = null) {
                 const index = currentSelectedTags.indexOf(tagName);
                 if (index > -1) { // אם התגית כבר בחורה, הסר אותה
@@ -1395,18 +1392,17 @@
                 filterVideosByActiveFilters(); // בצע סינון של הווידאו עם התגיות והקטגוריה המעודכנים
             }
 
-            // אופציונלי: פונקציה להוספת תגית שהוקלדה ידנית גם לרשימת התגיות הפופולריות
-            // function addCustomTagToPopularDisplay(tagName) {
-            //     if (!document.querySelector(`.tag[data-tag-value="${tagName}"]`)) {
-            //         const newTagElement = document.createElement('span');
-            //         newTagElement.className = 'tag';
-            //         newTagElement.dataset.tagValue = tagName;
-            //         newTagElement.innerHTML = `<i class="fas fa-tag"></i> ${tagName}`;
-            //         popularTagsContainer.appendChild(newTagElement);
-            //     }
-            // }
+             אופציונלי: פונקציה להוספת תגית שהוקלדה ידנית גם לרשימת התגיות הפופולריות
+             function addCustomTagToPopularDisplay(tagName) {
+                 if (!document.querySelector(`.tag[data-tag-value="${tagName}"]`)) {
+                     const newTagElement = document.createElement('span');
+                     newTagElement.className = 'tag';
+                     newTagElement.dataset.tagValue = tagName;
+                     newTagElement.innerHTML = `<i class="fas fa-tag"></i> ${tagName}`;
+                     popularTagsContainer.appendChild(newTagElement);
+                 }
+             }
             
-            // פונקציה לרנדור התגיות שנבחרו כ"צ'יפים" מתחת לשדה החיפוש
             function renderSelectedTagsChips() {
                 selectedTagsContainer.innerHTML = ''; // נקה את התגיות הקודמות
                 currentSelectedTags.forEach(tagName => {
@@ -1416,7 +1412,6 @@
                     const removeIcon = document.createElement('i');
                     removeIcon.className = 'fas fa-times ml-2 cursor-pointer text-xs opacity-75 hover:opacity-100'; // אייקון X להסרה
                     removeIcon.onclick = () => {
-                        // בעת הסרת צ'יפ, גם בטל את הבחירה שלו מרשימת התגיות הפופולריות (אם הוא שם)
                         const popularTagEl = document.querySelector(`.tag[data-tag-value="${tagName}"]`);
                         toggleTagSelection(tagName, popularTagEl); 
                     };
@@ -1427,7 +1422,7 @@
                 });
             }
 
-            // פונקציה ראשית לסינון וידאו
+
             function filterVideosByActiveFilters() {
                 const activeCategoryElement = document.querySelector('.category-btn.active');
                 const currentCategory = activeCategoryElement ? activeCategoryElement.dataset.category : 'all';
@@ -1436,7 +1431,7 @@
                     category: currentCategory,
                     tags: currentSelectedTags
                 });
-                // כאן תוסיף את הלוגיקה האמיתית של סינון הווידאו.
-                // עליך לעבור על כל כרטיסיות הווידאו, לבדוק אם הן תואמות לקטגוריה הפעילה
-                // ולכל התגיות שבמערך currentSelectedTags, ולהציג/להסתיר אותן בהתאם.
             }
+    </script>
+</body>
+</html>
