@@ -26,14 +26,14 @@
                 <i class="fas fa-times text-2xl"></i>
             </button>
         </div>
-        <nav class="flex flex-col space-y-2">
-            <a href="index.html" class="nav-link active text-slate-900 dark:text-slate-100 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-home w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>בית</a>
-            <a href="#categories-swiper-container" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-th-large w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>קטגוריות</a>
-            <a href="#featured-channels-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-tv w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>ערוצים</a>
-            <a href="#about-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-info-circle w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>אודות</a>
-            <a href="#forum-inspiration-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-comments w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>שאלות והתייעצות</a>
-            <a href="#contact-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-envelope w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>צור קשר</a>
-            <a href="#site-footer" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-sitemap w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>מפת האתר</a>
+<nav class="flex flex-col space-y-2">
+            <a href="index.html" class="nav-link ..."><i class="fas fa-home ..."></i>בית</a>
+            <a href="#categories-swiper-container" class="nav-link ..."><i class="fas fa-th-large ..."></i>קטגוריות</a>
+            <a href="#featured-channels-section" class="nav-link ..."><i class="fas fa-tv ..."></i>ערוצים</a>
+            <a href="#about-section" class="nav-link ..."><i class="fas fa-info-circle ..."></i>אודות</a>
+            <a href="#forum-inspiration-section" class="nav-link ..."><i class="fas fa-comments ..."></i>שאלות והתייעצות</a>
+            <a href="#contact-section" class="nav-link ..."><i class="fas fa-envelope ..."></i>צור קשר</a>
+            <a href="#site-footer" class="nav-link ..."><i class="fas fa-sitemap ..."></i>מפת האתר</a>
         </nav>
     </aside>
 
@@ -54,7 +54,9 @@
                         <a href="#about-section" class="nav-link flex items-center"><i class="fas fa-info-circle ml-2 opacity-80"></i>אודות</a>
                         <a href="#forum-inspiration-section" class="nav-link flex items-center"><i class="fas fa-comments ml-2 opacity-80"></i>שאלות</a>
                         <a href="#contact-section" class="nav-link flex items-center"><i class="fas fa-envelope ml-2 opacity-80"></i>צור קשר</a>
-                    </nav>
+                        <!-- מפת האתר לרוב לא מופיעה בניווט הראשי אלא בפוטר, אבל אם אתה רוצה אותה: -->
+                        <!-- <a href="#site-footer" class="nav-link flex items-center"><i class="fas fa-sitemap ml-2 opacity-80"></i>מפת האתר</a> -->
+                    </nav
                 </div>
                 <div class="flex items-center space-x-3">
                     <div class="hidden md:block">
@@ -94,12 +96,18 @@
                 <p class="mt-6 max-w-xl mx-auto text-lg sm:text-xl text-purple-100 dark:text-purple-200 opacity-90">
                    מאגר וידאו איכותי, מאושר נטפרי, לכל חובבי הרכב שומרי התורה והמצוות.
                 </p>
-                <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="#video-grid-section" class="btn-secondary !text-lg !px-8 !py-3.5 pulse">
-                        <i class="fas fa-play"></i> צפו עכשיו
+<div class="mt-10 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
+                    <a href="#video-grid-section" 
+                       class="btn-hero-secondary group relative inline-flex items-center justify-center px-8 py-3.5 text-lg font-semibold text-purple-600 dark:text-purple-300 bg-white dark:bg-slate-100 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-offset-slate-900 transition-all duration-300 ease-out overflow-hidden">
+                        <span class="absolute inset-0 bg-purple-100 dark:bg-purple-500 opacity-0 group-hover:opacity-20 dark:group-hover:opacity-30 transition-opacity duration-300"></span>
+                        <i class="fas fa-play ml-2 transform group-hover:scale-110 transition-transform duration-300"></i>
+                        <span class="relative z-10">צפו עכשיו</span>
                     </a>
-                    <a href="#about-section" class="btn-primary !text-lg !px-8 !py-3.5 pulse">
-                        <i class="fas fa-info-circle"></i> עוד עלינו
+                    <a href="#about-section" 
+                       class="btn-hero-primary group relative inline-flex items-center justify-center px-8 py-3.5 text-lg font-semibold text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-400 dark:focus:ring-offset-slate-900 transition-all duration-300 ease-out overflow-hidden">
+                        <span class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
+                        <i class="fas fa-info-circle ml-2 transform group-hover:rotate-12 transition-transform duration-300"></i>
+                        <span class="relative z-10">עוד עלינו</span>
                     </a>
                 </div>
             </div>
@@ -211,8 +219,11 @@
                     <p class="text-lg sm:text-xl max-w-2xl mx-auto text-purple-100 dark:text-purple-200 opacity-95 mb-10">
                         הצטרפו לקהילת "רכבים זה לזה" בפורום שלנו, שתפו, התייעצו וקבלו תשובות ממומחים וחברים.
                     </p>
-                    <a href="https://rechavimzelaze.ovh/" target="_blank" rel="noopener noreferrer" class="btn-primary !text-xl !px-10 !py-4 pulse !bg-white !text-purple-700 hover:!bg-purple-100 focus:!ring-purple-300 shadow-xl">
-                        <i class="fas fa-external-link-alt"></i> כניסה לפורום
+                    <a href="https://rechavimzelaze.ovh/" target="_blank" rel="noopener noreferrer" 
+                       class="btn-forum group relative inline-flex items-center justify-center px-10 py-4 text-xl font-bold text-purple-700 bg-white hover:bg-purple-50 dark:text-purple-300 dark:bg-slate-100 dark:hover:bg-slate-200 rounded-xl shadow-xl hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-4 focus:ring-offset-purple-700 dark:focus:ring-offset-purple-800 focus:ring-white dark:focus:ring-slate-300 transition-all duration-300 ease-out transform hover:-translate-y-1">
+                        <span class="absolute inset-0 w-full h-full border-2 border-transparent group-hover:border-purple-200 dark:group-hover:border-slate-300 rounded-xl transition-all duration-300 animate-pulse group-hover:animate-none"></span>
+                        <i class="fas fa-external-link-alt ml-3 transform group-hover:scale-110 transition-transform"></i>
+                        <span class="relative z-10">כניסה לפורום</span>
                     </a>
                 </div>
             </div>
