@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CARטיב - סרטוני רכבים כשרים</title>
+    <title>CAR-טיב - סרטוני רכבים כשרים</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
@@ -355,7 +355,7 @@
         <div class="flex justify-between items-center mb-8">
             <div class="flex items-center">
                 <i class="fas fa-car text-purple-600 text-xl ml-2"></i>
-                <span class="text-lg font-bold">CARטיב</span>
+                <span class="text-lg font-bold">CAR-טיב</span>
             </div>
             <button id="close-menu" class="text-gray-500 hover:text-gray-700">
                 <i class="fas fa-times text-xl"></i>
@@ -363,11 +363,12 @@
         </div>
         <nav class="flex flex-col space-y-4">
             <a href="#" class="nav-link active text-gray-900">בית</a>
-            <a href="#" class="nav-link text-gray-700">פופולריים</a>
-            <a href="#" class="nav-link text-gray-700">אוספים</a>
+            <a href="#" class="nav-link text-gray-700">קטגוריות</a>
             <a href="#" class="nav-link text-gray-700">ערוצים</a>
             <a href="#" class="nav-link text-gray-700">אודות</a>
+            <a href="#" class="nav-link text-gray-700">שאלות</a>
             <a href="#" class="nav-link text-gray-700">צור קשר</a>
+            <a href="#" class="nav-link text-gray-700">מפת האתר</a>
         </nav>
     </div>
     
@@ -378,13 +379,16 @@
                 <div class="flex items-center">
                     <div class="flex-shrink-0 flex items-center">
                         <i class="fas fa-car text-purple-600 text-2xl ml-2"></i>
-                        <span class="text-xl font-bold text-gray-900 hidden sm:block">CARטיב</span>
+                        <span class="text-xl font-bold text-gray-900 hidden sm:block">CAR-טיב</span>
                     </div>
                     <div class="hidden md:mr-10 md:flex md:space-x-8">
                         <a href="#" class="nav-link active text-gray-900">בית</a>
                         <a href="#" class="nav-link">קטגוריות</a>
                         <a href="#" class="nav-link">ערוצים</a>
-                        <a href="#" class="nav-link">ערוצים</a>
+                        <a href="#" class="nav-link">אודות</a>
+                        <a href="#" class="nav-link">שאלות</a>
+                        <a href="#" class="nav-link">צור קשר</a>
+                        <a href="#" class="nav-link">מפת האתר</a>
                     </div>
                 </div>
                 <div class="flex items-center">
@@ -486,23 +490,61 @@
             <h3 class="text-lg font-medium text-gray-900 mb-4 flex items-center">
                 <i class="fas fa-tags text-purple-500 ml-2"></i> חיפוש לפי תגיות
             </h3>
-            <div class="flex flex-wrap mb-4" id="popular-tags">
-                <span class="tag" onclick="searchByTag('מנוע')"><i class="fas fa-cog"></i> מנוע</span>
-                <span class="tag" onclick="searchByTag('בלמים')"><i class="fas fa-stop-circle"></i> בלמים</span>
-                <span class="tag" onclick="searchByTag('תיבת הילוכים')"><i class="fas fa-cogs"></i> תיבת הילוכים</span>
-                <span class="tag" onclick="searchByTag('חשמל')"><i class="fas fa-bolt"></i> חשמל</span>
-                <span class="tag" onclick="searchByTag('צמיגים')"><i class="fas fa-tire"></i> צמיגים</span>
-                <span class="tag" onclick="searchByTag('מזגן')"><i class="fas fa-snowflake"></i> מזגן</span>
-                <span class="tag" onclick="searchByTag('שמן')"><i class="fas fa-oil-can"></i> שמן</span>
-                <span class="tag" onclick="searchByTag('טיפוח')"><i class="fas fa-spa"></i> טיפוח</span>
-                <span class="tag" onclick="searchByTag('חלונות')"><i class="fas fa-stop-circle"></i> חלונות</span>
-                <span class="tag" onclick="searchByTag('דלתות')"><i class="fas fa-cogs"></i> דלתות</span>
-                <span class="tag" onclick="searchByTag('מולטימדיה')"><i class="fas fa-bolt"></i> מולטימדיה</span>
-                <span class="tag" onclick="searchByTag('נעילה ושלטים')"><i class="fas fa-tire"></i> נעילה ושלטים</span>
-                <span class="tag" onclick="searchByTag('וישרים')"><i class="fas fa-snowflake"></i> וישרים</span>
-                <span class="tag" onclick="searchByTag('מנורות ופנסים')"><i class="fas fa-oil-can"></i> מנורות ופנסים</span>
-                <span class="tag" onclick="searchByTag('מצלמת וחיישני רוורס')"><i class="fas fa-spa"></i> מצלמת וחיישני רוורס</span>
-            </div>
+<div class="flex flex-wrap mb-4" id="popular-tags">
+    <!-- מערכת הנעה -->
+    <span class="tag" onclick="searchByTag('מנוע')"><i class="fas fa-cogs"></i> מנוע</span>
+    <span class="tag" onclick="searchByTag('תיבת הילוכים')"><i class="fas fa-exchange-alt"></i> תיבת הילוכים</span>
+    <span class="tag" onclick="searchByTag('דיפרנציאל')"><i class="fas fa-cogs"></i> דיפרנציאל</span>
+    <span class="tag" onclick="searchByTag('אגזוז')"><i class="fas fa-smog"></i> אגזוז</span>
+
+    <!-- מערכת בלימה והיגוי -->
+    <span class="tag" onclick="searchByTag('בלמים')"><i class="fas fa-hand-paper"></i> בלמים</span>
+    <span class="tag" onclick="searchByTag('היגוי')"><i class="fas fa-directions"></i> היגוי</span>
+    <span class="tag" onclick="searchByTag('בולמי זעזועים')"><i class="fas fa-compress-arrows-alt"></i> בולמי זעזועים</span>
+
+    <!-- מערכות חשמל ואלקטרוניקה -->
+    <span class="tag" onclick="searchByTag('חשמל')"><i class="fas fa-bolt"></i> חשמל</span>
+    <span class="tag" onclick="searchByTag('מצבר')"><i class="fas fa-car-battery"></i> מצבר</span>
+    <span class="tag" onclick="searchByTag('פיוזים')"><i class="fas fa-plug"></i> פיוזים</span>
+    <span class="tag" onclick="searchByTag('מערכת טעינה')"><i class="fas fa-charging-station"></i> מערכת טעינה</span>
+
+    <!-- אביזרים ופנים הרכב -->
+    <span class="tag" onclick="searchByTag('מולטימדיה')"><i class="fas fa-music"></i> מולטימדיה</span>
+    <span class="tag" onclick="searchByTag('מצלמת וחיישני רוורס')"><i class="fas fa-video"></i> מצלמת וחיישני רוורס</span>
+    <span class="tag" onclick="searchByTag('מושבים')"><i class="fas fa-chair"></i> מושבים</span>
+    <span class="tag" onclick="searchByTag('ריפוד')"><i class="fas fa-couch"></i> ריפוד</span>
+    <span class="tag" onclick="searchByTag('מזגן')"><i class="fas fa-snowflake"></i> מזגן</span>
+    <span class="tag" onclick="searchByTag('וישרים')"><i class="fas fa-wind"></i> וישרים</span>
+    <span class="tag" onclick="searchByTag('נעילה ושלטים')"><i class="fas fa-key"></i> נעילה ושלטים</span>
+
+    <!-- חוץ הרכב -->
+    <span class="tag" onclick="searchByTag('צמיגים')"><i class="fas fa-circle-notch"></i> צמיגים</span>
+    <span class="tag" onclick="searchByTag('חישוקים')"><i class="fas fa-dot-circle"></i> חישוקים</span>
+    <span class="tag" onclick="searchByTag('פחחות')"><i class="fas fa-car-crash"></i> פחחות</span>
+    <span class="tag" onclick="searchByTag('שמשות')"><i class="fas fa-window-maximize"></i> שמשות</span>
+    <span class="tag" onclick="searchByTag('מנורות ופנסים')"><i class="fas fa-lightbulb"></i> מנורות ופנסים</span>
+    <span class="tag" onclick="searchByTag('דלתות')"><i class="fas fa-door-open"></i> דלתות</span>
+    <span class="tag" onclick="searchByTag('מראות צד')"><i class="fas fa-eye"></i> מראות צד</span>
+
+    <!-- תחזוקה שוטפת -->
+    <span class="tag" onclick="searchByTag('שמן מנוע')"><i class="fas fa-oil-can"></i> שמן מנוע</span>
+    <span class="tag" onclick="searchByTag('פילטרים')"><i class="fas fa-filter"></i> פילטרים</span>
+    <span class="tag" onclick="searchByTag('מים לרדיאטור')"><i class="fas fa-tint"></i> מים לרדיאטור</span>
+    <span class="tag" onclick="searchByTag('תחזוקה כללית')"><i class="fas fa-tools"></i> תחזוקה כללית</span>
+
+    <!-- טיפוח וניקיון -->
+    <span class="tag" onclick="searchByTag('טיפוח')"><i class="fas fa-spray-can"></i> טיפוח</span>
+    <span class="tag" onclick="searchByTag('ניקוי פנים')"><i class="fas fa-pump-soap"></i> ניקוי פנים</span>
+    <span class="tag" onclick="searchByTag('ניקוי חוץ')"><i class="fas fa-shower"></i> ניקוי חוץ</span>
+    <span class="tag" onclick="searchByTag('פוליש ווקס')"><i class="fas fa-brush"></i> פוליש ווקס</span>
+
+    <!-- בטיחות ואביזרים נוספים -->
+    <span class="tag" onclick="searchByTag('כריות אוויר')"><i class="fas fa-shield-alt"></i> כריות אוויר</span>
+    <span class="tag" onclick="searchByTag('חגורות בטיחות')"><i class="fas fa-lock"></i> חגורות בטיחות</span>
+    <span class="tag" onclick="searchByTag('ערכת עזרה ראשונה')"><i class="fas fa-first-aid"></i> ערכת עזרה ראשונה</span>
+    <span class="tag" onclick="searchByTag('ערכת פנצ׳ר')"><i class="fas fa-toolbox"></i> ערכת פנצ׳ר</span>
+    <span class="tag" onclick="searchByTag('מיגון תחתון')"><i class="fas fa-shield-virus"></i> מיגון תחתון</span>
+</div>
             <div class="relative">
                 <input type="text" id="tag-search" class="tag-input" placeholder="הקלד תגית לחיפוש...">
                 <button onclick="addTagToSearch()" class="absolute left-3 top-1/2 transform -translate-y-1/2 bg-purple-500 text-white px-3 py-1 rounded-md text-sm hover:bg-purple-600 transition">הוסף</button>
@@ -905,23 +947,12 @@
                 <div>
                     <div class="flex items-center mb-4">
                         <i class="fas fa-car text-purple-500 text-xl ml-2"></i>
-                        <span class="text-lg font-bold text-white">CARטיב</span>
+                        <span class="text-lg font-bold text-white">CAR-טיב</span>
                     </div>
                     <p class="text-sm">
                         האתר המוביל לסרטוני רכב כשרים באיכות גבוהה.
                     </p>
                     <div class="mt-4 flex space-x-4">
-                        <a href="#" class="text-gray-400 hover:text-white">
-                            <i class="fab fa-facebook-f"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white">
-                            <i class="fab fa-instagram"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white">
-                            <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="text-gray-400 hover:text-white">
-                            <i class="fab fa-youtube"></i>
                         </a>
                     </div>
                 </div>
@@ -942,8 +973,8 @@
                     <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">אתר</h3>
                     <ul class="space-y-2">
                         <li><a href="#" class="text-sm hover:text-purple-300">אודות</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">פורום</a></li>
-                        <li><a href="#" class="text-sm hover:text-purple-300">גייטהב</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">פורום רכבים זה לזה</a></li>
+                        <li><a href="#" class="text-sm hover:text-purple-300">הפרויקט ב github</a></li>
                     </ul>
                 </div>
                 <div>
@@ -958,12 +989,12 @@
             </div>
             <div class="mt-12 border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between">
                 <p class="text-sm">
-                    &copy; 2025 CARטיב. כל הזכויות שמורות.
+                    &copy; 2025 CAR-טיב. כל הזכויות שמורות.
                 </p>
                 <div class="mt-4 md:mt-0 flex space-x-6">
-                    <a href="#" class="text-sm hover:text-purple-300"> מדיניות פרטיות</a>
-                    <a href="#" class="text-sm hover:text-purple-300"> תנאי שימוש</a>
-                    <a href="#" class="text-sm hover:text-purple-300"> מפת אתר</a>
+                    <a href="#" class="text-sm hover:text-purple-300"> מדיניות פרטיות </a>
+                    <a href="#" class="text-sm hover:text-purple-300"> תנאי שימוש </a>
+                    <a href="#" class="text-sm hover:text-purple-300"> מפת אתר </a>
                 </div>
             </div>
         </div>
