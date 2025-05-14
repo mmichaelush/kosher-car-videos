@@ -964,7 +964,7 @@
                 <p class="text-xl max-w-3xl mx-auto opacity-90 mb-8">
                     כנסו להתייעץ בפורום שלנו - פורום רכבים זה לזה.
                 </p>
-                <a href="https://forum.example.com" target="_blank" rel="noopener noreferrer" class="btn-primary px-8 py-4 text-lg pulse inline-flex items-center justify-center">
+                <a href="https://rechavimzelaze.ovh/" target="_blank" rel="noopener noreferrer" class="btn-primary px-8 py-4 text-lg pulse inline-flex items-center justify-center">
                     <i class="fas fa-comments mr-2"></i> כנסו עכשיו לפורום
                 </a>
             </div>
@@ -988,11 +988,11 @@
                 <div>
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">המשימה שלנו</h3>
                     <p class="text-lg text-gray-700 mb-6 leading-relaxed">
-                        ב-CAR-טיב, אנו מחויבים לספק פלטפורמה ייחודית ונגישה לחובבי רכב מהמגזר הדתי והחרדי, המעוניינים לצרוך תוכן וידאו איכותי ומסונן. אנו מבינים את הצורך בתוכן "כשר" התואם את ערכי הקהילה, ולכן כל סרטון באתר נבדק בקפידה ומאושר על ידי מערכת הסינון של נטפרי.
+                        ב-CAR-טיב, אנו מחויבים לספק פלטפורמה ייחודית ונגישה לחובבי רכב מהמגזר הדתי והחרדי, המעוניינים לצרוך תוכן וידאו איכותי ומסונן. אנו מבינים את הצורך בתוכן "כשר" התואם את ערכי הקהילה, ולכן כל סרטון באתר נבדק בקפידה שאושר על ידי מערכת הסינון של נטפרי.
                     </p>
                     <h3 class="text-2xl font-bold text-gray-900 mb-4">מה תמצאו אצלנו?</h3>
                     <p class="text-lg text-gray-700 mb-6 leading-relaxed">
-                        האתר מרכז מגוון רחב של סרטונים בנושאי רכב: החל מסקירות דגמים חדשים ויד שנייה, דרך מדריכי "עשה זאת בעצמך" לתחזוקה ותיקונים קלים, ועד לטיפים לבחירת הרכב המשפחתי המושלם. אנו שואפים להעשיר את הידע שלכם, לחסוך לכם זמן וכסף, והכל – בסביבה נקייה ובטוחה.
+                        האתר מרכז מגוון רחב של סרטונים בנושאי רכב: החל מסקירות דגמים חדשים ויד שנייה, דרך מדריכי "עשה זאת בעצמך" לתחזוקה ותיקונים קלים, ועד לטיפים לבחירת הרכב המשפחתי המושלם. אנו שואפים להעשיר את הידע שלכם, לחסוך לכם זמן וכסף, והכל – בסביבה נקייה וכשרה
                     </p>
                      <a href="#contact-section" class="btn-primary inline-flex items-center">
                         <i class="fas fa-envelope mr-2"></i> דברו איתנו
@@ -1099,9 +1099,9 @@
                     <h3 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">אתר</h3>
                     <ul class="space-y-2">
                         <li><a href="#about-section" class="text-sm hover:text-purple-300">אודותינו</a></li>
-                        <li><a href="#forum-inspiration-section" class="text-sm hover:text-purple-300">פורום רכבים</a></li>
-                        <li><a href="https://github.com/yourusername/car-tiv-project" target="_blank" rel="noopener noreferrer" class="text-sm hover:text-purple-300">הפרויקט ב-GitHub</a></li>
-                         <li><a href="#contact-section" class="text-sm hover:text-purple-300">צור קשר</a></li>
+                        <li><a href="https://rechavimzelaze.ovh/" target="_blank" rel="noopener noreferrer" class="text-sm hover:text-purple-300">פורום רכבים זה לזה</a></li>
+                        <li><a href="https://github.com/mmichaelush/kosher-car-videos.io" target="_blank" rel="noopener noreferrer" class="text-sm hover:text-purple-300">הפרויקט ב-GitHub</a></li>
+                        <li><a href="#contact-section" class="text-sm hover:text-purple-300">צור קשר</a></li>
                     </ul>
                 </div>
                 <div>
@@ -1272,22 +1272,22 @@
             }, 1000);
         });
 
-        // Smooth scroll for nav links (alternative to CSS scroll-behavior for wider browser support if needed)
-        // document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        //     anchor.addEventListener('click', function (e) {
-        //         const href = this.getAttribute('href');
-        //         // Ensure it's an internal link and not just '#'
-        //         if (href.length > 1 && href.startsWith('#')) {
-        //             e.preventDefault();
-        //             const targetElement = document.querySelector(href);
-        //             if (targetElement) {
-        //                 targetElement.scrollIntoView({
-        //                     behavior: 'smooth'
-        //                 });
-        //             }
-        //         }
-        //     });
-        // });
+         Smooth scroll for nav links (alternative to CSS scroll-behavior for wider browser support if needed)
+         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+             anchor.addEventListener('click', function (e) {
+                 const href = this.getAttribute('href');
+                 // Ensure it's an internal link and not just '#'
+                 if (href.length > 1 && href.startsWith('#')) {
+                     e.preventDefault();
+                     const targetElement = document.querySelector(href);
+                     if (targetElement) {
+                         targetElement.scrollIntoView({
+                             behavior: 'smooth'
+                         });
+                     }
+                 }
+             });
+         });
 
     </script>
 </body>
