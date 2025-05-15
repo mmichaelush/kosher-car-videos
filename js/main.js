@@ -18,7 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeToggleButton = document.getElementById('theme-toggle');
     const videoCardTemplate = document.getElementById('video-card-template');
 
-    let allVideos = [];
+    let allVideos = []; // יכיל את הנתונים הממוזגים (מקומי + API)
+    let localVideoStubs = []; // יכיל רק את הנתונים מה-JSON המקומי
     let currentFilters = {
         category: 'all',
         tags: [],
@@ -27,6 +28,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const MAX_POPULAR_TAGS = 30;
     let swiperInstance = null;
 
+    // !!! החלף במפתח ה-API שלך מ-Google Cloud Console !!!
+    const YOUTUBE_API_KEY = 'YOUR_YOUTUBE_API_KEY_HERE'; 
+    // ודא שהמפתח מוגבל לדומיין שלך ב-Google Cloud Console
 
     // --- Theme Management ---
     function applyTheme(theme) {
@@ -55,24 +59,25 @@ document.addEventListener('DOMContentLoaded', function() {
         setupEventListeners();
         
         try {
-            await loadVideos();
+            await loadAndProcessVideos(); // פונקציה אחת שתטפל בטעינה ובשילוב עם ה-API
+            
             if (allVideos && allVideos.length > 0) {
-                console.log("CAR-טיב: Videos loaded, proceeding with dependent renders.");
+                console.log("CAR-טיב: Videos processed, proceeding with dependent renders.");
                 loadAndRenderCategories();
-                loadAndRenderPopularTags();
+                loadAndRenderPopularTags(); // זה ישתמש ב-tags מ-allVideos (שכבר ממוזגים)
                 renderFilteredVideos();
             } else {
-                 console.warn("CAR-טיב: No videos loaded from data source or data source is empty. Dependent renders will be skipped or show empty state.");
+                 console.warn("CAR-טיב: No videos available after processing. Dependent renders will be skipped or show empty state.");
                  if(loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) {
-                    loadingPlaceholder.innerHTML = 'לא נטענו סרטונים. בדוק את קובץ הנתונים `data/videos.json`.';
+                    loadingPlaceholder.innerHTML = 'לא נטענו סרטונים או שלא נמצא מידע עבורם מיוטיוב.';
                  }
-                 if(noVideosFoundMessage && !noVideosFoundMessage.classList.contains("hidden")) { // בדיקה כפולה
+                 if(noVideosFoundMessage && !noVideosFoundMessage.classList.contains("hidden")) {
                     noVideosFoundMessage.classList.remove('hidden');
                  }
                  if(popularTagsContainer) popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא ניתן לטעון תגיות ללא סרטונים.</p>';
             }
         } catch (error) {
-            console.error("CAR-טיב: Critical error during page initialization (likely video loading):", error);
+            console.error("CAR-טיב: Critical error during page initialization:", error);
             if (loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) {
                  loadingPlaceholder.innerHTML = `<i class="fas fa-exclamation-triangle fa-2x text-red-500 mb-3"></i><br>שגיאה קריטית בטעינת נתוני הסרטונים.`;
             }
@@ -84,46 +89,171 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("CAR-טיב: Page initialization complete.");
     }
 
-    // --- Data Loading (Simplified - directly from local JSON) ---
-    async function loadVideos() {
-        console.log("CAR-טיב: Attempting to load videos from 'data/videos.json'...");
-        if (loadingPlaceholder) {
-            loadingPlaceholder.classList.remove('hidden');
-            loadingPlaceholder.innerHTML = `<i class="fas fa-spinner fa-spin fa-2x mb-3"></i><br>טוען סרטונים...`;
-        }
+    // --- Data Loading and Processing ---
+    async function loadAndProcessVideos() {
+        console.log("CAR-טיב: Attempting to load initial video stubs from 'data/videos.json'...");
+        if (loadingPlaceholder) { /* ... (הצג הודעת טעינה) ... */ }
         if (noVideosFoundMessage) noVideosFoundMessage.classList.add('hidden');
 
         try {
-            const response = await fetch('data/videos.json'); 
+            const response = await fetch('data/videos.json');
             console.log("CAR-טיב: Fetch response status for videos.json:", response.status, response.statusText);
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status} for videos.json. URL: ${response.url}`);
-            }
+            if (!response.ok) throw new Error(`HTTP error! Status: ${response.status} for videos.json`);
+            
             const responseText = await response.text();
             try {
-                allVideos = JSON.parse(responseText);
-                if (!Array.isArray(allVideos)) {
-                    console.error("CAR-טיב: Parsed JSON from videos.json is not an array. Received:", allVideos);
-                    allVideos = []; 
-                    throw new Error("Parsed JSON is not an array.");
-                }
+                localVideoStubs = JSON.parse(responseText);
+                if (!Array.isArray(localVideoStubs)) throw new Error("Local video data (videos.json) is not an array.");
             } catch (jsonError) {
-                console.error("CAR-טיב: Error parsing JSON from videos.json:", jsonError);
-                console.error("CAR-טיב: Received text that failed to parse:", responseText.substring(0, 500) + "...");
-                allVideos = []; 
-                throw new Error(`Invalid JSON format in videos.json. ${jsonError.message}`);
+                console.error("CAR-טיב: Error parsing JSON from videos.json:", jsonError, responseText.substring(0,300));
+                localVideoStubs = [];
+                throw jsonError; // זרוק שוב כדי שה-catch החיצוני יטפל
             }
 
-            console.log(`CAR-טיב: Videos loaded successfully: ${allVideos.length} videos. Example:`, allVideos.length > 0 ? allVideos[0] : "Empty array");
-            if (loadingPlaceholder) loadingPlaceholder.classList.add('hidden');
-        } catch (error) {
-            console.error("CAR-טיב: Could not load or parse videos.json:", error);
-            if (loadingPlaceholder) {
-                loadingPlaceholder.innerHTML = `<i class="fas fa-exclamation-triangle fa-2x text-red-500 mb-3"></i><br>שגיאה בטעינת קובץ הסרטונים. ודא שהקובץ 'data/videos.json' קיים, הנתיב נכון, והתוכן הוא JSON תקין.`;
-                loadingPlaceholder.classList.remove('hidden');
+            console.log(`CAR-טיב: Loaded ${localVideoStubs.length} video stubs from JSON. Example:`, localVideoStubs.length > 0 ? localVideoStubs[0] : "N/A");
+
+            if (localVideoStubs.length === 0) {
+                allVideos = [];
+                if (loadingPlaceholder) loadingPlaceholder.classList.add('hidden');
+                return; // אין IDs לטעון מה-API
             }
-            if (videoCardsContainer) videoCardsContainer.innerHTML = '';
-            allVideos = [];
+
+            if (YOUTUBE_API_KEY === 'YOUR_YOUTUBE_API_KEY_HERE' || !YOUTUBE_API_KEY) {
+                console.error("CAR-טיב: YouTube API Key is missing or not configured. Cannot fetch video details from YouTube.");
+                // אפשר להחליט להשתמש רק בנתונים המקומיים (אם יש בהם מספיק) או להציג שגיאה
+                // כרגע, נמשיך בלי פרטי ה-API, והכרטיסיות יהיו חסרות מידע
+                allVideos = localVideoStubs.map(stub => ({
+                    ...stub,
+                    title: `סרטון (ID: ${stub.id})`, // ברירת מחדל אם אין API
+                    description: "תיאור לא זמין (נדרש API של יוטיוב)",
+                    channelName: "לא ידוע",
+                    channelImage: 'assets/images/default-channel.png',
+                    views: "N/A",
+                    uploadDate: "לא זמין"
+                }));
+                if (loadingPlaceholder) loadingPlaceholder.classList.add('hidden');
+                console.warn("CAR-טיב: Proceeding with local data only due to missing YouTube API key.");
+                return;
+            }
+            
+            // בצע קריאות API של יוטיוב בקבוצות של 50 (המגבלה של ה-API)
+            const CHUNK_SIZE = 50;
+            let enrichedVideos = [];
+
+            for (let i = 0; i < localVideoStubs.length; i += CHUNK_SIZE) {
+                const chunk = localVideoStubs.slice(i, i + CHUNK_SIZE);
+                const videoIds = chunk.map(v => v.id).join(',');
+                const apiUrl = `https://www.googleapis.com/youtube/v3/videos?part=snippet,statistics,contentDetails&id=${videoIds}&key=${YOUTUBE_API_KEY}&maxResults=${CHUNK_SIZE}`;
+                
+                console.log(`CAR-טיב: Fetching details for video IDs chunk: ${videoIds} from YouTube API...`);
+                const apiResponse = await fetch(apiUrl);
+                if (!apiResponse.ok) {
+                    console.error(`CAR-טיב: YouTube API error for chunk! Status: ${apiResponse.status}`, await apiResponse.text());
+                    // המשך לקבוצה הבאה, או החלט על טיפול אחר בשגיאה
+                    // כרגע, סרטונים מהקבוצה הזו לא יועשרו
+                    chunk.forEach(stub => enrichedVideos.push({ ...stub, title: `שגיאת API (ID: ${stub.id})`, description: "לא ניתן היה לטעון פרטים."})); // הוסף עם הודעת שגיאה
+                    continue; 
+                }
+                
+                const apiData = await apiResponse.json();
+                console.log(`CAR-טיב: Received data from YouTube API for chunk ${i/CHUNK_SIZE + 1}:`, apiData);
+
+                if (apiData.items && apiData.items.length > 0) {
+                    chunk.forEach(localVideo => {
+                        const apiVideoDetails = apiData.items.find(item => item.id === localVideo.id);
+                        if (apiVideoDetails) {
+                            enrichedVideos.push({
+                                ...localVideo,
+                                title: apiVideoDetails.snippet.title,
+                                description: apiVideoDetails.snippet.description.substring(0, 250) + (apiVideoDetails.snippet.description.length > 250 ? "..." : ""),
+                                channelName: apiVideoDetails.snippet.channelTitle,
+                                channelImage: apiVideoDetails.snippet.thumbnails?.default?.url || apiVideoDetails.snippet.thumbnails?.medium?.url || 'assets/images/default-channel.png',
+                                views: formatViewCount(apiVideoDetails.statistics.viewCount),
+                                uploadDate: formatDate(apiVideoDetails.snippet.publishedAt),
+                                duration: formatDuration(apiVideoDetails.contentDetails?.duration) // contentDetails יכול להיות חסר
+                            });
+                        } else {
+                            console.warn(`CAR-טיב: Video with ID ${localVideo.id} not found in YouTube API response for this chunk.`);
+                            enrichedVideos.push({ ...localVideo, title: `מידע חסר (ID: ${localVideo.id})`, description: "פרטי הסרטון לא נמצאו ביוטיוב."});
+                        }
+                    });
+                } else {
+                     console.warn(`CAR-טיב: YouTube API returned no items for chunk of IDs: ${videoIds}`);
+                     chunk.forEach(stub => enrichedVideos.push({ ...stub, title: `מידע לא זמין (ID: ${stub.id})`, description: "לא התקבל מידע מיוטיוב."}));
+                }
+            }
+            allVideos = enrichedVideos;
+
+            console.log(`CAR-טיב: Finished processing all video data. Total videos: ${allVideos.length}`, allVideos.length > 0 ? allVideos.slice(0,2) : "Empty array");
+            if (loadingPlaceholder) loadingPlaceholder.classList.add('hidden');
+
+        } catch (error) {
+            console.error("CAR-טיב: Error in loadAndProcessVideos:", error);
+            if (loadingPlaceholder) { /* ... (הודעת שגיאה כללית) ... */ }
+            allVideos = []; // אפס במקרה של שגיאה קריטית
+        }
+    }
+
+    // --- פונקציות עזר לפורמט נתונים מ-API ---
+    function formatViewCount(count) {
+        if (!count) return 'N/A';
+        const num = parseInt(count);
+        if (isNaN(num)) return 'N/A';
+        if (num >= 1000000) return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+        if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
+        return num.toString();
+    }
+
+    function formatDate(isoDateString) {
+        if (!isoDateString) return 'לא זמין';
+        try {
+            const date = new Date(isoDateString);
+            const seconds = Math.floor((new Date() - date) / 1000);
+            let interval = seconds / 31536000; // שנים
+            if (interval > 1) return "לפני " + Math.floor(interval) + (Math.floor(interval) === 1 ? " שנה" : " שנים");
+            interval = seconds / 2592000; // חודשים
+            if (interval > 1) return "לפני " + Math.floor(interval) + (Math.floor(interval) === 1 ? " חודש" : " חודשים");
+            interval = seconds / 604800; // שבועות
+            if (interval > 1) return "לפני " + Math.floor(interval) + (Math.floor(interval) === 1 ? " שבוע" : " שבועות");
+            interval = seconds / 86400; // ימים
+            if (interval > 1) return "לפני " + Math.floor(interval) + (Math.floor(interval) === 1 ? " יום" : " ימים");
+            interval = seconds / 3600; // שעות
+            if (interval > 1) return "לפני " + Math.floor(interval) + (Math.floor(interval) === 1 ? " שעה" : " שעות");
+            interval = seconds / 60; // דקות
+            if (interval > 1) return "לפני " + Math.floor(interval) + (Math.floor(interval) === 1 ? " דקה" : " דקות");
+            return "ממש לאחרונה";
+        } catch (e) {
+            console.error("CAR-טיב: Error formatting date", isoDateString, e);
+            return 'תאריך לא תקין';
+        }
+    }
+
+    function formatDuration(isoDuration) {
+        if (!isoDuration) return "";
+        try {
+            const match = isoDuration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+            if (!match) return "";
+        
+            const hours = parseInt(match[1] || 0);
+            const minutes = parseInt(match[2] || 0);
+            const seconds = parseInt(match[3] || 0);
+        
+            let formatted = "";
+            if (hours > 0) {
+                formatted += hours + ":";
+                formatted += (minutes < 10 ? "0" : "") + minutes + ":";
+            } else {
+                if (minutes > 0) { // הצג דקות רק אם יש
+                   formatted += minutes + ":";
+                } else if (hours === 0 && minutes === 0 && seconds > 0) { // למקרה של סרטונים קצרים מאוד בלי דקות
+                    formatted += "0:";
+                }
+            }
+            formatted += (seconds < 10 ? "0" : "") + seconds;
+            return formatted;
+        } catch (e) {
+            console.error("CAR-טיב: Error formatting duration", isoDuration, e);
+            return "";
         }
     }
     
