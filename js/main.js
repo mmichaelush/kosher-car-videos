@@ -320,11 +320,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         console.log(`CAR-טיב: Finished appending cards. videoCardsContainer child count: ${videoCardsContainer.children.length}`);
     }
-    
-    // --- handlePlayVideo, renderSelectedTagsChips, escapeAttributeValue (כמו קודם) ---
-    function handlePlayVideo(event, buttonElement) { /* ... */ }
-    function renderSelectedTagsChips() { /* ... */ }
-    function escapeAttributeValue(value) { /* ... */ }
+
+    function handlePlayVideo(event, buttonElement) { // buttonElement הוא הכפתור שנלחץ
+        const videoId = buttonElement.dataset.videoId;
+        const videoCard = buttonElement.closest('article');
+        
+        if (!videoCard) {
+            console.error("CAR-טיב: handlePlayVideo - Could not find parent article for play button:", buttonElement);
+            return;
+        }
+
+        const iframe = videoCard.querySelector('.video-iframe');
+        const thumbnail = videoCard.querySelector('.thumbnail-image');
+        const playIconContainer = videoCard.querySelector('.play-video-button'); // הכפתור עצמו
+
+        // הוסף את ההדפסות האלה כדי לראות מה קורה כאן:
+        console.log(`CAR-טיב: handlePlayVideo - Play button clicked! Video ID: ${videoId}`);
+        console.log("CAR-טיב: handlePlayVideo - Found iframe:", iframe);
+        console.log("CAR-טיב: handlePlayVideo - Found thumbnail:", thumbnail);
+        console.log("CAR-טיב: handlePlayVideo - Found playIconContainer:", playIconContainer);
+
+
+        if (iframe && videoId) {
+            const videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1&enablejsapi=1`;
+            iframe.src = videoSrc;
+            iframe.classList.remove('hidden'); // ודא שה-iframe הופך לגלוי
+            console.log(`CAR-טיב: handlePlayVideo - Iframe src set to: ${videoSrc}. Iframe is now visible.`);
+
+            if (thumbnail) {
+                thumbnail.style.display = 'none'; 
+                console.log("CAR-טיב: handlePlayVideo - Thumbnail hidden.");
+            }
+            if (playIconContainer) {
+                playIconContainer.style.display = 'none';
+                console.log("CAR-טיב: handlePlayVideo - Play icon container hidden.");
+            }
+        } else {
+            if (!iframe) console.error("CAR-טיב: handlePlayVideo - Iframe element not found inside video card for ID:", videoId);
+            if (!videoId) console.error("CAR-טיב: handlePlayVideo - Video ID not found on play button dataset.");
+        }
+    }
 
     // --- Filtering Logic (כמו קודם, עם בדיקות תקינות נוספות) ---
     function getFilteredVideos() {
