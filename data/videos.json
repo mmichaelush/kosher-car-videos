@@ -1,50 +1,26 @@
 [
   {
     "id": "dQw4w9WgXcQ",
-    "title": "בוגאטי שירון סופר ספורט 2023 - סקירה מלאה",
-    "channelName": "AutoVision",
-    "channelImage": "https://randomuser.me/api/portraits/men/32.jpg",
-    "description": "סקירה מעמיקה של המכונית המהירה ביותר בעולם עם כל הפרטים הטכניים.",
     "category": "review",
     "tags": ["בוגאטי", "סופר-קאר", "ביצועים"],
-    "views": "2.4M",
-    "uploadDate": "לפני 3 ימים",
-    "kosher": true
+    "hebrewContent": true 
   },
   {
     "id": "y6120QOlsfU",
-    "title": "שיקום פורד מוסטנג 1967",
-    "channelName": "Classic Restorations",
-    "channelImage": "https://randomuser.me/api/portraits/men/45.jpg",
-    "description": "תיעוד מלא של תהליך השיקום של המוסטנג הקלאסית האמריקאית.",
     "category": "collectors",
     "tags": ["פורד", "מוסטנג", "שיקום", "קלאסי"],
-    "views": "1.1M",
-    "uploadDate": "לפני שבוע",
-    "kosher": true
+    "hebrewContent": false 
   },
   {
     "id": "3gOHn3n7mP8",
-    "title": "טסלה סייברטראק - מבחן שטח",
-    "channelName": "EV Adventures",
-    "channelImage": "https://randomuser.me/api/portraits/women/68.jpg",
-    "description": "מבחן שטח מקיף למכונית החשמלית השנויה במחלוקת בתנאים קיצוניים.",
     "category": "review",
     "tags": ["טסלה", "חשמלי", "שטח"],
-    "views": "3.7M",
-    "uploadDate": "לפני יומיים",
-    "kosher": true
+    "hebrewContent": true
   },
   {
     "id": "exampleVideoId4",
-    "title": "החלפת שמן מנוע - מדריך מלא",
-    "channelName": "Car DIY",
-    "channelImage": "https://randomuser.me/api/portraits/men/22.jpg",
-    "description": "מדריך מפורט להחלפת שמן מנוע לכל סוגי הרכבים, כולל טיפים מקצועיים.",
     "category": "diy",
     "tags": ["מנוע", "שמן", "טיפול", "הדרכה"],
-    "views": "450K",
-    "uploadDate": "לפני חודש",
-    "kosher": true
+    "hebrewContent": false
   }
 ]
