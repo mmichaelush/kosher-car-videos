@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             await loadVideos();
-            if (allVideos && allVideos.length > 0) { // בדיקה נוספת ש-allVideos הוא מערך ולא undefined
+            if (allVideos && allVideos.length > 0) {
                 console.log("CAR-טיב: Videos loaded, proceeding with dependent renders.");
                 loadAndRenderCategories();
                 loadAndRenderPopularTags();
@@ -66,7 +66,9 @@ document.addEventListener('DOMContentLoaded', function() {
                  if(loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) {
                     loadingPlaceholder.innerHTML = 'לא נטענו סרטונים. בדוק את קובץ הנתונים `data/videos.json`.';
                  }
-                 if(noVideosFoundMessage && !noVideosFoundMessage.classList.contains("hidden")) noVideosFoundMessage.classList.remove('hidden');
+                 if(noVideosFoundMessage && !noVideosFoundMessage.classList.contains("hidden")) { // בדיקה כפולה
+                    noVideosFoundMessage.classList.remove('hidden');
+                 }
                  if(popularTagsContainer) popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא ניתן לטעון תגיות ללא סרטונים.</p>';
             }
         } catch (error) {
@@ -82,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log("CAR-טיב: Page initialization complete.");
     }
 
-    // --- Data Loading ---
+    // --- Data Loading (Simplified - directly from local JSON) ---
     async function loadVideos() {
         console.log("CAR-טיב: Attempting to load videos from 'data/videos.json'...");
         if (loadingPlaceholder) {
@@ -100,19 +102,19 @@ document.addEventListener('DOMContentLoaded', function() {
             const responseText = await response.text();
             try {
                 allVideos = JSON.parse(responseText);
-                if (!Array.isArray(allVideos)) { // בדיקה שהתוצאה היא מערך
+                if (!Array.isArray(allVideos)) {
                     console.error("CAR-טיב: Parsed JSON from videos.json is not an array. Received:", allVideos);
-                    allVideos = []; // אפס אם הפורמט לא נכון
+                    allVideos = []; 
                     throw new Error("Parsed JSON is not an array.");
                 }
             } catch (jsonError) {
                 console.error("CAR-טיב: Error parsing JSON from videos.json:", jsonError);
                 console.error("CAR-טיב: Received text that failed to parse:", responseText.substring(0, 500) + "...");
-                allVideos = []; // אפס במקרה של שגיאת פרסור
+                allVideos = []; 
                 throw new Error(`Invalid JSON format in videos.json. ${jsonError.message}`);
             }
 
-            console.log(`CAR-טיב: Videos loaded successfully: ${allVideos.length} videos.`, allVideos.length > 0 ? allVideos.slice(0,2) : "Empty array");
+            console.log(`CAR-טיב: Videos loaded successfully: ${allVideos.length} videos. Example:`, allVideos.length > 0 ? allVideos[0] : "Empty array");
             if (loadingPlaceholder) loadingPlaceholder.classList.add('hidden');
         } catch (error) {
             console.error("CAR-טיב: Could not load or parse videos.json:", error);
@@ -122,7 +124,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (videoCardsContainer) videoCardsContainer.innerHTML = '';
             allVideos = [];
-            // throw error; // נאפשר ל-initializePage לתפוס זאת
         }
     }
     
@@ -137,10 +138,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const staticCategoryButtons = categoriesWrapper.querySelectorAll('.category-btn');
         if (staticCategoryButtons.length > 0) {
             console.log(`CAR-טיב: ${staticCategoryButtons.length} static categories found in HTML.`);
-            let isActiveSet = false;
-            staticCategoryButtons.forEach(btn => {
-                if(btn.classList.contains('active')) isActiveSet = true;
-            });
+            let isActiveSet = Array.from(staticCategoryButtons).some(btn => btn.classList.contains('active'));
 
             if (!isActiveSet && staticCategoryButtons.length > 0) {
                 staticCategoryButtons[0].classList.add('active', 'bg-purple-600', 'text-white', 'dark:bg-purple-500');
@@ -150,17 +148,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 const activeBtn = categoriesWrapper.querySelector('.category-btn.active');
                 if (activeBtn && activeBtn.dataset.category) {
                     currentFilters.category = activeBtn.dataset.category;
-                    console.log("CAR-טיב: Found pre-selected active category:", currentFilters.category);
                 }
             }
         } else {
-            console.warn("CAR-טיב: No static category buttons found.");
+            console.warn("CAR-טיב: No static category buttons found in HTML inside #categories-wrapper.");
         }
         if (swiperInstance) {
             swiperInstance.update();
             console.log("CAR-טיב: Swiper instance updated for categories.");
         } else {
-            console.warn("CAR-טיב: Swiper instance not available for categories update.");
+            console.warn("CAR-טיב: Swiper instance not available for categories update (or not yet initialized).");
         }
     }
 
@@ -171,9 +168,9 @@ document.addEventListener('DOMContentLoaded', function() {
              console.warn("CAR-טיב: Popular tags container ('#popular-tags-container') not found.");
              return;
         }
-        if (!allVideos || allVideos.length === 0) { // בדיקה נוספת
+        if (!allVideos || allVideos.length === 0) {
             popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 dark:text-slate-400 text-sm">יש לטעון סרטונים כדי להציג תגיות פופולריות.</p>';
-            console.warn("CAR-טיב: Cannot render popular tags because no videos are loaded.");
+            console.warn("CAR-טיב: Cannot render popular tags: no videos loaded.");
             return;
         }
 
@@ -221,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Rendering Videos ---
     function renderFilteredVideos() {
-        console.log("CAR-טיב: Rendering filtered videos with current filters:", JSON.parse(JSON.stringify(currentFilters))); // שכפול עמוק ללוג
+        console.log("CAR-טיב: Rendering filtered videos with current filters:", JSON.parse(JSON.stringify(currentFilters)));
         if (!videoCardsContainer) {
              console.error("CAR-טיב: CRITICAL - Video cards container ('video-cards-container') not found in DOM.");
              return;
@@ -265,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     el.removeAttribute('class_exists');
                 });
                 
-                cardElement.dataset.category = video.category || 'unknown'; // ברירת מחדל אם חסר
+                cardElement.dataset.category = video.category || 'unknown';
                 cardElement.dataset.tags = (video.tags && Array.isArray(video.tags)) ? video.tags.join(',') : '';
 
                 const sanitizedTitle = escapeHTML(video.title);
@@ -396,10 +393,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Filtering Logic ---
     function getFilteredVideos() {
-        if (!allVideos || allVideos.length === 0) return []; // החזר מערך ריק אם אין סרטונים כלל
+        if (!allVideos || allVideos.length === 0) return [];
 
         return allVideos.filter(video => {
-            if (!video || typeof video.id === 'undefined') return false; // דלג על אובייקטים פגומים
+            if (!video || typeof video.id === 'undefined') return false;
 
             const category = String(video.category || "").toLowerCase();
             const videoTitle = String(video.title || "").toLowerCase();
@@ -471,12 +468,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const newTagName = tagSearchInput.value.trim();
                 if (newTagName) {
                     const normalizedNewTag = newTagName.toLowerCase();
-                    // בדוק אם התגית (לא תלוית רישיות) כבר נבחרה
                     const isAlreadySelected = currentFilters.tags.some(t => t.toLowerCase() === normalizedNewTag);
                     if (!isAlreadySelected) {
-                        // נסה למצוא אם התגית כבר קיימת ברשימת הפופולריות
                         const existingPopularTag = popularTagsContainer ? popularTagsContainer.querySelector(`button.tag[data-tag-value="${escapeAttributeValue(newTagName)}"]`) : null;
-                        toggleTagSelection(newTagName, existingPopularTag); // שלח את השם המקורי, לא ה-normalized
+                        toggleTagSelection(newTagName, existingPopularTag);
                     }
                 }
                 tagSearchInput.value = '';
@@ -513,7 +508,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const targetElement = document.querySelector(href);
                     if (targetElement) {
                         const headerElement = document.querySelector('header');
-                        const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 80; // Default offset if header not found
+                        const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 80;
                         const elementPosition = targetElement.getBoundingClientRect().top;
                         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
                 
@@ -555,12 +550,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
         if (index > -1) {
             currentFilters.tags.splice(index, 1);
-            if (tagElement) { // tagElement הוא הכפתור מהרשימה הפופולרית
+            if (tagElement) {
                 tagElement.classList.remove('active-search-tag', 'bg-purple-600', 'text-white', 'dark:bg-purple-500', 'dark:text-white');
                 tagElement.classList.add('bg-purple-100', 'text-purple-700', 'dark:bg-slate-700', 'dark:text-purple-300');
             }
         } else {
-            currentFilters.tags.push(tagName); // שמור את השם המקורי
+            currentFilters.tags.push(tagName);
             if (tagElement) {
                 tagElement.classList.add('active-search-tag', 'bg-purple-600', 'text-white', 'dark:bg-purple-500', 'dark:text-white');
                 tagElement.classList.remove('bg-purple-100', 'text-purple-700', 'dark:bg-slate-700', 'dark:text-purple-300');
@@ -608,7 +603,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (document.querySelector('.categories-swiper')) {
             if (swiperInstance) {
                 swiperInstance.destroy(true, true);
-                // console.log("CAR-טיב: Previous Swiper instance destroyed.");
             }
             swiperInstance = new Swiper('.categories-swiper', {
                 slidesPerView: 'auto',
