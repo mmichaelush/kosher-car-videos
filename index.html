@@ -54,8 +54,6 @@
                         <a href="#about-section" class="nav-link flex items-center"><i class="fas fa-info-circle ml-2 opacity-80"></i>אודות</a>
                         <a href="#forum-inspiration-section" class="nav-link flex items-center"><i class="fas fa-comments ml-2 opacity-80"></i>שאלות</a>
                         <a href="#contact-section" class="nav-link flex items-center"><i class="fas fa-envelope ml-2 opacity-80"></i>צור קשר</a>
-                        <!-- מפת האתר לרוב לא מופיעה בניווט הראשי אלא בפוטר, אבל אם אתה רוצה אותה: -->
-                        <!-- <a href="#site-footer" class="nav-link flex items-center"><i class="fas fa-sitemap ml-2 opacity-80"></i>מפת האתר</a> -->
                     </nav
                 </div>
                 <div class="flex items-center space-x-3">
@@ -69,7 +67,6 @@
                     </div>
                     <button id="theme-toggle" aria-label="שנה מצב תצוגה" class="p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800 transition-colors">
                         <i class="fas fa-moon text-xl text-purple-600 dark:text-yellow-400"></i>
-                        <!-- <i class="fas fa-sun text-xl hidden"></i> -->
                     </button>
                     <button id="open-menu" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1">
                         <i class="fas fa-bars text-2xl"></i>
@@ -94,7 +91,7 @@
                     <span class="block text-purple-300 dark:text-purple-300">כשרים ומסוננים</span>
                 </h1>
                 <p class="mt-6 max-w-xl mx-auto text-lg sm:text-xl text-purple-100 dark:text-purple-200 opacity-90">
-                   מאגר וידאו איכותי, מאושר נטפרי, לכל חובבי הרכב שומרי התורה והמצוות.
+                   מאגר וידאו איכותי, פתוח בנטפרי, לכל חובבי הרכב שומרי התורה והמצוות.
                 </p>
 <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
                     <a href="#video-grid-section" 
@@ -214,10 +211,10 @@
                 <div class="text-center">
                     <i class="fas fa-comments fa-3x mb-6 text-purple-300 dark:text-purple-400"></i>
                     <h2 class="text-3xl sm:text-4xl font-extrabold mb-6">
-                        שאלה בוערת על הרכב?
+                        שאלה או דיון בנושר רכב?
                     </h2>
                     <p class="text-lg sm:text-xl max-w-2xl mx-auto text-purple-100 dark:text-purple-200 opacity-95 mb-10">
-                        הצטרפו לקהילת "רכבים זה לזה" בפורום שלנו, שתפו, התייעצו וקבלו תשובות ממומחים וחברים.
+                    הכנסו לפורום שלנו פורום "רכבים זה לזה" , שתפו, התייעצו וקבלו תשובות ממומחים וחברים.
                     </p>
                     <a href="https://rechavimzelaze.ovh/" target="_blank" rel="noopener noreferrer" 
                        class="btn-forum group relative inline-flex items-center justify-center px-10 py-4 text-xl font-bold text-purple-700 bg-white hover:bg-purple-50 dark:text-purple-300 dark:bg-slate-100 dark:hover:bg-slate-200 rounded-xl shadow-xl hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-4 focus:ring-offset-purple-700 dark:focus:ring-offset-purple-800 focus:ring-white dark:focus:ring-slate-300 transition-all duration-300 ease-out transform hover:-translate-y-1">
@@ -246,14 +243,16 @@
                     <div class="prose prose-lg prose-purple dark:prose-invert text-slate-700 dark:text-slate-300 max-w-none leading-relaxed">
                         <h3 class="text-2xl font-semibold mb-3">המשימה שלנו</h3>
                         <p>
-                            ב-CAR-טיב, אנו מחויבים לספק פלטפורמה ייחודית ונגישה לחובבי רכב מהמגזר הדתי והחרדי. אנו מבינים את הצורך בתוכן "כשר" התואם את ערכי הקהילה, ולכן כל סרטון באתר נבדק בקפידה ומאושר על ידי מערכת הסינון של נטפרי.
+                            ב-CAR-טיב, אנו מחויבים לספק פלטפורמה ייחודית ונגישה לחובבי רכב מהמגזר הדתי והחרדי. אנו מבינים את הצורך בתוכן "כשר ומסונן" התואם את ערכי הקהילה, ולכן כל סרטון באתר נבדק בקפידה שאושר על ידי מערכת הסינון של נטפרי.
                         </p>
                         <h3 class="text-2xl font-semibold mt-8 mb-3">מה תמצאו אצלנו?</h3>
                         <p>
                             האתר מרכז מגוון רחב של סרטונים: מסקירות דגמים חדשים ויד שנייה, דרך מדריכי "עשה זאת בעצמך" לתחזוקה ותיקונים, ועד לטיפים לבחירת הרכב המשפחתי המושלם. אנו שואפים להעשיר את הידע שלכם, לחסוך זמן וכסף, בסביבה נקייה וכשרה.
                         </p>
-                         <a href="#contact-section" class="btn-primary mt-8 no-underline inline-flex items-center">
-                            <i class="fas fa-envelope"></i> דברו איתנו
+                         <a href="#contact-section" 
+                           class="btn-primary mt-8 no-underline inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-offset-slate-800 transition-all duration-300 ease-out">
+                            <i class="fas fa-envelope ml-2"></i> 
+                            דברו איתנו
                         </a>
                     </div>
                     <div class="relative order-first md:order-last group">
