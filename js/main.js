@@ -135,39 +135,110 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // --- Categories ---
-    function loadAndRenderCategories() {
-        console.log("CAR-טיב: Loading and rendering categories...");
-        if (!categoriesWrapper) {
-            console.warn("CAR-טיב: Categories wrapper ('#categories-wrapper') not found.");
-            return;
-        }
-        
-        const staticCategoryButtons = categoriesWrapper.querySelectorAll('.category-btn');
-        if (staticCategoryButtons.length > 0) {
-            console.log(`CAR-טיב: ${staticCategoryButtons.length} static categories found in HTML.`);
-            let isActiveSet = Array.from(staticCategoryButtons).some(btn => btn.classList.contains('active'));
+    function renderHomepageCategoryButtons() {
+    console.log("CAR-טיב: Rendering homepage category buttons...");
+    const categoriesGrid = document.getElementById('homepage-categories-grid');
+    const loadingCategoriesPlaceholder = document.getElementById('loading-homepage-categories');
 
-            if (!isActiveSet && staticCategoryButtons.length > 0) {
-                staticCategoryButtons[0].classList.add('active', 'bg-purple-600', 'text-white', 'dark:bg-purple-500');
-                currentFilters.category = staticCategoryButtons[0].dataset.category || 'all';
-                console.log("CAR-טיב: Set first category as active by default:", currentFilters.category);
-            } else if (isActiveSet) {
-                const activeBtn = categoriesWrapper.querySelector('.category-btn.active');
-                if (activeBtn && activeBtn.dataset.category) {
-                    currentFilters.category = activeBtn.dataset.category;
-                     console.log("CAR-טיב: Active category from HTML:", currentFilters.category);
+    if (!categoriesGrid) {
+        console.warn("CAR-טיב: Homepage categories grid container not found.");
+        if(loadingCategoriesPlaceholder) loadingCategoriesPlaceholder.textContent = "שגיאה: מיכל הקטגוריות לא נמצא.";
+        return;
+    }
+
+    // רשימת קטגוריות מוגדרת מראש (יכולה גם להגיע מ-JSON נפרד או להיווצר מ-allVideos)
+    const predefinedHomepageCategories = [
+        { id: "review", name: "סקירות רכב", description: "מבחנים והשוואות", icon: "fa-magnifying-glass-chart", gradient: "from-purple-500 to-indigo-600 dark:from-purple-600 dark:to-indigo-700" },
+        { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה", icon: "fa-tools", gradient: "from-green-500 to-teal-600 dark:from-green-600 dark:to-teal-700" },
+        { id: "maintenance", name: "טיפולים", description: "תחזוקה שוטפת ומניעתית", icon: "fa-oil-can", gradient: "from-blue-500 to-cyan-600 dark:from-blue-600 dark:to-cyan-700" },
+        { id: "collectors", name: "רכבי אספנות", description: "קלאסיקות ופנינים מוטוריות", icon: "fa-car-side", gradient: "from-red-500 to-pink-600 dark:from-red-600 dark:to-pink-700" },
+        { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "fa-cogs", gradient: "from-yellow-500 to-amber-600 dark:from-yellow-600 dark:to-amber-700" },
+        { id: "troubleshooting", name: "איתור תקלות", description: "פתרון בעיות נפוצות", icon: "fa-microscope", gradient: "from-sky-500 to-blue-600 dark:from-sky-600 dark:to-blue-700" },
+        // הוסף עוד קטגוריות לפי הצורך
+    ];
+
+    if (loadingCategoriesPlaceholder) loadingCategoriesPlaceholder.style.display = 'none';
+    categoriesGrid.innerHTML = ''; // נקה תוכן קיים (כמו "טוען קטגוריות")
+
+    predefinedHomepageCategories.forEach(cat => {
+        const link = document.createElement('a');
+        // ה-URL צריך להפנות לדף הקטגוריה שלך, עם פרמטר שמציין את הקטגוריה
+        link.href = `category.html?name=${cat.id}`; 
+        
+        link.className = `category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${cat.gradient} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white`;
+        link.setAttribute('aria-label', `עבור לקטגוריית ${cat.name}`);
+        
+        link.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]">
+                <i class="fas ${cat.icon} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i>
+                <h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 transition-colors">${escapeHTML(cat.name)}</h3>
+                <p class="text-sm opacity-80 mt-1 px-2">${escapeHTML(cat.description)}</p>
+            </div>
+        `;
+        categoriesGrid.appendChild(link);
+    });
+    console.log("CAR-טיב: Homepage category buttons rendered.");
+}
+
+// בתוך initializePage:
+async function initializePage() {
+    // ... (קוד אתחול קיים) ...
+    try {
+        await loadLocalVideos(); // טוען את ה-JSON הרזה
+        
+        if (isHomePage()) { // בדוק אם זה דף הבית
+            if (document.getElementById('homepage-categories-grid')) {
+                renderHomepageCategoryButtons();
+            }
+            // בדף הבית, אולי נרצה להציג את *כל* הסרטונים או מדגם (למשל, האחרונים)
+            // או לא להציג סרטונים כלל עד שהמשתמש בוחר קטגוריה או מחפש
+            currentFilters.category = 'all'; // הצג הכל כברירת מחדל בדף הבית
+        } else {
+            // אם זה דף קטגוריה
+            const categoryFromURL = getCategoryFromURL();
+            if (categoryFromURL) {
+                currentFilters.category = categoryFromURL;
+                console.log("CAR-טיב: Category set from URL parameter:", categoryFromURL);
+                // הסתר את קטע הקטגוריות של דף הבית אם הוא קיים בדף הקטגוריה
+                const homepageCategoriesSection = document.getElementById('homepage-categories-section');
+                if (homepageCategoriesSection) homepageCategoriesSection.style.display = 'none';
+                 // עדכן את הכותרת של קטע הסרטונים בדף הקטגוריה
+                const videosHeading = document.getElementById('videos-heading');
+                if(videosHeading) {
+                    const categoryDisplayName = predefinedHomepageCategories.find(c => c.id === categoryFromURL)?.name || categoryFromURL;
+                    const categoryIcon = predefinedHomepageCategories.find(c => c.id === categoryFromURL)?.icon || 'fa-film';
+                    videosHeading.innerHTML = `<i class="fas ${categoryIcon} text-purple-600 dark:text-purple-400 ml-3"></i>סרטונים בקטגוריית: ${escapeHTML(categoryDisplayName)}`;
                 }
             }
-        } else {
-            console.warn("CAR-טיב: No static category buttons found in HTML inside #categories-wrapper.");
         }
-        if (swiperInstance) {
-            swiperInstance.update();
-            console.log("CAR-טיב: Swiper instance updated after categories render/check.");
+        
+        if (allVideos && allVideos.length > 0) {
+            loadAndRenderPopularTags(); // תגיות יוצגו בכל מקרה
+            renderFilteredVideos();     // יציג לפי currentFilters.category
         } else {
-             console.warn("CAR-טיב: Swiper instance not available during category render (or not yet initialized), will be initialized later if container exists.");
+             // ... (טיפול במקרה שאין סרטונים)
         }
+    } catch (error) {
+        // ... (טיפול בשגיאות)
     }
+    
+    // initializeSwiper(); // הסרנו את ה-Swiper של הקטגוריות
+    updateFooterYear();
+    console.log("CAR-טיב: Page initialization complete.");
+}
+
+// פונקציות עזר חדשות
+function isHomePage() {
+    // דרך פשוטה לבדוק אם זה דף הבית (למשל, אם אין פרמטר 'name' ב-URL)
+    // או אם שם הקובץ הוא index.html
+    const params = new URLSearchParams(window.location.search);
+    return !params.has('name') && (window.location.pathname.endsWith('/') || window.location.pathname.endsWith('index.html'));
+}
+
+function getCategoryFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('name');
+}
 
     // --- Popular Tags ---
     function loadAndRenderPopularTags() {
