@@ -363,13 +363,13 @@
         </div>
     </footer>
 
-    <!-- Template for Video Card (לא חובה, אבל יכול לעזור אם ה-JS מסובך) -->
-        <template id="video-card-template">
+    <template id="video-card-template">
         <article class_exists="video-card group bg-white dark:bg-slate-800 rounded-2xl shadow-lg overflow-hidden flex flex-col transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5">
-            <div class_exists="video-container aspect-video bg-black group relative">
-                <img src="" alt="" class_exists="thumbnail-image absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
-                <button class_exists="play-video-button absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 focus-visible:opacity-100 transition-opacity duration-300 z-10 bg-black bg-opacity-20 hover:bg-opacity-40" aria-label="נגן סרטון">
-                    <i class_exists="fas fa-play-circle fa-5x text-white text-opacity-90"></i>
+            <!-- Container ישמור על יחס גובה-רוחב, רקע יכול להיות צבע או גרדיאנט -->
+            <div class_exists="video-container aspect-video bg-slate-200 dark:bg-slate-700 group relative flex items-center justify-center">
+                <!-- הסרנו את התגית img של התמונה הממוזערת -->
+                <button class_exists="play-video-button flex items-center justify-center text-white z-10 transition-transform duration-300 group-hover:scale-110" aria-label="נגן סרטון">
+                    <i class_exists="fas fa-play-circle fa-5x sm:fa-6x text-purple-600 opacity-80 group-hover:opacity-100 dark:text-purple-400"></i>
                 </button>
                 <iframe class_exists="video-iframe hidden absolute inset-0 w-full h-full" loading="lazy" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
@@ -379,17 +379,11 @@
                         <!-- Video title will be injected here -->
                     </a>
                 </h3>
-                <!-- <p class_exists="channel-name text-slate-600 dark:text-slate-400 text-sm mb-2"></p> -->
-                <!-- <p class_exists="video-description text-slate-600 dark:text-slate-300 text-sm mb-4 leading-relaxed flex-grow line-clamp-3"></p> -->
-                <div class_exists="video-tags flex flex-wrap gap-1.5 mb-auto"> <!-- mb-auto כדי לדחוף את המידע התחתון למטה -->
+                <div class_exists="video-tags flex flex-wrap gap-1.5 mb-auto">
                     <!-- Tags will be injected here -->
                 </div>
                 <div class_exists="flex items-center text-slate-500 dark:text-slate-400 text-xs mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-                    <span class_exists="video-category-display"><i class_exists="fas fa-folder-open ml-1 opacity-70"></i> <!-- Category --></span>
-                    <!-- <span class_exists="mx-2" aria-hidden="true">•</span> -->
-                    <!-- <span class_exists="video-views"><i class_exists="fas fa-eye ml-1"></i> </span> -->
-                    <!-- <span class_exists="mx-2" aria-hidden="true">•</span> -->
-                    <!-- <span class_exists="video-upload-date"><i class_exists="far fa-clock ml-1"></i> </span> -->
+                    <span class_exists="video-category-display"><i class_exists="fas fa-folder-open ml-1 opacity-70"></i><!-- Category --></span>
                 </div>
             </div>
         </article>
