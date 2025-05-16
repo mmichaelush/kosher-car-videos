@@ -124,24 +124,17 @@
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <!-- Categories Swiper -->
-        <section id="categories-swiper-container" class="mb-12 md:mb-16" aria-labelledby="categories-heading">
-            <h2 id="categories-heading" class="text-3xl font-bold text-slate-900 dark:text-white mb-8 text-center md:text-right">
-                <i class="fas fa-th-list text-purple-600 dark:text-purple-400 ml-3"></i>עיון לפי קטגוריה
-            </h2>
-            <div class="swiper categories-swiper">
-                <div class="swiper-wrapper" id="categories-wrapper">
-                    <!-- קטגוריות יטענו לכאן ע"י JS או יוגדרו סטטית -->
-                    <div class="swiper-slide"><button class="category-btn active" data-category="all">הכל</button></div>
-                    <div class="swiper-slide"><button class="category-btn" data-category="review">סקירת רכב</button></div>
-                    <div class="swiper-slide"><button class="category-btn" data-category="maintenance">טיפולים</button></div>
-                    <div class="swiper-slide"><button class="category-btn" data-category="troubleshooting">תקלות</button></div>
-                    <div class="swiper-slide"><button class="category-btn" data-category="systems">מערכות הרכב</button></div>
-                    <div class="swiper-slide"><button class="category-btn" data-category="diy">עשה זאת בעצמך</button></div>
-                    <div class="swiper-slide"><button class="category-btn" data-category="collectors">רכבי אספנות</button></div>
-                </div>
-                <div class="swiper-pagination !bottom-0 pt-4"></div>
-            </div>
-        </section>
+        <!-- ב-index.html, החלף את כל ה-section של categories-swiper-container בזה: -->
+<section id="homepage-categories-section" class="mb-12 md:mb-20" aria-labelledby="homepage-categories-heading">
+    <h2 id="homepage-categories-heading" class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mb-10 text-center">
+        <i class="fas fa-compass text-purple-600 dark:text-purple-400 mr-3"></i>
+        גלה את עולם הרכב
+    </h2>
+    <div id="homepage-categories-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+        <!-- הקטגוריות יטענו לכאן על ידי JavaScript -->
+        <p id="loading-homepage-categories" class="col-span-full text-center text-slate-500 dark:text-slate-400">טוען קטגוריות...</p>
+    </div>
+</section>
 
         <!-- Tag Search -->
         <section class="mb-12 md:mb-16 bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700" aria-labelledby="tags-heading">
