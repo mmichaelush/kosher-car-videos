@@ -1,6 +1,6 @@
 // js/main.js
 document.addEventListener('DOMContentLoaded', function() {
-    // --- DOM Element Selectors (כמו קודם) ---
+    // --- DOM Element Selectors ---
     const videoCardsContainer = document.getElementById('video-cards-container');
     const loadingPlaceholder = document.getElementById('loading-videos-placeholder');
     const noVideosFoundMessage = document.getElementById('no-videos-found');
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const themeToggleButton = document.getElementById('theme-toggle');
     const videoCardTemplate = document.getElementById('video-card-template');
 
-    let allVideos = []; // יכיל את הנתונים מה-JSON המקומי
+    let allVideos = [];
     let currentFilters = {
         category: 'all',
         tags: [],
@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     const MAX_POPULAR_TAGS = 30;
     let swiperInstance = null;
+
 
     // --- Theme Management ---
     function applyTheme(theme) {
@@ -51,14 +52,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         applyTheme(savedTheme);
 
-        setupEventListeners();
+        setupEventListeners(); // הגדר מאזינים קודם
+        initializeSwiper(); // אתחל את ה-Swiper מוקדם, הוא יתעדכן אם צריך אחרי טעינת קטגוריות
         
         try {
-            await loadLocalVideos(); // שם חדש לפונקציה שטוענת רק מה-JSON המקומי
+            await loadLocalVideos(); 
             
             if (allVideos && allVideos.length > 0) {
                 console.log("CAR-טיב: Videos loaded, proceeding with dependent renders.");
-                loadAndRenderCategories();
+                loadAndRenderCategories(); // זו יכולה לקרוא ל-swiperInstance.update()
                 loadAndRenderPopularTags();
                 renderFilteredVideos();
             } else {
@@ -79,7 +81,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (noVideosFoundMessage && !noVideosFoundMessage.classList.contains("hidden")) noVideosFoundMessage.classList.remove('hidden');
         }
         
-        initializeSwiper(); // אתחל Swiper אחרי שהאלמנטים שלו (קטגוריות) כבר ב-DOM
         updateFooterYear();
         console.log("CAR-טיב: Page initialization complete.");
     }
@@ -107,10 +108,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     allVideos = []; 
                     throw new Error("Parsed JSON is not an array.");
                 }
-                 // נוודא שלכל סרטון יש את השדות הבסיסיים הנדרשים (id ו-title)
                 allVideos.forEach((video, index) => {
                     if (typeof video.id === 'undefined' || typeof video.title === 'undefined') {
-                        console.warn(`CAR-טיב: Video at index ${index} in JSON is missing 'id' or 'title'. It will be skipped. Data:`, video);
+                        console.warn(`CAR-טיב: Video at index ${index} in JSON is missing 'id' or 'title'. It will be skipped by rendering logic. Data:`, video);
                     }
                 });
 
@@ -136,7 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // --- Categories ---
     function loadAndRenderCategories() {
-        // ... (הפונקציה נשארת כפי שהייתה, מסתמכת על קטגוריות סטטיות ב-HTML) ...
         console.log("CAR-טיב: Loading and rendering categories...");
         if (!categoriesWrapper) {
             console.warn("CAR-טיב: Categories wrapper ('#categories-wrapper') not found.");
@@ -156,19 +155,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 const activeBtn = categoriesWrapper.querySelector('.category-btn.active');
                 if (activeBtn && activeBtn.dataset.category) {
                     currentFilters.category = activeBtn.dataset.category;
+                     console.log("CAR-טיב: Active category from HTML:", currentFilters.category);
                 }
             }
         } else {
             console.warn("CAR-טיב: No static category buttons found in HTML inside #categories-wrapper.");
         }
         if (swiperInstance) {
-            swiperInstance.update(); // עדכון חשוב אחרי שהאלמנטים ב-DOM
+            swiperInstance.update();
+            console.log("CAR-טיב: Swiper instance updated after categories render/check.");
+        } else {
+             console.warn("CAR-טיב: Swiper instance not available during category render (or not yet initialized), will be initialized later if container exists.");
         }
     }
 
     // --- Popular Tags ---
     function loadAndRenderPopularTags() {
-        // ... (הפונקציה נשארת כפי שהייתה, מסתמכת על allVideos שכבר נטען) ...
         console.log("CAR-טיב: Loading and rendering popular tags...");
         if (!popularTagsContainer) {
              console.warn("CAR-טיב: Popular tags container ('#popular-tags-container') not found.");
@@ -225,15 +227,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Rendering Videos ---
     function renderFilteredVideos() {
         console.log("CAR-טיב: Rendering filtered videos with current filters:", JSON.parse(JSON.stringify(currentFilters)));
-        if (!videoCardsContainer) { /* ... (כמו קודם) ... */ return; }
-        if (!videoCardTemplate) { /* ... (כמו קודם) ... */ return; }
+        if (!videoCardsContainer) {
+             console.error("CAR-טיב: CRITICAL - Video cards container ('video-cards-container') not found in DOM.");
+             return;
+        }
+        if (!videoCardTemplate) {
+            console.error("CAR-טיב: CRITICAL - Video card template ('video-card-template') not found in DOM.");
+            return;
+        }
 
         videoCardsContainer.innerHTML = '';
+
         const filteredVideos = getFilteredVideos();
         console.log(`CAR-טיב: Found ${filteredVideos.length} videos after applying filters. Example:`, filteredVideos.length > 0 ? filteredVideos[0] : "N/A");
 
         if (filteredVideos.length === 0) {
             if (noVideosFoundMessage) noVideosFoundMessage.classList.remove('hidden');
+            console.log("CAR-טיב: No videos match current filters, displaying 'no videos found' message.");
             return;
         }
         if (noVideosFoundMessage) noVideosFoundMessage.classList.add('hidden');
@@ -242,22 +252,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
         filteredVideos.forEach((video, index) => {
             try {
-                // הבדיקה הקריטית אם כל המידע מה-JSON המקומי קיים
+                // בדיקה קריטית אם כל המידע מה-JSON המקומי קיים
                 if (!video || typeof video.id === 'undefined' || typeof video.title === 'undefined' || 
                     typeof video.description === 'undefined' || typeof video.channelName === 'undefined' ||
                     typeof video.channelImage === 'undefined' || typeof video.category === 'undefined' ||
                     !Array.isArray(video.tags) || typeof video.views === 'undefined' || 
-                    typeof video.uploadDate === 'undefined' || typeof video.hebrewContent === 'undefined') {
+                    typeof video.uploadDate === 'undefined' || typeof video.hebrewContent === 'undefined') { // hebrewContent נוסף לבדיקה
                     console.warn(`CAR-טיב: Skipping video at index ${index} due to missing essential data in local JSON. Video data:`, video);
-                    return;
+                    return; // דלג על סרטון פגום
                 }
 
                 const cardClone = videoCardTemplate.content.cloneNode(true);
                 const cardElement = cardClone.querySelector('article');
                 
-                if (!cardElement) { /* ... (כמו קודם) ... */ return; }
+                if (!cardElement) {
+                    console.error(`CAR-טיב: Could not find 'article' element in template clone for video ID: ${video.id}. Template content:`, videoCardTemplate.innerHTML);
+                    return;
+                }
 
-                cardElement.querySelectorAll('[class_exists]').forEach(el => { /* ... (כמו קודם) ... */ });
+                cardElement.querySelectorAll('[class_exists]').forEach(el => {
+                    el.setAttribute('class', el.getAttribute('class_exists'));
+                    el.removeAttribute('class_exists');
+                });
                 
                 cardElement.dataset.category = video.category;
                 cardElement.dataset.tags = video.tags.join(',');
@@ -265,52 +281,65 @@ document.addEventListener('DOMContentLoaded', function() {
                 const sanitizedTitle = escapeHTML(video.title);
                 const videoLink = `https://www.youtube.com/watch?v=${video.id}`;
 
-                // מילוי האלמנטים (כמו בקוד הקודם, אבל עכשיו זה בטוח יותר כי וידאנו שהשדות קיימים)
                 const thumbnailImg = cardElement.querySelector('.thumbnail-image');
                 if (thumbnailImg) {
                     thumbnailImg.src = `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
                     thumbnailImg.alt = `תמונה ממוזערת: ${sanitizedTitle}`;
-                }
+                } else { console.warn(`CAR-טיב: .thumbnail-image not found for video ${video.id}`); }
                 
                 const playButton = cardElement.querySelector('.play-video-button');
                 if (playButton) {
                     playButton.dataset.videoId = video.id;
                     playButton.setAttribute('aria-label', `נגן את הסרטון ${sanitizedTitle}`);
-                }
+                } else { console.warn(`CAR-טיב: .play-video-button not found for video ${video.id}`); }
 
                 const iframeEl = cardElement.querySelector('.video-iframe');
-                if (iframeEl) iframeEl.title = sanitizedTitle;
+                if (iframeEl) {
+                    iframeEl.title = sanitizedTitle;
+                } else { console.warn(`CAR-טיב: .video-iframe not found for video ${video.id}`); }
 
                 const channelImg = cardElement.querySelector('.channel-image');
                 if (channelImg) {
                     channelImg.src = escapeHTML(video.channelImage);
                     channelImg.alt = `ערוץ: ${escapeHTML(video.channelName)}`;
-                }
+                } else { console.warn(`CAR-טיב: .channel-image not found for video ${video.id}`); }
                 
                 const videoTitleLinkEl = cardElement.querySelector('.video-link');
                 if (videoTitleLinkEl) {
                     videoTitleLinkEl.href = videoLink;
                     videoTitleLinkEl.textContent = sanitizedTitle;
-                }
+                } else { console.warn(`CAR-טיב: .video-link not found for video ${video.id}`); }
 
                 const channelNameEl = cardElement.querySelector('.channel-name');
-                if (channelNameEl) channelNameEl.textContent = escapeHTML(video.channelName);
+                if (channelNameEl) {
+                    channelNameEl.textContent = escapeHTML(video.channelName);
+                } else { console.warn(`CAR-טיב: .channel-name not found for video ${video.id}`); }
 
                 const descriptionEl = cardElement.querySelector('.video-description');
-                if (descriptionEl) descriptionEl.textContent = escapeHTML(video.description);
+                if (descriptionEl) {
+                    descriptionEl.textContent = escapeHTML(video.description);
+                } else { console.warn(`CAR-טיב: .video-description not found for video ${video.id}`); }
                 
                 const tagsContainerEl = cardElement.querySelector('.video-tags');
                 if (tagsContainerEl) {
-                    tagsContainerEl.innerHTML = video.tags.map(tag => 
-                        `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-slate-600 dark:text-purple-300 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(String(tag))}</span>`
-                    ).join('');
-                }
+                    if (video.tags && Array.isArray(video.tags) && video.tags.length > 0) {
+                        tagsContainerEl.innerHTML = video.tags.map(tag => 
+                            `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-slate-600 dark:text-purple-300 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(String(tag))}</span>`
+                        ).join('');
+                    } else {
+                        tagsContainerEl.innerHTML = '';
+                    }
+                } else { console.warn(`CAR-טיב: .video-tags not found for video ${video.id}`); }
 
                 const viewsEl = cardElement.querySelector('.video-views');
-                if (viewsEl) viewsEl.innerHTML = `<i class="fas fa-eye ml-1 opacity-70"></i> ${escapeHTML(video.views)}`;
+                if (viewsEl) {
+                    viewsEl.innerHTML = `<i class="fas fa-eye ml-1 opacity-70"></i> ${escapeHTML(video.views)}`;
+                } else { console.warn(`CAR-טיב: .video-views not found for video ${video.id}`); }
 
                 const uploadDateEl = cardElement.querySelector('.video-upload-date');
-                if (uploadDateEl) uploadDateEl.innerHTML = `<i class="far fa-clock ml-1 opacity-70"></i> ${escapeHTML(video.uploadDate)}`;
+                if (uploadDateEl) {
+                    uploadDateEl.innerHTML = `<i class="far fa-clock ml-1 opacity-70"></i> ${escapeHTML(video.uploadDate)}`;
+                } else { console.warn(`CAR-טיב: .video-upload-date not found for video ${video.id}`); }
                 
                 videoCardsContainer.appendChild(cardElement);
 
@@ -320,8 +349,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         console.log(`CAR-טיב: Finished appending cards. videoCardsContainer child count: ${videoCardsContainer.children.length}`);
     }
-
-    function handlePlayVideo(event, buttonElement) { // buttonElement הוא הכפתור שנלחץ
+    
+    function handlePlayVideo(event, buttonElement) {
         const videoId = buttonElement.dataset.videoId;
         const videoCard = buttonElement.closest('article');
         
@@ -332,20 +361,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const iframe = videoCard.querySelector('.video-iframe');
         const thumbnail = videoCard.querySelector('.thumbnail-image');
-        const playIconContainer = videoCard.querySelector('.play-video-button'); // הכפתור עצמו
+        const playIconContainer = videoCard.querySelector('.play-video-button');
 
-        // הוסף את ההדפסות האלה כדי לראות מה קורה כאן:
         console.log(`CAR-טיב: handlePlayVideo - Play button clicked! Video ID: ${videoId}`);
         console.log("CAR-טיב: handlePlayVideo - Found iframe:", iframe);
         console.log("CAR-טיב: handlePlayVideo - Found thumbnail:", thumbnail);
         console.log("CAR-טיב: handlePlayVideo - Found playIconContainer:", playIconContainer);
 
-
         if (iframe && videoId) {
             const videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1&enablejsapi=1`;
             iframe.src = videoSrc;
-            iframe.classList.remove('hidden'); // ודא שה-iframe הופך לגלוי
-            console.log(`CAR-טיב: handlePlayVideo - Iframe src set to: ${videoSrc}. Iframe is now visible.`);
+            iframe.classList.remove('hidden');
+            console.log(`CAR-טיב: handlePlayVideo - Iframe src set to: ${videoSrc}. Iframe should be visible.`);
 
             if (thumbnail) {
                 thumbnail.style.display = 'none'; 
@@ -361,22 +388,46 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // --- Filtering Logic (כמו קודם, עם בדיקות תקינות נוספות) ---
+    function renderSelectedTagsChips() {
+        if (!selectedTagsContainer) return;
+        selectedTagsContainer.innerHTML = '';
+        currentFilters.tags.forEach(tagName => {
+            const tagChip = document.createElement('span');
+            tagChip.className = 'flex items-center gap-1.5 bg-purple-600 text-white text-sm font-medium px-3 py-1.5 rounded-full cursor-default';
+            
+            const removeIcon = document.createElement('i');
+            removeIcon.className = 'fas fa-times cursor-pointer text-xs opacity-75 hover:opacity-100';
+            removeIcon.setAttribute('aria-label', `הסר תגית ${tagName}`);
+            removeIcon.onclick = () => {
+                const popularTagEl = popularTagsContainer ? popularTagsContainer.querySelector(`button.tag[data-tag-value="${escapeAttributeValue(tagName)}"]`) : null;
+                toggleTagSelection(tagName, popularTagEl);
+            };
+            
+            const textNode = document.createTextNode(escapeHTML(tagName));
+            tagChip.appendChild(textNode);
+            tagChip.appendChild(removeIcon);
+            selectedTagsContainer.appendChild(tagChip);
+        });
+    }
+    
+    function escapeAttributeValue(value) {
+        return String(value).replace(/"/g, '"');
+    }
+
+    // --- Filtering Logic ---
     function getFilteredVideos() {
         if (!allVideos || allVideos.length === 0) return [];
 
         return allVideos.filter(video => {
-            // בדיקה מקיפה יותר של תקינות אובייקט הוידאו לפני סינון
             if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' || 
                 typeof video.category !== 'string' || !Array.isArray(video.tags)) {
-                // console.warn("CAR-טיב: Skipping video in filter due to missing/invalid core fields:", video);
                 return false; 
             }
 
             const category = video.category.toLowerCase();
             const videoTitle = video.title.toLowerCase();
-            const videoDescription = (video.description || "").toLowerCase(); // description יכול להיות חסר
-            const videoChannel = (video.channelName || "").toLowerCase(); // channelName יכול להיות חסר
+            const videoDescription = (video.description || "").toLowerCase();
+            const videoChannel = (video.channelName || "").toLowerCase();
             const videoTags = video.tags.map(t => String(t).toLowerCase());
 
             const categoryMatch = currentFilters.category === 'all' || category === currentFilters.category.toLowerCase();
@@ -483,7 +534,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const targetElement = document.querySelector(href);
                     if (targetElement) {
                         const headerElement = document.querySelector('header');
-                        const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 80;
+                        const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 80; 
                         const elementPosition = targetElement.getBoundingClientRect().top;
                         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
                 
