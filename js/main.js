@@ -225,55 +225,44 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- Rendering Videos ---
-    function renderFilteredVideos() {
-        console.log("CAR-טיב: Rendering filtered videos with current filters:", JSON.parse(JSON.stringify(currentFilters)));
-        if (!videoCardsContainer) {
-             console.error("CAR-טיב: CRITICAL - Video cards container ('video-cards-container') not found in DOM.");
-             return;
-        }
-        if (!videoCardTemplate) {
-            console.error("CAR-טיב: CRITICAL - Video card template ('video-card-template') not found in DOM.");
-            return;
-        }
+
+
+
+
+
+
+  function renderFilteredVideos() {
+        console.log("CAR-טיב: Rendering filtered videos (lean JSON mode) with current filters:", JSON.parse(JSON.stringify(currentFilters)));
+        if (!videoCardsContainer) { /* ... (בדיקה) ... */ return; }
+        if (!videoCardTemplate) { /* ... (בדיקה) ... */ return; }
 
         videoCardsContainer.innerHTML = '';
-
-        const filteredVideos = getFilteredVideos();
+        const filteredVideos = getFilteredVideos(); // פונקציית הסינון תצטרך להתחשב בשדות הזמינים
         console.log(`CAR-טיב: Found ${filteredVideos.length} videos after applying filters. Example:`, filteredVideos.length > 0 ? filteredVideos[0] : "N/A");
 
         if (filteredVideos.length === 0) {
             if (noVideosFoundMessage) noVideosFoundMessage.classList.remove('hidden');
-            console.log("CAR-טיב: No videos match current filters, displaying 'no videos found' message.");
             return;
         }
         if (noVideosFoundMessage) noVideosFoundMessage.classList.add('hidden');
         
-        console.log(`CAR-טיב: Starting to render ${filteredVideos.length} video cards...`);
+        console.log(`CAR-טיב: Starting to render ${filteredVideos.length} video cards (lean mode)...`);
 
         filteredVideos.forEach((video, index) => {
             try {
-                // בדיקה קריטית אם כל המידע מה-JSON המקומי קיים
+                // בדיקה לשדות החובה מה-JSON הרזה
                 if (!video || typeof video.id === 'undefined' || typeof video.title === 'undefined' || 
-                    typeof video.description === 'undefined' || typeof video.channelName === 'undefined' ||
-                    typeof video.channelImage === 'undefined' || typeof video.category === 'undefined' ||
-                    !Array.isArray(video.tags) || typeof video.views === 'undefined' || 
-                    typeof video.uploadDate === 'undefined' || typeof video.hebrewContent === 'undefined') { // hebrewContent נוסף לבדיקה
-                    console.warn(`CAR-טיב: Skipping video at index ${index} due to missing essential data in local JSON. Video data:`, video);
-                    return; // דלג על סרטון פגום
+                    typeof video.category === 'undefined' || !Array.isArray(video.tags)) {
+                    console.warn(`CAR-טיב: Skipping video at index ${index} due to missing essential data (id, title, category, tags) in lean JSON. Video data:`, video);
+                    return;
                 }
 
                 const cardClone = videoCardTemplate.content.cloneNode(true);
                 const cardElement = cardClone.querySelector('article');
                 
-                if (!cardElement) {
-                    console.error(`CAR-טיב: Could not find 'article' element in template clone for video ID: ${video.id}. Template content:`, videoCardTemplate.innerHTML);
-                    return;
-                }
+                if (!cardElement) { /* ... (בדיקה) ... */ return; }
 
-                cardElement.querySelectorAll('[class_exists]').forEach(el => {
-                    el.setAttribute('class', el.getAttribute('class_exists'));
-                    el.removeAttribute('class_exists');
-                });
+                cardElement.querySelectorAll('[class_exists]').forEach(el => { /* ... (החלפת class_exists) ... */ });
                 
                 cardElement.dataset.category = video.category;
                 cardElement.dataset.tags = video.tags.join(',');
@@ -285,61 +274,35 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (thumbnailImg) {
                     thumbnailImg.src = `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
                     thumbnailImg.alt = `תמונה ממוזערת: ${sanitizedTitle}`;
-                } else { console.warn(`CAR-טיב: .thumbnail-image not found for video ${video.id}`); }
+                }
                 
                 const playButton = cardElement.querySelector('.play-video-button');
                 if (playButton) {
                     playButton.dataset.videoId = video.id;
                     playButton.setAttribute('aria-label', `נגן את הסרטון ${sanitizedTitle}`);
-                } else { console.warn(`CAR-טיב: .play-video-button not found for video ${video.id}`); }
+                }
 
                 const iframeEl = cardElement.querySelector('.video-iframe');
-                if (iframeEl) {
-                    iframeEl.title = sanitizedTitle;
-                } else { console.warn(`CAR-טיב: .video-iframe not found for video ${video.id}`); }
-
-                const channelImg = cardElement.querySelector('.channel-image');
-                if (channelImg) {
-                    channelImg.src = escapeHTML(video.channelImage);
-                    channelImg.alt = `ערוץ: ${escapeHTML(video.channelName)}`;
-                } else { console.warn(`CAR-טיב: .channel-image not found for video ${video.id}`); }
+                if (iframeEl) iframeEl.title = sanitizedTitle;
                 
                 const videoTitleLinkEl = cardElement.querySelector('.video-link');
                 if (videoTitleLinkEl) {
                     videoTitleLinkEl.href = videoLink;
                     videoTitleLinkEl.textContent = sanitizedTitle;
-                } else { console.warn(`CAR-טיב: .video-link not found for video ${video.id}`); }
-
-                const channelNameEl = cardElement.querySelector('.channel-name');
-                if (channelNameEl) {
-                    channelNameEl.textContent = escapeHTML(video.channelName);
-                } else { console.warn(`CAR-טיב: .channel-name not found for video ${video.id}`); }
-
-                const descriptionEl = cardElement.querySelector('.video-description');
-                if (descriptionEl) {
-                    descriptionEl.textContent = escapeHTML(video.description);
-                } else { console.warn(`CAR-טיב: .video-description not found for video ${video.id}`); }
+                }
                 
                 const tagsContainerEl = cardElement.querySelector('.video-tags');
                 if (tagsContainerEl) {
-                    if (video.tags && Array.isArray(video.tags) && video.tags.length > 0) {
-                        tagsContainerEl.innerHTML = video.tags.map(tag => 
-                            `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-slate-600 dark:text-purple-300 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(String(tag))}</span>`
-                        ).join('');
-                    } else {
-                        tagsContainerEl.innerHTML = '';
-                    }
-                } else { console.warn(`CAR-טיב: .video-tags not found for video ${video.id}`); }
+                    tagsContainerEl.innerHTML = video.tags.map(tag => 
+                        `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-slate-600 dark:text-purple-300 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(String(tag))}</span>`
+                    ).join('');
+                }
 
-                const viewsEl = cardElement.querySelector('.video-views');
-                if (viewsEl) {
-                    viewsEl.innerHTML = `<i class="fas fa-eye ml-1 opacity-70"></i> ${escapeHTML(video.views)}`;
-                } else { console.warn(`CAR-טיב: .video-views not found for video ${video.id}`); }
-
-                const uploadDateEl = cardElement.querySelector('.video-upload-date');
-                if (uploadDateEl) {
-                    uploadDateEl.innerHTML = `<i class="far fa-clock ml-1 opacity-70"></i> ${escapeHTML(video.uploadDate)}`;
-                } else { console.warn(`CAR-טיב: .video-upload-date not found for video ${video.id}`); }
+                // הצגת הקטגוריה בכרטיס
+                const categoryDisplayEl = cardElement.querySelector('.video-category-display');
+                if (categoryDisplayEl) {
+                    categoryDisplayEl.innerHTML = `<i class="fas fa-folder-open ml-1 opacity-70"></i> ${escapeHTML(getCategoryDisplayName(video.category))}`;
+                }
                 
                 videoCardsContainer.appendChild(cardElement);
 
@@ -347,7 +310,38 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error(`CAR-טיב: Error rendering card for video ID: ${video.id}`, e, video);
             }
         });
-        console.log(`CAR-טיב: Finished appending cards. videoCardsContainer child count: ${videoCardsContainer.children.length}`);
+        console.log(`CAR-טיב: Finished appending cards (lean mode). videoCardsContainer child count: ${videoCardsContainer.children.length}`);
+    }
+
+    // פונקציית getFilteredVideos תצטרך גם היא להתעדכן כדי לחפש רק בשדות הזמינים
+    function getFilteredVideos() {
+        if (!allVideos || allVideos.length === 0) return [];
+
+        return allVideos.filter(video => {
+            if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' || 
+                typeof video.category !== 'string' || !Array.isArray(video.tags)) {
+                return false; 
+            }
+
+            const category = video.category.toLowerCase();
+            const videoTitle = video.title.toLowerCase();
+            // אין לנו description או channelName לחיפוש כאן יותר
+            const videoTags = video.tags.map(t => String(t).toLowerCase());
+
+            const categoryMatch = currentFilters.category === 'all' || category === currentFilters.category.toLowerCase();
+            
+            const filterTags = currentFilters.tags.map(t => String(t).toLowerCase());
+            const tagsMatch = filterTags.length === 0 || filterTags.every(filterTag => videoTags.includes(filterTag));
+            
+            let searchTermMatch = true;
+            if (currentFilters.searchTerm && currentFilters.searchTerm !== '') {
+                const term = currentFilters.searchTerm.toLowerCase();
+                // חפש רק בכותרת ובתגיות
+                searchTermMatch = videoTitle.includes(term) ||
+                    videoTags.some(tag => tag.includes(term));
+            }
+            return categoryMatch && tagsMatch && searchTermMatch;
+        });
     }
     
     function handlePlayVideo(event, buttonElement) {
