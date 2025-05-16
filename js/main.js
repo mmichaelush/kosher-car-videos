@@ -52,23 +52,23 @@ document.addEventListener('DOMContentLoaded', function() {
         const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         applyTheme(savedTheme);
 
-        setupEventListeners(); // הגדר מאזינים קודם
-        initializeSwiper(); // אתחל את ה-Swiper מוקדם, הוא יתעדכן אם צריך אחרי טעינת קטגוריות
+        setupEventListeners();
+        initializeSwiper(); 
         
         try {
             await loadLocalVideos(); 
             
             if (allVideos && allVideos.length > 0) {
                 console.log("CAR-טיב: Videos loaded, proceeding with dependent renders.");
-                loadAndRenderCategories(); // זו יכולה לקרוא ל-swiperInstance.update()
+                loadAndRenderCategories(); 
                 loadAndRenderPopularTags();
                 renderFilteredVideos();
             } else {
-                 console.warn("CAR-טיב: No videos loaded from data source or data source is empty. Dependent renders will be skipped or show empty state.");
+                 console.warn("CAR-טיב: No videos loaded from data source or data source is empty.");
                  if(loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) {
                     loadingPlaceholder.innerHTML = 'לא נטענו סרטונים. בדוק את קובץ הנתונים `data/videos.json`.';
                  }
-                 if(noVideosFoundMessage && !noVideosFoundMessage.classList.contains("hidden")) {
+                 if(noVideosFoundMessage && (noVideosFoundMessage.classList.contains("hidden"))) { // הצג אם מוסתר
                     noVideosFoundMessage.classList.remove('hidden');
                  }
                  if(popularTagsContainer) popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא ניתן לטעון תגיות ללא סרטונים.</p>';
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) {
                  loadingPlaceholder.innerHTML = `<i class="fas fa-exclamation-triangle fa-2x text-red-500 mb-3"></i><br>שגיאה קריטית בטעינת נתוני הסרטונים.`;
             }
-            if (noVideosFoundMessage && !noVideosFoundMessage.classList.contains("hidden")) noVideosFoundMessage.classList.remove('hidden');
+            if (noVideosFoundMessage && (noVideosFoundMessage.classList.contains("hidden"))) noVideosFoundMessage.classList.remove('hidden');
         }
         
         updateFooterYear();
@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             } catch (jsonError) {
                 console.error("CAR-טיב: Error parsing JSON from videos.json:", jsonError);
-                console.error("CAR-טיב: Received text that failed to parse:", responseText.substring(0, 500) + "...");
+                console.error("CAR-טיב: Received text that failed to parse (first 500 chars):", responseText.substring(0, 500) + "...");
                 allVideos = []; 
                 throw new Error(`Invalid JSON format in videos.json. ${jsonError.message}`);
             }
@@ -135,110 +135,37 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // --- Categories ---
-    function renderHomepageCategoryButtons() {
-    console.log("CAR-טיב: Rendering homepage category buttons...");
-    const categoriesGrid = document.getElementById('homepage-categories-grid');
-    const loadingCategoriesPlaceholder = document.getElementById('loading-homepage-categories');
-
-    if (!categoriesGrid) {
-        console.warn("CAR-טיב: Homepage categories grid container not found.");
-        if(loadingCategoriesPlaceholder) loadingCategoriesPlaceholder.textContent = "שגיאה: מיכל הקטגוריות לא נמצא.";
-        return;
-    }
-
-    // רשימת קטגוריות מוגדרת מראש (יכולה גם להגיע מ-JSON נפרד או להיווצר מ-allVideos)
-    const predefinedHomepageCategories = [
-        { id: "review", name: "סקירות רכב", description: "מבחנים והשוואות", icon: "fa-magnifying-glass-chart", gradient: "from-purple-500 to-indigo-600 dark:from-purple-600 dark:to-indigo-700" },
-        { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה", icon: "fa-tools", gradient: "from-green-500 to-teal-600 dark:from-green-600 dark:to-teal-700" },
-        { id: "maintenance", name: "טיפולים", description: "תחזוקה שוטפת ומניעתית", icon: "fa-oil-can", gradient: "from-blue-500 to-cyan-600 dark:from-blue-600 dark:to-cyan-700" },
-        { id: "collectors", name: "רכבי אספנות", description: "קלאסיקות ופנינים מוטוריות", icon: "fa-car-side", gradient: "from-red-500 to-pink-600 dark:from-red-600 dark:to-pink-700" },
-        { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "fa-cogs", gradient: "from-yellow-500 to-amber-600 dark:from-yellow-600 dark:to-amber-700" },
-        { id: "troubleshooting", name: "איתור תקלות", description: "פתרון בעיות נפוצות", icon: "fa-microscope", gradient: "from-sky-500 to-blue-600 dark:from-sky-600 dark:to-blue-700" },
-        // הוסף עוד קטגוריות לפי הצורך
-    ];
-
-    if (loadingCategoriesPlaceholder) loadingCategoriesPlaceholder.style.display = 'none';
-    categoriesGrid.innerHTML = ''; // נקה תוכן קיים (כמו "טוען קטגוריות")
-
-    predefinedHomepageCategories.forEach(cat => {
-        const link = document.createElement('a');
-        // ה-URL צריך להפנות לדף הקטגוריה שלך, עם פרמטר שמציין את הקטגוריה
-        link.href = `category.html?name=${cat.id}`; 
+    function loadAndRenderCategories() {
+        console.log("CAR-טיב: Processing categories (expecting static HTML categories)...");
+        if (!categoriesWrapper) {
+            console.warn("CAR-טיב: Categories wrapper ('#categories-wrapper') not found.");
+            return;
+        }
         
-        link.className = `category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${cat.gradient} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white`;
-        link.setAttribute('aria-label', `עבור לקטגוריית ${cat.name}`);
-        
-        link.innerHTML = `
-            <div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]">
-                <i class="fas ${cat.icon} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i>
-                <h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 transition-colors">${escapeHTML(cat.name)}</h3>
-                <p class="text-sm opacity-80 mt-1 px-2">${escapeHTML(cat.description)}</p>
-            </div>
-        `;
-        categoriesGrid.appendChild(link);
-    });
-    console.log("CAR-טיב: Homepage category buttons rendered.");
-}
+        const staticCategoryButtons = categoriesWrapper.querySelectorAll('.category-btn');
+        if (staticCategoryButtons.length > 0) {
+            console.log(`CAR-טיב: ${staticCategoryButtons.length} static categories found in HTML.`);
+            let isActiveSet = Array.from(staticCategoryButtons).some(btn => btn.classList.contains('active'));
 
-// בתוך initializePage:
-async function initializePage() {
-    // ... (קוד אתחול קיים) ...
-    try {
-        await loadLocalVideos(); // טוען את ה-JSON הרזה
-        
-        if (isHomePage()) { // בדוק אם זה דף הבית
-            if (document.getElementById('homepage-categories-grid')) {
-                renderHomepageCategoryButtons();
-            }
-            // בדף הבית, אולי נרצה להציג את *כל* הסרטונים או מדגם (למשל, האחרונים)
-            // או לא להציג סרטונים כלל עד שהמשתמש בוחר קטגוריה או מחפש
-            currentFilters.category = 'all'; // הצג הכל כברירת מחדל בדף הבית
-        } else {
-            // אם זה דף קטגוריה
-            const categoryFromURL = getCategoryFromURL();
-            if (categoryFromURL) {
-                currentFilters.category = categoryFromURL;
-                console.log("CAR-טיב: Category set from URL parameter:", categoryFromURL);
-                // הסתר את קטע הקטגוריות של דף הבית אם הוא קיים בדף הקטגוריה
-                const homepageCategoriesSection = document.getElementById('homepage-categories-section');
-                if (homepageCategoriesSection) homepageCategoriesSection.style.display = 'none';
-                 // עדכן את הכותרת של קטע הסרטונים בדף הקטגוריה
-                const videosHeading = document.getElementById('videos-heading');
-                if(videosHeading) {
-                    const categoryDisplayName = predefinedHomepageCategories.find(c => c.id === categoryFromURL)?.name || categoryFromURL;
-                    const categoryIcon = predefinedHomepageCategories.find(c => c.id === categoryFromURL)?.icon || 'fa-film';
-                    videosHeading.innerHTML = `<i class="fas ${categoryIcon} text-purple-600 dark:text-purple-400 ml-3"></i>סרטונים בקטגוריית: ${escapeHTML(categoryDisplayName)}`;
+            if (!isActiveSet && staticCategoryButtons.length > 0) {
+                staticCategoryButtons[0].classList.add('active', 'bg-purple-600', 'text-white', 'dark:bg-purple-500');
+                currentFilters.category = staticCategoryButtons[0].dataset.category || 'all';
+                console.log("CAR-טיב: Set first category as active by default:", currentFilters.category);
+            } else if (isActiveSet) {
+                const activeBtn = categoriesWrapper.querySelector('.category-btn.active');
+                if (activeBtn && activeBtn.dataset.category) {
+                    currentFilters.category = activeBtn.dataset.category;
+                     console.log("CAR-טיב: Active category from HTML:", currentFilters.category);
                 }
             }
-        }
-        
-        if (allVideos && allVideos.length > 0) {
-            loadAndRenderPopularTags(); // תגיות יוצגו בכל מקרה
-            renderFilteredVideos();     // יציג לפי currentFilters.category
         } else {
-             // ... (טיפול במקרה שאין סרטונים)
+            console.warn("CAR-טיב: No static category buttons found in HTML inside #categories-wrapper.");
         }
-    } catch (error) {
-        // ... (טיפול בשגיאות)
+        if (swiperInstance) {
+            swiperInstance.update();
+            console.log("CAR-טיב: Swiper instance updated after categories processing.");
+        }
     }
-    
-    // initializeSwiper(); // הסרנו את ה-Swiper של הקטגוריות
-    updateFooterYear();
-    console.log("CAR-טיב: Page initialization complete.");
-}
-
-// פונקציות עזר חדשות
-function isHomePage() {
-    // דרך פשוטה לבדוק אם זה דף הבית (למשל, אם אין פרמטר 'name' ב-URL)
-    // או אם שם הקובץ הוא index.html
-    const params = new URLSearchParams(window.location.search);
-    return !params.has('name') && (window.location.pathname.endsWith('/') || window.location.pathname.endsWith('index.html'));
-}
-
-function getCategoryFromURL() {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('name');
-}
 
     // --- Popular Tags ---
     function loadAndRenderPopularTags() {
@@ -296,44 +223,54 @@ function getCategoryFromURL() {
     }
 
     // --- Rendering Videos ---
-
-
-
-
-
-
-  function renderFilteredVideos() {
-        console.log("CAR-טיב: Rendering filtered videos (lean JSON mode) with current filters:", JSON.parse(JSON.stringify(currentFilters)));
-        if (!videoCardsContainer) { /* ... (בדיקה) ... */ return; }
-        if (!videoCardTemplate) { /* ... (בדיקה) ... */ return; }
+    function renderFilteredVideos() {
+        console.log("CAR-טיב: Rendering filtered videos with current filters:", JSON.parse(JSON.stringify(currentFilters)));
+        if (!videoCardsContainer) {
+             console.error("CAR-טיב: CRITICAL - Video cards container ('video-cards-container') not found in DOM.");
+             return;
+        }
+        if (!videoCardTemplate) {
+            console.error("CAR-טיב: CRITICAL - Video card template ('video-card-template') not found in DOM.");
+            return;
+        }
 
         videoCardsContainer.innerHTML = '';
-        const filteredVideos = getFilteredVideos(); // פונקציית הסינון תצטרך להתחשב בשדות הזמינים
+
+        const filteredVideos = getFilteredVideos();
         console.log(`CAR-טיב: Found ${filteredVideos.length} videos after applying filters. Example:`, filteredVideos.length > 0 ? filteredVideos[0] : "N/A");
 
         if (filteredVideos.length === 0) {
             if (noVideosFoundMessage) noVideosFoundMessage.classList.remove('hidden');
+            console.log("CAR-טיב: No videos match current filters, displaying 'no videos found' message.");
             return;
         }
         if (noVideosFoundMessage) noVideosFoundMessage.classList.add('hidden');
         
-        console.log(`CAR-טיב: Starting to render ${filteredVideos.length} video cards (lean mode)...`);
+        console.log(`CAR-טיב: Starting to render ${filteredVideos.length} video cards...`);
 
         filteredVideos.forEach((video, index) => {
             try {
-                // בדיקה לשדות החובה מה-JSON הרזה
                 if (!video || typeof video.id === 'undefined' || typeof video.title === 'undefined' || 
-                    typeof video.category === 'undefined' || !Array.isArray(video.tags)) {
-                    console.warn(`CAR-טיב: Skipping video at index ${index} due to missing essential data (id, title, category, tags) in lean JSON. Video data:`, video);
+                    typeof video.description === 'undefined' || typeof video.channelName === 'undefined' ||
+                    typeof video.channelImage === 'undefined' || typeof video.category === 'undefined' ||
+                    !Array.isArray(video.tags) || typeof video.views === 'undefined' || 
+                    typeof video.uploadDate === 'undefined' || typeof video.hebrewContent === 'undefined') {
+                    console.warn(`CAR-טיב: Skipping video at index ${index} due to missing essential data in local JSON. Video data:`, video);
                     return;
                 }
 
                 const cardClone = videoCardTemplate.content.cloneNode(true);
                 const cardElement = cardClone.querySelector('article');
                 
-                if (!cardElement) { /* ... (בדיקה) ... */ return; }
+                if (!cardElement) {
+                    console.error(`CAR-טיב: Could not find 'article' element in template clone for video ID: ${video.id}. Template content:`, videoCardTemplate.innerHTML);
+                    return;
+                }
 
-                cardElement.querySelectorAll('[class_exists]').forEach(el => { /* ... (החלפת class_exists) ... */ });
+                cardElement.querySelectorAll('[class_exists]').forEach(el => {
+                    el.setAttribute('class', el.getAttribute('class_exists'));
+                    el.removeAttribute('class_exists');
+                });
                 
                 cardElement.dataset.category = video.category;
                 cardElement.dataset.tags = video.tags.join(',');
@@ -345,35 +282,61 @@ function getCategoryFromURL() {
                 if (thumbnailImg) {
                     thumbnailImg.src = `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
                     thumbnailImg.alt = `תמונה ממוזערת: ${sanitizedTitle}`;
-                }
+                } else { console.warn(`CAR-טיב: .thumbnail-image not found for video ${video.id}`); }
                 
                 const playButton = cardElement.querySelector('.play-video-button');
                 if (playButton) {
                     playButton.dataset.videoId = video.id;
                     playButton.setAttribute('aria-label', `נגן את הסרטון ${sanitizedTitle}`);
-                }
+                } else { console.warn(`CAR-טיב: .play-video-button not found for video ${video.id}`); }
 
                 const iframeEl = cardElement.querySelector('.video-iframe');
-                if (iframeEl) iframeEl.title = sanitizedTitle;
+                if (iframeEl) {
+                    iframeEl.title = sanitizedTitle;
+                } else { console.warn(`CAR-טיב: .video-iframe not found for video ${video.id}`); }
+
+                const channelImg = cardElement.querySelector('.channel-image');
+                if (channelImg) {
+                    channelImg.src = escapeHTML(video.channelImage);
+                    channelImg.alt = `ערוץ: ${escapeHTML(video.channelName)}`;
+                } else { console.warn(`CAR-טיב: .channel-image not found for video ${video.id}`); }
                 
                 const videoTitleLinkEl = cardElement.querySelector('.video-link');
                 if (videoTitleLinkEl) {
                     videoTitleLinkEl.href = videoLink;
                     videoTitleLinkEl.textContent = sanitizedTitle;
-                }
+                } else { console.warn(`CAR-טיב: .video-link not found for video ${video.id}`); }
+
+                const channelNameEl = cardElement.querySelector('.channel-name');
+                if (channelNameEl) {
+                    channelNameEl.textContent = escapeHTML(video.channelName);
+                } else { console.warn(`CAR-טיב: .channel-name not found for video ${video.id}`); }
+
+                const descriptionEl = cardElement.querySelector('.video-description');
+                if (descriptionEl) {
+                    descriptionEl.textContent = escapeHTML(video.description);
+                } else { console.warn(`CAR-טיב: .video-description not found for video ${video.id}`); }
                 
                 const tagsContainerEl = cardElement.querySelector('.video-tags');
                 if (tagsContainerEl) {
-                    tagsContainerEl.innerHTML = video.tags.map(tag => 
-                        `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-slate-600 dark:text-purple-300 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(String(tag))}</span>`
-                    ).join('');
-                }
+                    if (video.tags && Array.isArray(video.tags) && video.tags.length > 0) {
+                        tagsContainerEl.innerHTML = video.tags.map(tag => 
+                            `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-slate-600 dark:text-purple-300 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(String(tag))}</span>`
+                        ).join('');
+                    } else {
+                        tagsContainerEl.innerHTML = '';
+                    }
+                } else { console.warn(`CAR-טיב: .video-tags not found for video ${video.id}`); }
 
-                // הצגת הקטגוריה בכרטיס
-                const categoryDisplayEl = cardElement.querySelector('.video-category-display');
-                if (categoryDisplayEl) {
-                    categoryDisplayEl.innerHTML = `<i class="fas fa-folder-open ml-1 opacity-70"></i> ${escapeHTML(getCategoryDisplayName(video.category))}`;
-                }
+                const viewsEl = cardElement.querySelector('.video-views');
+                if (viewsEl) {
+                    viewsEl.innerHTML = `<i class="fas fa-eye ml-1 opacity-70"></i> ${escapeHTML(video.views)}`;
+                } else { console.warn(`CAR-טיב: .video-views not found for video ${video.id}`); }
+
+                const uploadDateEl = cardElement.querySelector('.video-upload-date');
+                if (uploadDateEl) {
+                    uploadDateEl.innerHTML = `<i class="far fa-clock ml-1 opacity-70"></i> ${escapeHTML(video.uploadDate)}`;
+                } else { console.warn(`CAR-טיב: .video-upload-date not found for video ${video.id}`); }
                 
                 videoCardsContainer.appendChild(cardElement);
 
@@ -381,43 +344,12 @@ function getCategoryFromURL() {
                 console.error(`CAR-טיב: Error rendering card for video ID: ${video.id}`, e, video);
             }
         });
-        console.log(`CAR-טיב: Finished appending cards (lean mode). videoCardsContainer child count: ${videoCardsContainer.children.length}`);
-    }
-
-    // פונקציית getFilteredVideos תצטרך גם היא להתעדכן כדי לחפש רק בשדות הזמינים
-    function getFilteredVideos() {
-        if (!allVideos || allVideos.length === 0) return [];
-
-        return allVideos.filter(video => {
-            if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' || 
-                typeof video.category !== 'string' || !Array.isArray(video.tags)) {
-                return false; 
-            }
-
-            const category = video.category.toLowerCase();
-            const videoTitle = video.title.toLowerCase();
-            // אין לנו description או channelName לחיפוש כאן יותר
-            const videoTags = video.tags.map(t => String(t).toLowerCase());
-
-            const categoryMatch = currentFilters.category === 'all' || category === currentFilters.category.toLowerCase();
-            
-            const filterTags = currentFilters.tags.map(t => String(t).toLowerCase());
-            const tagsMatch = filterTags.length === 0 || filterTags.every(filterTag => videoTags.includes(filterTag));
-            
-            let searchTermMatch = true;
-            if (currentFilters.searchTerm && currentFilters.searchTerm !== '') {
-                const term = currentFilters.searchTerm.toLowerCase();
-                // חפש רק בכותרת ובתגיות
-                searchTermMatch = videoTitle.includes(term) ||
-                    videoTags.some(tag => tag.includes(term));
-            }
-            return categoryMatch && tagsMatch && searchTermMatch;
-        });
+        console.log(`CAR-טיב: Finished appending cards. videoCardsContainer child count: ${videoCardsContainer.children.length}`);
     }
     
-    function handlePlayVideo(event, buttonElement) {
+    function handlePlayVideo(buttonElement) { // מקבל רק את הכפתור שנלחץ
         const videoId = buttonElement.dataset.videoId;
-        const videoCard = buttonElement.closest('article');
+        const videoCard = buttonElement.closest('article'); 
         
         if (!videoCard) {
             console.error("CAR-טיב: handlePlayVideo - Could not find parent article for play button:", buttonElement);
@@ -426,15 +358,15 @@ function getCategoryFromURL() {
 
         const iframe = videoCard.querySelector('.video-iframe');
         const thumbnail = videoCard.querySelector('.thumbnail-image');
-        const playIconContainer = videoCard.querySelector('.play-video-button');
+        const playIconContainer = buttonElement; 
 
         console.log(`CAR-טיב: handlePlayVideo - Play button clicked! Video ID: ${videoId}`);
         console.log("CAR-טיב: handlePlayVideo - Found iframe:", iframe);
         console.log("CAR-טיב: handlePlayVideo - Found thumbnail:", thumbnail);
-        console.log("CAR-טיב: handlePlayVideo - Found playIconContainer:", playIconContainer);
+        console.log("CAR-טיב: handlePlayVideo - Found playIconContainer (button itself):", playIconContainer);
 
         if (iframe && videoId) {
-            const videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1&enablejsapi=1`;
+            const videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1&enablejsapi=1&origin=${window.location.origin}`;
             iframe.src = videoSrc;
             iframe.classList.remove('hidden');
             console.log(`CAR-טיב: handlePlayVideo - Iframe src set to: ${videoSrc}. Iframe should be visible.`);
@@ -445,7 +377,7 @@ function getCategoryFromURL() {
             }
             if (playIconContainer) {
                 playIconContainer.style.display = 'none';
-                console.log("CAR-טיב: handlePlayVideo - Play icon container hidden.");
+                console.log("CAR-טיב: handlePlayVideo - Play icon container (button) hidden.");
             }
         } else {
             if (!iframe) console.error("CAR-טיב: handlePlayVideo - Iframe element not found inside video card for ID:", videoId);
@@ -573,7 +505,7 @@ function getCategoryFromURL() {
             videoCardsContainer.addEventListener('click', function(event) {
                 const playButton = event.target.closest('.play-video-button');
                 if (playButton) {
-                    handlePlayVideo(event, playButton);
+                    handlePlayVideo(playButton); // שולח את הכפתור ישירות
                 }
             });
         }
