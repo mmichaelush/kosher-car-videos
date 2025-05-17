@@ -91,7 +91,34 @@ input:checked ~ .dot {
     transition: transform 0.3s ease; /* border-color הוסר כי הוא כבר מוגדר ב-Tailwind בדרך כלל */
 }
 header nav .nav-link {
-    padding: 0.75rem 1.25rem; /* הגדלנו קצת את הריווח האופקי הפנימי */
+    position: relative; /* נחוץ למיקום ה-::after */
+    padding: 0.75rem 1rem; 
     border-radius: 0.5rem; 
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: color 0.2s ease; /* הסרתי background-color מה-transition אם לא משתמשים בו */
+    text-decoration: none; /* ודא שאין קו תחתון דיפולטיבי */
 }
+
+header nav .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0.25rem; /* מיקום הקו מתחת לטקסט */
+    right: 0; /* התחל מהצד הנכון ב-RTL */
+    width: 0; /* מתחיל ברוחב אפס */
+    height: 2px;
+    background-color: var(--primary-color); /* צבע הקו */
+    transition: width 0.3s ease-out; /* אנימציה לרוחב */
+}
+
+header nav .nav-link:hover::after,
+header nav .nav-link:focus::after {
+    width: 100%; /* הקו נמתח לכל הרוחב במעבר עכבר/פוקוס */
+}
+
+header nav .nav-link.active {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+ header nav .nav-link.active::after {
+    width: 100%;
+    background-color: var(--primary-color); 
+} 
