@@ -4,68 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAR-טיב - סרטוני רכבים כשרים</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.tailwindcss.com"></script> <!-- Consider local install for production -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+    <!-- Swiper CSS is not needed if you removed the categories swiper -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" /> -->
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon"> <!-- הוספת Favicon -->
+    <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
 </head>
-<body class="relative bg-gray-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 transition-colors duration-300">
+<body class="relative bg-gray-100 text-slate-800 transition-colors duration-300">
 
     <!-- Mobile Menu Backdrop -->
     <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden transition-opacity duration-300 opacity-0 invisible"></div>
 
     <!-- Mobile Menu -->
-    <aside id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-800 shadow-xl z-50 p-6 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out">
+    <aside id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-white shadow-xl z-50 p-6 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out">
         <div class="flex justify-between items-center mb-8">
             <a href="index.html" class="flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 rounded">
-                <i class="fas fa-car text-purple-600 dark:text-purple-400 text-2xl ml-2"></i>
+                <i class="fas fa-car text-purple-600 text-2xl ml-2"></i>
                 <span class="text-xl font-bold">CAR-טיב</span>
             </a>
-            <button id="close-menu" aria-label="סגירת תפריט" class="text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1">
+            <button id="close-menu" aria-label="סגירת תפריט" class="text-slate-500 hover:text-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1">
                 <i class="fas fa-times text-2xl"></i>
             </button>
         </div>
-<nav class="flex flex-col space-y-2">
-            <a href="index.html" class="nav-link ..."><i class="fas fa-home ..."></i>בית</a>
-            <a href="#categories-swiper-container" class="nav-link ..."><i class="fas fa-th-large ..."></i>קטגוריות</a>
-            <a href="#featured-channels-section" class="nav-link ..."><i class="fas fa-tv ..."></i>ערוצים</a>
-            <a href="#about-section" class="nav-link ..."><i class="fas fa-info-circle ..."></i>אודות</a>
-            <a href="#forum-inspiration-section" class="nav-link ..."><i class="fas fa-comments ..."></i>שאלות והתייעצות</a>
-            <a href="#contact-section" class="nav-link ..."><i class="fas fa-envelope ..."></i>צור קשר</a>
-            <a href="#site-footer" class="nav-link ..."><i class="fas fa-sitemap ..."></i>מפת האתר</a>
+        <nav class="flex flex-col space-y-2">
+            <a href="index.html" class="nav-link text-slate-900 py-3 px-4 hover:bg-purple-50 rounded-md flex items-center"><i class="fas fa-home w-6 text-center ml-3 text-purple-600"></i>בית</a>
+            <a href="index.html#homepage-categories-section" class="nav-link text-slate-700 py-3 px-4 hover:bg-purple-50 rounded-md flex items-center"><i class="fas fa-th-large w-6 text-center ml-3 text-purple-600"></i>קטגוריות</a>
+            <a href="#featured-channels-section" class="nav-link text-slate-700 py-3 px-4 hover:bg-purple-50 rounded-md flex items-center"><i class="fas fa-tv w-6 text-center ml-3 text-purple-600"></i>ערוצים</a>
+            <a href="#about-section" class="nav-link text-slate-700 py-3 px-4 hover:bg-purple-50 rounded-md flex items-center"><i class="fas fa-info-circle w-6 text-center ml-3 text-purple-600"></i>אודות</a>
+            <a href="#forum-inspiration-section" class="nav-link text-slate-700 py-3 px-4 hover:bg-purple-50 rounded-md flex items-center"><i class="fas fa-comments w-6 text-center ml-3 text-purple-600"></i>שאלות והתייעצות</a>
+            <a href="#contact-section" class="nav-link text-slate-700 py-3 px-4 hover:bg-purple-50 rounded-md flex items-center"><i class="fas fa-envelope w-6 text-center ml-3 text-purple-600"></i>צור קשר</a>
+            <a href="#site-footer" class="nav-link text-slate-700 py-3 px-4 hover:bg-purple-50 rounded-md flex items-center"><i class="fas fa-sitemap w-6 text-center ml-3 text-purple-600"></i>מפת האתר</a>
         </nav>
     </aside>
 
     <!-- Navigation -->
-    <header class="bg-white dark:bg-slate-800 shadow-md sticky top-0 z-30 transition-colors duration-300">
+    <header class="bg-white shadow-md sticky top-0 z-30 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <div class="flex items-center">
                     <a href="index.html" class="flex-shrink-0 flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-md p-1 -ml-1">
-                        <img src="data/assets/images/logo.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 md:h-12"> <!-- הוספת לוגו -->
-                        <span class="text-2xl font-bold text-slate-900 dark:text-white hidden sm:block">CAR-טיב</span>
+                        <img src="data/assets/images/logo.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 md:h-12">
+                        <span class="text-2xl font-bold text-slate-900 hidden sm:block">CAR-טיב</span>
                         <span class="sr-only sm:hidden">CAR-טיב - דף הבית</span>
                     </a>
                     <nav class="hidden md:mr-8 md:flex md:space-x-1 items-center" aria-label="ניווט ראשי">
                         <a href="index.html" class="nav-link active flex items-center"><i class="fas fa-home ml-2 opacity-80"></i>בית</a>
-                        <a href="#categories-swiper-container" class="nav-link flex items-center"><i class="fas fa-th-large ml-2 opacity-80"></i>קטגוריות</a>
+                        <a href="#homepage-categories-section" class="nav-link flex items-center"><i class="fas fa-th-large ml-2 opacity-80"></i>קטגוריות</a>
                         <a href="#featured-channels-section" class="nav-link flex items-center"><i class="fas fa-tv ml-2 opacity-80"></i>ערוצים</a>
                         <a href="#forum-inspiration-section" class="nav-link flex items-center"><i class="fas fa-comments ml-2 opacity-80"></i>שאלות</a>
                         <a href="#about-section" class="nav-link flex items-center"><i class="fas fa-info-circle ml-2 opacity-80"></i>אודות</a>
                         <a href="#contact-section" class="nav-link flex items-center"><i class="fas fa-envelope ml-2 opacity-80"></i>צור קשר</a>
-                    </nav
+                    </nav>
                 </div>
                 <div class="flex items-center space-x-3">
                     <div class="hidden md:block">
                         <form role="search" id="desktop-search-form" class="relative">
-                            <input type="search" id="desktop-search-input" class="search-input block w-56 lg:w-64 pr-10 pl-4 py-2.5 text-sm" placeholder="חיפוש סרטונים...">
+                            <input type="search" id="desktop-search-input" class="search-input block w-56 lg:w-64 pr-10 pl-4 py-2.5 text-sm border-slate-300 rounded-lg focus:ring-purple-500 focus:border-purple-500" placeholder="חיפוש סרטונים...">
                             <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                                 <i class="fas fa-search text-slate-400"></i>
                             </div>
                         </form>
                     </div>
-                    <button id="open-menu" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-400 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1">
+                    <!-- לחצן מצב כהה הוסר -->
+                    <button id="open-menu" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden text-slate-500 hover:text-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1">
                         <i class="fas fa-bars text-2xl"></i>
                     </button>
                 </div>
@@ -75,7 +77,7 @@
 
     <!-- Hero Section -->
     <section class="hero-gradient text-white relative overflow-hidden pt-10 pb-20 md:pt-16 md:pb-28">
-        <div class="absolute inset-0 opacity-10"> <!-- שכבת רקע עדינה -->
+        <div class="absolute inset-0 opacity-10">
             <img src="data/assets/images/circuit-board.svg" alt="" class="w-full h-full object-cover">
         </div>
         <div class="absolute top-1/4 left-1/4 w-20 h-20 md:w-32 md:h-32 rounded-full bg-purple-400 opacity-10 filter blur-2xl floating" aria-hidden="true"></div>
@@ -85,20 +87,20 @@
             <div class="text-center">
                 <h1 class="hero-heading text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight !leading-tight">
                     <span class="block">סרטוני רכב</span>
-                    <span class="block text-purple-300 dark:text-purple-300">כשרים ומסוננים</span>
+                    <span class="block text-purple-300">כשרים ומסוננים</span>
                 </h1>
-                <p class="mt-6 max-w-xl mx-auto text-lg sm:text-xl text-purple-100 dark:text-purple-200 opacity-90">
+                <p class="mt-6 max-w-xl mx-auto text-lg sm:text-xl text-purple-100 opacity-90">
                    מאגר וידאו ענק ואיכותי, מסונן ופתוח בנטפרי, לכל חובבי הרכב שומרי התורה והמצוות.
                 </p>
-<div class="mt-10 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
+                <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
                     <a href="#video-grid-section" 
-                       class="btn-hero-secondary group relative inline-flex items-center justify-center px-8 py-3.5 text-lg font-semibold text-purple-600 dark:text-purple-300 bg-white dark:bg-slate-100 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-offset-slate-900 transition-all duration-300 ease-out overflow-hidden">
-                        <span class="absolute inset-0 bg-purple-100 dark:bg-purple-500 opacity-0 group-hover:opacity-20 dark:group-hover:opacity-30 transition-opacity duration-300"></span>
+                       class="btn-hero-secondary group relative inline-flex items-center justify-center px-8 py-3.5 text-lg font-semibold text-purple-600 bg-white rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-all duration-300 ease-out overflow-hidden">
+                        <span class="absolute inset-0 bg-purple-100 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
                         <i class="fas fa-play ml-2 transform group-hover:scale-110 transition-transform duration-300"></i>
                         <span class="relative z-10">צפו עכשיו</span>
                     </a>
                     <a href="#about-section" 
-                       class="btn-hero-primary group relative inline-flex items-center justify-center px-8 py-3.5 text-lg font-semibold text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-400 dark:focus:ring-offset-slate-900 transition-all duration-300 ease-out overflow-hidden">
+                       class="btn-hero-primary group relative inline-flex items-center justify-center px-8 py-3.5 text-lg font-semibold text-white bg-purple-600 hover:bg-purple-700 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-400 transition-all duration-300 ease-out overflow-hidden">
                         <span class="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
                         <i class="fas fa-info-circle ml-2 transform group-hover:rotate-12 transition-transform duration-300"></i>
                         <span class="relative z-10">עוד עלינו</span>
@@ -111,7 +113,7 @@
     <!-- Floating Search (Mobile) -->
     <div class="md:hidden px-4 -mt-10 mb-8 relative z-20">
         <form role="search" id="mobile-search-form" class="relative">
-            <input type="search" id="mobile-search-input" class="search-input block w-full pr-12 pl-4 py-3.5 text-base shadow-xl" placeholder="חיפוש סרטונים...">
+            <input type="search" id="mobile-search-input" class="search-input block w-full pr-12 pl-4 py-3.5 text-base shadow-xl border-slate-300 rounded-lg focus:ring-purple-500 focus:border-purple-500" placeholder="חיפוש סרטונים...">
             <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                 <i class="fas fa-search text-slate-400"></i>
             </div>
@@ -120,81 +122,74 @@
 
     <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <!-- Categories Swiper -->
-        <!-- ב-index.html, החלף את כל ה-section של categories-swiper-container בזה: -->
-<section id="homepage-categories-section" class="mb-12 md:mb-20" aria-labelledby="homepage-categories-heading">
-    <h2 id="homepage-categories-heading" class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-white mb-10 text-center">
-        <i class="fas fa-compass text-purple-600 dark:text-purple-400 mr-3"></i>
-        גלה את עולם הרכב
-    </h2>
-    <div id="homepage-categories-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
-        <!-- הקטגוריות יטענו לכאן על ידי JavaScript -->
-        <p id="loading-homepage-categories" class="col-span-full text-center text-slate-500 dark:text-slate-400">טוען קטגוריות...</p>
-    </div>
-</section>
-
-        <!-- Tag Search -->
- <section class="mb-12 md:mb-16 bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700" aria-labelledby="tags-heading">
-            <h2 id="tags-heading" class="text-2xl font-semibold text-slate-900 dark:text-white mb-6 flex items-center">
-                <i class="fas fa-tags text-purple-600 dark:text-purple-400 ml-3"></i> סנן לפי תגיות ושפה
+        
+        <!-- Homepage Categories Grid -->
+        <section id="homepage-categories-section" class="mb-12 md:mb-20" aria-labelledby="homepage-categories-heading">
+            <h2 id="homepage-categories-heading" class="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-10 text-center">
+                <i class="fas fa-compass text-purple-600 mr-3"></i>
+                גלה את עולם הרכב
             </h2>
-
-            <!-- לחצן סינון עברית -->
-            <div class="mb-6">
-                <label for="hebrew-filter-toggle" class="flex items-center cursor-pointer w-fit">
-                    <div class="relative">
-                        <input type="checkbox" id="hebrew-filter-toggle" class="sr-only">
-                        <div class="block bg-slate-200 dark:bg-slate-600 w-14 h-8 rounded-full transition-colors"></div>
-                        <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition transform dark:translate-x-0"></div>
-                    </div>
-                    <div class="ml-3 text-slate-700 dark:text-slate-200 font-medium">
-                        הצג סרטונים בעברית בלבד
-                    </div>
-                </label>
-            </div>
-
-            <div id="popular-tags-container" class="flex flex-wrap gap-2 mb-6" aria-label="תגיות פופולריות">
-                <!-- ... -->
-            </div>
-        <section class="mb-12 md:mb-16 bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700" aria-labelledby="tags-heading">
-            <h2 id="tags-heading" class="text-2xl font-semibold text-slate-900 dark:text-white mb-6 flex items-center">
-                <i class="fas fa-tags text-purple-600 dark:text-purple-400 ml-3"></i> חיפוש לפי תגיות
-            </h2>
-            <div id="popular-tags-container" class="flex flex-wrap gap-2 mb-6" aria-label="תגיות פופולריות">
-                <!-- תגיות פופולריות יטענו לכאן -->
-                <p class="w-full text-slate-500 dark:text-slate-400">טוען תגיות...</p>
-            </div>
-
-            <form id="custom-tag-form" class="relative mb-4">
-                <label for="tag-search-input" class="sr-only">הוסף תגית לחיפוש</label>
-                <input type="text" id="tag-search-input" class="tag-input pr-28 sm:pr-32" placeholder="הקלד תגית והקש Enter...">
-                <button type="submit" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800">הוסף תגית</button>
-            </form>
-            <div id="selected-tags-container" class="flex flex-wrap gap-2" aria-label="תגיות שנבחרו לחיפוש">
-                <!-- תגיות שנבחרו יוצגו כאן -->
+            <div id="homepage-categories-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
+                <p id="loading-homepage-categories" class="col-span-full text-center text-slate-500">טוען קטגוריות...</p>
             </div>
         </section>
+
+        <!-- Tag Search & Hebrew Filter -->
+        <section class="mb-12 md:mb-16 bg-white p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200" aria-labelledby="filter-heading">
+            <h2 id="filter-heading" class="text-2xl font-semibold text-slate-900 mb-6 flex items-center">
+                <i class="fas fa-filter text-purple-600 mr-3"></i> סנן תוצאות
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                <div>
+                    <h3 class="text-lg font-medium text-slate-800 mb-3">סנן לפי שפה:</h3>
+                    <label for="hebrew-filter-toggle" class="flex items-center cursor-pointer w-fit p-2 hover:bg-slate-50 rounded-md">
+                        <div class="relative">
+                            <input type="checkbox" id="hebrew-filter-toggle" class="sr-only peer">
+                            <div class="block bg-slate-200 w-14 h-8 rounded-full transition-colors peer-checked:bg-purple-200"></div>
+                            <div class="dot absolute left-1 top-1 bg-white w-6 h-6 rounded-full transition transform peer-checked:translate-x-full peer-checked:bg-purple-600"></div>
+                        </div>
+                        <div class="ml-3 text-slate-700 font-medium">
+                            הצג סרטונים בעברית בלבד
+                        </div>
+                    </label>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-medium text-slate-800 mb-3">סנן לפי תגיות:</h3>
+                    <div id="popular-tags-container" class="flex flex-wrap gap-2 mb-4" aria-label="תגיות פופולריות">
+                        <p class="w-full text-slate-500 text-sm">טוען תגיות...</p>
+                    </div>
+                    <form id="custom-tag-form" class="relative">
+                        <label for="tag-search-input" class="sr-only">הוסף תגית לחיפוש</label>
+                        <input type="text" id="tag-search-input" class="tag-input pr-28 sm:pr-32 w-full border-slate-300 rounded-lg focus:ring-purple-500 focus:border-purple-500" placeholder="הקלד תגית והקש Enter...">
+                        <button type="submit" class="absolute left-2 top-1/2 transform -translate-y-1/2 bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2">הוסף</button>
+                    </form>
+                    <div id="selected-tags-container" class="flex flex-wrap gap-2 mt-4" aria-label="תגיות שנבחרו לחיפוש">
+                        <!-- תגיות שנבחרו יוצגו כאן -->
+                    </div>
+                </div>
+            </div>
         </section>
+
         <!-- Video Grid Section -->
         <section id="video-grid-section" class="mb-12 md:mb-16" aria-labelledby="videos-heading">
             <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
-                <h2 id="videos-heading" class="text-3xl font-bold text-slate-900 dark:text-white flex items-center">
-                    <i class="fas fa-film text-purple-600 dark:text-purple-400 ml-3"></i> סרטונים אחרונים
+                <h2 id="videos-heading" class="text-3xl font-bold text-slate-900 flex items-center">
+                    <i class="fas fa-film text-purple-600 mr-3"></i> סרטונים אחרונים
                 </h2>
-                <!-- אופציונלי: מיון או הצג הכל -->
             </div>
             <div id="video-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
-                <p id="loading-videos-placeholder" class="col-span-full text-center text-slate-500 dark:text-slate-400 py-10 text-lg">
+                <p id="loading-videos-placeholder" class="col-span-full text-center text-slate-500 py-10 text-lg">
                     <i class="fas fa-spinner fa-spin fa-2x mb-3"></i><br>טוען סרטונים...
                 </p>
             </div>
-            <div id="no-videos-found" class="hidden col-span-full text-center text-slate-500 dark:text-slate-400 py-16">
-                <i class="fas fa-video-slash fa-4x mb-6 text-purple-400 dark:text-purple-500"></i>
+            <div id="no-videos-found" class="hidden col-span-full text-center text-slate-500 py-16">
+                <i class="fas fa-video-slash fa-4x mb-6 text-purple-400"></i>
                 <p class="text-2xl font-semibold mb-2">לא נמצאו סרטונים</p>
-                <p class="text-lg">נסה לשנות את הקטגוריה, התגיות או מונח החיפוש.</p>
+                <p class="text-lg">נסה לשנות את הסינון או מונח החיפוש.</p>
             </div>
         </section>
-
 
         <!-- Featured Channels (סטטי או דינמי) -->
         <section id="featured-channels-section" class="bg-purple-50 dark:bg-slate-800 py-16 md:py-20 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 rounded-t-2xl">
