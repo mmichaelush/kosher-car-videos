@@ -149,3 +149,23 @@ header nav .nav-link.active::after { /* הסרת הקו התחתון, אפשר �
 .channel-card img {
     transition: transform 0.3s ease, border-color 0.3s ease;
 }
+/* Toggle Switch for Hebrew Filter */
+input:checked ~ .dot {
+  transform: translateX(100%);
+  background-color: var(--primary-light); /* או #4f46e5 אם זה tailwind's indigo-600 */
+}
+.dark input:checked ~ .dot {
+  background-color: var(--primary-dark-theme); /* או #a78bfa אם זה tailwind's purple-400 */
+}
+input:checked ~ .block {
+    background-color: #c7d2fe; /* indigo-200 */
+}
+.dark input:checked ~ .block {
+    background-color: #4338ca; /* indigo-700 */
+}
+
+/* התאמה של מיקום הנקודה ב-RTL אם צריך */
+[dir="rtl"] input:checked ~ .dot {
+  /* אם ה-toggle בנוי נכון, translateX(100%) עדיין אמור לעבוד. 
+     אם לא, נסה transform: translateX(-100%); או שנה את ה-left/right של הנקודה */
+}
