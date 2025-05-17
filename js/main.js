@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { id: "troubleshooting", name: "איתור תקלות", description: "פתרון בעיות נפוצות", icon: "fa-microscope", gradient: "from-sky-500 to-blue-600 dark:from-sky-600 dark:to-blue-700" },
     ];
 
-    // --- Theme Management ---
+   // --- Theme Management ---
     function applyTheme(theme) {
         if (theme === 'dark') {
             document.documentElement.classList.add('dark');
@@ -49,23 +49,23 @@ document.addEventListener('DOMContentLoaded', function() {
             document.documentElement.classList.remove('dark');
             if (themeToggleButton) themeToggleButton.innerHTML = '<i class="fas fa-moon text-xl text-purple-600 dark:text-purple-400"></i>';
         }
+        console.log("CAR-טיב: Theme applied:", theme, "HTML classList:", document.documentElement.classList.toString());
     }
 
     function toggleTheme() {
-        const isDarkMode = document.documentElement.classList.contains('dark');
-        const newTheme = isDarkMode ? 'light' : 'dark';
+        const isCurrentlyDark = document.documentElement.classList.contains('dark');
+        const newTheme = isCurrentlyDark ? 'light' : 'dark'; // תקן: אם כהה, שנה לבהיר, ולהפך
         localStorage.setItem('theme', newTheme);
         applyTheme(newTheme);
+        console.log("CAR-טיב: Theme toggled to:", newTheme);
     }
 
     // --- Initialization ---
     async function initializePage() {
         console.log("CAR-טיב: Initializing page...");
         const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        applyTheme(savedTheme);
-
-        setupEventListeners();
-
+        console.log("CAR-טיב: Initial theme to apply:", savedTheme);
+        applyTheme(savedTheme); // קריאה ראשונית להחלת ערכת הנושא
         const categoryFromURL = getCategoryFromURL();
 
         try {
@@ -107,7 +107,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (noVideosFoundMessage && (noVideosFoundMessage.classList.contains("hidden"))) noVideosFoundMessage.classList.remove('hidden');
         }
-        
         updateFooterYear();
         console.log("CAR-טיב: Page initialization complete.");
     }
