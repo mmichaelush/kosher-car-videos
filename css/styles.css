@@ -109,16 +109,22 @@ header nav .nav-link::after {
     transition: width 0.3s ease-out; /* אנימציה לרוחב */
 }
 
-header nav .nav-link:hover::after,
-header nav .nav-link:focus::after {
-    width: 100%; /* הקו נמתח לכל הרוחב במעבר עכבר/פוקוס */
+    padding: 0.5rem 1rem; /* התאם לפי הצורך, ה-px-4 py-2 ב-HTML ידרוס את זה אם הוא יותר ספציפי */
+    border-radius: 0.5rem; /* Tailwind: rounded-lg */
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease-out; /* הוספנו transform */
+    color: #4b5563; /* Tailwind: text-slate-600 (צבע התחלתי) */
+    font-weight: 500; /* Tailwind: font-medium */
 }
 
+/* ה-hover יטופל בעיקר ע"י Tailwind classes שהוספנו ל-HTML */
+/* header nav .nav-link:hover, 
+header nav .nav-link:focus {
+    color: var(--primary-color); 
+    background-color: #ede9fe; /* Tailwind: bg-purple-50 
+} */
+
 header nav .nav-link.active {
-    color: var(--primary-color);
-    font-weight: 600;
+    color: var(--primary-color); /* Tailwind: text-purple-600 */
+    font-weight: 600; /* Tailwind: font-semibold */
+    /* background-color: #f5f3ff; /* אולי צבע רקע עדין גם לאקטיבי */
 }
- header nav .nav-link.active::after {
-    width: 100%;
-    background-color: var(--primary-color); 
-} 
