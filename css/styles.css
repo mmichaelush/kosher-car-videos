@@ -90,3 +90,8 @@ input:checked ~ .dot {
 .channel-card img {
     transition: transform 0.3s ease; /* border-color הוסר כי הוא כבר מוגדר ב-Tailwind בדרך כלל */
 }
+header nav .nav-link {
+    padding: 0.75rem 1.25rem; /* הגדלנו קצת את הריווח האופקי הפנימי */
+    border-radius: 0.5rem; 
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
