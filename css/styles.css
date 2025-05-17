@@ -2,170 +2,120 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    --primary-light: #8b5cf6; /* סגול ראשי למצב בהיר (Tailwind's purple-500) */
-    --primary-dark-theme: #a78bfa; /* סגול בהיר יותר למצב כהה (Tailwind's purple-400) */
+    --primary-color: #8b5cf6; /* סגול ראשי (Tailwind's purple-500), יכול לשמש במקומות שאינם Tailwind */
+    /* --primary-text-light: var(--primary-color); */ /* אפשר להשתמש ב-text-purple-500 של Tailwind ישירות */
     
-    --primary-text-light: var(--primary-light);
-    --primary-text-dark: var(--primary-dark-theme);
-
-    /* הגדרות נוספות אם צריך, אבל Tailwind מטפל ברובן */
+    /* אפשר להוסיף כאן עוד משתנים אם יש צורך, אבל לרוב Tailwind מספיק */
 }
 
-html { scroll-behavior: smooth; }
+html { 
+    scroll-behavior: smooth; 
+}
 
 body {
     font-family: 'Rubik', sans-serif;
-    /* צבעי רקע וטקסט ינוהלו ע"י Tailwind dark mode classes */
-    line-height: 1.65; /* מעט יותר מרווח */
+    /* צבעי רקע וטקסט ינוהלו בעיקר ע"י Tailwind classes ב-HTML */
+    line-height: 1.65; 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Hero Section Gradient - יכול להישאר זהה או להתעדכן למצב כהה */
+/* Hero Section Gradient */
 .hero-gradient {
     background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%); /* purple-700 to purple-600 */
 }
-.dark .hero-gradient {
-    background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%); /* purple-800 to purple-700 */
-}
 
-
-.video-card::before { /* שכבת הצללה על כרטיס וידאו במעבר עכבר */
+/* Video Card overlay effect on hover */
+.video-card::before { 
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
     background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.6));
     opacity: 0;
     transition: opacity 0.3s ease;
-    z-index: 1;
+    z-index: 1; /* ודא שזה מעל התמונה/כפתור Play אבל מתחת לטקסט אם יש טקסט מעל */
     pointer-events: none;
-    border-radius: inherit; /* לרשת את עיגול הפינות של הכרטיס */
+    border-radius: inherit; 
 }
-.video-card:hover::before { opacity: 1; }
-
-/* כפתורי קטגוריות - עם תמיכה במצב כהה */
-.category-btn {
-    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-    border-radius: 9999px; /* כפתור עגול יותר */
-    font-weight: 500;
-    font-size: 0.875rem; /* 14px */
-    padding: 0.6rem 1.25rem; /* ריווח פנימי נדיב יותר */
-    /* צבעים ינוהלו ע"י Tailwind */
-}
-/* סגנונות ל-active ו-hover מוגדרים עם Tailwind */
-
-/* ניווט */
-header nav .nav-link {
-    padding: 0.75rem 1rem; /* ריווח אחיד */
-    border-radius: 0.5rem; /* עיגול קל */
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-header nav .nav-link:hover, header nav .nav-link:focus {
-    /* צבעים מנוהלים ע"י Tailwind */
-    outline: none;
-}
-header nav .nav-link.active {
-    /* צבעים מנוהלים ע"י Tailwind */
-    font-weight: 600;
-}
-header nav .nav-link.active::after { /* הסרת הקו התחתון, אפשר להוסיף רקע במקום */
-    display: none;
-}
-.dark header nav .nav-link.active {
-    /* סגנון אקטיבי במצב כהה */
+.video-card:hover::before { 
+    opacity: 1; 
 }
 
-/* תגיות */
-.tag { /* הגדרות בסיס לתגיות */
-    transition: background-color 0.2s ease, color 0.2s ease;
-}
-.tag.active-search-tag { /* תגית שנבחרה לחיפוש */
-    /* צבעים מנוהלים ע"י Tailwind */
-}
-
-/* כפתור הוספת תגית */
-#custom-tag-form button {
-    /* עיצוב יגיע מ-Tailwind */
-}
-
-/* Swiper pagination */
-.swiper-pagination-bullet {
-    background-color: #9ca3af; /* gray-400 */
-    opacity: 0.8;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-}
-.dark .swiper-pagination-bullet {
-    background-color: #4b5563; /* gray-600 */
-}
-.swiper-pagination-bullet-active {
-    background-color: var(--primary-light);
-    transform: scale(1.2);
-}
-.dark .swiper-pagination-bullet-active {
-    background-color: var(--primary-dark-theme);
-}
+/* Category Showcase Card (לחצני קטגוריות בדף הבית) - רוב העיצוב מגיע מ-Tailwind */
+/* .category-showcase-card { ... } */ 
+/* אפשר להוסיף כאן סגנונות אם יש משהו ש-Tailwind לא מכסה בקלות */
 
 
-/* אפקטים - ללא שינוי */
-.magic-sparkle, @keyframes sparkle,
-.floating, @keyframes float,
-.pulse, @keyframes pulse { /* שמירה על האפקטים הקיימים */ }
+/* Navigation Links in Header - רוב העיצוב מגיע מ-Tailwind */
+/* header nav .nav-link { ... } */
+/* header nav .nav-link.active { ... } */
+/* header nav .nav-link.active::after { display: none; } */ /* כבר הוגדר כך ב-HTML עם Tailwind */
 
+/* Tags - רוב העיצוב מגיע מ-Tailwind */
+/* .tag { ... } */
+/* .tag.active-search-tag { ... } */
+
+
+/* General Animation Effects (אם לא מכוסה לחלוטין ע"י Tailwind) */
+.magic-sparkle {
+    position: absolute; width: 8px; height: 8px;
+    background-color: rgba(255, 255, 255, 0.8); /* צבע נוצץ בהיר יותר */
+    border-radius: 50%; 
+    pointer-events: none; 
+    z-index: 9999; /* גבוה מאוד כדי שיהיה מעל הכל */
+    animation: sparkle 0.7s ease-out forwards; /* אנימציה קצרה יותר */
+}
+@keyframes sparkle {
+    0% { transform: scale(0.5) translateY(0); opacity: 1; } /* מתחיל קטן יותר */
+    50% { opacity: 0.8; }
+    100% { transform: scale(1.8) translateY(-15px); opacity: 0; } /* זז קצת למעלה */
+}
+
+.floating { 
+    animation: float 6s ease-in-out infinite; 
+}
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+.pulse:hover, .pulse:focus { /* Pulse effect primarily handled by Tailwind `animate-pulse` if desired, or this custom one */
+    animation: pulse-custom 1.5s infinite; /* שינוי שם כדי לא להתנגש עם Tailwind */
+}
+@keyframes pulse-custom {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.03); } /* אפקט עדין יותר */
+    100% { transform: scale(1); }
+}
+
+/* Screen Reader Only Utility */
 .sr-only {
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
     overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
 }
 
-/* שיפורי קריאות ל-Prose (אם משתמשים ב-Tailwind Typography) */
-.prose {
-    /* ניתן להוסיף כאן התאמות ל-Prose במצב כהה אם צריך */
-}
-/* ספציפית לכותרות בתוך Prose */
-.prose h3 {
-    margin-bottom: 0.5em !important; /* הקטנת הרווח מתחת לכותרות h3 ב-Prose */
-}
-
-/* Line clamp helper (אם אין פלאגין ל-Tailwind) */
+/* Line clamp helper (אם לא משתמשים בפלאגין של Tailwind) */
 .line-clamp-3 {
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
+    /* fallback for non-webkit */
+    max-height: calc(1.65em * 3); /* line-height * number of lines */
 }
 
-/* עיצוב כפתור מצב כהה */
-#theme-toggle i {
-    transition: transform 0.3s ease-out;
-}
-.dark #theme-toggle .fa-moon { /* במצב כהה, הירח הופך לשמש */
-    transform: rotate(45deg) scale(0); /* הסתר ירח */
-}
-.dark #theme-toggle .fa-sun {
-    transform: rotate(0) scale(1); /* הצג שמש */
-}
-/* ההיפך למצב בהיר - מוגדר ב-JS */
-
-/* ערוצים מומלצים - שיפור קל */
-.channel-card img {
-    transition: transform 0.3s ease, border-color 0.3s ease;
-}
-/* Toggle Switch for Hebrew Filter */
+/* Toggle Switch for Hebrew Filter (נשאר כפי שהיה, בהנחה שאתה משתמש בו) */
 input:checked ~ .dot {
   transform: translateX(100%);
-  background-color: var(--primary-light); /* או #4f46e5 אם זה tailwind's indigo-600 */
+  /* Tailwind classes handle background color değişimleri for the dot */
+  /* For example: peer-checked:bg-purple-600 */
 }
-.dark input:checked ~ .dot {
-  background-color: var(--primary-dark-theme); /* או #a78bfa אם זה tailwind's purple-400 */
-}
-input:checked ~ .block {
-    background-color: #c7d2fe; /* indigo-200 */
-}
-.dark input:checked ~ .block {
-    background-color: #4338ca; /* indigo-700 */
-}
+/* התאמה של מיקום הנקודה ב-RTL אם צריך - translateX(100%) אמור לעבוד נכון ב-RTL */
+/* [dir="rtl"] input:checked ~ .dot { transform: translateX(-100%); } */ 
+/* בדוק אם יש צורך בזה. לרוב translateX עובד נכון עם dir=rtl */
 
-/* התאמה של מיקום הנקודה ב-RTL אם צריך */
-[dir="rtl"] input:checked ~ .dot {
-  /* אם ה-toggle בנוי נכון, translateX(100%) עדיין אמור לעבוד. 
-     אם לא, נסה transform: translateX(-100%); או שנה את ה-left/right של הנקודה */
+/* Channel Card Images - אפקט קטן במעבר עכבר */
+.channel-card img {
+    transition: transform 0.3s ease; /* border-color הוסר כי הוא כבר מוגדר ב-Tailwind בדרך כלל */
 }
