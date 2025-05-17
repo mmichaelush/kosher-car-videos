@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
         hebrewOnly: false
     };
     const MAX_POPULAR_TAGS = 30;
-    // let swiperInstance = null; // לא בשימוש אם אין Swiper
 
     const PREDEFINED_CATEGORIES = [
         { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "fa-film" },
@@ -37,16 +36,14 @@ document.addEventListener('DOMContentLoaded', function() {
         { id: "upgrades", name: "שיפורים ושדרוגים", description: "שדרוג הרכב והוספת אביזרים", icon: "fa-rocket", gradient: "from-orange-500 to-red-600" },
         { id: "collectors", name: "רכבי אספנות", description: "קלאסיקות ופנינים מוטוריות", icon: "fa-car-side", gradient: "from-red-500 to-pink-600" },
         { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "fa-cogs", gradient: "from-yellow-500 to-amber-600" },
-        { id: "troubleshooting", name: "איתור תקלות", description: "פתרון בעיות נפוצות", icon: "fa-microscope", gradient: "from-indigo-300 to-blue-400 dark:from-indigo-400 dark:to-blue-500" }
+        { id: "troubleshooting", name: "איתור תקלות", description: "פתרון בעיות נפוצות", icon: "fa-microscope", gradient: "from-lime-500 to-emerald-600 dark:from-lime-600 dark:to-emerald-700" }
     ];
 
     // --- Initialization ---
     async function initializePage() {
         console.log("CAR-טיב: Initializing page...");
-        // אין צורך ב-applyTheme כאן יותר
 
         setupEventListeners();
-        // initializeSwiper(); // אם אין Swiper, אין צורך
 
         const categoryFromURL = getCategoryFromURL();
 
