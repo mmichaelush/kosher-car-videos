@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const videoCardsContainer = document.getElementById('video-cards-container');
     const loadingPlaceholder = document.getElementById('loading-videos-placeholder');
     const noVideosFoundMessage = document.getElementById('no-videos-found');
-    // const categoriesWrapper = document.getElementById('categories-wrapper'); // Not used
     const popularTagsContainer = document.getElementById('popular-tags-container');
     const tagSearchInput = document.getElementById('tag-search-input');
     const customTagForm = document.getElementById('custom-tag-form');
