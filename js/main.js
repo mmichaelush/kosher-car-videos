@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { id: "collectors", name: "רכבי אספנות", description: "קלאסיקות ופנינים מוטוריות", icon: "fa-car-side", gradient: "from-red-500 to-pink-600 dark:from-red-600 dark:to-pink-700" },
         { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "fa-cogs", gradient: "from-yellow-500 to-amber-600 dark:from-yellow-600 dark:to-amber-700" },
         { id: "troubleshooting", name: "איתור תקלות", description: "פתרון בעיות נפוצות", icon: "fa-microscope", gradient: "from-lime-500 to-emerald-600 dark:from-lime-600 dark:to-emerald-700" }
-
+[
    // --- Theme Management ---
     function applyTheme(theme) {
         if (theme === 'dark') {
