@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const backdrop = document.getElementById('mobile-menu-backdrop');
     const desktopSearchForm = document.getElementById('desktop-search-form');
     const mobileSearchForm = document.getElementById('mobile-search-form');
-    // const themeToggleButton = document.getElementById('theme-toggle'); // הוסר
     const videoCardTemplate = document.getElementById('video-card-template');
     const homepageCategoriesGrid = document.getElementById('homepage-categories-grid');
     const hebrewFilterToggle = document.getElementById('hebrew-filter-toggle');
@@ -36,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { id: "upgrades", name: "שיפורים ושדרוגים", description: "שדרוג הרכב והוספת אביזרים", icon: "fa-rocket", gradient: "from-orange-500 to-red-600" },
         { id: "collectors", name: "רכבי אספנות", description: "קלאסיקות ופנינים מוטוריות", icon: "fa-car-side", gradient: "from-red-500 to-pink-600" },
         { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "fa-cogs", gradient: "from-yellow-500 to-amber-600" },
-        { id: "troubleshooting", name: "איתור תקלות", description: "פתרון בעיות נפוצות", icon: "fa-microscope", gradient: "from-lime-500 to-emerald-600 dark:from-lime-600 dark:to-emerald-700" }
+        { id: "troubleshooting", name: "איתור תקלות", description: "פתרון בעיות נפוצות", icon: "fa-microscope", gradient: "from-yellow-500 to-amber-600" }
     ];
 
     // --- Initialization ---
