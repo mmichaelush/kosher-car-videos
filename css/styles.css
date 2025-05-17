@@ -2,10 +2,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    --primary-color: #8b5cf6; /* סגול ראשי (Tailwind's purple-500), יכול לשמש במקומות שאינם Tailwind */
-    /* --primary-text-light: var(--primary-color); */ /* אפשר להשתמש ב-text-purple-500 של Tailwind ישירות */
-    
-    /* אפשר להוסיף כאן עוד משתנים אם יש צורך, אבל לרוב Tailwind מספיק */
 }
 
 html { 
@@ -14,7 +10,6 @@ html {
 
 body {
     font-family: 'Rubik', sans-serif;
-    /* צבעי רקע וטקסט ינוהלו בעיקר ע"י Tailwind classes ב-HTML */
     line-height: 1.65; 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -40,21 +35,6 @@ body {
 .video-card:hover::before { 
     opacity: 1; 
 }
-
-/* Category Showcase Card (לחצני קטגוריות בדף הבית) - רוב העיצוב מגיע מ-Tailwind */
-/* .category-showcase-card { ... } */ 
-/* אפשר להוסיף כאן סגנונות אם יש משהו ש-Tailwind לא מכסה בקלות */
-
-
-/* Navigation Links in Header - רוב העיצוב מגיע מ-Tailwind */
-/* header nav .nav-link { ... } */
-/* header nav .nav-link.active { ... } */
-/* header nav .nav-link.active::after { display: none; } */ /* כבר הוגדר כך ב-HTML עם Tailwind */
-
-/* Tags - רוב העיצוב מגיע מ-Tailwind */
-/* .tag { ... } */
-/* .tag.active-search-tag { ... } */
-
 
 /* General Animation Effects (אם לא מכוסה לחלוטין ע"י Tailwind) */
 .magic-sparkle {
@@ -95,7 +75,6 @@ body {
     overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
 }
 
-/* Line clamp helper (אם לא משתמשים בפלאגין של Tailwind) */
 .line-clamp-3 {
     overflow: hidden;
     display: -webkit-box;
@@ -105,17 +84,9 @@ body {
     max-height: calc(1.65em * 3); /* line-height * number of lines */
 }
 
-/* Toggle Switch for Hebrew Filter (נשאר כפי שהיה, בהנחה שאתה משתמש בו) */
 input:checked ~ .dot {
   transform: translateX(100%);
-  /* Tailwind classes handle background color değişimleri for the dot */
-  /* For example: peer-checked:bg-purple-600 */
-}
-/* התאמה של מיקום הנקודה ב-RTL אם צריך - translateX(100%) אמור לעבוד נכון ב-RTL */
-/* [dir="rtl"] input:checked ~ .dot { transform: translateX(-100%); } */ 
-/* בדוק אם יש צורך בזה. לרוב translateX עובד נכון עם dir=rtl */
 
-/* Channel Card Images - אפקט קטן במעבר עכבר */
 .channel-card img {
     transition: transform 0.3s ease; /* border-color הוסר כי הוא כבר מוגדר ב-Tailwind בדרך כלל */
 }
