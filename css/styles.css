@@ -123,12 +123,12 @@ header nav .nav-link {
     font-weight: 500; /* Tailwind: font-medium */
 }
 
-/* ה-hover יטופל בעיקר ע"י Tailwind classes שהוספנו ל-HTML */
-/* header nav .nav-link:hover, 
+ ה-hover יטופל בעיקר ע"י Tailwind classes שהוספנו ל-HTML */
+ header nav .nav-link:hover, 
 header nav .nav-link:focus {
     color: var(--primary-color); 
     background-color: #ede9fe; /* Tailwind: bg-purple-50 
-} */
+} 
 
 header nav .nav-link.active {
     color: var(--primary-color); /* Tailwind: text-purple-600 */
