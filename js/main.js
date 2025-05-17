@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const backdrop = document.getElementById('mobile-menu-backdrop');
     const desktopSearchForm = document.getElementById('desktop-search-form');
     const mobileSearchForm = document.getElementById('mobile-search-form');
-    const themeToggleButton = document.getElementById('theme-toggle');
+    // const themeToggleButton = document.getElementById('theme-toggle'); // הוסר
     const videoCardTemplate = document.getElementById('video-card-template');
     const homepageCategoriesGrid = document.getElementById('homepage-categories-grid');
     const hebrewFilterToggle = document.getElementById('hebrew-filter-toggle');
@@ -27,45 +27,27 @@ document.addEventListener('DOMContentLoaded', function() {
         hebrewOnly: false
     };
     const MAX_POPULAR_TAGS = 30;
-    // let swiperInstance = null; // Not used
+    // let swiperInstance = null; // לא בשימוש אם אין Swiper
 
-      const PREDEFINED_CATEGORIES = [
+    const PREDEFINED_CATEGORIES = [
         { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "fa-film" },
-        { id: "review", name: "סקירות רכב", description: "מבחנים והשוואות", icon: "fa-magnifying-glass-chart", gradient: "from-purple-500 to-indigo-600 dark:from-purple-600 dark:to-indigo-700" },
-        { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה", icon: "fa-tools", gradient: "from-green-500 to-teal-600 dark:from-green-600 dark:to-teal-700" },
-        { id: "maintenance", name: "טיפולים", description: "תחזוקה שוטפת ומניעתית", icon: "fa-oil-can", gradient: "from-blue-500 to-cyan-600 dark:from-blue-600 dark:to-cyan-700" },
-        { id: "upgrades", name: "שיפורים ושדרוגים", description: "שדרוג הרכב והוספת אביזרים", icon: "fa-rocket", gradient: "from-orange-500 to-red-600 dark:from-orange-600 dark:to-red-700" },
-        { id: "collectors", name: "רכבי אספנות", description: "קלאסיקות ופנינים מוטוריות", icon: "fa-car-side", gradient: "from-red-500 to-pink-600 dark:from-red-600 dark:to-pink-700" },
-        { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "fa-cogs", gradient: "from-yellow-500 to-amber-600 dark:from-yellow-600 dark:to-amber-700" },
-        { id: "troubleshooting", name: "איתור תקלות", description: "פתרון בעיות נפוצות", icon: "fa-microscope", gradient: "from-cyan-300 to-sky-400 dark:from-cyan-400 dark:to-sky-500" }
-
- ];
-   // --- Theme Management ---
-    function applyTheme(theme) {
-        if (theme === 'dark') {
-            document.documentElement.classList.add('dark');
-            if (themeToggleButton) themeToggleButton.innerHTML = '<i class="fas fa-sun text-xl text-yellow-400 dark:text-yellow-300"></i>';
-        } else {
-            document.documentElement.classList.remove('dark');
-            if (themeToggleButton) themeToggleButton.innerHTML = '<i class="fas fa-moon text-xl text-purple-600 dark:text-purple-400"></i>';
-        }
-        console.log("CAR-טיב: Theme applied:", theme, "HTML classList:", document.documentElement.classList.toString());
-    }
-
-    function toggleTheme() {
-        const isCurrentlyDark = document.documentElement.classList.contains('dark');
-        const newTheme = isCurrentlyDark ? 'light' : 'dark'; // תקן: אם כהה, שנה לבהיר, ולהפך
-        localStorage.setItem('theme', newTheme);
-        applyTheme(newTheme);
-        console.log("CAR-טיב: Theme toggled to:", newTheme);
-    }
+        { id: "review", name: "סקירות רכב", description: "מבחנים והשוואות", icon: "fa-magnifying-glass-chart", gradient: "from-purple-500 to-indigo-600" },
+        { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה", icon: "fa-tools", gradient: "from-green-500 to-teal-600" },
+        { id: "maintenance", name: "טיפולים", description: "תחזוקה שוטפת ומניעתית", icon: "fa-oil-can", gradient: "from-blue-500 to-cyan-600" },
+        { id: "upgrades", name: "שיפורים ושדרוגים", description: "שדרוג הרכב והוספת אביזרים", icon: "fa-rocket", gradient: "from-orange-500 to-red-600" },
+        { id: "collectors", name: "רכבי אספנות", description: "קלאסיקות ופנינים מוטוריות", icon: "fa-car-side", gradient: "from-red-500 to-pink-600" },
+        { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "fa-cogs", gradient: "from-yellow-500 to-amber-600" },
+        { id: "troubleshooting", name: "איתור תקלות", description: "פתרון בעיות נפוצות", icon: "fa-microscope", gradient: "from-lime-400 to-yellow-500 dark:from-lime-500 dark:to-yellow-600" },
+    ];
 
     // --- Initialization ---
     async function initializePage() {
         console.log("CAR-טיב: Initializing page...");
-        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        console.log("CAR-טיב: Initial theme to apply:", savedTheme);
-        applyTheme(savedTheme); // קריאה ראשונית להחלת ערכת הנושא
+        // אין צורך ב-applyTheme כאן יותר
+
+        setupEventListeners();
+        // initializeSwiper(); // אם אין Swiper, אין צורך
+
         const categoryFromURL = getCategoryFromURL();
 
         try {
@@ -85,6 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateCategoryPageTitleAndBreadcrumbs(categoryFromURL);
                     loadAndRenderPopularTags(categoryFromURL);
                 } else {
+                    console.warn("CAR-טיב: Page is not home and no category in URL. Defaulting to 'all'.");
                     currentFilters.category = 'all';
                     if (homepageCategoriesGrid) renderHomepageCategoryButtons();
                     loadAndRenderPopularTags(null);
@@ -98,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
                  if(noVideosFoundMessage && (noVideosFoundMessage.classList.contains("hidden"))) {
                     noVideosFoundMessage.classList.remove('hidden');
                  }
-                 if(popularTagsContainer) popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא ניתן לטעון תגיות ללא סרטונים.</p>';
+                 if(popularTagsContainer) popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 text-sm">לא ניתן לטעון תגיות ללא סרטונים.</p>';
             }
         } catch (error) {
             console.error("CAR-טיב: Critical error during page initialization:", error);
@@ -107,6 +90,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             if (noVideosFoundMessage && (noVideosFoundMessage.classList.contains("hidden"))) noVideosFoundMessage.classList.remove('hidden');
         }
+        
         updateFooterYear();
         console.log("CAR-טיב: Page initialization complete.");
     }
@@ -144,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // --- Data Loading ---
+    // --- Data Loading (Simplified - directly from local JSON) ---
     async function loadLocalVideos() {
         console.log("CAR-טיב: Attempting to load videos from 'data/videos.json' (local only)...");
         if (loadingPlaceholder) {
@@ -240,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
              return;
         }
         if (!allVideos || allVideos.length === 0) {
-            popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 dark:text-slate-400 text-sm">יש לטעון סרטונים כדי להציג תגיות פופולריות.</p>';
+            popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 text-sm">יש לטעון סרטונים כדי להציג תגיות פופולריות.</p>';
             console.warn("CAR-טיב: Cannot render popular tags: no videos loaded.");
             return;
         }
@@ -251,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
             : allVideos;
         
         if (videosToConsider.length === 0 && forCategoryId && forCategoryId !== 'all') {
-             popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 dark:text-slate-400 text-sm">אין סרטונים בקטגוריה זו כדי להציג תגיות.</p>`;
+             popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 text-sm">אין סרטונים בקטגוריה זו כדי להציג תגיות.</p>`;
              return;
         }
 
@@ -261,11 +245,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     const normalizedTag = String(tag).trim();
                     if(normalizedTag) {
                         tagCounts[normalizedTag] = (tagCounts[normalizedTag] || 0) + 1;
-                    } else {
-                        // console.warn("CAR-טיב: Found an empty or invalid tag in video:", video.id, "Original tag value:", tag);
                     }
                 });
-            } else {
             }
         });
 
@@ -276,7 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         popularTagsContainer.innerHTML = '';
         if (sortedTags.length === 0) {
-            popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא נמצאו תגיות${forCategoryId && forCategoryId !== 'all' ? ' לקטגוריה זו' : ''}.</p>`;
+            popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 text-sm">לא נמצאו תגיות${forCategoryId && forCategoryId !== 'all' ? ' לקטגוריה זו' : ''}.</p>`;
             return;
         }
 
@@ -329,8 +310,8 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' || 
                     typeof video.category !== 'string' || !Array.isArray(video.tags) ||
-                    typeof video.hebrewContent !== 'boolean' ) {
-                    console.warn(`CAR-טיב: Skipping video at index ${index} due to missing essential data. Video data:`, video);
+                    typeof video.hebrewContent !== 'boolean' ) { // ודא שכל השדות מה-JSON הרזה קיימים ותקינים
+                    console.warn(`CAR-טיב: Skipping video at index ${index} due to missing or invalid essential data. Video data:`, video);
                     return; 
                 }
 
@@ -461,7 +442,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return allVideos.filter(video => {
             if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' || 
                 typeof video.category !== 'string' || !Array.isArray(video.tags) ||
-                typeof video.hebrewContent !== 'boolean') { // בדיקה נוספת
+                typeof video.hebrewContent !== 'boolean') {
                 return false; 
             }
 
@@ -554,10 +535,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.addEventListener('mousemove', handleSparkleEffect);
 
-        const mainNavLinks = document.querySelectorAll('header nav .nav-link:not(#theme-toggle a)');
+        const mainNavLinks = document.querySelectorAll('header nav .nav-link'); // כלל את כל הקישורים בניווט הראשי
         mainNavLinks.forEach(link => {
             link.addEventListener('click', function(e) {
                 const href = this.getAttribute('href');
+                // הסר אקטיב מכל הקישורים לפני החלת אקטיב על הקישור הנוכחי
                 mainNavLinks.forEach(lnk => lnk.classList.remove('active', 'text-purple-600', 'dark:text-purple-400', 'font-semibold'));
                 this.classList.add('active', 'text-purple-600', 'dark:text-purple-400', 'font-semibold');
 
@@ -572,10 +554,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                         window.scrollTo({ top: offsetPosition, behavior: "smooth" });
                     }
-                } else if (href === 'index.html' || href === './' || href === '/') {
+                } else if (href === 'index.html' || href === './' || href === '/') { // אם זה קישור לדף הבית
                      e.preventDefault(); 
                      window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
+                // אם זה קישור לדף אחר (כמו category.html), תן לו להתנהג כרגיל (לנווט לדף)
             });
         });
         console.log("CAR-טיב: Event listeners set up complete.");
@@ -658,7 +641,19 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // --- Utility Functions ---
     function initializeSwiper() {
-        console.log("CAR-טיב: initializeSwiper called, but no specific Swiper for homepage categories is being initialized as it was removed.");
+        const anySwiperElement = document.querySelector('.swiper');
+        if (anySwiperElement && typeof Swiper !== 'undefined') {
+            if (swiperInstance) {
+                swiperInstance.destroy(true, true);
+            }
+            swiperInstance = new Swiper(anySwiperElement, {
+                slidesPerView: 'auto',
+                spaceBetween: 10,
+            });
+            console.log("CAR-טיב: A Swiper instance (if found) initialized/updated.");
+        } else {
+            console.log("CAR-טיב: No '.swiper' element found or Swiper library not loaded for general initialization.");
+        }
     }
 
     function updateFooterYear() {
