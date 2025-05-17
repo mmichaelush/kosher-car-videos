@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const videoCardsContainer = document.getElementById('video-cards-container');
     const loadingPlaceholder = document.getElementById('loading-videos-placeholder');
     const noVideosFoundMessage = document.getElementById('no-videos-found');
+    // const categoriesWrapper = document.getElementById('categories-wrapper'); // Not used
     const popularTagsContainer = document.getElementById('popular-tags-container');
     const tagSearchInput = document.getElementById('tag-search-input');
     const customTagForm = document.getElementById('custom-tag-form');
@@ -17,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const videoCardTemplate = document.getElementById('video-card-template');
     const homepageCategoriesGrid = document.getElementById('homepage-categories-grid');
     const hebrewFilterToggle = document.getElementById('hebrew-filter-toggle');
+
 
     let allVideos = [];
     let currentFilters = {
@@ -467,8 +469,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Event Listeners Setup ---
     function setupEventListeners() {
         console.log("CAR-טיב: Setting up event listeners...");
-        if (themeToggleButton) themeToggleButton.addEventListener('click', toggleTheme);
-
         if (openMenuBtn) openMenuBtn.addEventListener('click', openMobileMenu);
         if (closeMenuBtn) closeMenuBtn.addEventListener('click', closeMobileMenu);
         if (backdrop) backdrop.addEventListener('click', closeMobileMenu);
