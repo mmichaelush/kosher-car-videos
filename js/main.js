@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const videoCardTemplate = document.getElementById('video-card-template');
     const homepageCategoriesGrid = document.getElementById('homepage-categories-grid');
     const hebrewFilterToggle = document.getElementById('hebrew-filter-toggle');
+    const videoCountHeroElement = document.getElementById('video-count-hero'); 
 
     let allVideos = [];
     let currentFilters = {
