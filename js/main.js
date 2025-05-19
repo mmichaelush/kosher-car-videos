@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // --- Data Loading ---
+    // --- Data Loading (Simplified - directly from local JSON) ---
     async function loadLocalVideos() {
         if (loadingPlaceholder) {
             loadingPlaceholder.classList.remove('hidden');
@@ -142,11 +142,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     allVideos = []; 
                     throw new Error("Parsed JSON from videos.json is not an array.");
                 }
-                // בדיקה בסיסית של מבנה הנתונים
                 allVideos.forEach((video, index) => {
                     if (typeof video.id !== 'string' || typeof video.title !== 'string' ||
                         typeof video.category !== 'string' || !Array.isArray(video.tags) ||
-                        typeof video.hebrewContent !== 'boolean') { // ודא שגם hebrewContent קיים ובסוג הנכון
+                        typeof video.hebrewContent !== 'boolean') {
                         console.warn(`CAR-טיב: Video at index ${index} in JSON is missing essential fields or has incorrect types. Data:`, video);
                     }
                 });
@@ -155,12 +154,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 allVideos = []; 
                 throw new Error(`Invalid JSON format in videos.json. ${jsonError.message}`);
             }
+
             if (loadingPlaceholder) loadingPlaceholder.classList.add('hidden');
+
+            // עדכון מספר הסרטונים בקטע ה-Hero
+            if (videoCountHeroElement) {
+                const countSpan = videoCountHeroElement.querySelector('span');
+                if (countSpan) {
+                    countSpan.textContent = allVideos.length;
+                } else {
+                     videoCountHeroElement.innerHTML = `במאגר יש כרגע <span class="font-bold text-white">${allVideos.length}</span> סרטונים.`;
+                }
+            }
+
         } catch (error) {
             console.error("CAR-טיב: Could not load or parse videos.json:", error);
             if (loadingPlaceholder) {
                 loadingPlaceholder.innerHTML = `<i class="fas fa-exclamation-triangle fa-2x text-red-500 mb-3"></i><br>שגיאה בטעינת קובץ הסרטונים.`;
                 loadingPlaceholder.classList.remove('hidden');
+            }
+            if (videoCountHeroElement) { // עדכון גם במקרה של שגיאה
+                const countSpan = videoCountHeroElement.querySelector('span');
+                if (countSpan) {
+                    countSpan.textContent = "שגיאה";
+                } else {
+                    videoCountHeroElement.innerHTML = `שגיאה בטעינת מספר הסרטונים.`;
+                }
             }
             if (videoCardsContainer) videoCardsContainer.innerHTML = '';
             allVideos = [];
