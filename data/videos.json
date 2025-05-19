@@ -1,3 +1,10 @@
+"review","סקירה"
+"diy","עשה זאת בעצמך"
+"maintenance","תחזוקה"
+"upgrades","שדרוגים"
+"collectors","אספנים"
+"systems","מערכות"
+"troubleshooting","פתרון בעיות"
 [ 
   {
     "id": "lg3re05TYHY",
@@ -8,8 +15,8 @@
   },
   {
     "id": "soxdfjE6BN4",
-    "title": "החלפה ושיפוץ וסת לחץ הידרופנאומטי Citroen BX\\XM\\Xantia\\DS",
-    "category": "DIY",
+    "title": "החלפה ושיפוץ וסת לחץ הידרופנאומטי | Citroen BX\\XM\\Xantia\\DS",
+    "category": "collectors",
     "tags": ["הכנופיה","וסת לחץ","אספנות"],
     "hebrewContent": true
   },
@@ -17,10 +24,7 @@
     "id": "WKCSlzIYRR8",
     "title": "נוזל בלמים ברכב - כל אחד יכול!",
     "category": "DIY",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "tags": ["עשה זאת בעצמך","הכנופיה","נוזל בלמים"],
     "hebrewContent": true
   },
   {
