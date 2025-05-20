@@ -1,8 +1,6 @@
 // js/main.js
 document.addEventListener('DOMContentLoaded', function() {
     console.log("CAR-טיב: main.js SCRIPT HAS STARTED"); // הדפסה ראשונה אפשרית
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("CAR-טיב: DOMContentLoaded event fired."); // הדפסה שנייה
     // --- DOM Element Selectors ---
     const videoCardsContainer = document.getElementById('video-cards-container');
     const loadingPlaceholder = document.getElementById('loading-videos-placeholder');
