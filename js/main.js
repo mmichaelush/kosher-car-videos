@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
         hebrewOnly: false
     };
     const MAX_POPULAR_TAGS = 30;
-    // let swiperInstance = null; // Not used
 
   const PREDEFINED_CATEGORIES = [
         { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "fa-film" },
@@ -44,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Initialization ---
     async function initializePage() {
         setupEventListeners();
-        // initializeSwiperIfNeeded(); // No Swiper for categories on homepage
 
         const categoryFromURL = getCategoryFromURL();
 
@@ -102,7 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const categoryData = PREDEFINED_CATEGORIES.find(cat => cat.id === categoryId);
         const categoryName = categoryData ? categoryData.name : categoryId;
         const categoryIcon = categoryData ? categoryData.icon : 'fa-folder-open';
-
+        
         const pageTitleElement = document.getElementById('category-page-title');
         if (pageTitleElement) {
             pageTitleElement.innerHTML = `<i class="fas ${categoryIcon} text-purple-600 mr-3"></i>${escapeHTML(categoryName)}`;
@@ -258,11 +256,61 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function getIconForTag(tag) {
         const tagIcons = {
-            "מנוע": "fa-cogs", "בלמים": "fa-hand-paper", "חשמל": "fa-bolt",
-            "טסלה": "fa-leaf", "סקירה": "fa-search", "טיפול": "fa-wrench",
-            "שטח": "fa-mountain", "קלאסי": "fa-car-side", 
-            "רכבי אספנות": "fa-car-alt", "מוסטנג": "fa-horse-head",
-        };
+    "מנוע": "fa-cogs",
+    "בלמים": "fa-hand-paper",
+    "גיר": "fa-cog",
+    "תיבת הילוכים": "fa-cog",
+    "שמן מנוע": "fa-oil-can",
+    "מצבר": "fa-car-battery",
+    "מערכת בלימה": "fa-car-crash",
+    "בדיקת רכב": "fa-stethoscope",
+    "תחזוקה": "fa-tools",
+    "טיפול": "fa-wrench",
+    "בדיקה לפני קנייה": "fa-search-dollar",
+    "שיפורים": "fa-tools",
+    "אביזרים": "fa-box-open",
+    "רכב חשמלי": "fa-charging-station",
+    "טעינה": "fa-plug",
+    "חשמל": "fa-bolt",
+    "חיישנים": "fa-rss",
+    "מערכת בטיחות": "fa-shield-alt",
+    "מצלמות רוורס": "fa-video",
+    "תאורה": "fa-lightbulb",
+    "מערכת מולטימדיה": "fa-music",
+    "בקרת שיוט": "fa-road",
+    "מערכות הרכב": "fa-sliders-h",
+    "היברידי": "fa-battery-half",
+    "בנזין": "fa-fire",
+    "דיזל": "fa-gas-pump",
+    "הנעה כפולה": "fa-compass",
+    "רכב שטח": "fa-mountain",
+    "שטח": "fa-mountain",
+    "רכב משפחתי": "fa-car",
+    "מיני רכב": "fa-car-side",
+    "קלאסי": "fa-car-side",
+    "רכבי אספנות": "fa-car-alt",
+    "וואן": "fa-shuttle-van",
+    "רכב עבודה": "fa-truck",
+    "טנדר": "fa-truck-pickup",
+    "משאית": "fa-truck-moving",
+    "קרוואן": "fa-caravan",
+    "טויוטה": "fa-horse-head",
+    "טסלה": "fa-leaf",
+    "יונדאי": "fa-hippo",
+    "סובארו": "fa-paw",
+    "פורד": "fa-flag-usa",
+    "מרצדס": "fa-star",
+    "ב.מ.וו": "fa-gem",
+    "סקירה": "fa-search",
+    "השוואה": "fa-balance-scale",
+    "מבחן דרכים": "fa-road",
+    "חוות דעת": "fa-comment-dots",
+    "ביטוח": "fa-file-invoice-dollar",
+    "אבחון": "fa-stethoscope",
+    "כשל טכני": "fa-exclamation-triangle",
+    "איתור תקלות": "fa-microscope",
+};
+
         return tagIcons[String(tag).toLowerCase()] || "fa-tag";
     }
 
