@@ -43,6 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Initialization ---
     async function initializePage() {
         setupEventListeners();
+        initializeSwiperIfNeeded();
 
         const categoryFromURL = getCategoryFromURL();
 
@@ -59,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateCategoryPageTitleAndBreadcrumbs(categoryFromURL);
                     loadAndRenderPopularTags(categoryFromURL);
                 } else {
-                    currentFilters.category = 'all';
+                    currentFilters.category = 'all'; // Fallback
                     if (homepageCategoriesGrid) renderHomepageCategoryButtons();
                     loadAndRenderPopularTags(null);
                 }
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const categoryData = PREDEFINED_CATEGORIES.find(cat => cat.id === categoryId);
         const categoryName = categoryData ? categoryData.name : categoryId;
         const categoryIcon = categoryData ? categoryData.icon : 'fa-folder-open';
-        
+
         const pageTitleElement = document.getElementById('category-page-title');
         if (pageTitleElement) {
             pageTitleElement.innerHTML = `<i class="fas ${categoryIcon} text-purple-600 mr-3"></i>${escapeHTML(categoryName)}`;
@@ -306,6 +307,8 @@ document.addEventListener('DOMContentLoaded', function() {
     "מבחן דרכים": "fa-road",
     "חוות דעת": "fa-comment-dots",
     "ביטוח": "fa-file-invoice-dollar",
+    "נהיגה": "fa-steering-wheel", // דורש FA 6
+    "נהיגה בטוחה": "fa-shield-heart", // FA Pro
     "אבחון": "fa-stethoscope",
     "כשל טכני": "fa-exclamation-triangle",
     "איתור תקלות": "fa-microscope",
@@ -314,7 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return tagIcons[String(tag).toLowerCase()] || "fa-tag";
     }
 
-    // --- Rendering Videos (מותאם ל-JSON רזה וללא תמונה ממוזערת) ---
+    // --- Rendering Videos ---
     function renderFilteredVideos() {
         if (!videoCardsContainer || !videoCardTemplate) {
              console.error("CAR-טיב: Missing videoCardsContainer or videoCardTemplate for rendering.");
@@ -341,7 +344,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 const cardClone = videoCardTemplate.content.cloneNode(true);
                 const cardElement = cardClone.querySelector('article');
-                if (!cardElement) return;
+                if (!cardElement) {
+                    console.error("CAR-טיב: Could not find 'article' in template clone.");
+                    return;
+                }
 
                 cardElement.querySelectorAll('[class_exists]').forEach(el => {
                     el.setAttribute('class', el.getAttribute('class_exists'));
@@ -399,7 +405,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function handlePlayVideo(buttonElement) {
         const videoId = buttonElement.dataset.videoId;
         const videoCard = buttonElement.closest('article'); 
-        if (!videoCard) return;
+        if (!videoCard) {
+            console.error("CAR-טיב: handlePlayVideo - Could not find parent article for play button.");
+            return;
+        }
 
         const iframe = videoCard.querySelector('.video-iframe');
         const playIconContainer = buttonElement; 
@@ -438,7 +447,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return String(value).replace(/"/g, '"');
     }
 
-    // --- Filtering Logic ---
+    // --- Filtering Logic (מותאם ל-JSON רזה) ---
     function getFilteredVideos() {
         if (!allVideos || allVideos.length === 0) return [];
 
@@ -589,7 +598,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 tagElement.classList.add('bg-purple-100', 'text-purple-700');
             }
         } else {
-            currentFilters.tags.push(tagName); // שמור את השם המקורי
+            currentFilters.tags.push(tagName);
             if (tagElement) {
                 tagElement.classList.add('active-search-tag', 'bg-purple-600', 'text-white');
                 tagElement.classList.remove('bg-purple-100', 'text-purple-700');
@@ -620,7 +629,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function handleSparkleEffect(e) {
          if (Math.random() < 0.03) { 
-            if (e.target.closest('button, input, a, .tag, textarea, select, iframe')) { // הוספתי .tag כדי למנוע ניצוצות על תגיות
+            if (e.target.closest('button, input, a, .tag, textarea, select, iframe')) {
                 return;
             }
             const sparkle = document.createElement('div');
@@ -634,11 +643,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // --- Utility Functions ---
     function scrollToVideoGridIfNeeded() {
-        // גלול רק אם המשתמש לא נמצא כבר באזור הסרטונים
         const videoGridSection = document.getElementById('video-grid-section');
         if (videoGridSection) {
             const rect = videoGridSection.getBoundingClientRect();
-            // אם החלק העליון של קטע הסרטונים כבר נראה (או מעל), אל תגלול
             if (rect.top < (window.innerHeight / 3) && rect.bottom > 0) { 
                 return;
             }
@@ -655,21 +662,13 @@ document.addEventListener('DOMContentLoaded', function() {
     function initializeSwiperIfNeeded() {
         const anySwiperElement = document.querySelector('.swiper'); 
         if (anySwiperElement && typeof Swiper !== 'undefined') {
-            // אם יש אלמנט Swiper בדף, אתחל אותו
-            // זה שימושי אם תחליט להוסיף Swiper למקומות אחרים (למשל, ערוצים מומלצים)
-            if (swiperInstance && swiperInstance.el === anySwiperElement) { // אם זה אותו Swiper
-                 swiperInstance.update();
-                 console.log("CAR-טיב: Existing Swiper instance updated.");
-            } else { // אם זה Swiper חדש או שהקודם הושמד
-                if(swiperInstance) swiperInstance.destroy(true,true);
-                swiperInstance = new Swiper(anySwiperElement, {
-                    slidesPerView: 'auto',
-                    spaceBetween: 10,
-                    // הוסף כאן pagination אם רלוונטי ל-Swiper הספציפי הזה
-                    // pagination: { el: '.swiper-pagination-for-this-specific-swiper', clickable: true },
-                });
-                console.log("CAR-טיב: New Swiper instance initialized.");
+            if (swiperInstance && typeof swiperInstance.destroy === 'function') { // ודא שה-destroy קיים
+                swiperInstance.destroy(true, true);
             }
+            swiperInstance = new Swiper(anySwiperElement, {
+                slidesPerView: 'auto',
+                spaceBetween: 10,
+            });
         }
     }
 
