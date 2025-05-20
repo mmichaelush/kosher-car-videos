@@ -15,9 +15,7 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* Hero Section Gradient */
-.hero-gradient {
-    background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%); /* purple-700 to purple-600 */
+    background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%);
 }
 
 /* Video Card overlay effect on hover */
@@ -28,7 +26,7 @@ body {
     background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.6));
     opacity: 0;
     transition: opacity 0.3s ease;
-    z-index: 1; /* ודא שזה מעל התמונה/כפתור Play אבל מתחת לטקסט אם יש טקסט מעל */
+    z-index: 1; 
     pointer-events: none;
     border-radius: inherit; 
 }
@@ -36,19 +34,19 @@ body {
     opacity: 1; 
 }
 
-/* General Animation Effects (אם לא מכוסה לחלוטין ע"י Tailwind) */
+/* General Animation Effects  */
 .magic-sparkle {
     position: absolute; width: 8px; height: 8px;
-    background-color: rgba(255, 255, 255, 0.8); /* צבע נוצץ בהיר יותר */
+    background-color: rgba(255, 255, 255, 0.8); 
     border-radius: 50%; 
     pointer-events: none; 
-    z-index: 9999; /* גבוה מאוד כדי שיהיה מעל הכל */
-    animation: sparkle 0.7s ease-out forwards; /* אנימציה קצרה יותר */
+    z-index: 9999; 
+    animation: sparkle 0.7s ease-out forwards; 
 }
 @keyframes sparkle {
-    0% { transform: scale(0.5) translateY(0); opacity: 1; } /* מתחיל קטן יותר */
+    0% { transform: scale(0.5) translateY(0); opacity: 1; } 
     50% { opacity: 0.8; }
-    100% { transform: scale(1.8) translateY(-15px); opacity: 0; } /* זז קצת למעלה */
+    100% { transform: scale(1.8) translateY(-15px); opacity: 0; }
 }
 
 .floating { 
@@ -60,12 +58,12 @@ body {
     100% { transform: translateY(0px); }
 }
 
-.pulse:hover, .pulse:focus { /* Pulse effect primarily handled by Tailwind `animate-pulse` if desired, or this custom one */
-    animation: pulse-custom 1.5s infinite; /* שינוי שם כדי לא להתנגש עם Tailwind */
+.pulse:hover, .pulse:focus { 
+    animation: pulse-custom 1.5s infinite; 
 }
 @keyframes pulse-custom {
     0% { transform: scale(1); }
-    50% { transform: scale(1.03); } /* אפקט עדין יותר */
+    50% { transform: scale(1.03); }
     100% { transform: scale(1); }
 }
 
@@ -81,51 +79,50 @@ body {
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
     /* fallback for non-webkit */
-    max-height: calc(1.65em * 3); /* line-height * number of lines */
+    max-height: calc(1.65em * 3); 
 }
 
 input:checked ~ .dot {
   transform: translateX(100%);
 
 .channel-card img {
-    transition: transform 0.3s ease; /* border-color הוסר כי הוא כבר מוגדר ב-Tailwind בדרך כלל */
+    transition: transform 0.3s ease;
 }
 header nav .nav-link {
-    position: relative; /* נחוץ למיקום ה-::after */
+    position: relative; 
     padding: 0.75rem 1rem; 
     border-radius: 0.5rem; 
-    transition: color 0.2s ease; /* הסרתי background-color מה-transition אם לא משתמשים בו */
-    text-decoration: none; /* ודא שאין קו תחתון דיפולטיבי */
+    transition: color 0.2s ease; 
+    text-decoration: none; 
 }
 
 header nav .nav-link::after {
     content: '';
     position: absolute;
-    bottom: 0.25rem; /* מיקום הקו מתחת לטקסט */
-    right: 0; /* התחל מהצד הנכון ב-RTL */
-    width: 0; /* מתחיל ברוחב אפס */
+    bottom: 0.25rem;
+    right: 0; 
+    width: 0; 
     height: 2px;
-    background-color: var(--primary-color); /* צבע הקו */
-    transition: width 0.3s ease-out; /* אנימציה לרוחב */
+    background-color: var(--primary-color); 
+    transition: width 0.3s ease-out; 
 }
 
-    padding: 0.5rem 1rem; /* התאם לפי הצורך, ה-px-4 py-2 ב-HTML ידרוס את זה אם הוא יותר ספציפי */
-    border-radius: 0.5rem; /* Tailwind: rounded-lg */
+    padding: 0.5rem 1rem; 
+    border-radius: 0.5rem; 
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease-out; /* הוספנו transform */
-    color: #4b5563; /* Tailwind: text-slate-600 (צבע התחלתי) */
-    font-weight: 500; /* Tailwind: font-medium */
+    color: #4b5563; 
+    font-weight: 500; 
 }
 
 header nav .nav-link {
-    padding: 0.5rem 1rem; /* התאם לפי הצורך, ה-px-4 py-2 ב-HTML ידרוס את זה אם הוא יותר ספציפי */
-    border-radius: 0.5rem; /* Tailwind: rounded-lg */
+    padding: 0.5rem 1rem; 
+    border-radius: 0.5rem; 
     transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease-out; /* הוספנו transform */
-    color: #4b5563; /* Tailwind: text-slate-600 (צבע התחלתי) */
-    font-weight: 500; /* Tailwind: font-medium */
+    color: #4b5563; 
+    font-weight: 500; 
 }
 
 header nav .nav-link.active {
-    color: var(--primary-color); /* Tailwind: text-purple-600 */
-    font-weight: 600; /* Tailwind: font-semibold */
-    /* background-color: #f5f3ff; /* אולי צבע רקע עדין גם לאקטיבי */
+    color: var(--primary-color); 
+    font-weight: 600; 
 }
