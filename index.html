@@ -78,12 +78,17 @@
                     </nav>
                 </div>
                 <div class="flex items-center space-x-3">
-                    <div class="hidden md:block">
-                        <form role="search" id="desktop-search-form" class="relative">
-                            <input type="search" id="desktop-search-input" class="search-input block w-56 lg:w-64 pr-10 pl-4 py-2.5 text-sm border-slate-300 rounded-lg focus:ring-purple-500 focus:border-purple-500" placeholder="חיפוש סרטונים...">
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                                <i class="fas fa-search text-slate-400"></i>
-                            </div>
+                        <div class="hidden md:block">
+                        <form role="search" id="desktop-search-form" class="relative flex items-center">
+                            <input type="search" id="desktop-search-input" 
+                                   class="search-input block w-56 lg:w-64 pr-4 pl-10 py-2.5 text-sm border-slate-300 rounded-lg focus:ring-purple-500 focus:border-purple-500" 
+                                   placeholder="חיפוש סרטונים...">
+                            <button type="submit" aria-label="בצע חיפוש"
+                                    class="absolute left-0 top-0 h-full px-3 text-slate-500 hover:text-purple-600 focus:outline-none focus:text-purple-600">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                    </div>
                         </form>
                     </div>
                     <button id="open-menu" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden text-slate-500 hover:text-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 rounded p-1">
@@ -134,12 +139,15 @@
     </section>
 
     <!-- Floating Search (Mobile) -->
-    <div class="md:hidden px-4 -mt-10 mb-8 relative z-20">
-        <form role="search" id="mobile-search-form" class="relative">
-            <input type="search" id="mobile-search-input" class="search-input block w-full pr-12 pl-4 py-3.5 text-base shadow-xl border-slate-300 rounded-lg focus:ring-purple-500 focus:border-purple-500" placeholder="חיפוש סרטונים...">
-            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                <i class="fas fa-search text-slate-400"></i>
-            </div>
+        <div class="md:hidden px-4 -mt-10 mb-8 relative z-20">
+        <form role="search" id="mobile-search-form" class="relative flex items-center">
+            <input type="search" id="mobile-search-input" 
+                   class="search-input block w-full pr-4 pl-12 py-3.5 text-base shadow-xl border-slate-300 rounded-lg focus:ring-purple-500 focus:border-purple-500" 
+                   placeholder="חיפוש סרטונים...">
+            <button type="submit" aria-label="בצע חיפוש"
+                    class="absolute left-0 top-0 h-full px-4 text-slate-500 hover:text-purple-600 focus:outline-none focus:text-purple-600">
+                <i class="fas fa-search text-lg"></i>
+            </button>
         </form>
     </div>
 
