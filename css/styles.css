@@ -264,3 +264,11 @@ header nav .nav-link.active::after {
     /* fallback for non-webkit */
     max-height: calc(1.65em * 2); /* Adjust based on line-height and font-size */
 }
+body {
+    /* ... */
+    background-color: theme('colors.slate.100'); /* ברירת מחדל בהיר */
+    /* ... */
+}
+.dark body {
+    background-color: theme('colors.slate.900'); /* רקע כהה יותר ל-body */
+}
