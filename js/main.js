@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("CAR-טיב: DOMContentLoaded event fired. Version 3.1 (JS Full).");
+    console.log("CAR-טיב: DOMContentLoaded event fired. Version 3.2 (JS Truly Full).");
 
     // --- DOM Element Selectors ---
     const bodyElement = document.body;
@@ -13,9 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const videoCountHeroElement = document.getElementById('video-count-hero');
     const currentYearFooter = document.getElementById('current-year-footer');
     
-    // Handle potentially different IDs for search elements on different pages
     const desktopSearchForm = document.getElementById('desktop-search-form') || document.getElementById('desktop-search-form-category');
-    const mobileSearchForm = document.getElementById('mobile-search-form') || document.getElementById('mobile-search-form-category'); // Assuming mobile search might also have different ID if present on category page
+    const mobileSearchForm = document.getElementById('mobile-search-form') || document.getElementById('mobile-search-form-category');
     const desktopSearchInput = document.getElementById('desktop-search-input') || document.getElementById('desktop-search-input-category');
     const mobileSearchInput = document.getElementById('mobile-search-input') || document.getElementById('mobile-search-input-category');
 
@@ -55,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Initialization ---
     async function initializePage() {
-        console.log("CAR-טיב: Initializing page (JS Full V3.1)...");
+        console.log("CAR-טיב: Initializing page (JS Truly Full V3.2)...");
         initializeDarkModeVisuals(); 
         setupEventListeners();
         updateFooterYear();
@@ -74,8 +73,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     updateCategoryPageUI(currentFilters.category);
                 } else {
                     currentFilters.category = 'all';
-                    if (homepageCategoriesGrid && isHomePage()) renderHomepageCategoryButtons(); // Render only if on a page that should have them
-                    console.warn("CAR-טיב: Potentially a category page loaded without a category name, or non-homepage context. Defaulting to 'all'.");
+                    if (homepageCategoriesGrid && isHomePage()) renderHomepageCategoryButtons();
+                    console.warn("CAR-טיב: Context issue or category page without name. Defaulting to 'all'.");
                 }
                 loadAndRenderPopularTags(currentFilters.category !== 'all' ? currentFilters.category : null);
                 renderFilteredVideos();
@@ -87,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error("CAR-טיב: Critical error during page initialization:", error);
             displayErrorState(`שגיאה קריטית בטעינת נתוני הסרטונים: ${error.message}`);
         }
-        console.log("CAR-טיב: Page initialization complete (JS Full V3.1).");
+        console.log("CAR-טיב: Page initialization complete (JS Truly Full V3.2).");
     }
 
     function displayErrorState(message) {
@@ -114,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateCategoryPageUI(categoryId) {
         const categoryData = PREDEFINED_CATEGORIES.find(cat => cat.id.toLowerCase() === categoryId.toLowerCase());
-        const categoryName = categoryData ? categoryData.name : categoryId.charAt(0).toUpperCase() + categoryId.slice(1); // Capitalize if not found
+        const categoryName = categoryData ? categoryData.name : categoryId.charAt(0).toUpperCase() + categoryId.slice(1);
         const categoryIcon = categoryData ? categoryData.icon : 'fa-folder-open';
 
         const pageTitleElement = document.getElementById('category-page-title');
@@ -138,17 +137,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateDarkModeToggleVisuals(toggleButton, isDark) {
         const moonIcon = toggleButton.querySelector('.fa-moon');
         const sunIcon = toggleButton.querySelector('.fa-sun');
-        const toggleDot = toggleButton.querySelector('.dot'); // Specifically for the mobile toggle with a dot
+        const toggleDot = toggleButton.querySelector('.dot'); // For mobile toggle
 
         if (isDark) {
             if (moonIcon) moonIcon.classList.add('hidden');
             if (sunIcon) sunIcon.classList.remove('hidden');
-            if (toggleDot) {
-                // For RTL, translateX(-100%) moves it to the left (which is "on" for dark mode in the example HTML)
-                // Make sure the HTML structure and Tailwind classes support this dot movement correctly.
-                // The inline style in HTML `<style>` tag is a good FOUC prevention.
-                // This JS part ensures it's actively managed.
-                toggleDot.style.transform = 'translateX(-100%)'; // Assuming RTL, dot moves left for "on"
+            if (toggleDot) { // Specifically for the mobile toggle with a dot
+                // For RTL, this should move the dot to the left end
+                toggleDot.style.transform = 'translateX(-100%)'; 
             }
             toggleButton.setAttribute('aria-checked', 'true');
         } else {
@@ -237,24 +233,20 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderHomepageCategoryButtons() {
         const loadingCategoriesSkeleton = document.getElementById('loading-homepage-categories-skeleton');
         if (!homepageCategoriesGrid) {
-            if(loadingCategoriesSkeleton) loadingCategoriesSkeleton.innerHTML = "<p class='col-span-full text-red-500'>שגיאה: מיכל הקטגוריות לא נמצא.</p>";
+            if(loadingCategoriesSkeleton) loadingCategoriesSkeleton.innerHTML = "<p class='col-span-full text-red-500 dark:text-red-400'>שגיאה: מיכל הקטגוריות לא נמצא.</p>";
             return;
         }
 
         if (loadingCategoriesSkeleton) loadingCategoriesSkeleton.style.display = 'none';
         homepageCategoriesGrid.innerHTML = ''; 
 
-        const isDark = document.documentElement.classList.contains('dark');
-
         PREDEFINED_CATEGORIES.filter(cat => cat.id !== 'all').forEach(cat => {
             const link = document.createElement('a');
             link.href = `category.html?name=${cat.id}`; 
-            // Use the correct gradient based on dark mode, removing the 'dark:' prefix as Tailwind handles it
-            const gradientClass = isDark && cat.darkGradient ? cat.darkGradient.replace('dark:', '') : cat.gradient;
-            // More robustly, let Tailwind handle it by applying both classes:
-            const finalGradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`;
+            // Tailwind will pick the correct gradient based on whether .dark is on <html>
+            const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`;
 
-            link.className = `category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${finalGradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50`;
+            link.className = `category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50`;
             link.setAttribute('aria-label', `עבור לקטגוריית ${cat.name}`);
             
             link.innerHTML = `
@@ -302,7 +294,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         sortedTags.forEach(tag => {
             const tagElement = document.createElement('button');
-            // Tailwind classes for light and dark mode for tags
             tagElement.className = 'tag bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-800 dark:text-purple-200 dark:hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-1 dark:focus:ring-offset-slate-800 transition-colors text-sm font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5';
             tagElement.dataset.tagValue = tag;
             const iconClass = getIconForTag(tag);
@@ -311,8 +302,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    function getIconForTag(tag) { // Expects lowercased tag
-        const tagIcons = { /* ... (same as before) ... */ };
+    function getIconForTag(tag) {
+        const tagIcons = {
+            "מנוע": "fa-cogs", "בלמים": "fa-hand-paper", "גיר": "fa-cog", "תיבת הילוכים": "fa-cog",
+            "שמן מנוע": "fa-oil-can", "מצבר": "fa-car-battery", "מערכת בלימה": "fa-car-crash",
+            "בדיקת רכב": "fa-stethoscope", "תחזוקה": "fa-tools", "טיפול": "fa-wrench",
+            "בדיקה לפני קנייה": "fa-search-dollar", "שיפורים": "fa-rocket", "אביזרים": "fa-box-open",
+            "רכב חשמלי": "fa-charging-station", "טעינה": "fa-plug", "חשמל": "fa-bolt",
+            "חיישנים": "fa-rss", "מערכת בטיחות": "fa-shield-alt", "מצלמות רוורס": "fa-video",
+            "תאורה": "fa-lightbulb", "מערכת מולטימדיה": "fa-music", "בקרת שיוט": "fa-road",
+            "מערכות הרכב": "fa-sliders-h", "היברידי": "fa-battery-half", "בנזין": "fa-fire",
+            "דיזל": "fa-gas-pump", "הנעה כפולה": "fa-compass", "רכב שטח": "fa-mountain", "שטח": "fa-mountain",
+            "רכב משפחתי": "fa-car", "מיני רכב": "fa-car-side", "קלאסי": "fa-car-side",
+            "רכבי אספנות": "fa-car-alt", "וואן": "fa-shuttle-van", "רכב עבודה": "fa-truck",
+            "טנדר": "fa-truck-pickup", "משאית": "fa-truck-moving", "קרוואן": "fa-caravan",
+            "טויוטה": "fa-horse-head", "טסלה": "fa-leaf", "יונדאי": "fa-hippo", "סובארו": "fa-paw",
+            "פורד": "fa-flag-usa", "מרצדס": "fa-star", "ב.מ.וו": "fa-gem", "סקירה": "fa-search",
+            "השוואה": "fa-balance-scale", "מבחן דרכים": "fa-road", "חוות דעת": "fa-comment-dots",
+            "ביטוח": "fa-file-invoice-dollar", "נהיגה": "fa-person-biking",
+            "נהיגה בטוחה": "fa-shield-heart", "אבחון": "fa-stethoscope",
+            "כשל טכני": "fa-exclamation-triangle", "איתור תקלות": "fa-microscope",
+            "עשה זאת בעצמך": "fa-hand-sparkles", "הכנופיה": "fa-users-cog", "יונדאי i10": "fa-car",
+            "ניקוי מצערת": "fa-spray-can-sparkles", "וסת לחץ": "fa-gauge-high", "אספנות": "fa-gem",
+            "נוזל בלמים": "fa-tint"
+        };
         return tagIcons[tag] || "fa-tag";
     }
 
@@ -352,7 +365,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (tagsContainerEl) {
             if (video.tags && video.tags.length > 0) {
                 tagsContainerEl.innerHTML = video.tags.map(tag => 
-                    // Tailwind classes for light and dark mode for tags inside cards
                     `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(capitalizeFirstLetter(tag))}</span>`
                 ).join('');
             } else { tagsContainerEl.innerHTML = ''; }
@@ -374,7 +386,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
         videoCardsContainer.innerHTML = '';
         const filteredVideos = getFilteredVideos();
-        const feedbackEl = document.getElementById('video-grid-loading-feedback') || document.createElement('div'); // For ARIA live region
+        let feedbackEl = document.getElementById('video-grid-loading-feedback');
+        if (!feedbackEl) {
+            feedbackEl = document.createElement('div');
+            feedbackEl.id = 'video-grid-loading-feedback';
+            feedbackEl.setAttribute('aria-live', 'polite');
+            feedbackEl.className = 'sr-only'; 
+            if (videoCardsContainer.parentNode) { // Append only if parentNode exists
+                 videoCardsContainer.parentNode.appendChild(feedbackEl);
+            } else {
+                console.warn("CAR-טיב: videoCardsContainer parentNode not found, ARIA feedback may not work.");
+            }
+        }
+
 
         if (filteredVideos.length === 0) {
             if (noVideosFoundMessage) {
@@ -400,22 +424,29 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         videoCardsContainer.appendChild(fragment);
         feedbackEl.textContent = `נמצאו ${filteredVideos.length} סרטונים.`;
-        if (!document.getElementById('video-grid-loading-feedback')) { // Append if not already there
-            feedbackEl.id = 'video-grid-loading-feedback';
-            feedbackEl.setAttribute('aria-live', 'polite');
-            feedbackEl.className = 'sr-only'; // Visually hidden but read by screen readers
-            videoCardsContainer.parentNode.appendChild(feedbackEl);
-        }
     }
     
-    function handlePlayVideo(buttonElement) { /* ... (same as before) ... */ }
+    function handlePlayVideo(buttonElement) {
+        const videoId = buttonElement.dataset.videoId;
+        const videoCard = buttonElement.closest('article');
+        if (!videoCard) { console.error("CAR-טיב: handlePlayVideo - Could not find parent article."); return; }
+
+        const iframe = videoCard.querySelector('.video-iframe');
+        const playIconContainer = buttonElement; 
+
+        if (iframe && videoId) {
+            const videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1&enablejsapi=1&origin=${window.location.origin}`;
+            iframe.src = videoSrc;
+            iframe.classList.remove('hidden');
+            if (playIconContainer) playIconContainer.style.display = 'none';
+        }
+    }
 
     function renderSelectedTagsChips() {
         if (!selectedTagsContainer) return;
         selectedTagsContainer.innerHTML = '';
         currentFilters.tags.forEach(tagName => {
             const tagChip = document.createElement('span');
-            // Tailwind classes for light and dark mode for selected tag chips
             tagChip.className = 'flex items-center gap-1.5 bg-purple-600 text-white dark:bg-purple-500 dark:text-white text-sm font-medium ps-3 pe-2 py-1.5 rounded-full cursor-default transition-all hover:bg-purple-700 dark:hover:bg-purple-600';
             
             const textNode = document.createTextNode(escapeHTML(capitalizeFirstLetter(tagName)));
@@ -437,7 +468,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // --- Filtering Logic ---
-    function getFilteredVideos() { /* ... (same as before) ... */ 
+    function getFilteredVideos() {
         if (!allVideos || allVideos.length === 0) return [];
         return allVideos.filter(video => {
             const categoryMatch = currentFilters.category === 'all' || video.category === currentFilters.category;
@@ -462,9 +493,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (backdrop) backdrop.addEventListener('click', closeMobileMenu);
         
         document.querySelectorAll('#mobile-menu .nav-link, #site-footer a, header nav a').forEach(link => {
-            // Refined to only apply smooth scroll to in-page hash links or root index link
              const href = link.getAttribute('href');
-            if (href && (href.startsWith('#') || href === 'index.html' || href === './' || href === '/')) {
+            if (href && (href.startsWith('#') || href === 'index.html' || href === './' || href === '/' || href.startsWith('index.html#'))) {
                 link.addEventListener('click', handleNavLinkClick);
             }
         });
@@ -487,11 +517,33 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (customTagForm) {
-            customTagForm.addEventListener('submit', function(event) { /* ... (same as before with feedback) ... */ });
+            customTagForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const newTagName = tagSearchInput.value.trim().toLowerCase();
+                if (newTagName) {
+                    if (!currentFilters.tags.includes(newTagName)) {
+                        const existingPopularTag = popularTagsContainer ? popularTagsContainer.querySelector(`button.tag[data-tag-value="${escapeAttributeValue(newTagName)}"]`) : null;
+                        toggleTagSelection(newTagName, existingPopularTag);
+                        tagSearchInput.classList.add('border-green-500', 'focus:border-green-500', 'focus:ring-green-500', 'dark:border-green-400', 'dark:focus:border-green-400', 'dark:focus:ring-green-400');
+                        setTimeout(() => {
+                            tagSearchInput.classList.remove('border-green-500', 'focus:border-green-500', 'focus:ring-green-500', 'dark:border-green-400', 'dark:focus:border-green-400', 'dark:focus:ring-green-400');
+                        }, 1500);
+                    } else {
+                        tagSearchInput.classList.add('border-yellow-500', 'focus:border-yellow-500', 'focus:ring-yellow-500', 'dark:border-yellow-400', 'dark:focus:border-yellow-400', 'dark:focus:ring-yellow-400');
+                         setTimeout(() => {
+                            tagSearchInput.classList.remove('border-yellow-500', 'focus:border-yellow-500', 'focus:ring-yellow-500', 'dark:border-yellow-400', 'dark:focus:border-yellow-400', 'dark:focus:ring-yellow-400');
+                        }, 1500);
+                    }
+                }
+                tagSearchInput.value = '';
+            });
         }
 
         if (videoCardsContainer) {
-            videoCardsContainer.addEventListener('click', function(event) { /* ... (same as before) ... */ });
+            videoCardsContainer.addEventListener('click', function(event) {
+                 const playButton = event.target.closest('.play-video-button');
+                if (playButton) handlePlayVideo(playButton);
+            });
         }
 
         if (desktopSearchForm) desktopSearchForm.addEventListener('submit', (e) => handleSearchSubmit(e, desktopSearchInput));
@@ -506,12 +558,28 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // --- Event Handlers ---
-    function openMobileMenu() { /* ... (same as before) ... */ }
-    function closeMobileMenu() { /* ... (same as before) ... */ }
+    function openMobileMenu() {
+        if (mobileMenu) mobileMenu.classList.remove('translate-x-full');
+        if (backdrop) { backdrop.classList.remove('invisible', 'opacity-0'); backdrop.classList.add('visible', 'opacity-100'); }
+        bodyElement.classList.add('overflow-hidden', 'md:overflow-auto');
+        if (openMenuBtn) openMenuBtn.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeMobileMenu() {
+        if (mobileMenu) mobileMenu.classList.add('translate-x-full');
+        if (backdrop) { backdrop.classList.remove('visible', 'opacity-100'); backdrop.classList.add('invisible', 'opacity-0'); }
+        bodyElement.classList.remove('overflow-hidden', 'md:overflow-auto');
+        if (openMenuBtn) openMenuBtn.setAttribute('aria-expanded', 'false');
+    }
 
     function handleNavLinkClick(event) {
         const link = event.currentTarget;
-        const href = link.getAttribute('href');
+        let href = link.getAttribute('href');
+        
+        // Handle cases like "index.html#some-section" when already on index.html
+        if (href.startsWith('index.html#') && isHomePage()) {
+            href = href.substring(href.indexOf('#')); // Convert to just "#some-section"
+        }
 
         if (link.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
 
@@ -534,29 +602,30 @@ document.addEventListener('DOMContentLoaded', function() {
                 window.scrollTo({ top: offsetPosition, behavior: "smooth" });
             }
         } else if (href === 'index.html' || href === './' || href === '/') {
-            // Only prevent default and scroll to top if already on homepage
-            // Otherwise, let the browser navigate to index.html
             if (isHomePage()) {
                 event.preventDefault(); 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
+            // else allow normal navigation to index.html from other pages
         }
     }
-     }
 
     function toggleTagSelection(tagName, tagElement) {
         const index = currentFilters.tags.indexOf(tagName);
+        const activeClasses = ['active-search-tag', 'bg-purple-600', 'text-white', 'dark:bg-purple-500', 'dark:text-white', 'hover:bg-purple-700', 'dark:hover:bg-purple-600'];
+        const inactiveClasses = ['bg-purple-100', 'text-purple-700', 'dark:bg-purple-800', 'dark:text-purple-200', 'hover:bg-purple-200', 'dark:hover:bg-purple-700'];
+
         if (index > -1) {
             currentFilters.tags.splice(index, 1);
             if (tagElement) {
-                tagElement.classList.remove('active-search-tag', 'bg-purple-600', 'text-white', 'dark:bg-purple-500', 'dark:text-white', 'hover:bg-purple-700', 'dark:hover:bg-purple-600');
-                tagElement.classList.add('bg-purple-100', 'text-purple-700', 'dark:bg-purple-700', 'dark:text-purple-100', 'hover:bg-purple-200', 'dark:hover:bg-purple-600');
+                tagElement.classList.remove(...activeClasses);
+                tagElement.classList.add(...inactiveClasses);
             }
         } else {
             currentFilters.tags.push(tagName);
             if (tagElement) {
-                tagElement.classList.add('active-search-tag', 'bg-purple-600', 'text-white', 'dark:bg-purple-500', 'dark:text-white', 'hover:bg-purple-700', 'dark:hover:bg-purple-600');
-                tagElement.classList.remove('bg-purple-100', 'text-purple-700', 'dark:bg-purple-700', 'dark:text-purple-100', 'hover:bg-purple-200', 'dark:hover:bg-purple-600');
+                tagElement.classList.remove(...inactiveClasses);
+                tagElement.classList.add(...activeClasses);
             }
         }
         renderSelectedTagsChips();
@@ -575,10 +644,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleSearchSubmit(event, searchInputElement) {
         event.preventDefault();
-        currentFilters.searchTerm = String(searchInputElement.value).trim().toLowerCase();
-        renderFilteredVideos();
-        searchInputElement.blur();
-        if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
+        if (searchInputElement) { // Check if the element exists
+            currentFilters.searchTerm = String(searchInputElement.value).trim().toLowerCase();
+            renderFilteredVideos();
+            searchInputElement.blur();
+            if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
+        }
     }
         
     // --- Utility Functions ---
@@ -586,7 +657,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const videoGridSection = document.getElementById('video-grid-section');
         if (videoGridSection) {
             const rect = videoGridSection.getBoundingClientRect();
-             if (rect.top < 0 || rect.top > window.innerHeight * 0.66) {
+             if (rect.top < 0 || rect.top > window.innerHeight * 0.66) { // Only scroll if section is not mostly in view
                 const headerElement = document.querySelector('header.sticky');
                 const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 80;
                 const elementPosition = rect.top;
@@ -598,7 +669,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function toggleBackToTopButtonVisibility() {
         if (backToTopButton) {
-            if (window.pageYOffset > 300) { // Show button after scrolling 300px
+            if (window.pageYOffset > 300) {
                 backToTopButton.classList.remove('opacity-0', 'invisible');
                 backToTopButton.classList.add('opacity-100', 'visible');
             } else {
