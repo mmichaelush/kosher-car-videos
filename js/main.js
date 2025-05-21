@@ -48,25 +48,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const categoryFromURL = getCategoryFromURL();
 
-        try {
-            await loadLocalVideos(); 
-            
-            if (allVideos && allVideos.length > 0) {
-                if (isHomePage()) {
-                    if (homepageCategoriesGrid) renderHomepageCategoryButtons();
-                    currentFilters.category = 'all'; 
-                    loadAndRenderPopularTags(null);
-                } else if (categoryFromURL) {
-                    currentFilters.category = categoryFromURL;
-                    updateCategoryPageTitleAndBreadcrumbs(categoryFromURL);
-                    loadAndRenderPopularTags(categoryFromURL);
-                } else {
-                    currentFilters.category = 'all'; // Fallback
-                    if (homepageCategoriesGrid) renderHomepageCategoryButtons();
-                    loadAndRenderPopularTags(null);
-                }
-                renderFilteredVideos();
-            } else {
+try {
+    await loadLocalVideos(); 
+    
+    if (allVideos && allVideos.length > 0) {
+        if (isHomePage()) {
+            if (homepageCategoriesGrid) renderHomepageCategoryButtons();
+            currentFilters.category = 'all'; 
+            loadAndRenderPopularTags(null); // בדף הבית, טען את כל התגיות הפופולריות
+        } else if (categoryFromURL) {
+            currentFilters.category = categoryFromURL;
+            updateCategoryPageTitleAndBreadcrumbs(categoryFromURL);
+            loadAndRenderPopularTags(categoryFromURL); // <<--- כאן! טען תגיות רק מהקטגוריה הנוכחית
+        } else {
+            currentFilters.category = 'all';
+            if (homepageCategoriesGrid) renderHomepageCategoryButtons();
+            loadAndRenderPopularTags(null);
+        }
+        renderFilteredVideos();
+    } else {
                  if(loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) {
                     loadingPlaceholder.innerHTML = 'לא נטענו סרטונים. בדוק את קובץ הנתונים `data/videos.json`.';
                  }
