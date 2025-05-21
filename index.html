@@ -8,14 +8,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
-    <script>
-        // מניעת FOUC (Flash Of Unstyled Content) למצב כהה
-        if (localStorage.getItem('theme') === 'dark' || 
-            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      <script>
+        if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
         }
+        // אם אין 'theme' ב-localStorage, או שהוא 'light', ה-HTML יישאר ללא הקלאס 'dark',
+        // מה שאומר מצב בהיר כברירת מחדל.
     </script>
     <style>
         /* Inline style for initial dot position on mobile dark mode toggle to avoid FOUC if JS loads late */
