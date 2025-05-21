@@ -1,41 +1,35 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("CAR-טיב: DOMContentLoaded event fired.");
+    console.log("CAR-טיב: DOMContentLoaded event fired. Enhanced version.");
 
-    // --- DOM Element Selectors (Grouped for clarity) ---
-    // General UI
+    // --- DOM Element Selectors ---
+    const bodyElement = document.body;
     const openMenuBtn = document.getElementById('open-menu');
     const closeMenuBtn = document.getElementById('close-menu');
     const mobileMenu = document.getElementById('mobile-menu');
     const backdrop = document.getElementById('mobile-menu-backdrop');
     const videoCountHeroElement = document.getElementById('video-count-hero');
     const currentYearFooter = document.getElementById('current-year-footer');
-
-    // Search
     const desktopSearchForm = document.getElementById('desktop-search-form');
     const mobileSearchForm = document.getElementById('mobile-search-form');
     const desktopSearchInput = document.getElementById('desktop-search-input');
     const mobileSearchInput = document.getElementById('mobile-search-input');
-
-    // Video Display
     const videoCardsContainer = document.getElementById('video-cards-container');
     const loadingPlaceholder = document.getElementById('loading-videos-placeholder');
     const noVideosFoundMessage = document.getElementById('no-videos-found');
     const videoCardTemplate = document.getElementById('video-card-template');
-
-    // Categories
     const homepageCategoriesGrid = document.getElementById('homepage-categories-grid');
-
-    // Filtering
     const hebrewFilterToggle = document.getElementById('hebrew-filter-toggle');
     const popularTagsContainer = document.getElementById('popular-tags-container');
     const tagSearchInput = document.getElementById('tag-search-input');
     const customTagForm = document.getElementById('custom-tag-form');
     const selectedTagsContainer = document.getElementById('selected-tags-container');
+    const darkModeToggle = document.getElementById('dark-mode-toggle'); // נצטרך להוסיף כפתור כזה ל-HTML
+    const backToTopButton = document.getElementById('back-to-top-btn'); // נצטרך להוסיף כפתור כזה ל-HTML
 
     // --- State and Configuration ---
     let allVideos = [];
     let currentFilters = {
-        category: 'all', // Will be updated based on URL or homepage
+        category: 'all',
         tags: [],
         searchTerm: '',
         hebrewOnly: false
@@ -45,18 +39,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const PREDEFINED_CATEGORIES = [
         { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "fa-film" },
-        { id: "review", name: "סקירות רכב", description: "מבחנים והשוואות", icon: "fa-magnifying-glass-chart", gradient: "from-purple-500 to-indigo-600" },
-        { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה", icon: "fa-tools", gradient: "from-green-500 to-teal-600" },
-        { id: "maintenance", name: "טיפולים", description: "תחזוקה שוטפת ומניעתית", icon: "fa-oil-can", gradient: "from-blue-500 to-cyan-600" },
-        { id: "upgrades", name: "שיפורים ושדרוגים", description: "שדרוג הרכב והוספת אביזרים", icon: "fa-rocket", gradient: "from-orange-500 to-red-600" },
-        { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "fa-cogs", gradient: "from-yellow-500 to-amber-600" },
-        { id: "troubleshooting", name: "תיקון תקלות", description: "פתרון ותיקון בעיות ותקלות", icon: "fa-microscope", gradient: "from-lime-400 to-yellow-500 dark:from-lime-500 dark:to-yellow-600" },
-        { id: "collectors", name: "רכבי אספנות", description: "קלאסיקות ופנינים מוטוריות", icon: "fa-car-side", gradient: "from-red-500 to-pink-600" }
+        { id: "review", name: "סקירות רכב", description: "מבחנים והשוואות", icon: "fa-magnifying-glass-chart", gradient: "from-purple-500 to-indigo-600", darkGradient: "dark:from-purple-600 dark:to-indigo-700" },
+        { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה", icon: "fa-tools", gradient: "from-green-500 to-teal-600", darkGradient: "dark:from-green-600 dark:to-teal-700" },
+        { id: "maintenance", name: "טיפולים", description: "תחזוקה שוטפת ומניעתית", icon: "fa-oil-can", gradient: "from-blue-500 to-cyan-600", darkGradient: "dark:from-blue-600 dark:to-cyan-700" },
+        { id: "upgrades", name: "שיפורים ושדרוגים", description: "שדרוג הרכב והוספת אביזרים", icon: "fa-rocket", gradient: "from-orange-500 to-red-600", darkGradient: "dark:from-orange-600 dark:to-red-700" },
+        { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "fa-cogs", gradient: "from-yellow-500 to-amber-600", darkGradient: "dark:from-yellow-600 dark:to-amber-700" },
+        { id: "troubleshooting", name: "תיקון תקלות", description: "פתרון ותיקון בעיות ותקלות", icon: "fa-microscope", gradient: "from-lime-400 to-yellow-500", darkGradient: "dark:from-lime-500 dark:to-yellow-600"},
+        { id: "collectors", name: "רכבי אספנות", description: "קלאסיקות ופנינים מוטוריות", icon: "fa-car-side", gradient: "from-red-500 to-pink-600", darkGradient: "dark:from-red-600 dark:to-pink-700" }
     ];
 
     // --- Initialization ---
     async function initializePage() {
-        console.log("CAR-טיב: Initializing page...");
+        console.log("CAR-טיב: Initializing page (Enhanced)...");
+        initializeDarkMode();
         setupEventListeners();
         updateFooterYear();
 
@@ -70,48 +65,45 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (homepageCategoriesGrid) renderHomepageCategoryButtons();
                     currentFilters.category = 'all';
                 } else if (categoryFromURL) {
-                    currentFilters.category = categoryFromURL.toLowerCase(); // Ensure category is lowercase
+                    currentFilters.category = categoryFromURL.toLowerCase();
                     updateCategoryPageUI(currentFilters.category);
                 } else {
-                    // Fallback for unexpected scenarios (e.g., category.html without query param)
                     currentFilters.category = 'all';
-                    if (homepageCategoriesGrid) renderHomepageCategoryButtons(); // Show categories if on a page that should have them
+                    if (homepageCategoriesGrid) renderHomepageCategoryButtons();
                     console.warn("CAR-טיב: Category page loaded without a category name, defaulting to 'all'.");
                 }
-                // Load popular tags based on the current context (all videos or category-specific)
                 loadAndRenderPopularTags(currentFilters.category !== 'all' ? currentFilters.category : null);
                 renderFilteredVideos();
-
             } else {
                 displayErrorState("לא נטענו סרטונים. בדוק את קובץ הנתונים `data/videos.json`.");
-                if (popularTagsContainer) popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 text-sm">לא ניתן לטעון תגיות ללא סרטונים.</p>';
+                if (popularTagsContainer) popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 text-sm dark:text-slate-400">לא ניתן לטעון תגיות ללא סרטונים.</p>';
             }
         } catch (error) {
             console.error("CAR-טיב: Critical error during page initialization:", error);
             displayErrorState(`שגיאה קריטית בטעינת נתוני הסרטונים: ${error.message}`);
         }
-        console.log("CAR-טיב: Page initialization complete.");
+        console.log("CAR-טיב: Page initialization complete (Enhanced).");
     }
 
     function displayErrorState(message) {
+        const errorHtml = `<div class="text-center text-red-500 py-10"><i class="fas fa-exclamation-triangle fa-3x mb-4"></i><p class="text-xl font-semibold">${escapeHTML(message)}</p></div>`;
         if (loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) {
-            loadingPlaceholder.innerHTML = `<div class="text-center text-red-500 py-10"><i class="fas fa-exclamation-triangle fa-3x mb-4"></i><p class="text-xl font-semibold">${escapeHTML(message)}</p></div>`;
+            loadingPlaceholder.innerHTML = errorHtml;
         }
         if (noVideosFoundMessage && noVideosFoundMessage.classList.contains("hidden")) {
             noVideosFoundMessage.classList.remove('hidden');
-            noVideosFoundMessage.innerHTML = `<div class="text-center text-slate-500 py-16"><i class="fas fa-exclamation-circle fa-4x mb-6 text-purple-400"></i><p class="text-2xl font-semibold mb-2">אופס!</p><p class="text-lg">${escapeHTML(message)}</p></div>`;
+            noVideosFoundMessage.innerHTML = `<div class="text-center text-slate-500 dark:text-slate-400 py-16"><i class="fas fa-exclamation-circle fa-4x mb-6 text-purple-400 dark:text-purple-500"></i><p class="text-2xl font-semibold mb-2">אופס!</p><p class="text-lg">${escapeHTML(message)}</p></div>`;
         }
     }
 
     function isHomePage() {
         const path = window.location.pathname;
-        // More robust check for homepage, accounts for being in a subfolder like /car-tube/
         return path.endsWith('/') || path.endsWith('index.html') || path.split('/').pop() === '' || path.toLowerCase().endsWith(document.location.host.toLowerCase() + '/');
     }
 
     function getCategoryFromURL() {
         const params = new URLSearchParams(window.location.search);
-        return params.get('name'); // Will be lowercased when assigned to currentFilters.category
+        return params.get('name');
     }
 
     function updateCategoryPageUI(categoryId) {
@@ -121,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const pageTitleElement = document.getElementById('category-page-title');
         if (pageTitleElement) {
-            pageTitleElement.innerHTML = `<i class="fas ${categoryIcon} text-purple-600 mr-3"></i>${escapeHTML(categoryName)}`;
+            pageTitleElement.innerHTML = `<i class="fas ${categoryIcon} text-purple-600 dark:text-purple-400 mr-3"></i>${escapeHTML(categoryName)}`;
             document.title = `${categoryName} - CAR-טיב`;
         }
 
@@ -130,66 +122,70 @@ document.addEventListener('DOMContentLoaded', function() {
             breadcrumbCategoryName.textContent = escapeHTML(categoryName);
         }
         
-        // Hide homepage-specific sections if on a category page
         const homepageCategoriesSection = document.getElementById('homepage-categories-section');
-        if (homepageCategoriesSection) {
-            homepageCategoriesSection.style.display = 'none';
-        }
+        if (homepageCategoriesSection) homepageCategoriesSection.style.display = 'none';
         const heroSection = document.querySelector('.hero-gradient');
         if(heroSection) heroSection.style.display = 'none';
+    }
 
+    // --- Dark Mode ---
+    function initializeDarkMode() {
+        if (localStorage.getItem('theme') === 'dark' || 
+            (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            if (darkModeToggle) darkModeToggle.setAttribute('aria-checked', 'true');
+        } else {
+            document.documentElement.classList.remove('dark');
+            if (darkModeToggle) darkModeToggle.setAttribute('aria-checked', 'false');
+        }
+    }
+
+    function toggleDarkMode() {
+        if (document.documentElement.classList.contains('dark')) {
+            document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
+            if (darkModeToggle) darkModeToggle.setAttribute('aria-checked', 'false');
+        } else {
+            document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
+            if (darkModeToggle) darkModeToggle.setAttribute('aria-checked', 'true');
+        }
     }
 
     // --- Data Loading ---
     async function loadLocalVideos() {
         if (loadingPlaceholder) {
             loadingPlaceholder.classList.remove('hidden');
-            loadingPlaceholder.innerHTML = `<div class="text-center py-10"><i class="fas fa-spinner fa-spin fa-3x mb-3 text-purple-600"></i><p class="text-lg text-slate-600">טוען סרטונים...</p></div>`;
+            loadingPlaceholder.innerHTML = `<div class="text-center py-10"><i class="fas fa-spinner fa-spin fa-3x mb-3 text-purple-600 dark:text-purple-400"></i><p class="text-lg text-slate-600 dark:text-slate-300">טוען סרטונים...</p></div>`;
         }
         if (noVideosFoundMessage) noVideosFoundMessage.classList.add('hidden');
 
         try {
             const response = await fetch('data/videos.json');
-            if (!response.ok) {
-                throw new Error(`שגיאת HTTP ${response.status} בטעינת videos.json.`);
-            }
+            if (!response.ok) throw new Error(`שגיאת HTTP ${response.status} בטעינת videos.json.`);
             const responseText = await response.text();
             try {
                 allVideos = JSON.parse(responseText);
-                if (!Array.isArray(allVideos)) {
-                    throw new Error("המידע בקובץ videos.json אינו מערך תקין.");
-                }
-                // Basic validation and normalization for each video object
+                if (!Array.isArray(allVideos)) throw new Error("המידע בקובץ videos.json אינו מערך תקין.");
                 allVideos = allVideos.map((video, index) => {
                     if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' ||
                         typeof video.category !== 'string' || !Array.isArray(video.tags) ||
                         typeof video.hebrewContent !== 'boolean') {
                         console.warn(`CAR-טיב: סרטון באינדקס ${index} חסר שדות חיוניים או עם טיפוסים שגויים.`, video);
-                        return null; // Mark for removal
+                        return null;
                     }
-                    // Normalize category and tags to lowercase for consistent filtering
-                    return {
-                        ...video,
-                        category: video.category.toLowerCase(),
-                        tags: video.tags.map(tag => String(tag).toLowerCase())
-                    };
-                }).filter(video => video !== null); // Remove invalid video objects
-
+                    return { ...video, category: video.category.toLowerCase(), tags: video.tags.map(tag => String(tag).toLowerCase()) };
+                }).filter(video => video !== null);
             } catch (jsonError) {
                 throw new Error(`שגיאה בפענוח קובץ videos.json: ${jsonError.message}`);
             }
 
             if (loadingPlaceholder) loadingPlaceholder.classList.add('hidden');
-
             if (videoCountHeroElement) {
                 const countSpan = videoCountHeroElement.querySelector('span.font-bold');
-                if (countSpan) {
-                    countSpan.textContent = allVideos.length;
-                } else {
-                     videoCountHeroElement.innerHTML = `במאגר יש כרגע <span class="font-bold text-white">${allVideos.length}</span> סרטונים.`;
-                }
+                if (countSpan) countSpan.textContent = allVideos.length;
+                else videoCountHeroElement.innerHTML = `במאגר יש כרגע <span class="font-bold text-white">${allVideos.length}</span> סרטונים.`;
             }
-
         } catch (error) {
             console.error("CAR-טיב: לא ניתן לטעון או לפענח את videos.json:", error);
             if (videoCountHeroElement) {
@@ -198,8 +194,8 @@ document.addEventListener('DOMContentLoaded', function() {
                  else videoCountHeroElement.innerHTML = `שגיאה בטעינת מספר הסרטונים.`;
             }
             if (videoCardsContainer) videoCardsContainer.innerHTML = '';
-            allVideos = []; // Ensure allVideos is empty on error
-            throw error; // Re-throw to be caught by initializePage
+            allVideos = [];
+            throw error;
         }
     }
     
@@ -217,7 +213,8 @@ document.addEventListener('DOMContentLoaded', function() {
         PREDEFINED_CATEGORIES.filter(cat => cat.id !== 'all').forEach(cat => {
             const link = document.createElement('a');
             link.href = `category.html?name=${cat.id}`; 
-            link.className = `category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${cat.gradient || 'from-slate-700 to-slate-800'} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white`;
+            const gradientClass = document.documentElement.classList.contains('dark') && cat.darkGradient ? cat.darkGradient : cat.gradient;
+            link.className = `category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClass || 'from-slate-700 to-slate-800 dark:from-slate-600 dark:to-slate-700'} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white`;
             link.setAttribute('aria-label', `עבור לקטגוריית ${cat.name}`);
             
             link.innerHTML = `
@@ -232,55 +229,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- Popular Tags Rendering ---
-    function loadAndRenderPopularTags(forCategoryId = null) { // forCategoryId should be lowercase
+    function loadAndRenderPopularTags(forCategoryId = null) {
         if (!popularTagsContainer) return;
         if (!allVideos || allVideos.length === 0) {
-            popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 text-sm">אין סרטונים לטעינת תגיות.</p>';
+            popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 dark:text-slate-400 text-sm">אין סרטונים לטעינת תגיות.</p>';
             return;
         }
 
         const tagCounts = {};
-        // Filter videos if a specific category is provided (already normalized to lowercase in allVideos)
         const videosToConsider = forCategoryId && forCategoryId !== 'all'
             ? allVideos.filter(v => v.category === forCategoryId)
             : allVideos;
         
         if (videosToConsider.length === 0 && forCategoryId && forCategoryId !== 'all') {
-             popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 text-sm">אין סרטונים בקטגוריה זו להצגת תגיות.</p>`;
+             popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 dark:text-slate-400 text-sm">אין סרטונים בקטגוריה זו להצגת תגיות.</p>`;
              return;
         }
 
         videosToConsider.forEach(video => {
             if (video.tags && Array.isArray(video.tags)) {
-                video.tags.forEach(tag => { // Tags in allVideos are already lowercased
-                    if(tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-                });
+                video.tags.forEach(tag => { if(tag) tagCounts[tag] = (tagCounts[tag] || 0) + 1; });
             }
         });
 
-        const sortedTags = Object.entries(tagCounts)
-            .sort(([,a],[,b]) => b - a)
-            .slice(0, MAX_POPULAR_TAGS)
-            .map(([tag]) => tag); // tag is already lowercased
+        const sortedTags = Object.entries(tagCounts).sort(([,a],[,b]) => b - a).slice(0, MAX_POPULAR_TAGS).map(([tag]) => tag);
 
         popularTagsContainer.innerHTML = '';
         if (sortedTags.length === 0) {
-            popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 text-sm">לא נמצאו תגיות${forCategoryId && forCategoryId !== 'all' ? ' רלוונטיות לקטגוריה זו' : ''}.</p>`;
+            popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא נמצאו תגיות${forCategoryId && forCategoryId !== 'all' ? ' רלוונטיות לקטגוריה זו' : ''}.</p>`;
             return;
         }
 
-        sortedTags.forEach(tag => { // tag is lowercased
+        sortedTags.forEach(tag => {
             const tagElement = document.createElement('button');
-            tagElement.className = 'tag bg-purple-100 hover:bg-purple-200 text-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-1 transition-colors text-sm font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5';
-            tagElement.dataset.tagValue = tag; // Store the lowercased tag value
-            const iconClass = getIconForTag(tag); // getIconForTag expects lowercased tag
-            // Display the tag (you might want to capitalize it for display if preferred)
+            tagElement.className = 'tag bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-700 dark:text-purple-100 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-1 transition-colors text-sm font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5';
+            tagElement.dataset.tagValue = tag;
+            const iconClass = getIconForTag(tag);
             tagElement.innerHTML = `<i class="fas ${iconClass} opacity-80 text-xs"></i> ${escapeHTML(capitalizeFirstLetter(tag))}`;
             popularTagsContainer.appendChild(tagElement);
         });
     }
     
-    function getIconForTag(tag) { // Expects lowercased tag
+    function getIconForTag(tag) {
         const tagIcons = {
             "מנוע": "fa-cogs", "בלמים": "fa-hand-paper", "גיר": "fa-cog", "תיבת הילוכים": "fa-cog",
             "שמן מנוע": "fa-oil-can", "מצבר": "fa-car-battery", "מערכת בלימה": "fa-car-crash",
@@ -297,10 +287,9 @@ document.addEventListener('DOMContentLoaded', function() {
             "טויוטה": "fa-horse-head", "טסלה": "fa-leaf", "יונדאי": "fa-hippo", "סובארו": "fa-paw",
             "פורד": "fa-flag-usa", "מרצדס": "fa-star", "ב.מ.וו": "fa-gem", "סקירה": "fa-search",
             "השוואה": "fa-balance-scale", "מבחן דרכים": "fa-road", "חוות דעת": "fa-comment-dots",
-            "ביטוח": "fa-file-invoice-dollar", "נהיגה": "fa-person-biking", // fa-steering-wheel is Pro
+            "ביטוח": "fa-file-invoice-dollar", "נהיגה": "fa-person-biking",
             "נהיגה בטוחה": "fa-shield-heart", "אבחון": "fa-stethoscope",
             "כשל טכני": "fa-exclamation-triangle", "איתור תקלות": "fa-microscope",
-            // Add more specific mappings from your JSON tags (all lowercase)
             "עשה זאת בעצמך": "fa-hand-sparkles", "הכנופיה": "fa-users-cog", "יונדאי i10": "fa-car",
             "ניקוי מצערת": "fa-spray-can-sparkles", "וסת לחץ": "fa-gauge-high", "אספנות": "fa-gem",
             "נוזל בלמים": "fa-tint"
@@ -310,60 +299,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // --- Video Card Rendering ---
     function createVideoCardElement(video) {
-        if (!videoCardTemplate) {
-            console.error("CAR-טיב: Video card template not found.");
-            return null;
-        }
+        if (!videoCardTemplate) { console.error("CAR-טיב: Video card template not found."); return null; }
         if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' ||
             typeof video.category !== 'string' || !Array.isArray(video.tags)) {
-            console.warn(`CAR-טיב: Skipping video due to missing/invalid data. Video:`, video);
-            return null;
+            console.warn(`CAR-טיב: Skipping video due to missing/invalid data.`, video); return null;
         }
 
         const cardClone = videoCardTemplate.content.cloneNode(true);
         const cardElement = cardClone.querySelector('article');
-        if (!cardElement) {
-            console.error("CAR-טיב: Could not find 'article' in template clone.");
-            return null;
-        }
+        if (!cardElement) { console.error("CAR-טיב: Could not find 'article' in template clone."); return null; }
 
-        // Activate Tailwind classes from class_exists attribute
         cardElement.querySelectorAll('[class_exists]').forEach(el => {
             el.setAttribute('class', el.getAttribute('class_exists'));
             el.removeAttribute('class_exists');
         });
         
-        cardElement.dataset.category = video.category; // category is already lowercased
-        cardElement.dataset.tags = video.tags.join(','); // tags are already lowercased
+        cardElement.dataset.category = video.category;
+        cardElement.dataset.tags = video.tags.join(',');
 
         const sanitizedTitle = escapeHTML(video.title);
         const videoLink = `https://www.youtube.com/watch?v=${video.id}`;
         
         const playButton = cardElement.querySelector('.play-video-button');
-        if (playButton) {
-            playButton.dataset.videoId = video.id;
-            playButton.setAttribute('aria-label', `נגן את הסרטון ${sanitizedTitle}`);
-        }
+        if (playButton) { playButton.dataset.videoId = video.id; playButton.setAttribute('aria-label', `נגן את הסרטון ${sanitizedTitle}`); }
         
         const iframeEl = cardElement.querySelector('.video-iframe');
-        if (iframeEl) iframeEl.title = `נגן וידאו: ${sanitizedTitle}`;
+        if (iframeEl) { 
+            iframeEl.title = `נגן וידאו: ${sanitizedTitle}`;
+            iframeEl.setAttribute('loading', 'lazy'); // Ensure lazy loading for iframe
+        }
         
         const videoTitleLinkEl = cardElement.querySelector('.video-link');
-        if (videoTitleLinkEl) {
-            videoTitleLinkEl.href = videoLink;
-            videoTitleLinkEl.textContent = sanitizedTitle;
-        }
+        if (videoTitleLinkEl) { videoTitleLinkEl.href = videoLink; videoTitleLinkEl.textContent = sanitizedTitle; }
         
         const tagsContainerEl = cardElement.querySelector('.video-tags');
         if (tagsContainerEl) {
             if (video.tags && video.tags.length > 0) {
                 tagsContainerEl.innerHTML = video.tags.map(tag => 
-                    // Display capitalized tag for better readability
-                    `<span class="inline-block bg-purple-100 text-purple-700 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(capitalizeFirstLetter(tag))}</span>`
+                    `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-purple-700 dark:text-purple-100 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(capitalizeFirstLetter(tag))}</span>`
                 ).join('');
-            } else {
-                tagsContainerEl.innerHTML = '';
-            }
+            } else { tagsContainerEl.innerHTML = ''; }
         }
 
         const categoryDisplayEl = cardElement.querySelector('.video-category-display');
@@ -378,23 +353,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderFilteredVideos() {
-        if (!videoCardsContainer) {
-             console.error("CAR-טיב: Missing videoCardsContainer for rendering.");
-             if (loadingPlaceholder) loadingPlaceholder.innerHTML = "שגיאה: מיכל הסרטונים לא קיים.";
-             return;
-        }
+        if (!videoCardsContainer) { console.error("CAR-טיב: Missing videoCardsContainer."); return; }
 
-        videoCardsContainer.innerHTML = ''; // Clear previous videos
+        videoCardsContainer.innerHTML = '';
         const filteredVideos = getFilteredVideos();
 
         if (filteredVideos.length === 0) {
             if (noVideosFoundMessage) {
                 noVideosFoundMessage.classList.remove('hidden');
                 noVideosFoundMessage.innerHTML = `
-                    <div class="col-span-full text-center text-slate-500 py-16">
-                        <i class="fas fa-video-slash fa-4x mb-6 text-purple-400"></i>
+                    <div class="col-span-full text-center text-slate-500 dark:text-slate-400 py-16">
+                        <i class="fas fa-video-slash fa-4x mb-6 text-purple-400 dark:text-purple-500"></i>
                         <p class="text-2xl font-semibold mb-2">לא נמצאו סרטונים</p>
                         <p class="text-lg">נסה לשנות את הסינון או מונח החיפוש.</p>
+                        <div id="video-grid-loading-feedback" aria-live="polite"></div>
                     </div>`;
             }
             if (loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) loadingPlaceholder.classList.add('hidden');
@@ -406,20 +378,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const fragment = document.createDocumentFragment();
         filteredVideos.forEach((video) => {
             const cardElement = createVideoCardElement(video);
-            if (cardElement) {
-                fragment.appendChild(cardElement);
-            }
+            if (cardElement) fragment.appendChild(cardElement);
         });
-        videoCardsContainer.appendChild(fragment); // Append all cards at once for better performance
+        videoCardsContainer.appendChild(fragment);
     }
     
     function handlePlayVideo(buttonElement) {
         const videoId = buttonElement.dataset.videoId;
         const videoCard = buttonElement.closest('article');
-        if (!videoCard) {
-            console.error("CAR-טיב: handlePlayVideo - Could not find parent article.");
-            return;
-        }
+        if (!videoCard) { console.error("CAR-טיב: handlePlayVideo - Could not find parent article."); return; }
 
         const iframe = videoCard.querySelector('.video-iframe');
         const playIconContainer = buttonElement; 
@@ -428,18 +395,18 @@ document.addEventListener('DOMContentLoaded', function() {
             const videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1&enablejsapi=1&origin=${window.location.origin}`;
             iframe.src = videoSrc;
             iframe.classList.remove('hidden');
-            if (playIconContainer) playIconContainer.style.display = 'none'; // Hide play button
+            if (playIconContainer) playIconContainer.style.display = 'none';
         }
     }
 
     function renderSelectedTagsChips() {
         if (!selectedTagsContainer) return;
         selectedTagsContainer.innerHTML = '';
-        currentFilters.tags.forEach(tagName => { // tagName is lowercased
+        currentFilters.tags.forEach(tagName => {
             const tagChip = document.createElement('span');
-            tagChip.className = 'flex items-center gap-1.5 bg-purple-600 text-white text-sm font-medium ps-3 pe-2 py-1.5 rounded-full cursor-default transition-all hover:bg-purple-700';
+            tagChip.className = 'flex items-center gap-1.5 bg-purple-600 text-white dark:bg-purple-500 dark:text-white text-sm font-medium ps-3 pe-2 py-1.5 rounded-full cursor-default transition-all hover:bg-purple-700 dark:hover:bg-purple-600';
             
-            const textNode = document.createTextNode(escapeHTML(capitalizeFirstLetter(tagName))); // Display capitalized
+            const textNode = document.createTextNode(escapeHTML(capitalizeFirstLetter(tagName)));
             
             const removeButton = document.createElement('button');
             removeButton.type = 'button';
@@ -447,9 +414,8 @@ document.addEventListener('DOMContentLoaded', function() {
             removeButton.innerHTML = `<i class="fas fa-times"></i>`;
             removeButton.setAttribute('aria-label', `הסר תגית ${escapeHTML(capitalizeFirstLetter(tagName))}`);
             removeButton.onclick = () => {
-                // Find corresponding popular tag button to visually deselect it
                 const popularTagEl = popularTagsContainer ? popularTagsContainer.querySelector(`button.tag[data-tag-value="${escapeAttributeValue(tagName)}"]`) : null;
-                toggleTagSelection(tagName, popularTagEl); // tagName is already lowercased
+                toggleTagSelection(tagName, popularTagEl);
             };
             
             tagChip.appendChild(textNode);
@@ -461,29 +427,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- Filtering Logic ---
     function getFilteredVideos() {
         if (!allVideos || allVideos.length === 0) return [];
-
         return allVideos.filter(video => {
-            // video.category and video.tags are already lowercased from loadLocalVideos
             const categoryMatch = currentFilters.category === 'all' || video.category === currentFilters.category;
-            
-            const tagsMatch = currentFilters.tags.length === 0 || 
-                              currentFilters.tags.every(filterTag => video.tags.includes(filterTag));
-            
+            const tagsMatch = currentFilters.tags.length === 0 || currentFilters.tags.every(filterTag => video.tags.includes(filterTag));
             let searchTermMatch = true;
-            if (currentFilters.searchTerm) { // searchTerm is already lowercased
-                searchTermMatch = video.title.toLowerCase().includes(currentFilters.searchTerm) ||
-                                  video.tags.some(tag => tag.includes(currentFilters.searchTerm));
+            if (currentFilters.searchTerm) {
+                searchTermMatch = video.title.toLowerCase().includes(currentFilters.searchTerm) || video.tags.some(tag => tag.includes(currentFilters.searchTerm));
             }
-
             const hebrewContentMatch = !currentFilters.hebrewOnly || video.hebrewContent;
-
             return categoryMatch && tagsMatch && searchTermMatch && hebrewContentMatch;
         });
     }
 
     // --- Event Listeners Setup ---
     function setupEventListeners() {
-        // Mobile Menu
         if (openMenuBtn) openMenuBtn.addEventListener('click', openMobileMenu);
         if (closeMenuBtn) closeMenuBtn.addEventListener('click', closeMobileMenu);
         if (backdrop) backdrop.addEventListener('click', closeMobileMenu);
@@ -491,7 +448,6 @@ document.addEventListener('DOMContentLoaded', function() {
             link.addEventListener('click', handleNavLinkClick);
         });
         
-        // Filters
         if (hebrewFilterToggle) {
             hebrewFilterToggle.addEventListener('change', function() {
                 currentFilters.hebrewOnly = this.checked;
@@ -504,7 +460,7 @@ document.addEventListener('DOMContentLoaded', function() {
             popularTagsContainer.addEventListener('click', function(event) {
                 const clickedTagElement = event.target.closest('button.tag');
                 if (clickedTagElement && clickedTagElement.dataset.tagValue) {
-                    toggleTagSelection(clickedTagElement.dataset.tagValue, clickedTagElement); // tagValue is lowercased
+                    toggleTagSelection(clickedTagElement.dataset.tagValue, clickedTagElement);
                 }
             });
         }
@@ -512,57 +468,61 @@ document.addEventListener('DOMContentLoaded', function() {
         if (customTagForm) {
             customTagForm.addEventListener('submit', function(event) {
                 event.preventDefault();
-                const newTagName = tagSearchInput.value.trim().toLowerCase(); // Normalize to lowercase
+                const newTagName = tagSearchInput.value.trim().toLowerCase();
                 if (newTagName) {
                     if (!currentFilters.tags.includes(newTagName)) {
-                        // Find if this tag exists as a popular tag button to update its style
                         const existingPopularTag = popularTagsContainer ? popularTagsContainer.querySelector(`button.tag[data-tag-value="${escapeAttributeValue(newTagName)}"]`) : null;
                         toggleTagSelection(newTagName, existingPopularTag);
+                        // Feedback for adding tag (optional visual cue)
+                        tagSearchInput.classList.add('border-green-500', 'focus:border-green-500', 'focus:ring-green-500');
+                        setTimeout(() => {
+                            tagSearchInput.classList.remove('border-green-500', 'focus:border-green-500', 'focus:ring-green-500');
+                        }, 1500);
+                    } else {
+                        // Feedback for existing tag (optional visual cue)
+                        tagSearchInput.classList.add('border-yellow-500', 'focus:border-yellow-500', 'focus:ring-yellow-500');
+                         setTimeout(() => {
+                            tagSearchInput.classList.remove('border-yellow-500', 'focus:border-yellow-500', 'focus:ring-yellow-500');
+                        }, 1500);
                     }
                 }
                 tagSearchInput.value = '';
             });
         }
 
-        // Video Play
         if (videoCardsContainer) {
             videoCardsContainer.addEventListener('click', function(event) {
                 const playButton = event.target.closest('.play-video-button');
-                if (playButton) {
-                    handlePlayVideo(playButton);
-                }
+                if (playButton) handlePlayVideo(playButton);
             });
         }
 
-        // Search
         if (desktopSearchForm) desktopSearchForm.addEventListener('submit', (e) => handleSearchSubmit(e, desktopSearchInput));
         if (mobileSearchForm) mobileSearchForm.addEventListener('submit', (e) => handleSearchSubmit(e, mobileSearchInput));
         if(desktopSearchInput) desktopSearchInput.addEventListener('input', (e) => handleSearchInputDebounced(e.target.value));
         if(mobileSearchInput) mobileSearchInput.addEventListener('input', (e) => handleSearchInputDebounced(e.target.value));
 
-        // Smooth scroll for in-page links in header and footer (already covered by handleNavLinkClick)
-        // Removed Swiper initialization as it's not used.
-        // Removed sparkle effect for a cleaner UI, can be re-added if desired.
+        if (darkModeToggle) darkModeToggle.addEventListener('click', toggleDarkMode);
+        
+        // Back to Top Button Listener
+        if (backToTopButton) {
+            window.addEventListener('scroll', toggleBackToTopButtonVisibility);
+            backToTopButton.addEventListener('click', scrollToTop);
+        }
     }
     
     // --- Event Handlers ---
     function openMobileMenu() {
         if (mobileMenu) mobileMenu.classList.remove('translate-x-full');
-        if (backdrop) {
-            backdrop.classList.remove('invisible', 'opacity-0');
-            backdrop.classList.add('visible', 'opacity-100');
-        }
-        document.body.classList.add('overflow-hidden', 'md:overflow-auto'); // Prevent body scroll on mobile
+        if (backdrop) { backdrop.classList.remove('invisible', 'opacity-0'); backdrop.classList.add('visible', 'opacity-100'); }
+        bodyElement.classList.add('overflow-hidden', 'md:overflow-auto');
         if (openMenuBtn) openMenuBtn.setAttribute('aria-expanded', 'true');
     }
 
     function closeMobileMenu() {
         if (mobileMenu) mobileMenu.classList.add('translate-x-full');
-        if (backdrop) {
-            backdrop.classList.remove('visible', 'opacity-100');
-            backdrop.classList.add('invisible', 'opacity-0');
-        }
-        document.body.classList.remove('overflow-hidden', 'md:overflow-auto');
+        if (backdrop) { backdrop.classList.remove('visible', 'opacity-100'); backdrop.classList.add('invisible', 'opacity-0'); }
+        bodyElement.classList.remove('overflow-hidden', 'md:overflow-auto');
         if (openMenuBtn) openMenuBtn.setAttribute('aria-expanded', 'false');
     }
 
@@ -570,17 +530,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const link = event.currentTarget;
         const href = link.getAttribute('href');
 
-        // Close mobile menu if a link inside it is clicked
-        if (link.closest('#mobile-menu')) {
-            setTimeout(closeMobileMenu, 150);
-        }
+        if (link.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
 
-        // Handle active state for header navigation
         if (link.closest('header nav')) {
             document.querySelectorAll('header nav .nav-link').forEach(lnk => {
-                lnk.classList.remove('active', 'text-purple-600', 'font-semibold', 'bg-purple-100');
+                lnk.classList.remove('active', 'text-purple-600', 'dark:text-purple-400', 'font-semibold', 'bg-purple-100', 'dark:bg-purple-800');
             });
-            link.classList.add('active', 'text-purple-600', 'font-semibold', 'bg-purple-100');
+            link.classList.add('active', 'text-purple-600', 'dark:text-purple-400', 'font-semibold', 'bg-purple-100', 'dark:bg-purple-800');
         }
 
         if (href && href.startsWith('#')) {
@@ -591,33 +547,28 @@ document.addEventListener('DOMContentLoaded', function() {
                 const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 80;
                 const elementPosition = targetElement.getBoundingClientRect().top;
                 const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-        
                 window.scrollTo({ top: offsetPosition, behavior: "smooth" });
             }
-        } else if (href === 'index.html' || href === './' || (href.startsWith('/') && !href.includes('.'))) { // Basic check for homepage link
-             // If it's a link to index.html from index.html, just scroll to top
+        } else if (href === 'index.html' || href === './' || (href.startsWith('/') && !href.includes('.'))) {
             if (isHomePage() && (href === 'index.html' || href === './' || href.endsWith('/'))) {
-                event.preventDefault();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                event.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-            // Allow normal navigation for other cases (e.g. category.html to index.html)
         }
     }
 
-    function toggleTagSelection(tagName, tagElement) { // tagName is already lowercased
+    function toggleTagSelection(tagName, tagElement) {
         const index = currentFilters.tags.indexOf(tagName);
-    
-        if (index > -1) { // Tag exists, remove it
+        if (index > -1) {
             currentFilters.tags.splice(index, 1);
-            if (tagElement) { // Visually deselect popular tag button
-                tagElement.classList.remove('active-search-tag', 'bg-purple-600', 'text-white', 'hover:bg-purple-700');
-                tagElement.classList.add('bg-purple-100', 'text-purple-700', 'hover:bg-purple-200');
+            if (tagElement) {
+                tagElement.classList.remove('active-search-tag', 'bg-purple-600', 'text-white', 'dark:bg-purple-500', 'dark:text-white', 'hover:bg-purple-700', 'dark:hover:bg-purple-600');
+                tagElement.classList.add('bg-purple-100', 'text-purple-700', 'dark:bg-purple-700', 'dark:text-purple-100', 'hover:bg-purple-200', 'dark:hover:bg-purple-600');
             }
-        } else { // Tag doesn't exist, add it
+        } else {
             currentFilters.tags.push(tagName);
-            if (tagElement) { // Visually select popular tag button
-                tagElement.classList.add('active-search-tag', 'bg-purple-600', 'text-white', 'hover:bg-purple-700');
-                tagElement.classList.remove('bg-purple-100', 'text-purple-700', 'hover:bg-purple-200');
+            if (tagElement) {
+                tagElement.classList.add('active-search-tag', 'bg-purple-600', 'text-white', 'dark:bg-purple-500', 'dark:text-white', 'hover:bg-purple-700', 'dark:hover:bg-purple-600');
+                tagElement.classList.remove('bg-purple-100', 'text-purple-700', 'dark:bg-purple-700', 'dark:text-purple-100', 'hover:bg-purple-200', 'dark:hover:bg-purple-600');
             }
         }
         renderSelectedTagsChips();
@@ -628,7 +579,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function handleSearchInputDebounced(searchTerm) {
         clearTimeout(searchDebounceTimer);
         searchDebounceTimer = setTimeout(() => {
-            currentFilters.searchTerm = String(searchTerm).trim().toLowerCase(); // Normalize to lowercase
+            currentFilters.searchTerm = String(searchTerm).trim().toLowerCase();
             renderFilteredVideos();
             if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
         }, 400);
@@ -636,9 +587,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleSearchSubmit(event, searchInputElement) {
         event.preventDefault();
-        currentFilters.searchTerm = String(searchInputElement.value).trim().toLowerCase(); // Normalize
+        currentFilters.searchTerm = String(searchInputElement.value).trim().toLowerCase();
         renderFilteredVideos();
-        searchInputElement.blur(); // Remove focus after submit
+        searchInputElement.blur();
         if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
     }
         
@@ -647,16 +598,30 @@ document.addEventListener('DOMContentLoaded', function() {
         const videoGridSection = document.getElementById('video-grid-section');
         if (videoGridSection) {
             const rect = videoGridSection.getBoundingClientRect();
-            // Only scroll if the top of the section is below the fold or significantly above viewport
              if (rect.top < 0 || rect.top > window.innerHeight * 0.66) {
-                const headerElement = document.querySelector('header.sticky'); // Ensure header is sticky
+                const headerElement = document.querySelector('header.sticky');
                 const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 80;
                 const elementPosition = rect.top;
                 const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-        
                 window.scrollTo({ top: offsetPosition, behavior: "smooth" });
             }
         }
+    }
+    
+    function toggleBackToTopButtonVisibility() {
+        if (backToTopButton) {
+            if (window.pageYOffset > 300) { // Show button after scrolling 300px
+                backToTopButton.classList.remove('opacity-0', 'invisible');
+                backToTopButton.classList.add('opacity-100', 'visible');
+            } else {
+                backToTopButton.classList.remove('opacity-100', 'visible');
+                backToTopButton.classList.add('opacity-0', 'invisible');
+            }
+        }
+    }
+
+    function scrollToTop() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function updateFooterYear() {
@@ -671,7 +636,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return p.innerHTML;
     }
 
-    function escapeAttributeValue(value) { // For data attributes, etc.
+    function escapeAttributeValue(value) {
         return String(value).replace(/"/g, '"');
     }
 
