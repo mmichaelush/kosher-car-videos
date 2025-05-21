@@ -457,7 +457,7 @@ try {
         }
 
         // הדפס את הפילטרים הנוכחיים בתחילת כל סינון לצורך דיבוג
-        // console.log("CAR-טיב: getFilteredVideos - Applying filters:", JSON.parse(JSON.stringify(currentFilters)));
+        console.log("CAR-טיב: getFilteredVideos - Applying filters:", JSON.parse(JSON.stringify(currentFilters)));
 
         return allVideos.filter(video => {
             // בדיקת תקינות בסיסית לאובייקט הוידאו הנוכחי
@@ -467,7 +467,7 @@ try {
                 typeof video.category !== 'string' || 
                 !Array.isArray(video.tags) ||
                 typeof video.hebrewContent !== 'boolean') {
-                // console.warn("CAR-טיב: getFilteredVideos - Skipping video due to missing/invalid core fields:", video);
+                 console.warn("CAR-טיב: getFilteredVideos - Skipping video due to missing/invalid core fields:", video);
                 return false; // דלג על סרטונים עם נתונים חסרים/לא תקינים
             }
 
