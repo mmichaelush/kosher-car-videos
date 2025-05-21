@@ -12,8 +12,6 @@
         if (localStorage.getItem('theme') === 'dark') {
             document.documentElement.classList.add('dark');
         }
-        // אם אין 'theme' ב-localStorage, או שהוא 'light', ה-HTML יישאר ללא הקלאס 'dark',
-        // מה שאומר מצב בהיר כברירת מחדל.
     </script>
     <style>
         /* Inline style for initial dot position on mobile dark mode toggle to avoid FOUC if JS loads late */
@@ -68,7 +66,7 @@
     </aside>
 
        <!-- Navigation -->
-    <header class="bg-sky-50 dark:bg-slate-800 shadow-md sticky top-0 z-30 transition-colors duration-300">
+   <header class="bg-sky-50 dark:bg-slate-800 shadow-md sticky top-0 z-30 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <div class="flex items-center">
