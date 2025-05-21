@@ -319,37 +319,59 @@ try {
     }
 
     // --- Rendering Videos ---
-    function renderFilteredVideos() {
-        if (!videoCardsContainer || !videoCardTemplate) {
-             console.error("CAR-טיב: Missing videoCardsContainer or videoCardTemplate for rendering.");
+   function renderFilteredVideos() {
+        console.log("CAR-טיב: renderFilteredVideos - ENTERING FUNCTION. Current filters:", JSON.parse(JSON.stringify(currentFilters))); // הדפסה חדשה
+        
+        if (!videoCardsContainer) {
+             console.error("CAR-טיב: renderFilteredVideos - CRITICAL: videoCardsContainer not found.");
              return;
+        }
+        if (!videoCardTemplate) {
+            console.error("CAR-טיב: renderFilteredVideos - CRITICAL: videoCardTemplate not found.");
+            return;
         }
 
         videoCardsContainer.innerHTML = '';
-        const filteredVideos = getFilteredVideos();
+        console.log("CAR-טיב: renderFilteredVideos - Cleared videoCardsContainer.");
 
-        if (filteredVideos.length === 0) {
+        const filteredVideos = getFilteredVideos(); // הקריאה שאתה רואה לפניה
+        console.log(`CAR-טיב: renderFilteredVideos - getFilteredVideos returned ${filteredVideos ? filteredVideos.length : 'undefined/null'} videos.`); // הדפסה חדשה חשובה!
+
+        // בדיקה קריטית: האם filteredVideos הוא באמת מערך?
+        if (!Array.isArray(filteredVideos)) {
+            console.error("CAR-טיב: renderFilteredVideos - CRITICAL: filteredVideos is NOT an array! Value:", filteredVideos);
             if (noVideosFoundMessage) noVideosFoundMessage.classList.remove('hidden');
             return;
         }
+
+        if (filteredVideos.length === 0) {
+            if (noVideosFoundMessage) noVideosFoundMessage.classList.remove('hidden');
+            console.log("CAR-טיב: renderFilteredVideos - No videos match current filters.");
+            return;
+        }
+
         if (noVideosFoundMessage) noVideosFoundMessage.classList.add('hidden');
-        
-        filteredVideos.forEach((video) => {
+        console.log(`CAR-טיב: renderFilteredVideos - Starting to render ${filteredVideos.length} video cards...`);
+
+        filteredVideos.forEach((video, index) => {
+            // console.log(`CAR-טיב: renderFilteredVideos - Processing video ${index}:`, video ? video.id : "Video object is null/undefined"); // הדפסה נוספת
             try {
                 if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' || 
                     typeof video.category !== 'string' || !Array.isArray(video.tags) ||
                     typeof video.hebrewContent !== 'boolean' ) {
-                    console.warn(`CAR-טיב: Skipping video due to missing essential data. Video data:`, video);
+                    console.warn(`CAR-טיב: renderFilteredVideos - Skipping video at index ${index} due to missing essential data. Data:`, video);
                     return; 
                 }
 
                 const cardClone = videoCardTemplate.content.cloneNode(true);
                 const cardElement = cardClone.querySelector('article');
                 if (!cardElement) {
-                    console.error("CAR-טיב: Could not find 'article' in template clone.");
+                    console.error(`CAR-טיב: renderFilteredVideos - Could not find 'article' in template clone for video ID: ${video.id}.`);
                     return;
                 }
 
+                // ... (שאר קוד רינדור הכרטיסייה, כפי שהיה) ...
+                // (הדבקת הקוד המלא של הלולאה הזו מהתשובה הקודמת)
                 cardElement.querySelectorAll('[class_exists]').forEach(el => {
                     el.setAttribute('class', el.getAttribute('class_exists'));
                     el.removeAttribute('class_exists');
@@ -380,7 +402,7 @@ try {
                 if (tagsContainerEl) {
                     if (video.tags && video.tags.length > 0) {
                         tagsContainerEl.innerHTML = video.tags.map(tag => 
-                            `<span class="inline-block bg-purple-100 text-purple-700 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(String(tag))}</span>`
+                            `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-slate-600 dark:text-purple-300 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(String(tag))}</span>`
                         ).join('');
                     } else {
                         tagsContainerEl.innerHTML = '';
@@ -398,11 +420,12 @@ try {
                 videoCardsContainer.appendChild(cardElement);
 
             } catch (e) {
-                console.error(`CAR-טיב: Error rendering card for video ID: ${video.id}`, e, video);
+                console.error(`CAR-טיב: renderFilteredVideos - Error rendering card for video ID: ${video.id}`, e, video);
             }
         });
+        console.log(`CAR-טיב: renderFilteredVideos - Finished appending cards. Child count: ${videoCardsContainer.children.length}`);
     }
-    
+
     function handlePlayVideo(buttonElement) {
         const videoId = buttonElement.dataset.videoId;
         const videoCard = buttonElement.closest('article'); 
