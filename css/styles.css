@@ -57,9 +57,14 @@ header.sticky {
 }
 
 
-/* Hero Section specific for dark mode if needed beyond Tailwind prefixes */
+.hero-gradient {
+    background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%); /* סגולים יפים למצב רגיל */
+}
+/* אם אתה רוצה אותו גרדיאント גם במצב כהה, אין צורך ב- .dark .hero-gradient */
+/* אם אתה רוצה גרדיאנט מעט שונה/כהה יותר למצב כהה: */
 .dark .hero-gradient {
-    /* background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%); */ /* אם רוצים לשנות את הגרדיאנט */
+    background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%); /* לדוגמה, גוונים מעט כהים יותר של סגול */
+    /* או אם אתה רוצה לשמור על הבהירות, אולי פשוט להבהיר את הטקסטים שעליו עוד יותר */
 }
 .dark .hero-heading .text-purple-300 { color: theme('colors.purple.400'); }
 .dark .hero-gradient .text-purple-100 { color: theme('colors.purple.200 / 0.9'); }
