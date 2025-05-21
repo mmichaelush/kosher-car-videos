@@ -438,25 +438,29 @@
         </div>
     </footer>
 
-    <template id="video-card-template">
-        <article class_exists="video-card group bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5">
-            <div class_exists="video-container aspect-video bg-slate-200 group relative flex items-center justify-center">
-                <button class_exists="play-video-button flex items-center justify-center text-white z-10 transition-transform duration-300 group-hover:scale-110" aria-label="נגן סרטון">
-                    <i class_exists="fas fa-play-circle fa-5x sm:fa-6x text-purple-600 opacity-80 group-hover:opacity-100"></i>
-                </button>
-                <iframe class_exists="video-iframe hidden absolute inset-0 w-full h-full" loading="lazy" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-            </div>
-            <div class_exists="p-5 sm:p-6 flex flex-col flex-grow">
-                <h3 class_exists="video-title font-semibold text-lg text-slate-800 mb-3 group-hover:text-purple-600 transition-colors leading-tight">
-                    <a href="" target="_blank" rel="noopener noreferrer" class_exists="video-link hover:underline focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-sm"></a>
-                </h3>
-                <div class_exists="video-tags flex flex-wrap gap-1.5 mb-auto"></div>
-                <div class_exists="flex items-center text-slate-500 text-xs mt-3 pt-3 border-t border-slate-200">
-                    <span class_exists="video-category-display"><i class_exists="fas fa-folder-open ml-1 opacity-70"></i></span>
-                </div>
-            </div>
-        </article>
-    </template>
+     <template id="video-card-template">
+     <article class_exists="video-card group bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col transition-all duration-300 hover:shadow-2xl hover:-translate-y-1.5">
+         <div class_exists="video-container aspect-video bg-slate-200 group relative flex items-center justify-center">
+             <button class_exists="play-video-button flex items-center justify-center text-white z-10 transition-transform duration-300 group-hover:scale-110" aria-label="נגן סרטון">
+                 <i class_exists="fas fa-play-circle fa-5x sm:fa-6x text-purple-600 opacity-80 group-hover:opacity-100"></i>
+             </button>
+             <iframe class_exists="video-iframe hidden absolute inset-0 w-full h-full" loading="lazy" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+         </div>
+         <div class_exists="p-5 sm:p-6 flex flex-col flex-grow">
+             <h3 class_exists="video-title font-semibold text-lg text-slate-800 mb-3 group-hover:text-purple-600 transition-colors leading-tight">
+                 <a href="" target="_blank" rel="noopener noreferrer" class_exists="video-link hover:underline focus:outline-none focus:ring-1 focus:ring-purple-500 rounded-sm">
+                     <!-- Video title will be injected here -->
+                 </a>
+             </h3>
+             <div class_exists="video-tags flex flex-wrap gap-1.5 mb-auto">
+                 <!-- Tags will be injected here -->
+             </div>
+             <div class_exists="flex items-center text-slate-500 text-xs mt-3 pt-3 border-t border-slate-200">
+                 <span class_exists="video-category-display"><i class_exists="fas fa-folder-open ml-1 opacity-70"></i><!-- Category --></span>
+             </div>
+         </div>
+     </article>
+ </template>
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script> --> <!-- אם אין Swiper, הסר -->
     <script src="js/main.js"></script>
