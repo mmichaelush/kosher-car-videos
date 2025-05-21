@@ -216,15 +216,15 @@ try {
             return;
         }
 
-        const tagCounts = {};
-        const videosToConsider = forCategoryId && forCategoryId !== 'all' 
-            ? allVideos.filter(v => v.category === forCategoryId) 
-            : allVideos;
-        
-        if (videosToConsider.length === 0 && forCategoryId && forCategoryId !== 'all') {
-             popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 text-sm">אין סרטונים בקטגוריה זו להצגת תגיות.</p>`;
-             return;
-        }
+      const tagCounts = {};
+    const videosToConsider = forCategoryId && forCategoryId !== 'all' 
+        ? allVideos.filter(v => v.category === forCategoryId) // סנן לפי קטגוריה אם סופק ID
+        : allVideos; // אחרת, קח את כל הסרטונים (לדף הבית)
+    
+    if (videosToConsider.length === 0 && forCategoryId && forCategoryId !== 'all') {
+         popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 text-sm">אין סרטונים בקטגוריה זו להצגת תגיות.</p>`;
+         return;
+    }
 
         videosToConsider.forEach(video => {
             if (video.tags && Array.isArray(video.tags)) {
@@ -448,26 +448,44 @@ try {
         return String(value).replace(/"/g, '"');
     }
 
-    // --- Filtering Logic (מותאם ל-JSON רזה) ---
+     // --- Filtering Logic (מותאם ל-JSON רזה) ---
     function getFilteredVideos() {
-        if (!allVideos || allVideos.length === 0) return [];
+        // אם אין סרטונים כלל, החזר מערך ריק מיד
+        if (!allVideos || allVideos.length === 0) {
+            console.warn("CAR-טיב: getFilteredVideos - allVideos is empty or not initialized.");
+            return [];
+        }
+
+        // הדפס את הפילטרים הנוכחיים בתחילת כל סינון לצורך דיבוג
+        // console.log("CAR-טיב: getFilteredVideos - Applying filters:", JSON.parse(JSON.stringify(currentFilters)));
 
         return allVideos.filter(video => {
-            if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' || 
-                typeof video.category !== 'string' || !Array.isArray(video.tags) ||
+            // בדיקת תקינות בסיסית לאובייקט הוידאו הנוכחי
+            if (!video || 
+                typeof video.id !== 'string' || 
+                typeof video.title !== 'string' || 
+                typeof video.category !== 'string' || 
+                !Array.isArray(video.tags) ||
                 typeof video.hebrewContent !== 'boolean') {
-                return false; 
+                // console.warn("CAR-טיב: getFilteredVideos - Skipping video due to missing/invalid core fields:", video);
+                return false; // דלג על סרטונים עם נתונים חסרים/לא תקינים
             }
 
-            const category = video.category.toLowerCase();
+            // הכנת נתוני הסרטון להשוואה (הכל ב-lowercase לסינון לא תלוי אותיות רישיות)
+            const categoryFromFile = video.category.toLowerCase();
             const videoTitle = video.title.toLowerCase();
-            const videoTags = video.tags.map(t => String(t).toLowerCase());
+            const videoTags = video.tags.map(t => String(t).toLowerCase()); // ודא שכל תגית היא מחרוזת
 
-            const categoryMatch = currentFilters.category === 'all' || category === currentFilters.category.toLowerCase();
+            // 1. סינון לפי קטגוריה
+            const currentCategoryFilter = currentFilters.category.toLowerCase();
+            const categoryMatch = currentCategoryFilter === 'all' || categoryFromFile === currentCategoryFilter;
+
+            // 2. סינון לפי תגיות שנבחרו
+            const currentSelectedFilterTags = currentFilters.tags.map(t => String(t).toLowerCase());
+            const tagsMatch = currentSelectedFilterTags.length === 0 || 
+                              currentSelectedFilterTags.every(filterTag => videoTags.includes(filterTag));
             
-            const filterTags = currentFilters.tags.map(t => String(t).toLowerCase());
-            const tagsMatch = filterTags.length === 0 || filterTags.every(filterTag => videoTags.includes(filterTag));
-            
+            // 3. סינון לפי מונח חיפוש (בכותרת ובתגיות)
             let searchTermMatch = true;
             if (currentFilters.searchTerm && currentFilters.searchTerm !== '') {
                 const term = currentFilters.searchTerm.toLowerCase();
@@ -475,11 +493,14 @@ try {
                     videoTags.some(tag => tag.includes(term));
             }
 
+            // 4. סינון לפי תוכן בעברית
             const hebrewContentMatch = !currentFilters.hebrewOnly || (currentFilters.hebrewOnly && video.hebrewContent === true);
 
+            // החזר true רק אם כל התנאים מתקיימים
             return categoryMatch && tagsMatch && searchTermMatch && hebrewContentMatch;
         });
     }
+
 
     // --- Event Listeners Setup ---
     function setupEventListeners() {
