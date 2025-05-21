@@ -127,3 +127,9 @@ header nav .nav-link.active {
     color: var(--primary-color); 
     font-weight: 600; 
 }
+
+// זמני
+#video-cards-container article {
+    border: 2px solid red !important;
+    min-height: 50px; /* ודא שיש גובה מינימלי כדי שנוכל לראות אותן */
+}
