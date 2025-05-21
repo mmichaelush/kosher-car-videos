@@ -354,7 +354,7 @@ try {
         console.log(`CAR-טיב: renderFilteredVideos - Starting to render ${filteredVideos.length} video cards...`);
 
         filteredVideos.forEach((video, index) => {
-            // console.log(`CAR-טיב: renderFilteredVideos - Processing video ${index}:`, video ? video.id : "Video object is null/undefined"); // הדפסה נוספת
+            console.log(`CAR-טיב: renderFilteredVideos - Processing video ${index}:`, video ? video.id : "Video object is null/undefined"); // הדפסה נוספת
             try {
                 if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' || 
                     typeof video.category !== 'string' || !Array.isArray(video.tags) ||
@@ -370,58 +370,60 @@ try {
                     return;
                 }
 
-                // ... (שאר קוד רינדור הכרטיסייה, כפי שהיה) ...
-                // (הדבקת הקוד המלא של הלולאה הזו מהתשובה הקודמת)
-                cardElement.querySelectorAll('[class_exists]').forEach(el => {
-                    el.setAttribute('class', el.getAttribute('class_exists'));
-                    el.removeAttribute('class_exists');
-                });
-                
-                cardElement.dataset.category = video.category;
-                cardElement.dataset.tags = video.tags.join(',');
+                // החלפת class_exists ב-class
+     cardElement.querySelectorAll('[class_exists]').forEach(el => {
+         el.setAttribute('class', el.getAttribute('class_exists'));
+         el.removeAttribute('class_exists');
+     });
+     
+     cardElement.dataset.category = video.category;
+     cardElement.dataset.tags = video.tags.join(','); // ודא ש-video.tags הוא מערך
 
-                const sanitizedTitle = escapeHTML(video.title);
-                const videoLink = `https://www.youtube.com/watch?v=${video.id}`;
-                
-                const playButton = cardElement.querySelector('.play-video-button');
-                if (playButton) {
-                    playButton.dataset.videoId = video.id;
-                    playButton.setAttribute('aria-label', `נגן את הסרטון ${sanitizedTitle}`);
-                }
-                
-                const iframeEl = cardElement.querySelector('.video-iframe');
-                if (iframeEl) iframeEl.title = sanitizedTitle;
-                
-                const videoTitleLinkEl = cardElement.querySelector('.video-link');
-                if (videoTitleLinkEl) {
-                    videoTitleLinkEl.href = videoLink;
-                    videoTitleLinkEl.textContent = sanitizedTitle;
-                }
-                
-                const tagsContainerEl = cardElement.querySelector('.video-tags');
-                if (tagsContainerEl) {
-                    if (video.tags && video.tags.length > 0) {
-                        tagsContainerEl.innerHTML = video.tags.map(tag => 
-                            `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-slate-600 dark:text-purple-300 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(String(tag))}</span>`
-                        ).join('');
-                    } else {
-                        tagsContainerEl.innerHTML = '';
-                    }
-                }
+     const sanitizedTitle = escapeHTML(video.title);
+     const videoLink = `https://www.youtube.com/watch?v=${video.id}`;
+     
+     const playButton = cardElement.querySelector('.play-video-button');
+     if (playButton) {
+         playButton.dataset.videoId = video.id;
+         playButton.setAttribute('aria-label', `נגן את הסרטון ${sanitizedTitle}`);
+     } else { console.warn("CAR-טיב: .play-video-button NOT FOUND in template for " + video.id); }
+     
+     const iframeEl = cardElement.querySelector('.video-iframe');
+     if (iframeEl) {
+         iframeEl.title = sanitizedTitle;
+     } else { console.warn("CAR-טיב: .video-iframe NOT FOUND in template for " + video.id); }
+     
+     const videoTitleLinkEl = cardElement.querySelector('.video-link');
+     if (videoTitleLinkEl) {
+         videoTitleLinkEl.href = videoLink;
+         videoTitleLinkEl.textContent = sanitizedTitle; // <-- כאן מוכנסת הכותרת
+     } else { console.warn("CAR-טיב: .video-link NOT FOUND in template for " + video.id); }
+     
+     const tagsContainerEl = cardElement.querySelector('.video-tags');
+     if (tagsContainerEl) {
+         if (video.tags && video.tags.length > 0) {
+             tagsContainerEl.innerHTML = video.tags.map(tag => 
+                 // ודא שה-classes כאן מייצרים משהו נראה לעין
+                 `<span class="inline-block bg-purple-100 text-purple-700 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(String(tag))}</span>`
+             ).join('');
+         } else {
+             tagsContainerEl.innerHTML = ''; // נקה אם אין תגיות
+         }
+     } else { console.warn("CAR-טיב: .video-tags NOT FOUND in template for " + video.id); }
 
-                const categoryDisplayEl = cardElement.querySelector('.video-category-display');
-                if (categoryDisplayEl) {
-                    const categoryData = PREDEFINED_CATEGORIES.find(c => c.id === video.category);
-                    const categoryName = categoryData ? categoryData.name : video.category;
-                    const categoryIcon = categoryData ? categoryData.icon : 'fa-folder-open';
-                    categoryDisplayEl.innerHTML = `<i class="fas ${categoryIcon} ml-1 opacity-70"></i> ${escapeHTML(categoryName)}`;
-                }
-                
-                videoCardsContainer.appendChild(cardElement);
+     const categoryDisplayEl = cardElement.querySelector('.video-category-display');
+     if (categoryDisplayEl) {
+         const categoryData = PREDEFINED_CATEGORIES.find(c => c.id === video.category);
+         const categoryName = categoryData ? categoryData.name : video.category;
+         const categoryIcon = categoryData ? categoryData.icon : 'fa-folder-open';
+         categoryDisplayEl.innerHTML = `<i class="fas ${categoryIcon} ml-1 opacity-70"></i> ${escapeHTML(categoryName)}`;
+     } else { console.warn("CAR-טיב: .video-category-display NOT FOUND in template for " + video.id); }
+     
+     videoCardsContainer.appendChild(cardElement);
 
-            } catch (e) {
-                console.error(`CAR-טיב: renderFilteredVideos - Error rendering card for video ID: ${video.id}`, e, video);
-            }
+ } catch (e) {
+     console.error(`CAR-טיב: Error rendering card content for video ID: ${video.id}`, e, video);
+ }
         });
         console.log(`CAR-טיב: renderFilteredVideos - Finished appending cards. Child count: ${videoCardsContainer.children.length}`);
     }
