@@ -133,3 +133,14 @@ header nav .nav-link.active {
     border: 2px solid red !important;
     min-height: 50px; /* ודא שיש גובה מינימלי כדי שנוכל לראות אותן */
 }
+
+#video-cards-container > article {
+    border: 3px dashed limegreen !important;
+    background-color: rgba(255, 0, 0, 0.2) !important; /* רקע אדמדם שקוף */
+    min-height: 100px !important; /* גובה מינימלי כדי שייראו */
+    min-width: 100px !important; /* רוחב מינימלי */
+    display: block !important; /* ודא שהוא לא display: none */
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 10000 !important; /* ודא שהוא מעל הכל */
+}
