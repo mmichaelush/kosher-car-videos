@@ -4,11 +4,22 @@
     --primary-color: #7c3aed; /* purple-600 */
     --primary-color-hover: #6d28d9; /* purple-700 */
     --primary-color-light: #ede9fe; /* purple-50 */
-    --text-slate-800: #1e293b;
-    --text-slate-700: #334155;
-    --text-slate-600: #475569;
-    --text-slate-500: #64748b;
-    --text-slate-400: #94a3b8;
+    
+    --text-light-primary: #1e293b;   /* slate-800 */
+    --text-light-secondary: #334155; /* slate-700 */
+    --text-light-muted: #64748b;     /* slate-500 */
+    --bg-light-primary: #f8fafc;     /* slate-50 */
+    --bg-light-secondary: #f1f5f9;   /* slate-100 */
+    --bg-light-card: #ffffff;        /* white */
+    --border-light: #e2e8f0;         /* slate-200 */
+
+    --text-dark-primary: #f1f5f9;    /* slate-100 */
+    --text-dark-secondary: #cbd5e1;  /* slate-300 */
+    --text-dark-muted: #94a3b8;      /* slate-400 */
+    --bg-dark-primary: #1e293b;      /* slate-800 */
+    --bg-dark-secondary: #334155;    /* slate-700 */
+    --bg-dark-card: #273243;         /* custom darker slate for cards */
+    --border-dark: #475569;          /* slate-600 */
 }
 
 html { 
@@ -20,24 +31,56 @@ body {
     line-height: 1.65; 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color: var(--text-slate-800); /* Default body text color */
+    /* Light mode defaults */
+    color: var(--text-light-primary);
+    background-color: var(--bg-light-secondary); /* Default body background */
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* Dark Mode Styles (applied when html.dark) */
+.dark body {
+    color: var(--text-dark-primary);
+    background-color: var(--bg-dark-primary);
+}
+/* Add more .dark specific styles for elements as needed using Tailwind's dark: prefix or here */
 
 .hero-gradient {
-    background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%); /* Tailwind purple-700 to purple-600 */
+    background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%);
+}
+.dark .hero-gradient { /* Example for dark mode hero, if needed */
+    background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%); /* Darker purple */
 }
 
-/* Video Card enhancements */
+
+/* Video Card */
+.video-card { /* Tailwind: bg-white dark:bg-slate-800 rounded-2xl shadow-lg ... */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.video-card:hover {
+    transform: translateY(-6px); /* More pronounced hover */
+}
 .video-card .video-container {
-    position: relative; /* Needed for iframe positioning */
+    position: relative;
+    /* Tailwind: aspect-video bg-slate-200 dark:bg-slate-700 */
 }
 .video-card .play-video-button i {
     transition: color 0.3s ease, transform 0.3s ease;
+    /* Tailwind: text-purple-600 dark:text-purple-400 opacity-80 group-hover:opacity-100 */
 }
 .video-card:hover .play-video-button i {
-    color: var(--primary-color-hover); /* Darker purple on hover */
     transform: scale(1.1);
 }
+/* Title styling for dark mode */
+.dark .video-card .video-title a { /* Tailwind: dark:text-purple-400 dark:group-hover:text-purple-300 */
+    /* color: var(--primary-color); */ /* Assuming purple-400 for dark */
+}
+/* Tags in card styling */
+.dark .video-card .video-tags span { /* Tailwind: dark:bg-purple-700 dark:text-purple-100 */
+}
+/* Category display in card */
+.dark .video-card .video-category-display { /* Tailwind: dark:text-slate-400 */
+}
+
 
 /* General Animation Effects */
 .floating { 
@@ -45,32 +88,8 @@ body {
 }
 @keyframes float {
     0% { transform: translateY(0px); }
-    50% { transform: translateY(-12px); } /* Slightly more pronounced float */
+    50% { transform: translateY(-12px); }
     100% { transform: translateY(0px); }
-}
-
-.btn-hero-primary, .btn-hero-secondary {
-    transition: all 0.3s ease-out;
-}
-.btn-hero-primary:hover, .btn-hero-secondary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); /* Tailwind shadow-lg */
-}
-
-/* Screen Reader Only Utility */
-.sr-only {
-    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;
-}
-
-/* Text line clamping utility (Tailwind also has plugins for this) */
-.line-clamp-3 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    /* fallback for non-webkit */
-    max-height: calc(1.65em * 3); /* Adjust based on line-height and font-size */
 }
 
 /* Active Nav Link Styling */
@@ -79,53 +98,91 @@ header nav .nav-link.active {
     font-weight: 600;
     background-color: var(--primary-color-light);
 }
-/* Adding a subtle bottom border effect for active nav link (optional) */
+.dark header nav .nav-link.active {
+    color: var(--primary-color); /* Or a lighter purple for dark mode if var(--primary-color) is too dark */
+    background-color: rgba(124, 58, 237, 0.2); /* purple-600 with alpha */
+}
+header nav .nav-link {
+    position: relative;
+    /* Tailwind: hover:bg-purple-50 dark:hover:bg-slate-700 */
+}
+/* Optional: Underline for active nav link */
 header nav .nav-link.active::after {
     content: '';
     position: absolute;
-    bottom: 4px; /* Adjust as needed */
+    bottom: 4px;
     left: 50%;
     transform: translateX(-50%);
-    width: 60%; /* Width of the underline */
+    width: 60%;
     height: 2px;
     background-color: var(--primary-color);
     border-radius: 1px;
 }
-header nav .nav-link { /* Ensure relative positioning for ::after */
-    position: relative;
+.dark header nav .nav-link.active::after {
+    background-color: var(--primary-color); /* Or a lighter purple for dark mode */
 }
 
 
-/* Custom Scrollbar (Optional - for modern browsers) */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+/* Inputs and Forms */
+.search-input, .tag-input, #contact-section input, #contact-section textarea {
+    /* Tailwind: border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 
+                text-slate-900 dark:text-slate-100 
+                focus:ring-purple-500 dark:focus:ring-purple-400 
+                focus:border-purple-500 dark:focus:border-purple-400 */
 }
-::-webkit-scrollbar-track {
-    background: #f1f5f9; /* slate-100 */
-}
-::-webkit-scrollbar-thumb {
-    background: #cbd5e1; /* slate-300 */
-    border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8; /* slate-400 */
+.dark ::placeholder { /* General placeholder styling for dark mode */
+    color: var(--text-dark-muted);
 }
 
-/* Ensure search inputs are styled consistently if needed beyond Tailwind */
-.search-input {
-    /* Tailwind classes usually cover this, add custom if needed */
+/* Buttons */
+.btn-primary { /* Tailwind: bg-purple-600 hover:bg-purple-700 text-white ... */
 }
-.tag-input {
-    /* Tailwind classes usually cover this, add custom if needed */
+.dark .btn-primary { /* Tailwind: dark:bg-purple-500 dark:hover:bg-purple-600 ... */
 }
-
-/* Styling for selected tags for better visual feedback if Tailwind defaults aren't enough */
-#selected-tags-container .flex span {
-    /* Example: Add a subtle border or more distinct background */
+.btn-secondary { /* Tailwind: bg-white hover:bg-slate-50 border-slate-300 text-slate-700 ... */
+}
+.dark .btn-secondary { /* Tailwind: dark:bg-slate-700 dark:hover:bg-slate-600 dark:border-slate-500 dark:text-slate-200 ... */
 }
 
-/* Ensure the logo in the footer is visible on dark background */
-#site-footer .flex img[alt*="לוגו CAR-טיב לבן"] {
-    filter: brightness(0) invert(1); /* If the white logo isn't showing well */
+/* Popular Tags */
+.tag { /* Tailwind: bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-700 dark:text-purple-100 dark:hover:bg-purple-600 */
+}
+.tag.active-search-tag { /* Tailwind: bg-purple-600 text-white dark:bg-purple-500 dark:text-white */
+}
+
+/* Selected Tags Chips */
+#selected-tags-container span { /* Tailwind: bg-purple-600 text-white dark:bg-purple-500 dark:text-white */
+}
+
+/* Hebrew Filter Toggle */
+.dark #hebrew-filter-toggle:checked ~ .block { /* Tailwind: peer-checked:bg-purple-500 (adjust if needed) */
+}
+.dark #hebrew-filter-toggle:checked ~ .dot { /* Tailwind: peer-checked:bg-purple-100 (adjust if needed) */
+}
+
+
+/* Back to Top Button */
+#back-to-top-btn {
+    position: fixed;
+    bottom: 2rem;
+    left: 2rem; /* Changed from right for LTR consistency, but it's a RTL site so right might be better */
+    /* right: 2rem; */ 
+    z-index: 50;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+    /* Tailwind: bg-purple-600 hover:bg-purple-700 text-white dark:bg-purple-500 dark:hover:bg-purple-600
+                rounded-full p-3 shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 
+                dark:focus:ring-offset-slate-800 */
+}
+
+/* Custom Scrollbar (Optional) */
+/*
+.dark ::-webkit-scrollbar-track { background: var(--bg-dark-secondary); }
+.dark ::-webkit-scrollbar-thumb { background: var(--text-dark-muted); }
+.dark ::-webkit-scrollbar-thumb:hover { background: var(--text-dark-secondary); }
+*/
+
+/* Footer */
+.dark #site-footer { /* Tailwind: dark:bg-slate-900 dark:text-slate-400 */
+}
+.dark #site-footer a:hover { /* Tailwind: dark:hover:text-purple-400 */
 }
