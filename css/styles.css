@@ -1,22 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    /* --- ערכי צבע בסיסיים --- */
-    --color-purple-50: #ede9fe;
+    /* --- ערכי צבע בסיסיים (נשארים כמו קודם) --- */
+    --color-purple-50: #ede9fe; /* ...וכו' לשאר הצבעים ... */
     --color-sky-50: #E0F2FE;
-    --color-slate-50: #f8fafc;   /* אפור הכי בהיר, כמעט לבן */
-    --color-slate-100: #f1f5f9;  /* אפור מאוד בהיר */
+    --color-slate-100: #f1f5f9;
     --color-slate-200: #e2e8f0;
     --color-slate-300: #cbd5e1;
     --color-slate-400: #94a3b8;
     --color-slate-500: #64748b;
     --color-slate-600: #475569;
     --color-slate-700: #334155;
-    --color-slate-800: #1e293b;  /* אפור כהה מאוד (כמעט שחור לטקסט במצב יום) */
-    --color-slate-900: #0f172a;  /* עוד יותר כהה (לרקעים במצב לילה) */
+    --color-slate-800: #1e293b;
+    --color-slate-900: #0f172a;
     --color-gray-950: #030712; 
     --color-white: #ffffff;
-    --color-purple-200: #c4b5fd;
+    --color-purple-200: #c4b5fd; /* הוספתי, שימושי לטקסט במצב כהה */
     --color-purple-300: #a78bfa;
     --color-purple-400: #c084fc; 
     --color-purple-500: #9333ea;
@@ -111,7 +110,7 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: var(--bg-body) !important; 
-    color: var(--text-body-default) !important; /* שימוש במשתנה הדיפולטי לצבע טקסט */
+    color: var(--text-body) !important;       
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
@@ -137,7 +136,7 @@ header {
 /* --- Hero Section --- */
 .hero-gradient {
     background: var(--hero-gradient) !important;
-    color: var(--hero-text) !important; /* הטקסט הראשי ב-Hero */
+    color: var(--hero-text) !important;
 }
 .hero-gradient .text-purple-300 { 
     color: var(--hero-text-accent) !important;
@@ -168,8 +167,8 @@ header {
   לדוגמה: class_exists="... bg-white dark:bg-[var(--bg-card)] border border-slate-200 dark:border-[var(--border-card)] ..."
   אם אתה רוצה אפקט זכוכית חלבית: dark:bg-slate-700/80 backdrop-blur-sm
 */
-.card-title {
-    color: var(--text-card-title-default);
+.video-card {
+    transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
 }
 .video-card:hover {
     transform: translateY(-4px);
@@ -217,6 +216,7 @@ header {
     transform: scale(1.1);
 }
 
+/* --- Footer --- */
 #site-footer {
     background-color: var(--footer-bg) !important;
     color: var(--footer-text) !important;
@@ -234,6 +234,7 @@ header {
     border-top-color: var(--footer-border) !important;
 }
 
+/* --- Utility: Line Clamp --- */
 .line-clamp-2 {
     overflow: hidden;
     display: -webkit-box;
@@ -242,6 +243,7 @@ header {
     max-height: calc(1.65em * 2); 
 }
 
+/* --- Utility: Floating Animation --- */
 .floating { 
     animation: float 6s ease-in-out infinite; 
 }
