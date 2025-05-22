@@ -329,14 +329,18 @@ document.addEventListener('DOMContentLoaded', function() {
         return tagIcons[tag] || "fa-tag";
     }
 
-    function createVideoCardElement(video) {
+   function createVideoCardElement(video) {
     if (!videoCardTemplate) { console.error("CAR-טיב: Video card template not found."); return null; }
-    // נוודא שכל השדות החדשים קיימים או נטפל בחסרונם
-    if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' ||
-        typeof video.category !== 'string' || !Array.isArray(video.tags) ||
-        typeof video.channel !== 'string' || // שדה שם הערוץ
-        typeof video.videoThumbnail !== 'string' // שדה תמונת הסרטון
-        /* typeof video.channelImage !== 'string' // שדה תמונת הערוץ הוא אופציונלי */
+    
+    // בדיקת שדות חובה מה-JSON המעודכן
+    if (!video || typeof video.id !== 'string' || 
+        typeof video.title !== 'string' ||
+        typeof video.duration !== 'string' || // שדה חדש
+        typeof video.channel !== 'string' ||
+        typeof video.thumbnail !== 'string' || // שונה מ-videoThumbnail
+        typeof video.category !== 'string' || 
+        !Array.isArray(video.tags)
+        /* video.channelImage הוא אופציונלי */
         ) {
         console.warn(`CAR-טיב: Skipping video due to missing/invalid data (id: ${video.id || 'N/A'}). Video data:`, video); 
         return null;
@@ -357,33 +361,36 @@ document.addEventListener('DOMContentLoaded', function() {
     const sanitizedTitle = escapeHTML(video.title);
     const videoLink = `https://www.youtube.com/watch?v=${video.id}`;
     
-    // --- תמונת הסרטון ---
+    // --- תמונת הסרטון ומשך ---
     const thumbnailImgElement = cardElement.querySelector('.video-thumbnail-img');
     const playButtonElement = cardElement.querySelector('.play-video-button');
     const videoThumbnailContainer = cardElement.querySelector('.video-thumbnail-container');
+    const durationElement = cardElement.querySelector('.video-duration'); // אלמנט חדש
 
-    if (thumbnailImgElement && video.videoThumbnail) {
-        thumbnailImgElement.src = video.videoThumbnail;
+    if (thumbnailImgElement && video.thumbnail) { // שימוש ב-video.thumbnail
+        thumbnailImgElement.src = video.thumbnail;
         thumbnailImgElement.alt = `תמונה ממוזערת של הסרטון: ${sanitizedTitle}`;
-        thumbnailImgElement.classList.remove('hidden'); // ודא שהוא גלוי
+        thumbnailImgElement.classList.remove('hidden');
 
-        // טיפול בשגיאה בטעינת תמונת הסרטון
         thumbnailImgElement.onerror = function() {
-            console.warn(`CAR-טיב: Error loading video thumbnail for ${video.id}. Hiding image, showing play button.`);
-            thumbnailImgElement.classList.add('hidden'); // הסתר תמונה שבורה
-            if (playButtonElement) {
-                playButtonElement.classList.remove('absolute', 'inset-0'); // אם רוצים שהכפתור יתפוס מקום
-                playButtonElement.classList.add('relative'); // או השאר אותו אבסולוטי
-            }
-            if (videoThumbnailContainer) { // החזר רקע דיפולטי אם התמונה נכשלה
+            console.warn(`CAR-טיב: Error loading video thumbnail for ${video.id}.`);
+            thumbnailImgElement.classList.add('hidden');
+            if (videoThumbnailContainer) {
                 videoThumbnailContainer.classList.add('bg-slate-300', 'dark:bg-slate-700');
             }
         };
     } else if (thumbnailImgElement) {
-        thumbnailImgElement.classList.add('hidden'); // אם אין URL לתמונה
-         if (videoThumbnailContainer) { // החזר רקע דיפולטי
+        thumbnailImgElement.classList.add('hidden');
+         if (videoThumbnailContainer) {
              videoThumbnailContainer.classList.add('bg-slate-300', 'dark:bg-slate-700');
          }
+    }
+
+    if (durationElement && video.duration) {
+        durationElement.textContent = escapeHTML(video.duration);
+        durationElement.classList.remove('hidden'); // ודא שהוא גלוי אם יש תוכן
+    } else if (durationElement) {
+        durationElement.classList.add('hidden'); // הסתר אם אין מידע על משך
     }
     
     if (playButtonElement) { 
@@ -401,21 +408,21 @@ document.addEventListener('DOMContentLoaded', function() {
     const channelLogoElement = cardElement.querySelector('.channel-logo');
     const channelNameElement = cardElement.querySelector('.channel-name');
 
-    if (channelNameElement) {
+    if (channelNameElement && video.channel) { // ודא ששדה הערוץ קיים
         channelNameElement.textContent = escapeHTML(video.channel);
     }
 
-    if (channelLogoElement && video.channelImage) { // אם יש URL לתמונת ערוץ
+    if (channelLogoElement && video.channelImage) {
         channelLogoElement.src = video.channelImage;
         channelLogoElement.alt = `לוגו הערוץ ${escapeHTML(video.channel)}`;
-        channelLogoElement.classList.remove('hidden'); // הצג את תמונת הערוץ
+        channelLogoElement.classList.remove('hidden');
 
         channelLogoElement.onerror = function() {
-            console.warn(`CAR-טיב: Error loading channel image for ${video.channel}. Hiding logo.`);
-            channelLogoElement.classList.add('hidden'); // אם יש שגיאה, הסתר את הלוגו (שם הערוץ עדיין יוצג)
+            console.warn(`CAR-טיב: Error loading channel image for ${video.channel}.`);
+            channelLogoElement.classList.add('hidden');
         };
     } else if (channelLogoElement) {
-        channelLogoElement.classList.add('hidden'); // אם אין תמונת ערוץ, ודא שהיא מוסתרת
+        channelLogoElement.classList.add('hidden');
     }
 
     // --- תגיות וקטגוריה (כמו קודם) ---
