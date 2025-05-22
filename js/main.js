@@ -443,19 +443,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // --- תגיות ---
-    const tagsContainerEl = cardElement.querySelector('.video-tags');
+     const tagsContainerEl = cardElement.querySelector('.video-tags');
     if (tagsContainerEl) {
         if (video.tags && video.tags.length > 0) {
             tagsContainerEl.innerHTML = video.tags.map(tag => 
-                // כאן הקלאסים המעודכנים לתגיות בתוך הכרטיס, אם רצית מראה שונה
-                `<span class="inline-block bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 text-xs font-medium px-2 py-0.5 rounded-full transition-colors hover:bg-purple-100 dark:hover:bg-purple-700 hover:text-purple-700 dark:hover:text-purple-300 cursor-default">${escapeHTML(capitalizeFirstLetter(tag))}</span>`
-                // אם אתה רוצה שהתגיות יהיו לחיצות, שנה cursor-default ל-cursor-pointer
-                // והוסף event listener על tagsContainerEl כדי לטפל בלחיצות על תגיות
+                // חזרה לעיצוב הסגול הבהיר המקורי לתגיות
+                `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(capitalizeFirstLetter(tag))}</span>`
             ).join('');
         } else { 
             tagsContainerEl.innerHTML = ''; 
-            // אפשר גם להסתיר את ה-div כולו אם אין תגיות:
-            // tagsContainerEl.classList.add('hidden'); 
         }
     }
 
