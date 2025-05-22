@@ -1,25 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 
-:root {
-    --primary-color: #7c3aed; /* purple-600 */
-    --primary-color-hover: #6d28d9; /* purple-700 */
-    --primary-color-light: #ede9fe; /* purple-50 */
-
-    /* משתנים שעדיין יכולים להיות שימושיים לרכיבים ספציפיים אם תרצה */
-    --hero-gradient-start: #5b21b6;
-    --hero-gradient-end: #7c3aed;
-    --footer-bg: #0F172A;
-    --footer-text: #94A3B8;
-    /* ... עוד משתנים אם יש לך צבעים מותאמים אישית שאינם מ-Tailwind ... */
-}
-
-.dark {
-    --hero-gradient-start: #4c1d95;
-    --hero-gradient-end: #6d28d9;
-    --footer-bg: #020617; 
-    --footer-text: #64748B;
-    /* ... */
-}
+/* 
+  הערה: רוב העיצוב, כולל צבעי Dark Mode, יגיע ישירות מקלאסים של Tailwind ב-HTML.
+  קובץ CSS זה ישמש בעיקר להגדרות גלובליות, פונטים, אנימציות בסיסיות, 
+  ומקרים שבהם Tailwind לא מספיק או לא נוח.
+*/
 
 html { 
     scroll-behavior: smooth; 
@@ -30,47 +15,71 @@ body {
     line-height: 1.65; 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* 
-       הסרנו את הגדרות background-color ו-color מכאן. 
-       הן יגיעו ישירות מהקלאסים של Tailwind על תג ה-<body> ב-HTML.
-    */
-    transition: background-color 0.3s ease, color 0.3s ease; /* עדיין טוב שיהיה למעברים חלקים */
+    /* הרקע והטקסט של ה-body יוגדרו על ידי קלאסים של Tailwind ב-HTML: */
+    /* class="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-200" */
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* --- Header --- */
+/* --- Hero Section Gradient --- */
 /* 
-   ההגדרה הזו יכולה להישאר אם אתה רוצה שה-header ישתמש במשתנה CSS.
-   אבל אם ה-HTML שלך הוא <header class="bg-sky-50 dark:bg-slate-800 ...">, אז אין צורך בזה.
-   אני אשאיר את זה כהערה למקרה שתרצה גמישות.
+  הגרדיאנט של ה-Hero יכול להישאר כאן אם הוא מורכב, 
+  או שגם הוא יכול להיות מוגדר עם קלאסים של Tailwind אם הגרדיאנט הוא פשוט.
+  לדוגמה, ב-HTML: class="bg-gradient-to-br from-purple-700 to-indigo-600 dark:from-purple-800 dark:to-indigo-700"
 */
-/*
-header.sticky { 
-    background-color: #E0F2FE; /* sky-50 */
-/* }
-.dark header.sticky {
-    background-color: #1E293B; /* slate-800 */
-/* }
-*/
-
-/* שאר הגדרות ה-CSS יכולות להישאר כפי שהיו, או שתפשט אותן גם כן */
-/* אם אתה רוצה להסתמך יותר על Tailwind prefixes ב-HTML. */
-/* לדוגמה: */
-
 .hero-gradient {
-    background: linear-gradient(135deg, var(--hero-gradient-start) 0%, var(--hero-gradient-end) 100%);
-    /* צבע הטקסט של Hero יוגדר ב-HTML עם dark:text-... */
+    background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%);
+}
+.dark .hero-gradient { /* אופציונלי: אם רוצים לשנות את הגרדיאנט במצב כהה */
+    background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
 }
 
-#site-footer {
-    background-color: var(--footer-bg);
-    color: var(--footer-text);
-}
-/* ... שאר הכללים ... */
 
+/* --- Video Card Hover Effect --- */
+.video-card {
+    transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+}
+.video-card:hover {
+    transform: translateY(-4px);
+}
+
+
+/* --- Active Nav Link --- */
+/* 
+  העיצוב של הקישור הפעיל יגיע בעיקר מקלאס 'active' שמוסיף ה-JS,
+  ומהקלאסים של Tailwind המוגדרים ב-JS או ישירות ב-CSS עבור .active.
+*/
+header nav .nav-link.active {
+    /* לדוגמה, אם רוצים להוסיף משהו מעבר למה שה-JS נותן: */
+    /* border-bottom: 2px solid theme('colors.purple.600'); */
+}
+.dark header nav .nav-link.active {
+    /* border-bottom-color: theme('colors.purple.400'); */
+}
+
+/* --- Back to Top Button --- */
+#back-to-top-btn {
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-out;
+}
+#back-to-top-btn:hover {
+    transform: scale(1.1);
+}
+
+/* --- Line Clamp Utility --- */
 .line-clamp-2 {
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
-    max-height: calc(1.65em * 2); 
+    /* fallback for non-webkit */
+    max-height: calc(1.65em * 2); /* Adjust based on line-height and font-size of the title */
+}
+
+/* --- Floating animation (from original) --- */
+.floating { 
+    animation: float 6s ease-in-out infinite; 
+}
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
 }
