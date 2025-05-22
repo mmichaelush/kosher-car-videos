@@ -6,14 +6,16 @@
     --primary-color-light: #ede9fe; /* purple-50 */
 
     /* משתני צבע למצב בהיר (ברירת מחדל) */
-    --bg-default: theme('colors.slate.100');
+    /* הערה: השימוש ב-theme() כאן לא יעבוד ישירות ב-CSS רגיל מחוץ לסביבת Build של Tailwind. */
+    /* אני אשאיר אותם כהערה להבנה, אבל בפועל נשתמש בצבעים ישירות או בקלאסים של Tailwind ב-HTML. */
+    /* 
+    --bg-default: theme('colors.slate.100'); 
     --text-default: theme('colors.slate.800');
     --bg-card: theme('colors.white');
     --border-default: theme('colors.slate.300');
     --text-muted: theme('colors.slate.500');
     --header-bg: theme('colors.sky.50');
-
-    /* משתנים למצב כהה - יוגדרו ב- .dark */
+    */
 }
 
 html { 
@@ -25,255 +27,231 @@ body {
     line-height: 1.65; 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: var(--bg-default);
-    color: var(--text-default);
+    /* צבעי ברירת מחדל למצב בהיר - יוחלו על ידי קלאסים של Tailwind ב-HTML */
+    /* background-color: #F1F5F9; /* slate-100 */
+    /* color: #1E293B; /* slate-800 */
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Dark Mode Styles */
-.dark {
-    --bg-default: theme('colors.slate.900');
-    --text-default: theme('colors.slate.200');
-    --bg-card: theme('colors.slate.800'); /* רקע כרטיסים כללי */
-    --border-default: theme('colors.slate.700');
-    --text-muted: theme('colors.slate.400');
-    --header-bg: theme('colors.slate.800'); /* רקע Header במצב כהה */
-     /* רקע Header עם שקיפות קלה במצב כהה */
-    --header-bg-transparent: theme('colors.slate.800 / 0.75');
-}
-.dark body {
-    background-color: var(--bg-default);
-    color: var(--text-default);
-}
+/* 
+   הערה: רוב עיצוב ה-Dark Mode יטופל על ידי dark: prefixes של Tailwind ישירות ב-HTML. 
+   הקטע הזה ב-CSS הוא בעיקר להגדרות גלובליות יותר או דריסות מורכבות אם צריך.
+   המשתנים שהיו כאן (--bg-default, --text-default וכו' עבור .dark) יוסרו כי Tailwind מנהל זאת טוב יותר עם ה-prefixes.
+*/
 
-/* Header Styling */
-header.sticky {
-    /* רקע רגיל */
-    background-color: var(--header-bg);
-    /* רקע במצב כהה עם שקיפות קלה (אם רוצים backdrop-blur) */
-}
+/* -------------------------------------------------- */
+/* תיקון לשקיפות ה-Header במצב כהה:                  */
+/* -------------------------------------------------- */
+/* 
+   הקוד המקורי שלך הגדיר משתנה --header-bg-transparent עם שקיפות.
+   אם אתה רוצה שה-Header יהיה אטום במצב כהה, הדרך הנכונה היא פשוט להגדיר צבע רקע אטום
+   ב-HTML עם הקלאס dark:bg-slate-800 (או צבע אחר).
+   לכן, הקטע הבא שהיה אחראי לשקיפות ה-Header דרך CSS מותאם אישית, יוסר או ינוטרל.
+*/
+/* 
 .dark header.sticky {
-    background-color: var(--header-bg-transparent);
+    background-color: var(--header-bg-transparent); /* זה גרם לשקיפות */
+/* } 
+*/
+/* אם אתה משתמש ב- dark:bg-slate-800 ב-HTML, אין צורך בהגדרה הזו כאן. */
+/* אם אתה רוצה לשלוט בזה רק דרך ה-CSS, אז: */
+.dark header.sticky {
+    background-color: #1e293b; /* slate-800 אטום */
+    /* או כל צבע אטום אחר שתבחר למצב כהה */
 }
 
 
+/* Hero Section Gradient - נשאר כמו שהיה, זה נראה טוב */
 .hero-gradient {
-    background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%); /* סגולים יפים למצב רגיל */
+    background: linear-gradient(135deg, #5b21b6 0%, #7c3aed 100%);
 }
-/* אם אתה רוצה אותו גרדיאント גם במצב כהה, אין צורך ב- .dark .hero-gradient */
-/* אם אתה רוצה גרדיאנט מעט שונה/כהה יותר למצב כהה: */
 .dark .hero-gradient {
-    background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%); /* לדוגמה, גוונים מעט כהים יותר של סגול */
-    /* או אם אתה רוצה לשמור על הבהירות, אולי פשוט להבהיר את הטקסטים שעליו עוד יותר */
+    background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
 }
-.dark .hero-heading .text-purple-300 { color: theme('colors.purple.400'); }
-.dark .hero-gradient .text-purple-100 { color: theme('colors.purple.200 / 0.9'); }
-.dark .hero-gradient .text-purple-200 { color: theme('colors.purple.300 / 0.8'); }
+/* צבעי טקסט ב-Hero - עדיף לנהל עם dark: prefixes ב-HTML */
+/* 
+.dark .hero-heading .text-purple-300 { color: #a78bfa; } /* purple-400 */
+/* .dark .hero-gradient .text-purple-100 { color: rgba(221, 214, 254, 0.9); } /* purple-200 / 0.9 */
+/* .dark .hero-gradient .text-purple-200 { color: rgba(196, 181, 253, 0.8); } /* purple-300 / 0.8 */
+/* 
+    הערה: במקום להגדיר צבעים אלו כאן, עדיף להשתמש בקלאסים של Tailwind ישירות ב-HTML:
+    למשל: class="text-purple-300 dark:text-purple-400"
+*/
 
 
 /* Video Card Adjustments */
 .video-card {
     transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
 }
+/* 
+   רקע כרטיס במצב כהה - יטופל עם dark:bg-slate-800/75 (או אטום יותר) ב-HTML.
+   אין צורך בהגדרה ספציפית כאן אם ה-HTML מטפל בזה.
 .dark .video-card {
-    /* רקע כרטיס עם שקיפות קלה במצב כהה */
-    background-color: theme('colors.slate.800 / 0.75');
-}
+    background-color: rgba(30, 41, 59, 0.75); /* slate-800 / 0.75 - אם רוצים שליטה מ-CSS */
+/* }
+*/
 .video-card:hover {
-    transform: translateY(-4px); /* פחות קפיצה */
+    transform: translateY(-4px);
 }
-.dark .video-card .video-title a {
-    color: theme('colors.slate.100');
-}
-.dark .video-card .video-title a:hover {
-    color: theme('colors.purple.300');
-}
-.dark .video-card .video-tags span {
-    background-color: theme('colors.purple.800');
-    color: theme('colors.purple.200');
-}
-.dark .video-card .video-category-display {
-    color: var(--text-muted);
-    border-top-color: var(--border-default);
-}
+/* 
+   צבעי טקסט ותגיות בכרטיס - יטופלו עם dark: prefixes ב-HTML.
+.dark .video-card .video-title a { color: #F1F5F9; } /* slate-100 */
+/* .dark .video-card .video-title a:hover { color: #c4b5fd; } /* purple-300 */
+/* .dark .video-card .video-tags span { background-color: #581c87; color: #ddd6fe; } /* purple-800, purple-200 */
+/* .dark .video-card .video-category-display { color: #94a3b8; border-top-color: #334155; } /* slate-400, slate-700 */
+*/
+
 
 /* Active Nav Link */
 header nav .nav-link {
     transition: color 0.2s ease, background-color 0.2s ease;
 }
+/* 
+   עיצוב קישור פעיל - הקלאסים ב-HTML (active ו-dark:active) יטפלו בזה.
+   אין צורך בהגדרה נוספת כאן אם ה-HTML מוגדר נכון.
 header nav .nav-link.active {
     color: var(--primary-color); 
-    font-weight: 600; /* Tailwind: font-semibold */
+    font-weight: 600; 
     background-color: var(--primary-color-light);
 }
 .dark header nav .nav-link.active {
-    color: theme('colors.purple.400'); 
-    background-color: theme('colors.purple.500 / 0.2'); /* סגול שקוף יותר */
-}
-/* הוספת קו תחתון לקישור פעיל בניווט (אופציונלי) */
-/*
-header nav .nav-link.active::after {
-    content: '';
-    position: absolute;
-    bottom: 4px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 50%;
-    height: 2px;
-    background-color: var(--primary-color);
-    border-radius: 1px;
-    transition: background-color 0.3s ease;
-}
-.dark header nav .nav-link.active::after {
-    background-color: theme('colors.purple.400');
-}
+    color: #a78bfa; /* purple-400 */
+    background-color: rgba(167, 139, 250, 0.2); /* purple-500 / 0.2 */
+/* }
 */
 
-
 /* Forms and Inputs */
+/* 
+   עיצוב שדות קלט - יטופל עם dark: prefixes ב-HTML.
 .search-input, .tag-input, #contact-section input, #contact-section textarea {
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 .dark .search-input, .dark .tag-input, 
 .dark #contact-section input, .dark #contact-section textarea {
-    background-color: theme('colors.slate.700');
-    border-color: theme('colors.slate.600');
-    color: theme('colors.slate.100');
-}
+    background-color: #334155; /* slate-700 */
+/*    border-color: #475569; /* slate-600 */
+/*    color: #F1F5F9; /* slate-100 */
+/* }
 .dark .search-input::placeholder, .dark .tag-input::placeholder,
 .dark #contact-section input::placeholder, .dark #contact-section textarea::placeholder {
-    color: theme('colors.slate.500');
-}
+    color: #64748b; /* slate-500 */
+/* }
 .dark .search-input:focus, .dark .tag-input:focus,
 .dark #contact-section input:focus, .dark #contact-section textarea:focus {
-    border-color: theme('colors.purple.400');
-    box-shadow: 0 0 0 1px theme('colors.purple.400'); /* ring-purple-400 */
+    border-color: #a78bfa; /* purple-400 */
+/*    box-shadow: 0 0 0 1px #a78bfa; 
 }
-.dark #contact-section input, .dark #contact-section textarea { /* רקע מעט שונה לטופס יצירת קשר */
-     background-color: theme('colors.slate.600');
-}
-
+.dark #contact-section input, .dark #contact-section textarea {
+     background-color: #475569; /* slate-600 */
+/* }
+*/
 
 /* Buttons */
-.btn-primary { /* Already styled by Tailwind, this is for overrides or additions */ }
-.btn-secondary { /* Already styled by Tailwind */ }
+/* 
+   עיצוב כפתורים - יטופל עם dark: prefixes ב-HTML.
 .dark .btn-secondary {
-    background-color: theme('colors.slate.700');
-    border-color: theme('colors.slate.500');
-    color: theme('colors.slate.200');
-}
+    background-color: #334155; /* slate-700 */
+/*    border-color: #64748b; /* slate-500 */
+/*    color: #E2E8F0; /* slate-200 */
+/* }
 .dark .btn-secondary:hover {
-    background-color: theme('colors.slate.600');
-}
-
+    background-color: #475569; /* slate-600 */
+/* }
+*/
 
 /* Tags */
-.tag { /* Popular tags */
+/* 
+   עיצוב תגיות - יטופל עם dark: prefixes ב-HTML.
+.tag { 
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 .dark .tag {
-    background-color: theme('colors.purple.800');
-    color: theme('colors.purple.200');
-}
+    background-color: #581c87; /* purple-800 */
+/*    color: #ddd6fe; /* purple-200 */
+/* }
 .dark .tag:hover {
-    background-color: theme('colors.purple.700');
-}
-.tag.active-search-tag { /* Selected popular tag */
-    /* Tailwind handles this via JS adding/removing classes like bg-purple-600 text-white */
-}
+    background-color: #6b21a8; /* purple-700 */
+/* }
 .dark .tag.active-search-tag {
-    background-color: theme('colors.purple.500');
-    color: theme('colors.white');
-}
+    background-color: #9333ea; /* purple-500 */
+/*    color: #ffffff; /* white */
+/* }
+*/
 
-/* Selected Tags Chips (the ones displayed below input) */
-#selected-tags-container > span { /* chip */
-    transition: background-color 0.2s ease;
-}
+/* Selected Tags Chips */
+/* 
 .dark #selected-tags-container > span {
-    background-color: theme('colors.purple.500');
-}
+    background-color: #9333ea; /* purple-500 */
+/* }
 .dark #selected-tags-container > span:hover {
-    background-color: theme('colors.purple.400');
-}
-
+    background-color: #a855f7; /* purple-400 */
+/* }
+*/
 
 /* Hebrew Filter Toggle */
-.dark #hebrew-filter-toggle:checked + .block { /* The slider track */
-    background-color: theme('colors.purple.500');
-}
-.dark #hebrew-filter-toggle:checked + .block + .dot { /* The dot when checked */
-     background-color: theme('colors.slate.100');
-}
-.dark #hebrew-filter-toggle + .block + .dot { /* The dot when unchecked */
-    background-color: theme('colors.slate.300');
-}
+/* 
+   עיצוב מתג פילטר עברית - יטופל עם dark: prefixes ו-peer-checked ב-HTML.
+.dark #hebrew-filter-toggle:checked + .block { 
+    background-color: #9333ea; /* purple-500 */
+/* }
+.dark #hebrew-filter-toggle:checked + .block + .dot { 
+     background-color: #F1F5F9; /* slate-100 */
+/* }
+.dark #hebrew-filter-toggle + .block + .dot { 
+    background-color: #cbd5e1; /* slate-300 */
+/* }
+*/
 
 /* Back to Top Button */
 #back-to-top-btn {
-    /* Tailwind classes handle most styling */
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-out;
 }
 #back-to-top-btn:hover {
     transform: scale(1.1);
 }
+/* 
+   עיצוב כפתור חזרה למעלה - יטופל עם dark: prefixes ב-HTML.
 .dark #back-to-top-btn {
-    background-color: theme('colors.purple.500');
-    /* focus:ring-offset-slate-900 (from HTML) */
-}
+    background-color: #9333ea; /* purple-500 */
+/* }
 .dark #back-to-top-btn:hover {
-     background-color: theme('colors.purple.400');
-}
+     background-color: #a855f7; /* purple-400 */
+/* }
+*/
 
-
-/* General prose styling for dark mode */
-.dark .prose-purple {
-    /* Tailwind's dark:prose-invert should handle most of this */
-    /* You can add more specific overrides here if needed */
-}
-.dark .prose h3 {
-    color: theme('colors.slate.100');
-}
-.dark .prose p {
-    color: theme('colors.slate.300');
-}
-.dark .prose a {
-    color: theme('colors.purple.400');
-}
-.dark .prose a:hover {
-    color: theme('colors.purple.300');
-}
-
+/* General prose styling for dark mode - Tailwind's dark:prose-invert should handle most of this */
+/* 
+.dark .prose h3 { color: #F1F5F9; } /* slate-100 */
+/* .dark .prose p { color: #cbd5e1; } /* slate-300 */
+/* .dark .prose a { color: #a78bfa; } /* purple-400 */
+/* .dark .prose a:hover { color: #c4b5fd; } /* purple-300 */
+/* }
+*/
 
 /* Footer */
+/* 
+   עיצוב פוטר - יטופל עם dark: prefixes ב-HTML.
 .dark #site-footer {
-    background-color: theme('colors.gray.950'); /* כהה יותר מה-body */
-    color: theme('colors.slate.500');
-}
+    background-color: #0f172a; /* gray-950 / slate-900 */
+/*    color: #64748b; /* slate-500 */
+/* }
 .dark #site-footer h3 {
-    color: theme('colors.slate.200');
-}
+    color: #E2E8F0; /* slate-200 */
+/* }
 .dark #site-footer a:hover {
-    color: theme('colors.purple.400');
-}
-.dark #site-footer .border-slate-700 { /* קו הפרדה בפוטר */
-    border-color: theme('colors.slate.800');
-}
+    color: #a78bfa; /* purple-400 */
+/* }
+.dark #site-footer .border-slate-700 { 
+    border-color: #1e293b; /* slate-800 */
+/* }
+*/
 
-/* Line clamp utility (if not using Tailwind plugin) */
+/* Line clamp utility (נשאר שימושי) */
 .line-clamp-2 {
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
-    /* fallback for non-webkit */
     max-height: calc(1.65em * 2); /* Adjust based on line-height and font-size */
-}
-body {
-    /* ... */
-    background-color: theme('colors.slate.100'); /* ברירת מחדל בהיר */
-    /* ... */
-}
-.dark body {
-    background-color: theme('colors.slate.900'); /* רקע כהה יותר ל-body */
 }
