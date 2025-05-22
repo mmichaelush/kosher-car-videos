@@ -185,6 +185,13 @@ header {
     color: var(--text-card-muted);
     border-top-color: var(--border-card);
 }
+/* אפקט ריחוף עדין לתמונת הערוץ */
+.video-channel-info .channel-logo {
+    transition: transform 0.2s ease-out;
+}
+.video-card:hover .video-channel-info .channel-logo {
+    transform: scale(1.1);
+}
 
 
 /* --- Forms and Inputs --- */
