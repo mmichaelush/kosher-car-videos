@@ -252,3 +252,13 @@ header {
     50% { transform: translateY(-10px); }
     100% { transform: translateY(0px); }
 }
+.video-duration {
+    /* לדוגמה, אם רוצים פונט אחר או גודל שונה */
+    /* font-family: 'YourSpecialFont', sans-serif; */
+    /* text-shadow: 1px 1px 2px rgba(0,0,0,0.5); /* צל קל לטקסט */
+}
+/* אולי תרצה שהרקע יהיה מעט שונה במצב כהה, למרות ששחור/70 אמור לעבוד טוב על רוב התמונות */
+.dark .video-duration {
+    /* background-color: rgba(0,0,0,0.85); /* רקע קצת יותר אטום */
+    /* color: var(--color-slate-100); */
+}
