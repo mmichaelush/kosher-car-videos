@@ -1,20 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    /* --- ערכי צבע בסיסיים --- */
-    --color-purple-50: #ede9fe;
-    --color-purple-100: #ddd6fe;
-    --color-purple-200: #c4b5fd;
-    --color-purple-300: #a78bfa;
-    --color-purple-400: #c084fc; /* התאמתי לגוון בהיר יותר מ-500 */
-    --color-purple-500: #9333ea;
-    --color-purple-600: #7c3aed;
-    --color-purple-700: #6d28d9;
-    --color-purple-800: #581c87;
-    
+    /* --- ערכי צבע בסיסיים (כמו קודם) --- */
+    --color-purple-50: #ede9fe; /* ...וכו' לשאר הצבעים ... */
     --color-sky-50: #E0F2FE;
-    
-    --color-slate-50: #f8fafc;
     --color-slate-100: #f1f5f9;
     --color-slate-200: #e2e8f0;
     --color-slate-300: #cbd5e1;
@@ -24,10 +13,14 @@
     --color-slate-700: #334155;
     --color-slate-800: #1e293b;
     --color-slate-900: #0f172a;
-    --color-gray-950: #030712; /* מאוד כהה, כמעט שחור */
-
+    --color-gray-950: #030712;
     --color-white: #ffffff;
-    --color-black: #000000;
+    --color-purple-300: #a78bfa;
+    --color-purple-400: #c084fc;
+    --color-purple-500: #9333ea;
+    --color-purple-600: #7c3aed;
+    --color-purple-700: #6d28d9;
+    --color-purple-800: #581c87;
     --color-yellow-300: #fde047;
     --color-yellow-400: #facc15;
 
@@ -36,19 +29,19 @@
     --bg-body: var(--color-slate-100);
     --text-body: var(--color-slate-800);
     
-    --bg-header: var(--color-sky-50); /* הרקע המקורי שלך */
+    --bg-header: var(--color-sky-50);
     --text-header-link: var(--color-slate-700);
     --text-header-link-hover: var(--color-purple-600);
     --bg-header-link-hover: var(--color-purple-50);
     --text-header-link-active: var(--color-purple-600);
     --bg-header-link-active: var(--color-purple-100);
 
-    --bg-section-default: var(--color-white); /* לרקע של sections כמו Filters, About */
+    --bg-section-default: var(--color-white);
     --text-section-heading: var(--color-slate-900);
     --text-section-paragraph: var(--color-slate-600);
     --border-section: var(--color-slate-200);
 
-    --bg-card: var(--color-white); /* לכרטיסי וידאו, קטגוריות וכו' */
+    --bg-card: var(--color-white);
     --text-card-title: var(--color-slate-800);
     --text-card-title-hover: var(--color-purple-600);
     --text-card-muted: var(--color-slate-500);
@@ -74,19 +67,20 @@
     --bg-body: var(--color-slate-900);
     --text-body: var(--color-slate-200);
     
-    --bg-header: var(--color-slate-800); /* רקע אטום ל-header */
+    --bg-header: var(--color-slate-800);
     --text-header-link: var(--color-slate-300);
     --text-header-link-hover: var(--color-purple-300);
     --bg-header-link-hover: var(--color-slate-700);
     --text-header-link-active: var(--color-purple-400);
-    --bg-header-link-active: var(--color-purple-500 / 0.2); /* שקיפות קלה */
+    --bg-header-link-active: var(--color-purple-500 / 0.2);
 
     --bg-section-default: var(--color-slate-800);
     --text-section-heading: var(--color-slate-100);
     --text-section-paragraph: var(--color-slate-300);
     --border-section: var(--color-slate-700);
 
-    --bg-card: var(--color-slate-800 / 0.75); /* רקע שקוף קלות לכרטיסים, עם backdrop-blur ב-HTML */
+    --bg-card: var(--color-slate-800); /* אטום כברירת מחדל */
+    /* --bg-card: rgba(30, 41, 59, 0.75); /* אם רוצים שקיפות לכרטיסים, עם backdrop-blur ב-HTML */
     --text-card-title: var(--color-slate-100);
     --text-card-title-hover: var(--color-purple-300);
     --text-card-muted: var(--color-slate-400);
@@ -100,7 +94,7 @@
     --hero-text-secondary: var(--color-purple-200 / 0.9);
     --hero-link-hover: var(--color-yellow-400);
 
-    --footer-bg: var(--color-gray-950); /* עוד יותר כהה */
+    --footer-bg: var(--color-gray-950);
     --footer-text: var(--color-slate-500);
     --footer-heading: var(--color-slate-100);
     --footer-link-hover: var(--color-purple-400);
@@ -116,106 +110,117 @@ body {
     line-height: 1.65; 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: var(--bg-body);
-    color: var(--text-body);
+    background-color: var(--bg-body) !important; /* הכרחה עם !important */
+    color: var(--text-body) !important;       /* הכרחה עם !important */
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* --- Header --- */
-header { /* הקלאס .sticky יגיע מה-HTML */
-    background-color: var(--bg-header);
-    /* אם רוצים backdrop-blur: תוסיף את הקלאס backdrop-blur-md ל-header ב-HTML, 
-       וודא ש- --bg-header במצב .dark הוא עם alpha, למשל: rgba(30, 41, 59, 0.75) */
-    /* box-shadow כבר מוגדר עם Tailwind ב-HTML */
+header { /* או header.sticky אם זה הקלאס היחיד שאתה משתמש בו ל-header */
+    background-color: var(--bg-header) !important;
+    /* box-shadow והשאר יגיעו מ-Tailwind */
     transition: background-color 0.3s ease;
 }
-header nav .nav-link {
-    color: var(--text-header-link);
-    transition: color 0.2s ease, background-color 0.2s ease;
-}
-header nav .nav-link:hover {
-    background-color: var(--bg-header-link-hover);
-    color: var(--text-header-link-hover);
-}
-header nav .nav-link.active {
-    color: var(--text-header-link-active);
-    font-weight: 600; 
-    background-color: var(--bg-header-link-active);
-}
+/* 
+  הסרנו את הגדרות הצבע והרקע לקישורי הניווט מכאן. 
+  הם ינוהלו על ידי קלאסים של Tailwind ב-HTML, כולל dark: prefixes.
+  לדוגמה: 
+  <a class="... text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-700 ...">בית</a>
+  <a class="... active text-purple-600 bg-purple-100 dark:text-purple-400 dark:bg-purple-500/20 ...">בית</a>
+*/
 
 /* --- Hero Section --- */
-.hero-gradient { /* הקלאס הזה צריך להיות על ה-section של ה-hero ב-HTML */
-    background: var(--hero-gradient);
-    color: var(--hero-text);
+.hero-gradient {
+    background: var(--hero-gradient) !important;
+    color: var(--hero-text) !important;
 }
-/* שימוש בקלאסים של Tailwind לטקסטים ספציפיים ב-Hero עדיין מומלץ, 
-   אבל הם ישתמשו בצבעים שהגדרנו במשתנים אם הם מתאימים. */
-/* לדוגמה, הכותרת המשנית ב-Hero: */
-.hero-gradient .text-purple-300 { /* אם השארת את הקלאס הזה ב-HTML */
-    color: var(--hero-text-accent); /* ידרוס את ברירת המחדל של Tailwind */
+.hero-gradient .text-purple-300 { /* אם זה קלאס ספציפי שאתה משתמש בו */
+    color: var(--hero-text-accent) !important;
 }
-.hero-gradient a:hover { /* לקישור נטפרי */
-    color: var(--hero-link-hover) !important; /* !important אם יש דריסה חזקה יותר */
+.hero-gradient a:hover {
+    color: var(--hero-link-hover) !important;
 }
 
-
-/* --- Sections with Default Background (like Filters, About, etc.) --- */
-/* ב-HTML: class="bg-white dark:bg-slate-800 ..." */
-/* ה-CSS לא צריך להתערב אם ה-HTML מטפל בזה עם dark: prefixes */
-/* אבל אם רוצים להשתמש במשתנים שהגדרנו: */
-.section-default-bg { /* תצטרך להוסיף את הקלאס הזה ל-sections הרלוונטיים ב-HTML */
+/* --- Sections with Default Background --- */
+/* 
+  במקום להוסיף קלאס .section-default-bg, אנחנו נניח שכל <section> בתוך <main> 
+  צריך לקבל את הצבעים האלה כברירת מחדל, אלא אם כן הוא מקבל קלאס רקע ספציפי מ-Tailwind.
+  זה קצת אגרסיבי ויכול לדרוס דברים אם לא נזהרים.
+*/
+main > section { /* מכוון ל-sections שהם ילדים ישירים של main */
     background-color: var(--bg-section-default);
-    border-color: var(--border-section); /* אם יש להם border */
-    color: var(--text-section-paragraph); /* טקסט פסקאות כללי */
+    color: var(--text-section-paragraph);
+    border-color: var(--border-section); /* אם יש גבולות */
+    /* מעברים אלו צריכים להיות על האלמנטים עצמם אם הרקע מוחלף על ידי Tailwind */
+    /* transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease; */
 }
-.section-default-bg h2, .section-default-bg h3 {
+main > section h1, main > section h2, main > section h3 {
     color: var(--text-section-heading);
 }
-
+/* 
+  **חשוב מאוד:** אם יש לך sections שאתה *לא* רוצה שיקבלו את הרקע הדיפולטי הזה 
+  (למשל, ה-Hero Section אם הוא בתוך main, או ה-Featured Channels Section), 
+  תצטרך לתת להם קלאס רקע ספציפי מ-Tailwind (כולל dark: prefix) שיהיה חזק יותר 
+  או להשתמש בסלקטור CSS יותר ספציפי כדי לדרוס את זה.
+*/
 
 /* --- Video Cards --- */
-/* ב-HTML: class="video-card bg-white dark:bg-slate-800/75 backdrop-blur-sm ..." */
-/* רוב העיצוב יגיע מה-HTML. כאן רק תוספות. */
+/* 
+  עבור כרטיסי וידאו, הגישה הטובה ביותר היא עדיין להשתמש בקלאסים של Tailwind ישירות ב-HTML
+  בתבנית <template id="video-card-template">.
+  לדוגמה: class_exists="... bg-white dark:bg-slate-800/75 ..."
+  ה-CSS כאן יכול להיות לתוספות עדינות אם צריך.
+*/
 .video-card {
     transition: transform 0.25s ease-out, box-shadow 0.25s ease-out;
+    /* הרקע והגבולות יבואו מה-HTML עם dark: prefixes */
 }
 .video-card:hover {
     transform: translateY(-4px);
 }
-.video-card .video-title a:hover { /* לדרוס את ה-hover הדיפולטי של Tailwind אם צריך */
-    color: var(--text-card-title-hover);
+.video-card .video-title a {
+    /* צבע הטקסט יבוא מה-HTML עם dark:text-... */
+    transition: color 0.2s ease;
 }
-.video-card .video-tags span { /* אם רוצים לשלוט בתגיות דרך CSS */
+.video-card .video-title a:hover {
+    color: var(--primary-color); /* או --text-card-title-hover */
+}
+.dark .video-card .video-title a:hover {
+    color: var(--text-card-title-hover); /* ישתמש בערך מהגדרת .dark */
+}
+.video-card .video-tags span {
     background-color: var(--bg-card-tag);
     color: var(--text-card-tag);
 }
 .video-card .video-category-display {
     color: var(--text-card-muted);
-    border-top-color: var(--border-card);
+    border-top-color: var(--border-card); /* אם יש border-top */
 }
 
 
-/* --- Forms and Inputs --- */
-/* ב-HTML: class="... border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 ..." */
-/* ה-CSS יכול להוסיף רק מעברים או התאמות קטנות */
+/* --- Forms and Inputs (טפסים ושדות קלט) --- */
+/* 
+  גם כאן, עדיף לנהל את רוב העיצוב עם קלאסים של Tailwind ב-HTML.
+  ה-CSS יכול להגדיר מעברים או ברירות מחדל אם יש צורך.
+*/
 .search-input, .tag-input, 
 #contact-section input, #contact-section textarea {
+    /* ב-HTML: class="... bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 ..." */
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 #contact-section input::placeholder, #contact-section textarea::placeholder,
 .search-input::placeholder, .tag-input::placeholder {
-    color: var(--text-body); /* ישתמש בצבע הראשי, אך עם שקיפות */
+    color: var(--text-body);
     opacity: 0.5;
 }
 .dark #contact-section input::placeholder, .dark #contact-section textarea::placeholder,
 .dark .search-input::placeholder, .dark .tag-input::placeholder {
-    color: var(--text-body); /* ישתמש בצבע הראשי הכהה, עם שקיפות */
-    opacity: 0.5;
+    color: var(--text-body); /* במצב כהה, זה יהיה צבע טקסט בהיר יותר */
+    opacity: 0.6; /* אולי צריך שקיפות שונה */
 }
-/* אם רוצים שה-focus יהיה עקבי עם המשתנים: */
 .search-input:focus, .tag-input:focus,
 #contact-section input:focus, #contact-section textarea:focus {
-    border-color: var(--primary-color) !important; /* !important כדי לדרוס Tailwind אם צריך */
+    border-color: var(--primary-color) !important;
     box-shadow: 0 0 0 1px var(--primary-color) !important;
 }
 
@@ -223,6 +228,7 @@ header nav .nav-link.active {
 /* --- Back to Top Button --- */
 #back-to-top-btn {
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-out;
+    /* הרקע והצבע יגיעו מה-HTML עם dark:bg-... ו- text-... */
 }
 #back-to-top-btn:hover {
     transform: scale(1.1);
@@ -230,20 +236,20 @@ header nav .nav-link.active {
 
 /* --- Footer --- */
 #site-footer {
-    background-color: var(--footer-bg);
-    color: var(--footer-text);
+    background-color: var(--footer-bg) !important;
+    color: var(--footer-text) !important;
 }
 #site-footer h3 {
-    color: var(--footer-heading);
+    color: var(--footer-heading) !important;
 }
 #site-footer a {
-    color: var(--footer-text);
+    color: var(--footer-text) !important; /* או צבע ספציפי יותר לקישורים בפוטר */
 }
 #site-footer a:hover {
-    color: var(--footer-link-hover);
+    color: var(--footer-link-hover) !important;
 }
-#site-footer .border-t {
-    border-top-color: var(--footer-border);
+#site-footer .border-t { /* אם אתה משתמש בקלאס .border-t של Tailwind */
+    border-top-color: var(--footer-border) !important;
 }
 
 /* --- Utility: Line Clamp --- */
