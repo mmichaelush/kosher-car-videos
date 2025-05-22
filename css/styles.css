@@ -63,43 +63,40 @@
 }
 
 .dark {
-    /* === Dark Mode Variables - גוונים מתונים יותר לניגודיות === */
-    --bg-body: var(--color-slate-900);              /* רקע גוף - עדיין כהה מאוד ליצירת עומק */
-    --text-body: var(--color-slate-300);            /* טקסט גוף - slate-300 במקום 200, פחות בוהק */
+    /* === Dark Mode Variables - עם טקסט בהיר יותר === */
+    --bg-body: var(--color-slate-900);         
+    --text-body: var(--color-slate-100);       /* <--- שונה לבהיר מאוד */
     
-    --bg-header: var(--color-slate-800);            /* Header - טיפה בהיר יותר מהגוף */
-    --text-header-link: var(--color-slate-300);
-    --text-header-link-hover: var(--color-purple-400);
-    --bg-header-link-hover: var(--color-slate-700); /* רקע hover לקישור, מעט בהיר מה-header */
-    --text-header-link-active: var(--color-purple-400);
-    --bg-header-link-active: var(--color-purple-800 / 0.5); /* סגול כהה יותר עם שקיפות */
+    --bg-header: var(--color-slate-800);       
+    --text-header-link: var(--color-slate-200); /* <--- הבהרתי גם את קישורי ההדר */
+    --text-header-link-hover: var(--color-purple-300); /* <--- שונה לבהיר יותר */
+    --bg-header-link-hover: var(--color-slate-700);
+    --text-header-link-active: var(--color-purple-300); /* <--- שונה לבהיר יותר */
+    --bg-header-link-active: var(--color-purple-700 / 0.3); /* שקיפות לסגול כהה יותר */
 
-    --bg-section-default: var(--color-slate-800);   /* רקע ל-sections, זהה ל-header או טיפה שונה */
-                                                    /* אפשרות נוספת: var(--color-slate-800 / 0.95) לשקיפות מינימלית אם יש רקע מעניין מאחור */
-    --text-section-heading: var(--color-slate-100); /* כותרות עדיין בהירות מאוד */
-    --text-section-paragraph: var(--color-slate-400); /* טקסט פסקאות - slate-400, קריא יותר */
+    --bg-section-default: var(--color-slate-800);   
+    --text-section-heading: var(--color-slate-50);  /* <--- כותרות כמעט לבנות */
+    --text-section-paragraph: var(--color-slate-300);/* <--- פסקאות בהירות יותר */
     --border-section: var(--color-slate-700);
 
-    /* רקע לכרטיסים ורכיבים פנימיים יותר - זה המקום העיקרי ליצירת ניגודיות עדינה */
-    --bg-card: var(--color-slate-700);              /* כרטיסים - בהירים יותר מה-sections */
-                                                    /* אם רוצים אפקט "צף" יותר: var(--color-slate-700 / 0.8) עם backdrop-blur ב-HTML */
-    --text-card-title: var(--color-slate-100);
+    --bg-card: var(--color-slate-700);              
+    --text-card-title: var(--color-slate-50);       /* <--- כותרות כרטיסים כמעט לבנות */
     --text-card-title-hover: var(--color-purple-300);
-    --text-card-muted: var(--color-slate-400);
-    --border-card: var(--color-slate-600);          /* גבול מעט בהיר יותר מהכרטיס */
+    --text-card-muted: var(--color-slate-400);    
+    --border-card: var(--color-slate-600);      
     --bg-card-tag: var(--color-purple-700);         
     --text-card-tag: var(--color-purple-200);
 
     --hero-gradient: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
     --hero-text: var(--color-slate-50);
-    --hero-text-accent: var(--color-purple-400);
-    --hero-text-secondary: var(--color-purple-200 / 0.9);
-    --hero-link-hover: var(--color-yellow-400);
+    --hero-text-accent: var(--color-purple-300); /* <--- שונה לבהיר יותר */
+    --hero-text-secondary: var(--color-purple-200 / 0.95); /* כמעט אטום */
+    --hero-link-hover: var(--color-yellow-300); /* <--- שונה לבהיר יותר */
 
-    --footer-bg: var(--color-gray-950);             /* Footer - יכול להיות כהה כמו הגוף או כהה יותר */
-    --footer-text: var(--color-slate-500);
+    --footer-bg: var(--color-gray-950);         
+    --footer-text: var(--color-slate-400);      /* <--- טקסט פוטר מעט בהיר יותר */
     --footer-heading: var(--color-slate-100);
-    --footer-link-hover: var(--color-purple-400);
+    --footer-link-hover: var(--color-purple-300); /* <--- שונה לבהיר יותר */
     --footer-border: var(--color-slate-800);
 }
 
