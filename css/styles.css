@@ -5,61 +5,20 @@
     --primary-color-hover: #6d28d9; /* purple-700 */
     --primary-color-light: #ede9fe; /* purple-50 */
 
-    /* === Light Mode Colors === */
-    --body-bg: #F1F5F9;         /* slate-100 */
-    --body-text: #1E293B;       /* slate-800 */
-    
-    --header-bg: #E0F2FE;       /* sky-50 (הצבע המקורי שלך ל-Header) */
-    --header-text: #1E293B;     /* slate-800 */
-
-    --card-bg: #FFFFFF;         /* white */
-    --card-text: #1E293B;       /* slate-800 */
-    --card-border: #E2E8F0;     /* slate-200 */
-
-    --muted-text: #64748B;      /* slate-500 */
-    --border-color: #E2E8F0;    /* slate-200 */
-
-    --hero-gradient-start: #5b21b6; /* purple-700 */
-    --hero-gradient-end: #7c3aed;   /* purple-600 */
-    --hero-text-main: #FFFFFF;
-    --hero-text-accent: #d8b4fe; /* purple-300 */
-    --hero-text-secondary: #ede9fe; /* purple-100 */
-
-    --footer-bg: #0F172A;       /* slate-900 */
-    --footer-text: #94A3B8;     /* slate-400 */
-    --footer-heading-text: #FFFFFF;
-    --footer-link-hover: #a78bfa; /* purple-400 */
-    --footer-border: #334155;   /* slate-700 */
+    /* משתנים שעדיין יכולים להיות שימושיים לרכיבים ספציפיים אם תרצה */
+    --hero-gradient-start: #5b21b6;
+    --hero-gradient-end: #7c3aed;
+    --footer-bg: #0F172A;
+    --footer-text: #94A3B8;
+    /* ... עוד משתנים אם יש לך צבעים מותאמים אישית שאינם מ-Tailwind ... */
 }
 
 .dark {
-    /* === Dark Mode Colors === */
-    --body-bg: #0F172A;         /* slate-900 (או #1E293B slate-800 אם 900 כהה מדי) */
-    --body-text: #E2E8F0;       /* slate-200 */
-    
-    --header-bg: #1E293B;       /* slate-800 (אטום) */
-    /* --header-bg: rgba(30, 41, 59, 0.75); /* slate-800/75 (אם אתה *כן* רוצה שקיפות עם backdrop-blur) */
-    --header-text: #E2E8F0;     /* slate-200 */
-
-    --card-bg: #1E293B;         /* slate-800 (יכול להיות גם #334155 slate-700) */
-    /* --card-bg: rgba(30, 41, 59, 0.75); /* slate-800/75 (אם רוצים שקיפות לכרטיסים) */
-    --card-text: #E2E8F0;       /* slate-200 */
-    --card-border: #475569;     /* slate-600 */
-
-    --muted-text: #94A3B8;      /* slate-400 */
-    --border-color: #475569;    /* slate-600 */
-
-    --hero-gradient-start: #4c1d95; /* כהה יותר */
-    --hero-gradient-end: #6d28d9;   /* כהה יותר */
-    --hero-text-main: #F8FAFC;      /* slate-50 */
-    --hero-text-accent: #c084fc;    /* purple-400 */
-    --hero-text-secondary: #ddd6fe; /* purple-200 */
-
-    --footer-bg: #020617;       /* gray-950 / slate-950 (אפילו יותר כהה) */
-    --footer-text: #64748B;     /* slate-500 */
-    --footer-heading-text: #E2E8F0; /* slate-200 */
-    --footer-link-hover: #c084fc; /* purple-400 */
-    --footer-border: #1E293B;   /* slate-800 */
+    --hero-gradient-start: #4c1d95;
+    --hero-gradient-end: #6d28d9;
+    --footer-bg: #020617; 
+    --footer-text: #64748B;
+    /* ... */
 }
 
 html { 
@@ -71,178 +30,43 @@ body {
     line-height: 1.65; 
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: var(--body-bg);
-    color: var(--body-text);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    /* 
+       הסרנו את הגדרות background-color ו-color מכאן. 
+       הן יגיעו ישירות מהקלאסים של Tailwind על תג ה-<body> ב-HTML.
+    */
+    transition: background-color 0.3s ease, color 0.3s ease; /* עדיין טוב שיהיה למעברים חלקים */
 }
 
 /* --- Header --- */
-header.sticky { /* ההנחה שה-header שלך מקבל את הקלאס 'sticky' מה-HTML */
-    background-color: var(--header-bg);
-    /* אם אתה רוצה backdrop-blur במצב כהה, תצטרך להוסיף את הקלאס backdrop-blur-md ל-header ב-HTML */
-    /* והמשתנה --header-bg במצב .dark יצטרך להיות עם alpha, למשל: rgba(30, 41, 59, 0.75) */
-    box-shadow: theme('boxShadow.md'); /* אם אתה רוצה שהצל יבוא מ-Tailwind */
-    transition: background-color 0.3s ease;
-}
-header nav .nav-link {
-    color: var(--header-text); /* ישתנה אוטומטית עם .dark */
-    transition: color 0.2s ease, background-color 0.2s ease;
-}
-header nav .nav-link:hover {
-    background-color: var(--primary-color-light);
-    color: var(--primary-color);
-}
-.dark header nav .nav-link:hover {
-    background-color: rgba(124, 58, 237, 0.15); /* purple-600/15 לדוגמה */
-    color: var(--primary-color); /* ישתנה לערך הכהה של --primary-color אם תגדיר אותו, או ישאר הסגול הרגיל */
-}
-header nav .nav-link.active {
-    color: var(--primary-color); 
-    font-weight: 600; 
-    background-color: var(--primary-color-light);
-}
-.dark header nav .nav-link.active {
-    color: var(--primary-color); /* יכול להיות גם --primary-color-dark אם תגדיר */
-    background-color: rgba(124, 58, 237, 0.25); /* purple-600/25 */
-}
+/* 
+   ההגדרה הזו יכולה להישאר אם אתה רוצה שה-header ישתמש במשתנה CSS.
+   אבל אם ה-HTML שלך הוא <header class="bg-sky-50 dark:bg-slate-800 ...">, אז אין צורך בזה.
+   אני אשאיר את זה כהערה למקרה שתרצה גמישות.
+*/
+/*
+header.sticky { 
+    background-color: #E0F2FE; /* sky-50 */
+/* }
+.dark header.sticky {
+    background-color: #1E293B; /* slate-800 */
+/* }
+*/
 
-/* --- Hero Section --- */
+/* שאר הגדרות ה-CSS יכולות להישאר כפי שהיו, או שתפשט אותן גם כן */
+/* אם אתה רוצה להסתמך יותר על Tailwind prefixes ב-HTML. */
+/* לדוגמה: */
+
 .hero-gradient {
     background: linear-gradient(135deg, var(--hero-gradient-start) 0%, var(--hero-gradient-end) 100%);
-    color: var(--hero-text-main);
-}
-.hero-gradient .text-purple-300 { /* לדוגמה, הכותרת המשנית */
-    color: var(--hero-text-accent);
-}
-.hero-gradient .text-purple-100, 
-.hero-gradient .text-purple-200 { /* פסקאות */
-    color: var(--hero-text-secondary);
-}
-/* כפתורים ב-Hero - עדיף לנהל עם קלאסים של Tailwind ב-HTML, כולל dark: */
-
-
-/* --- Main Content Sections (כללי) --- */
-main section { /* הגדרה כללית, יכולה להדרס על ידי קלאסים ספציפיים יותר */
-    /* לדוגמה, אם לכל section יש רקע משלו */
-}
-/* Filters Section, About Section, Contact Section */
-section.bg-white, /* במצב בהיר */
-.bg-white { /* כללי לכל אלמנט עם bg-white */
-    background-color: var(--card-bg); /* #FFFFFF */
-    border-color: var(--border-color);
-}
-.dark section.bg-white, /* במצב כהה, אם הקלאס bg-white נשאר ב-HTML */
-.dark .bg-white { 
-    background-color: var(--card-bg); /* יהיה הצבע הכהה של --card-bg */
-    border-color: var(--border-color);
-}
-/* כותרות בתוך Sections */
-section h2, section h3 {
-    color: var(--body-text); /* יורש את צבע הטקסט הראשי, שמשתנה עם .dark */
-}
-/* טקסט כללי בתוך Sections */
-section p {
-    color: var(--muted-text); /* או var(--body-text) אם רוצים פחות muted */
-}
-.dark section p { /* אם רוצים שליטה יותר פרטנית על פסקאות במצב כהה */
-    color: var(--muted-text); /* יקבל את הערך הכהה של --muted-text */
+    /* צבע הטקסט של Hero יוגדר ב-HTML עם dark:text-... */
 }
 
-
-/* --- Video Cards --- */
-.video-card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--card-border);
-    box-shadow: theme('boxShadow.lg');
-    transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, background-color 0.3s ease, border-color 0.3s ease;
-}
-.video-card:hover {
-    transform: translateY(-4px);
-    box-shadow: theme('boxShadow.xl');
-}
-.video-card .video-title a {
-    color: var(--card-text);
-    transition: color 0.2s ease;
-}
-.video-card .video-title a:hover {
-    color: var(--primary-color);
-}
-/* תגיות בתוך כרטיס הווידאו - עדיף לנהל עם קלאסים של Tailwind ב-HTML */
-/* .video-card .video-tags span { ... } */
-.video-card .video-category-display {
-    color: var(--muted-text);
-    border-top: 1px solid var(--border-color);
-}
-
-/* --- Forms and Inputs --- */
-.search-input, .tag-input, 
-#contact-section input, #contact-section textarea {
-    background-color: var(--card-bg); /* יכול להיות גם גוון מעט שונה כמו slate-50 */
-    border: 1px solid var(--border-color);
-    color: var(--body-text);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease;
-}
-.search-input::placeholder, .tag-input::placeholder,
-#contact-section input::placeholder, #contact-section textarea::placeholder {
-    color: var(--muted-text);
-    opacity: 0.7;
-}
-.search-input:focus, .tag-input:focus,
-#contact-section input:focus, #contact-section textarea:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 1px var(--primary-color); /* אפקט טבעת */
-}
-/* אם רוצים רקע קצת שונה לטופס יצירת קשר במצב כהה */
-.dark #contact-section input, .dark #contact-section textarea {
-     background-color: #334155; /* slate-700, לדוגמה */
-}
-
-
-/* --- Buttons --- */
-/* כפתורים ראשיים ומשניים - עדיף לנהל עם קלאסים של Tailwind ב-HTML, כולל dark: */
-/* לדוגמה, .btn-primary יקבל ב-HTML: class="... bg-purple-600 dark:bg-purple-500 ..." */
-
-
-/* --- Tags (Popular & Selected) --- */
-/* תגיות פופולריות ותגיות נבחרות - עדיף לנהל עם קלאסים של Tailwind ב-HTML, כולל dark: */
-
-
-/* --- Hebrew Filter Toggle --- */
-/* המתג עצמו - עדיף לנהל עם קלאסים של Tailwind ו-peer-checked ב-HTML */
-
-
-/* --- Back to Top Button --- */
-#back-to-top-btn {
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-out, background-color 0.3s ease;
-    /* הקלאסים של הרקע והצבע יבואו מה-HTML עם dark: prefixes */
-}
-#back-to-top-btn:hover {
-    transform: scale(1.1);
-}
-
-
-/* --- Footer --- */
 #site-footer {
     background-color: var(--footer-bg);
     color: var(--footer-text);
-    transition: background-color 0.3s ease, color 0.3s ease;
 }
-#site-footer h3 {
-    color: var(--footer-heading-text);
-}
-#site-footer a {
-    color: var(--footer-text); /* צבע ברירת מחדל לקישור בפוטר */
-    transition: color 0.2s ease;
-}
-#site-footer a:hover {
-    color: var(--footer-link-hover);
-}
-#site-footer .border-t { /* הקו המפריד בפוטר */
-    border-top-color: var(--footer-border);
-}
+/* ... שאר הכללים ... */
 
-
-/* Line clamp utility */
 .line-clamp-2 {
     overflow: hidden;
     display: -webkit-box;
