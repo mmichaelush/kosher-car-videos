@@ -5,15 +5,15 @@
     "category": "troubleshooting",
     "tags": ["עשה זאת בעצמך", "כריספיקס"],
     "hebrewContent": false,
-    "channel": "ChrisFix", /* שם אחיד לערוץ */
+    "channel": "ChrisFix", 
     "channelImage": "https://yt3.googleusercontent.com/ytc/AIdro_lsMlPXxQcSMI_EveG6eb7sd1T9vFkEQrXKruSjabO_ANY=s176-c-k-c0x00ffffff-no-rj-mo", /* לדוגמה, הלוגו של ChrisFix */
-    "videoThumbnail": "https://i.ytimg.com/vi/_U5XcrifRjQ/hqdefault.jpg" /* שיניתי שם לבהירות */
+    "videoThumbnail": "https://i.ytimg.com/vi/_U5XcrifRjQ/hqdefault.jpg"
   },
   {
     "id": "o5YhUNX-F-M",
     "title": "How to Replace the Oil in a Tesla",
     "category": "troubleshooting",
-    "tags": ["עשה זאת בעצמך", "כריספיקס"], /* אולי טעות כאן? הכנופיה? */
+    "tags": ["עשה זאת בעצמך", "כריספיקס"],
     "hebrewContent": false,
     "channel": "הכנופיה",
     "channelImage": "https://yt3.googleusercontent.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s176-c-k-c0x00ffffff-no-rj-mo", /* לוגו הכנופיה */
