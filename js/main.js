@@ -329,15 +329,18 @@ document.addEventListener('DOMContentLoaded', function() {
         return tagIcons[tag] || "fa-tag";
     }
 
-   function createVideoCardElement(video) {
-    if (!videoCardTemplate) { console.error("CAR-טיב: Video card template not found."); return null; }
+ function createVideoCardElement(video) {
+    if (!videoCardTemplate) { 
+        console.error("CAR-טיב: Video card template not found."); 
+        return null; 
+    }
     
-    // בדיקת שדות חובה מה-JSON המעודכן
+    // בדיקת שדות חובה מה-JSON (כולל duration ו-thumbnail)
     if (!video || typeof video.id !== 'string' || 
         typeof video.title !== 'string' ||
-        typeof video.duration !== 'string' || // שדה חדש
+        typeof video.duration !== 'string' || 
         typeof video.channel !== 'string' ||
-        typeof video.thumbnail !== 'string' || // שונה מ-videoThumbnail
+        typeof video.thumbnail !== 'string' || 
         typeof video.category !== 'string' || 
         !Array.isArray(video.tags)
         /* video.channelImage הוא אופציונלי */
@@ -348,8 +351,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const cardClone = videoCardTemplate.content.cloneNode(true);
     const cardElement = cardClone.querySelector('article');
-    if (!cardElement) { console.error("CAR-טיב: Could not find 'article' in template clone."); return null; }
+    if (!cardElement) { 
+        console.error("CAR-טיב: Could not find 'article' in template clone."); 
+        return null; 
+    }
 
+    // הפעלת הקלאסים שהוגדרו ב-class_exists
     cardElement.querySelectorAll('[class_exists]').forEach(el => {
         el.setAttribute('class', el.getAttribute('class_exists'));
         el.removeAttribute('class_exists');
@@ -365,30 +372,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const thumbnailImgElement = cardElement.querySelector('.video-thumbnail-img');
     const playButtonElement = cardElement.querySelector('.play-video-button');
     const videoThumbnailContainer = cardElement.querySelector('.video-thumbnail-container');
-    const durationElement = cardElement.querySelector('.video-duration'); // אלמנט חדש
+    const durationElement = cardElement.querySelector('.video-duration');
 
-    if (thumbnailImgElement && video.thumbnail) { // שימוש ב-video.thumbnail
+    if (thumbnailImgElement && video.thumbnail) {
         thumbnailImgElement.src = video.thumbnail;
         thumbnailImgElement.alt = `תמונה ממוזערת של הסרטון: ${sanitizedTitle}`;
-        thumbnailImgElement.classList.remove('hidden');
+        thumbnailImgElement.classList.remove('hidden'); // ודא שהוא גלוי אם יש תמונה
 
         thumbnailImgElement.onerror = function() {
-            console.warn(`CAR-טיב: Error loading video thumbnail for ${video.id}.`);
+            console.warn(`CAR-טיב: Error loading video thumbnail for ${video.id}. Hiding image.`);
             thumbnailImgElement.classList.add('hidden');
-            if (videoThumbnailContainer) {
-                videoThumbnailContainer.classList.add('bg-slate-300', 'dark:bg-slate-700');
+            if (videoThumbnailContainer) { // החזר רקע דיפולטי אם התמונה נכשלה
+                videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700'); // קלאסים מהתבנית המקורית
             }
+            // כפתור ה-Play כבר אמור להיות גלוי
         };
     } else if (thumbnailImgElement) {
-        thumbnailImgElement.classList.add('hidden');
-         if (videoThumbnailContainer) {
-             videoThumbnailContainer.classList.add('bg-slate-300', 'dark:bg-slate-700');
+        thumbnailImgElement.classList.add('hidden'); // אם אין URL לתמונה
+         if (videoThumbnailContainer) { 
+             videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700');
          }
     }
 
     if (durationElement && video.duration) {
         durationElement.textContent = escapeHTML(video.duration);
-        durationElement.classList.remove('hidden'); // ודא שהוא גלוי אם יש תוכן
+        // הקלאסים לעיצוב ה-duration כבר נמצאים ב-HTML template
     } else if (durationElement) {
         durationElement.classList.add('hidden'); // הסתר אם אין מידע על משך
     }
@@ -399,18 +407,27 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     const iframeEl = cardElement.querySelector('.video-iframe');
-    if (iframeEl) { iframeEl.title = `נגן וידאו: ${sanitizedTitle}`; iframeEl.setAttribute('loading', 'lazy'); }
+    if (iframeEl) { 
+        iframeEl.title = `נגן וידאו: ${sanitizedTitle}`; 
+        iframeEl.setAttribute('loading', 'lazy'); 
+    }
     
     const videoTitleLinkEl = cardElement.querySelector('.video-link');
-    if (videoTitleLinkEl) { videoTitleLinkEl.href = videoLink; videoTitleLinkEl.textContent = sanitizedTitle; }
+    if (videoTitleLinkEl) { 
+        videoTitleLinkEl.href = videoLink; 
+        videoTitleLinkEl.textContent = sanitizedTitle; 
+    }
     
     // --- מידע על הערוץ ---
     const channelLogoElement = cardElement.querySelector('.channel-logo');
     const channelNameElement = cardElement.querySelector('.channel-name');
 
-    if (channelNameElement && video.channel) { // ודא ששדה הערוץ קיים
+    if (channelNameElement && video.channel) {
         channelNameElement.textContent = escapeHTML(video.channel);
+    } else if (channelNameElement) {
+        channelNameElement.textContent = ''; // נקה אם אין שם ערוץ
     }
+
 
     if (channelLogoElement && video.channelImage) {
         channelLogoElement.src = video.channelImage;
@@ -418,33 +435,49 @@ document.addEventListener('DOMContentLoaded', function() {
         channelLogoElement.classList.remove('hidden');
 
         channelLogoElement.onerror = function() {
-            console.warn(`CAR-טיב: Error loading channel image for ${video.channel}.`);
+            console.warn(`CAR-טיב: Error loading channel image for ${video.channel}. Hiding logo.`);
             channelLogoElement.classList.add('hidden');
         };
     } else if (channelLogoElement) {
         channelLogoElement.classList.add('hidden');
     }
 
-    // --- תגיות וקטגוריה (כמו קודם) ---
+    // --- תגיות ---
     const tagsContainerEl = cardElement.querySelector('.video-tags');
     if (tagsContainerEl) {
         if (video.tags && video.tags.length > 0) {
             tagsContainerEl.innerHTML = video.tags.map(tag => 
-                `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(capitalizeFirstLetter(tag))}</span>`
+                // כאן הקלאסים המעודכנים לתגיות בתוך הכרטיס, אם רצית מראה שונה
+                `<span class="inline-block bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300 text-xs font-medium px-2 py-0.5 rounded-full transition-colors hover:bg-purple-100 dark:hover:bg-purple-700 hover:text-purple-700 dark:hover:text-purple-300 cursor-default">${escapeHTML(capitalizeFirstLetter(tag))}</span>`
+                // אם אתה רוצה שהתגיות יהיו לחיצות, שנה cursor-default ל-cursor-pointer
+                // והוסף event listener על tagsContainerEl כדי לטפל בלחיצות על תגיות
             ).join('');
-        } else { tagsContainerEl.innerHTML = ''; }
+        } else { 
+            tagsContainerEl.innerHTML = ''; 
+            // אפשר גם להסתיר את ה-div כולו אם אין תגיות:
+            // tagsContainerEl.classList.add('hidden'); 
+        }
     }
 
+    // --- קטגוריה ---
     const categoryDisplayEl = cardElement.querySelector('.video-category-display');
     if (categoryDisplayEl) {
         const categoryData = PREDEFINED_CATEGORIES.find(c => c.id === video.category);
         const categoryName = categoryData ? categoryData.name : video.category;
         const categoryIcon = categoryData ? categoryData.icon : 'fa-folder-open';
-        categoryDisplayEl.innerHTML = `<i class="fas ${categoryIcon} ml-1.5 opacity-70"></i> ${escapeHTML(categoryName)}`;
+        // ה-HTML template כבר מכיל את האייקון, אנחנו רק מעדכנים את הטקסט
+        // ודא שה-span בתוך categoryDisplayEl יכול להכיל את הטקסט, או שנה את ה-innerHTML של categoryDisplayEl כולו.
+        // אם ה-HTML הוא: <span class_exists="video-category-display"><i ...></i><!-- Category --></span>
+        // אז נעדכן את ה-textContent של ה-span כולו או נחליף את ההערה:
+        const iconElement = categoryDisplayEl.querySelector('i');
+        categoryDisplayEl.innerHTML = ''; // נקה תוכן קודם
+        if (iconElement) categoryDisplayEl.appendChild(iconElement.cloneNode(true)); // הוסף את האייקון מחדש
+        categoryDisplayEl.appendChild(document.createTextNode(` ${escapeHTML(categoryName)}`)); // הוסף רווח ושם קטגוריה
     }
     
     return cardElement;
 }
+
     function renderFilteredVideos() {
         if (!videoCardsContainer) { console.error("CAR-טיב: Missing videoCardsContainer."); return; }
 
