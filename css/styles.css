@@ -1,7 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    /* --- Purple Color Palette (Main Accent) --- */
     --color-purple-50: #f5f3ff;
     --color-purple-100: #ede9fe;
     --color-purple-200: #ddd6fe;
@@ -13,37 +12,22 @@
     --color-purple-800: #5b21b6;
     --color-purple-900: #4c1d95;
 
-    /* --- Sky Blue Color (Used for Header Background) --- */
-    /* === שינוי מבוקש 1: הכותרת העליונה במצב יום לתכלת קצת יותר בהיר === */
-    /* נשנה את --color-sky-50 לגוון תכלת אפילו יותר בהיר. */
-    /* לדוגמה, אם #f0f9ff היה המקורי (Tailwind sky-50), */
-    /* נבחר גוון כמו #f7fcff (מאוד בהיר) או נשתמש ב-sky-50 עם שקיפות אם Tailwind תומך בכך ישירות בקלאס. */
-    /* כרגע, נניח שאתה רוצה גוון סולידי בהיר יותר: */
-    --color-sky-50-original: #f0f9ff; /* שומרים את המקורי למקרה הצורך */
-    --color-sky-50: #f7fcff; /* תכלת בהיר מאוד מאוד */
-    /* הערה: ה-header שלך מקבל את צבע הרקע דרך הקלאס 'bg-sky-50/95' ב-HTML. */
-    /* אם נרצה להשתמש במשתנה CSS כאן, נצטרך להסיר את הקלאס מה-HTML */
-    /* או לדרוס אותו עם '!important' כאן, או להגדיר משתנה לשימוש ב-Tailwind (פחות נפוץ לשינוי צבע בסיסי). */
-    /* לצורך פשטות, אם תרצה להשתמש בערך החדש של --color-sky-50, תצטרך לשנות את הקלאס */
-    /* ב-HTML של ה-header או להגדיר את --bg-header כאן מחדש עם הערך החדש. */
+    --color-sky-50: #f7fcff; /* תכלת בהיר מאוד מאוד לדרישת המשתמש */
 
-
-    /* --- Slate Color Palette (Greys for Text and Backgrounds) --- */
     --color-slate-50: #f8fafc;
     --color-slate-100: #f1f5f9;
-    --color-slate-200: #e2e8f0;   /* אפור בהיר (יכול לשמש לרקע אודות במצב לילה) */
+    --color-slate-200: #e2e8f0;
     --color-slate-300: #cbd5e1;
-    --color-slate-400: #94a3b8;   /* אפור בינוני (יכול לשמש לרקע כרטיס וידאו במצב לילה) */
-    --color-slate-500: #64748b;
-    --color-slate-600: #475569;
+    --color-slate-400: #94a3b8;
+    --color-slate-500: #64748b; /* ישמש לגבולות כרטיס וידאו במצב לילה */
+    --color-slate-600: #475569; /* ישמש לרקעים פנימיים במצב לילה (כרטיסים, אודות, וכו') */
     --color-slate-700: #334155;
     --color-slate-800: #1e293b;
     --color-slate-900: #0f172a;
     --color-gray-950: #030712;
 
-
     --color-white: #ffffff;
-    --color-black: #000000;       /* שחור (לטקסט קטגוריות במצב לילה) */
+    --color-black: #000000;
 
     --color-yellow-300: #fde047;
     --color-yellow-400: #facc15;
@@ -56,7 +40,6 @@
     --bg-body: var(--color-slate-100);
     --text-body: var(--color-slate-800);
 
-    /* רקע ה-header. אם שינית את --color-sky-50 למעלה, הערך הזה ישתמש בו. */
     --bg-header: var(--color-sky-50);
     --text-header-link: var(--color-slate-700);
     --text-header-link-hover: var(--color-purple-600);
@@ -87,7 +70,7 @@
 
 .dark {
     --bg-body: var(--color-slate-900);
-    --text-body: var(--color-slate-100); /* צבע טקסט כללי במצב לילה */
+    --text-body: var(--color-slate-100);
 
     --bg-header: var(--color-slate-800);
     --text-header-link: var(--color-slate-300);
@@ -96,26 +79,8 @@
     --text-header-link-active: var(--color-purple-300);
     --bg-header-link-active: var(--color-purple-800 / 0.5);
 
-    /* === שינוי מבוקש 4: הרקע באודות במצב לילה לאפור בהיר === */
-    /* האלמנט 'about-section' מקבל רקע מ- dark:bg-slate-800/75 ב-HTML. */
-    /* כדי לשנות את זה לבהיר יותר, נשתמש ב-slate-700 או slate-600. */
-    /* הדרך הפשוטה ביותר היא לשנות את הקלאס ב-HTML של #about-section */
-    /* מ- dark:bg-slate-800/75 ל- dark:bg-slate-700/75 (אפור מעט בהיר יותר) */
-    /* או dark:bg-slate-600/75 (אפור עוד יותר בהיר). */
-    /* אם רוצים לשלוט בזה מכאן, צריך לדרוס: */
-    /* --bg-about-section-dark: var(--color-slate-700); (ואז להשתמש בזה ב-CSS ספציפי ל-#about-section) */
-    /* כרגע ההנחה היא שהשינוי יבוצע בקלאס ה-Tailwind ב-HTML. */
-    /* לצורך הדוגמה, אם היינו דורסים מכאן: */
-    --bg-section-about-dark: var(--color-slate-700); /* אפור בהיר יותר מאשר slate-800 */
-
-
-    /* === שינוי מבוקש 3: הרקע הלבן שבתוך קונפוננטת הכרטיס וידאו במצב לילה לאפור בינוני === */
-    /* כרטיסי הוידאו מקבלים dark:bg-slate-800 מהקלאס ב-HTML. */
-    /* אם רוצים אפור "בינוני" יותר, אפשר להשתמש ב-slate-700 או slate-600. */
-    /* לדוגמה, נשנה ל-slate-700. השינוי הזה צריך להתבצע בקלאס ה-Tailwind ב-HTML של תבנית הכרטיס: */
-    /* מ- dark:bg-slate-800 ל- dark:bg-slate-700 */
-    /* אם רוצים לשלוט מפה, נצטרך CSS ספציפי. */
-
+    /* המשתנה הזה לא בשימוש אם משנים ישירות ב-HTML, אבל נשאר להמחשה */
+    --bg-inner-section-dark: var(--color-slate-600); /* אפור בהיר ניטרלי לרקעים פנימיים */
 
     --bg-card-tag: var(--color-purple-800);
     --text-card-tag: var(--color-purple-200);
@@ -133,7 +98,6 @@
     --footer-border: var(--color-slate-800);
 }
 
-
 html {
     scroll-behavior: smooth;
 }
@@ -148,48 +112,24 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-header.sticky {
-    /* הצבע נשלט ע"י הקלאס bg-sky-50/95 ב-HTML. */
-    /* אם רוצים להשתמש במשתנה --bg-header ששינינו: */
-    /* background-color: var(--bg-header) !important; */
-    /* עם שקיפות, זה קצת יותר מורכב לשלב עם משתנה CSS ישירות, */
-    /* אלא אם כן מגדירים את השקיפות גם במשתנה או משתמשים ב-rgba. */
-    /* הדרך הפשוטה היא לשנות את הקלאס ב-HTML ל- bg-[#f7fcff]/95 אם Tailwind תומך בערכים שרירותיים כך. */
-    /* או ליצור קלאס מותאם אישית ב-Tailwind config. */
-}
-
 .hero-gradient {
     background: var(--hero-gradient) !important;
     color: var(--hero-text) !important;
 }
-html:not(.dark) .hero-gradient .text-purple-300 { 
+html:not(.dark) .hero-gradient .text-purple-300 {
     color: var(--hero-text-accent) !important;
 }
-.dark .hero-gradient .dark\:text-purple-400 { 
+.dark .hero-gradient .dark\:text-purple-400 {
     color: var(--hero-text-accent) !important;
 }
 .hero-gradient a:hover {
     color: var(--hero-link-hover) !important;
 }
 
-/* === שינוי מבוקש 2: של הטקסט בתוך הקטגוריות במצב לילה לשחור === */
-/* הקטגוריות בדף הבית הן 'category-showcase-card' עם טקסט לבן. */
-/* אם הכוונה לכותרות הראשיות של הקטגוריות (למשל, "גלה את עולם הרכב"), */
-/* הן מקבלות צבע מ- dark:text-slate-100 (לבן-אפרפר). */
-/* אם הכוונה לטקסט *בתוך* כרטיסי הקטגוריה (כמו שם הקטגוריה והתיאור), */
-/* הן כבר מקבלות צבע לבן דרך הקלאסים ב-HTML. */
-/* אם אתה רוצה שהטקסט *בתוך* כרטיסי הקטגוריה בדף הבית יהיה שחור במצב לילה, זה יהיה שינוי עיצובי גדול. */
-/* כרגע הן מעוצבות עם גרדיאנט וטקסט לבן. */
-/* אם הכוונה לדף הקטגוריה הבודדת (category.html), שם הכותרת הראשית היא: */
-/* <h1 id="category-page-title" class="... dark:text-slate-100"> */
-/* כדי לשנות אותה לשחור במצב לילה: */
+/* === שינוי מבוקש: טקסט כותרת קטגוריה במצב לילה לשחור === */
+/* (אם זו הכוונה) */
 .dark #category-page-title {
-    color: var(--color-black) !important; /* ישנה את צבע הכותרת בדף קטגוריה לשחור במצב לילה */
-}
-/* אם הכוונה לטקסט בתוך תיאור הקטגוריה בכרטיסים בדף הבית: */
-.dark .category-showcase-card h3, 
-.dark .category-showcase-card p {
-    /* color: var(--color-black) !important; */ /* הסר הערה כדי להפוך לשחור. זה ייראה מוזר על רקע גרדיאנט כהה */
+    color: var(--color-black) !important;
 }
 
 
