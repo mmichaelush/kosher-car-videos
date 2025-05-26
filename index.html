@@ -357,7 +357,6 @@
 
 <template id="video-card-template">
     <article class_exists="video-card-wrapper group overflow-hidden"> 
-        {/* ה- overflow-hidden חשוב אם התמונה גולשת מעט ב-hover */}
         <div class_exists="video-thumbnail-container aspect-video relative flex items-center justify-center">
             <img src="" alt="" class_exists="video-thumbnail-img absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" loading="lazy">
             <span class_exists="video-duration absolute bottom-2 right-2 rtl:bottom-2 rtl:left-2 rtl:right-auto bg-black/70 text-white text-xs font-semibold px-2 py-1 rounded-md z-10 backdrop-blur-sm"></span>
@@ -367,17 +366,17 @@
             <iframe class_exists="video-iframe hidden absolute inset-0 w-full h-full z-30" loading="lazy" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
         
-        <div class_exists="video-details-container"> {/* ה-padding יגיע מה-CSS או מ-Tailwind */}
+        <div class_exists="video-details-container">
             <div class_exists="video-channel-info flex items-center text-xs mb-2">
                 <img src="" alt="" class_exists="channel-logo h-5 w-5 rounded-full mr-2 object-cover border border-slate-300 dark:border-slate-600 shadow-sm hidden">
                 <span class_exists="channel-name font-medium transition-colors"></span>
             </div>
-            <h3 class_exists="video-title text-lg mb-2 leading-tight line-clamp-2"> {/* הורדתי mb-3 ל-mb-2 */}
+            <h3 class_exists="video-title text-lg mb-2 leading-tight line-clamp-2">
                 <a href="" target="_blank" rel="noopener noreferrer" class_exists="video-link hover:underline focus:outline-none focus:ring-1 focus:ring-primary-500 dark:focus:ring-primary-400 rounded-sm"></a>
             </h3>
-            <div class_exists="video-tags flex flex-wrap gap-1.5 mb-3 mt-1 text-xs"> {/* הוספתי mb-3 */}
+            <div class_exists="video-tags flex flex-wrap gap-1.5 mb-3 mt-1 text-xs">
             </div>
-            <div class_exists="flex items-center justify-between text-xs mt-auto pt-3 border-t"> {/* הוספתי mt-auto כדי לדחוף לתחתית */}
+            <div class_exists="flex items-center justify-between text-xs mt-auto pt-3 border-t">
                 <span class_exists="video-category-display flex items-center"><i class_exists="fas fa-folder-open ml-1.5 opacity-70 text-primary-500 dark:text-primary-400"></i></span>
             </div>
         </div>
