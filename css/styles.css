@@ -53,14 +53,16 @@
     --text-section-paragraph: var(--color-slate-600);
     --border-section: var(--color-slate-200);
 
-    --bg-card: var(--color-slate-50); /* Updated for video cards to be slightly off-white */
+    /* Updated for video cards in HTML template using Tailwind classes directly */
+    --bg-card: var(--color-white); 
     --bg-card-blur-opacity: 1;
     --text-card-title: var(--color-slate-800);
     --text-card-title-hover: var(--color-purple-600);
     --text-card-muted: var(--color-slate-500);
-    --border-card: var(--color-slate-200);
-    --shadow-card: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-xl */
-    --shadow-card-hover: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); /* shadow-2xl */
+    --border-card: var(--color-slate-200 / 0.8); /* Slightly more transparent border */
+    --shadow-card: 0 4px 12px -1px rgb(0 0 0 / 0.08), 0 2px 8px -2px rgb(0 0 0 / 0.05); /* Similar to shadow-lg but a bit softer */
+    --shadow-card-hover: 0 10px 20px -3px rgb(0 0 0 / 0.1), 0 4px 8px -4px rgb(0 0 0 / 0.08); /* Similar to shadow-xl */
+
 
     --bg-card-tag: var(--color-purple-100);
     --text-card-tag: var(--color-purple-700);
@@ -95,18 +97,20 @@
     --text-section-heading: var(--color-slate-50);
     --text-section-paragraph: var(--color-slate-300);
     --border-section: var(--color-slate-700);
-
-    --bg-card: var(--color-slate-800); /* Updated for video cards - now opaque */
-    --bg-card-blur-opacity: 1; /* No blur as it's opaque */
+    
+    /* Updated for video cards in HTML template using Tailwind classes directly */
+    --bg-card: var(--color-slate-800);
+    --bg-card-blur-opacity: 1;
     --text-card-title: var(--color-slate-50);
     --text-card-title-hover: var(--color-purple-300);
     --text-card-muted: var(--color-slate-400);
-    --border-card: var(--color-slate-700);
-    --shadow-card: 0 4px 6px -1px var(--color-black / 0.2), 0 2px 4px -2px var(--color-black / 0.15); /* shadow-lg with darker tones */
-    --shadow-card-hover: 0 10px 15px -3px var(--color-purple-900 / 0.2), 0 4px 6px -4px var(--color-purple-900 / 0.15); /* shadow-xl related to accent */
+    --border-card: var(--color-slate-700 / 0.6); /* Slightly more transparent border in dark mode */
+    --shadow-card: 0 4px 12px -1px var(--color-black / 0.3), 0 2px 8px -2px var(--color-black / 0.25); /* Adjusted for dark */
+    --shadow-card-hover: 0 10px 20px -3px var(--color-purple-900 / 0.3), 0 4px 8px -4px var(--color-purple-900 / 0.25); /* Adjusted for dark */
 
-    --bg-card-tag: var(--color-purple-800);
-    --text-card-tag: var(--color-purple-200);
+
+    --bg-card-tag: var(--color-purple-800); /* Or Tailwind: dark:bg-purple-900/50 */
+    --text-card-tag: var(--color-purple-200); /* Or Tailwind: dark:text-purple-300 */
 
     --hero-gradient: linear-gradient(135deg, var(--color-purple-900) 0%, var(--color-indigo-900) 100%);
     --hero-text: var(--color-slate-50);
@@ -155,57 +159,48 @@ header.sticky {
     color: var(--hero-link-hover) !important;
 }
 
-
-/* Video Cards - Styles are primarily handled by Tailwind in the template,
-   but these ensure variables are respected if Tailwind classes are built using them.
-   The new video card design uses bg-slate-50 dark:bg-slate-800 directly via Tailwind.
+/* Video card styles are now primarily driven by Tailwind classes in the template.
+   These CSS variables are available if needed but Tailwind utility classes are preferred for direct styling.
 */
 .video-card {
-    background-color: var(--bg-card); /* Respects the new var(--bg-card) values */
-    border-color: var(--border-card);
-    box-shadow: var(--shadow-card);
+    /* background-color: var(--bg-card); Tailwind class bg-white dark:bg-slate-800 is used */
+    /* border-color: var(--border-card); Tailwind class border-slate-200/80 dark:border-slate-700/60 is used */
+    /* box-shadow: var(--shadow-card); Tailwind class shadow-lg dark:shadow-slate-700/[0.7] is used */
     transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, border-color 0.25s ease-out;
 }
 
 .video-card:hover {
-    transform: translateY(-6px); /* Slightly more pronounced hover */
-    box-shadow: var(--shadow-card-hover);
+    /* transform: translateY(-4px); Tailwind class hover:-translate-y-1 is used */
+    /* box-shadow: var(--shadow-card-hover); Tailwind class hover:shadow-xl dark:hover:shadow-purple-500/30 is used */
 }
-
-/* Specific dark mode hover border for accent, if desired beyond Tailwind classes */
-.dark .video-card:hover {
-    /* Example: border-color: var(--color-purple-500); -- Tailwind class dark:hover:border-purple-500 is preferred and used */
-}
-
 
 .video-card .video-title {
-    color: var(--text-card-title);
+    /* color: var(--text-card-title); Tailwind classes used */
 }
 .video-card .video-title a:hover {
-    color: var(--text-card-title-hover) !important;
+    /* color: var(--text-card-title-hover) !important; Tailwind classes used */
 }
 
-.video-card .video-tags span { /* Tailwind classes directly style this now */
+/* Tags inside video cards are styled directly with Tailwind in the template */
+/* .video-card .video-tags span {
     background-color: var(--bg-card-tag);
     color: var(--text-card-tag);
-}
+} */
 
 .video-card .video-category-display,
 .video-card .video-channel-info {
-    color: var(--text-card-muted);
+    /* color: var(--text-card-muted); Tailwind classes used */
 }
 
-.video-card .border-t { /* Ensure this uses the card's border color */
-    border-top-color: var(--border-card);
+.video-card .border-t { /* Ensure this uses the card's border color or Tailwind equivalent */
+    /* border-top-color: var(--border-card); Tailwind classes border-slate-200/80 dark:border-slate-700/60 used */
 }
 
-/* Inputs: Tailwind handles focus rings well. Base styles for consistency if needed. */
 .search-input,
 .tag-input,
 #contact-section input,
 #contact-section textarea {
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-    /* Tailwind classes like dark:bg-slate-700/80 or dark:bg-slate-600/80 should be used for inputs */
 }
 
 #back-to-top-btn {
@@ -223,7 +218,7 @@ header.sticky {
     color: var(--footer-heading) !important;
 }
 #site-footer a {
-    color: var(--footer-text) !important;
+    color: var(--footer-text) !important; /* Note: This might be too general. Specific links might need specific colors. */
 }
 #site-footer a:hover {
     color: var(--footer-link-hover) !important;
@@ -237,7 +232,8 @@ header.sticky {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
-    max-height: calc(1.65em * 2); /* Assuming line-height: 1.65, adjust if needed */
+    /* A common way to estimate max-height for 2 lines, adjust if line-height differs */
+    /* max-height: calc(1.65em * 2); line-height from body * number of lines */
 }
 
 .floating {
@@ -249,7 +245,7 @@ header.sticky {
         transform: translateY(0px);
     }
     50% {
-        transform: translateY(-12px); /* Slightly more movement */
+        transform: translateY(-10px); /* Slightly less movement than original */
     }
     100% {
         transform: translateY(0px);
