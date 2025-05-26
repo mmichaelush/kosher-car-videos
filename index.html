@@ -546,9 +546,17 @@
         </div>
     </footer>
 
-    <template id="video-card-template">
+        <template id="video-card-template">
         <article
-            class_exists="group flex flex-col bg-white dark:bg-slate-600 rounded-2xl shadow-lg hover:shadow-xl dark:shadow-black/40 dark:hover:shadow-purple-500/30 transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-[1.03] border border-slate-200 dark:border-slate-500 hover:border-purple-300 dark:hover:border-purple-500 overflow-hidden">
+            class_exists="flex flex-col bg-white dark:bg-slate-600 rounded-2xl shadow-lg overflow-hidden border border-slate-200 dark:border-slate-500 m-2 p-1 group transform transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.03] hover:shadow-xl dark:hover:shadow-purple-500/30 hover:border-purple-300 dark:hover:border-purple-500">
+            {/* 
+                הקלאסים החשובים לבדיקה כאן:
+                bg-white (למצב רגיל)
+                dark:bg-slate-600 (למצב לילה - זה מה שאנחנו רוצים לראות)
+                rounded-2xl (פינות מעוגלות)
+                shadow-lg (צל)
+                border border-slate-200 dark:border-slate-500 (גבולות)
+            */}
             <div
                 class_exists="video-thumbnail-container aspect-video bg-slate-200 dark:bg-slate-700 relative flex items-center justify-center overflow-hidden border-b border-slate-200 dark:border-slate-500">
                 <img src="" alt=""
@@ -568,6 +576,7 @@
                     allowfullscreen></iframe>
             </div>
             <div class_exists="video-details-container p-4 sm:p-5 flex flex-col flex-grow">
+                {/* התוכן הפנימי נשאר כפי שהיה, הוא אמור להיות שקוף ולהציג את רקע ה-article */}
                 <div class_exists="video-channel-info flex items-center text-xs text-slate-500 dark:text-slate-300 mb-2.5">
                     <img src="" alt=""
                         class_exists="channel-logo h-7 w-7 rounded-full mr-2.5 object-cover border-2 border-transparent group-hover:border-purple-200 dark:group-hover:border-purple-500 transition-colors shadow-sm hidden"
