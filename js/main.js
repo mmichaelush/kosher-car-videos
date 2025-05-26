@@ -332,7 +332,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return tagIcons[tag.toLowerCase()] || "fa-tag"; 
     }
 
-    function createVideoCardElement(video) {
+   function createVideoCardElement(video) {
         if (!videoCardTemplate) return null;
         if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' ||
             typeof video.thumbnail !== 'string' || typeof video.category !== 'string' ||
@@ -341,24 +341,31 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const cardClone = videoCardTemplate.content.cloneNode(true);
-        const cardElement = cardClone.querySelector('article');
+        const cardElement = cardClone.querySelector('article'); // זהו אלמנט ה-article הראשי של הכרטיס
         if (!cardElement) return null;
 
-       // Process child elements first
-        cardElement.querySelectorAll('[class_exists]').forEach(el => {
-            if (el.hasAttribute('class_exists')) { // Double check
-                el.setAttribute('class', el.getAttribute('class_exists'));
-                el.removeAttribute('class_exists');
-            }
-        });
-
-        // Then process the parent cardElement itself
+        // --- התחל קטע קריטי ---
+        // ודא שהאלמנט הראשי (cardElement) עצמו מעובד אם יש לו class_exists
         if (cardElement.hasAttribute('class_exists')) {
             cardElement.setAttribute('class', cardElement.getAttribute('class_exists'));
             cardElement.removeAttribute('class_exists');
         }
+
+        // לאחר מכן, עבד את כל האלמנטים הפנימיים שיש להם class_exists
+        const innerElementsWithClassExists = cardElement.querySelectorAll('[class_exists]');
+        innerElementsWithClassExists.forEach(el => {
+            if (el.hasAttribute('class_exists')) { // בדיקה נוספת ליתר ביטחון
+                el.setAttribute('class', el.getAttribute('class_exists'));
+                el.removeAttribute('class_exists');
+            }
+        });
+        // --- סוף קטע קריטי ---
+
+
         cardElement.dataset.category = video.category;
         cardElement.dataset.tags = video.tags.join(','); 
+
+        // ... (שאר הקוד של הפונקציה נשאר כפי שהוא) ...
 
         const sanitizedTitle = escapeHTML(video.title);
         const videoLink = `https://www.youtube.com/watch?v=${video.id}`;
