@@ -98,7 +98,7 @@
     </header>
 
     <section class="hero-gradient text-[var(--hero-text)] relative overflow-hidden pt-10 pb-20 md:pt-16 md:pb-28">
-        <div class="absolute inset-0 opacity-10 dark:opacity-[0.05]"> {/* רקע גיאומטרי עדין יותר */}
+        <div class="absolute inset-0 opacity-10 dark:opacity-[0.05]">
             <svg width="100%" height="100%"><defs><pattern id="heroPatt" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><path d="M0 15L15 0L30 15L15 30Z" fill="currentColor" opacity="0.5"></path></pattern></defs><rect width="100%" height="100%" fill="url(#heroPatt)"></rect></svg>
         </div>
         <div class="absolute top-1/4 left-1/4 w-20 h-20 md:w-32 md:h-32 rounded-full bg-white/5 dark:bg-white/5 filter blur-3xl floating" aria-hidden="true"></div>
@@ -206,8 +206,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 class="text-3xl font-bold text-[var(--text-heading)] mb-12 text-center"><i class="fas fa-star text-accent-yellow mr-3"></i> ערוצים מומלצים</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {/* Channel cards will use .video-card-wrapper styling for consistency, or a similar variant */}
-                    <a href="https://www.youtube.com/@autoTV-israel" target="_blank" rel="noopener noreferrer" class="video-card-wrapper group block text-center"> {/* הוספתי video-card-wrapper */}
+                    <a href="https://www.youtube.com/@autoTV-israel" target="_blank" rel="noopener noreferrer" class="video-card-wrapper group block text-center">
                         <img src="https://yt3.googleusercontent.com/3qebPD_7MkRKogWeCpxol5jOQEI_QCr_XbSxd5Fg-YvkpofzuJr3mZzXTDWhP8DQlbjKqnY95Q=s72-c-k-c0x00ffffff-no-rj" alt="אוטו ישראל" class="h-20 w-20 mx-auto rounded-full object-cover mb-4 border-2 border-gray-200 dark:border-gray-600 group-hover:border-primary-400 dark:group-hover:border-primary-500 transition-colors" loading="lazy">
                         <h3 class="font-semibold text-[var(--text-card-title)] group-hover:text-[var(--text-card-title-hover)]">אוטו ישראל</h3>
                         <p class="text-primary-600 dark:text-primary-400 text-sm">מבחני רכב</p>
@@ -315,7 +314,7 @@
                 <div class="sm:col-span-2 lg:col-span-1">
                     <a href="index.html" class="flex items-center mb-5 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 rounded">
                         <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב לבן" class="h-10 w-auto ml-2"> 
-                        <span class="text-xl font-bold">CAR-טיב</span> {/* צבע יגיע מהקונטקסט של הפוטר */}
+                        <span class="text-xl font-bold">CAR-טיב</span>
                     </a>
                     <p class="text-sm leading-relaxed">מאגר וידאו ייעודי, כשר ומסונן, לחובבי רכב שומרי התורה והמצוות.</p>
                 </div>
@@ -357,8 +356,8 @@
     </footer>
 
 <template id="video-card-template">
-    <article class_exists="video-card-wrapper group"> {/* הקלאסים המרכזיים יגיעו מ-CSS */}
-        <div class_exists="video-thumbnail-container aspect-video relative flex items-center justify-center overflow-hidden rounded-t-xl"> {/* עיגול רק לפינות עליונות של התמונה */}
+    <article class_exists="video-card-wrapper group"> 
+        <div class_exists="video-thumbnail-container aspect-video relative flex items-center justify-center overflow-hidden rounded-t-xl">
             <img src="" alt="" class_exists="video-thumbnail-img absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 opacity-90 group-hover:opacity-100" loading="lazy">
             <span class_exists="video-duration absolute bottom-2 right-2 rtl:bottom-2 rtl:left-2 rtl:right-auto bg-black/80 text-white text-xs font-semibold px-2 py-1 rounded-md z-10 backdrop-blur-sm"></span>
             <button class_exists="play-video-button absolute inset-0 w-full h-full flex items-center justify-center text-white z-20 transition-all duration-300 group-hover:scale-110 opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none" aria-label="נגן סרטון">
