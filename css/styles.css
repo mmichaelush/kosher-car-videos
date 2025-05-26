@@ -1,6 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 
 :root {
+    /* ... (שאר המשתנים שלך נשארים כפי שהם) ... */
+    --card-bg-light: #ffffff; /* לבן נקי */
+    --card-bg-dark: #1e293b;  /* slate-800 */
+    --card-border-light: rgba(203, 213, 225, 0.8); /* slate-300 עם שקיפות */
+    --card-border-dark: rgba(51, 65, 85, 0.6);   /* slate-700 עם שקיפות */
+    --card-shadow-light: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+    --card-shadow-hover-light: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-xl */
+    --card-shadow-dark: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -4px rgba(0,0,0,0.3);
+    --card-shadow-hover-dark: 0 20px 25px -5px rgba(124, 58, 237, 0.2), 0 8px 10px -6px rgba(124, 58, 237, 0.15); /* צל סגול במעבר */
+
     --color-purple-50: #f5f3ff;
     --color-purple-100: #ede9fe;
     --color-purple-200: #ddd6fe;
@@ -53,14 +63,6 @@
     --text-section-paragraph: var(--color-slate-600);
     --border-section: var(--color-slate-200);
 
-    --bg-card: var(--color-white); 
-    --text-card-title: var(--color-slate-800);
-    --text-card-title-hover: var(--color-purple-600);
-    --text-card-muted: var(--color-slate-500);
-    --border-card: var(--color-slate-200 / 0.8); 
-    --shadow-card: 0 4px 12px -1px rgb(0 0 0 / 0.08), 0 2px 8px -2px rgb(0 0 0 / 0.05); 
-    --shadow-card-hover: 0 10px 20px -3px rgb(0 0 0 / 0.1), 0 4px 8px -4px rgb(0 0 0 / 0.08);
-
     --bg-card-tag: var(--color-purple-100);
     --text-card-tag: var(--color-purple-700);
 
@@ -94,14 +96,6 @@
     --text-section-paragraph: var(--color-slate-300);
     --border-section: var(--color-slate-700);
     
-    --bg-card: var(--color-slate-800);
-    --text-card-title: var(--color-slate-50);
-    --text-card-title-hover: var(--color-purple-300);
-    --text-card-muted: var(--color-slate-400);
-    --border-card: var(--color-slate-700 / 0.6); 
-    --shadow-card: 0 4px 12px -1px var(--color-black / 0.3), 0 2px 8px -2px var(--color-black / 0.25); 
-    --shadow-card-hover: 0 10px 20px -3px var(--color-purple-900 / 0.3), 0 4px 8px -4px var(--color-purple-900 / 0.25);
-
     --bg-card-tag: var(--color-purple-800); 
     --text-card-tag: var(--color-purple-200); 
 
@@ -151,6 +145,47 @@ header.sticky {
 .hero-gradient a:hover {
     color: var(--hero-link-hover) !important;
 }
+
+/* ================================= */
+/* Video Card Override Styles        */
+/* ================================= */
+.video-card-override {
+    background-color: var(--card-bg-light) !important;
+    border-radius: 1rem !important; /* 16px, corresponds to rounded-2xl */
+    border: 1px solid var(--card-border-light) !important;
+    box-shadow: var(--card-shadow-light) !important;
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out !important;
+    /* flex, flex-col, overflow-hidden are still handled by Tailwind in the template */
+}
+
+.dark .video-card-override {
+    background-color: var(--card-bg-dark) !important;
+    border-color: var(--card-border-dark) !important;
+    box-shadow: var(--card-shadow-dark) !important;
+}
+
+.video-card-override:hover {
+    transform: translateY(-4px) scale(1.03) !important; /* תזוזה למעלה והגדלה קלה */
+    box-shadow: var(--card-shadow-hover-light) !important;
+    border-color: var(--color-purple-400) !important; /* הדגשת גבול בסגול במעבר */
+}
+
+.dark .video-card-override:hover {
+    box-shadow: var(--card-shadow-hover-dark) !important;
+    border-color: var(--color-purple-500) !important; /* הדגשת גבול בסגול במצב כהה */
+}
+
+/* Ensure inner elements (like title) still get their Tailwind styles */
+.video-card-override .video-title a {
+    /* Tailwind classes for text color and hover are in the HTML template */
+    /* If they don't work, you might need to add them here too with !important */
+    /* e.g., color: var(--text-card-title) !important; */
+}
+
+/* ================================= */
+/* End Video Card Override Styles    */
+/* ================================= */
+
 
 .search-input,
 .tag-input,
