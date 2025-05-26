@@ -147,12 +147,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isDark) {
             if (moonIcon) moonIcon.classList.add('hidden');
             if (sunIcon) sunIcon.classList.remove('hidden');
-            if (toggleDot) toggleDot.style.transform = 'translateX(-100%)';
+            if (toggleDot) toggleDot.style.transform = 'translateX(-100%)'; 
             toggleButton.setAttribute('aria-checked', 'true');
         } else {
             if (moonIcon) moonIcon.classList.remove('hidden');
             if (sunIcon) sunIcon.classList.add('hidden');
-            if (toggleDot) toggleDot.style.transform = 'translateX(0%)';
+            if (toggleDot) toggleDot.style.transform = 'translateX(0%)'; 
             toggleButton.setAttribute('aria-checked', 'false');
         }
     }
@@ -176,11 +176,10 @@ document.addEventListener('DOMContentLoaded', function () {
             updateDarkModeToggleVisuals(toggle, isNowDark);
         });
         if (isHomePage() && homepageCategoriesGrid) {
-            renderHomepageCategoryButtons();
+             renderHomepageCategoryButtons();
         }
     }
 
-    // --- Data Loading & Processing ---
     async function loadLocalVideos() {
         if (loadingPlaceholder) {
             loadingPlaceholder.classList.remove('hidden');
@@ -195,7 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const response = await fetch('data/videos.json');
             if (!response.ok) throw new Error(`שגיאת HTTP ${response.status} בטעינת videos.json.`);
-
+            
             const responseText = await response.text();
             try {
                 allVideos = JSON.parse(responseText);
@@ -205,15 +204,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' ||
                         typeof video.category !== 'string' || !Array.isArray(video.tags) ||
                         typeof video.hebrewContent !== 'boolean') {
-                        // console.warn(`Video at index ${index} is missing required fields or has wrong types. Skipping.`);
-                        return null;
+                        return null; 
                     }
                     return {
                         ...video,
-                        category: video.category.toLowerCase(),
-                        tags: video.tags.map(tag => String(tag).toLowerCase())
+                        category: video.category.toLowerCase(), 
+                        tags: video.tags.map(tag => String(tag).toLowerCase()) 
                     };
-                }).filter(video => video !== null);
+                }).filter(video => video !== null); 
 
             } catch (jsonError) {
                 throw new Error(`שגיאה בפענוח קובץ videos.json: ${jsonError.message}`);
@@ -223,22 +221,21 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (videoCountHeroElement) {
                 const countSpan = videoCountHeroElement.querySelector('span.font-bold');
-                if (countSpan) countSpan.textContent = allVideos.length;
+                if(countSpan) countSpan.textContent = allVideos.length;
                 else videoCountHeroElement.innerHTML = `במאגר יש כרגע <span class="font-bold text-white dark:text-gray-50">${allVideos.length}</span> סרטונים.`;
             }
         } catch (error) {
             if (videoCountHeroElement) {
                 const countSpan = videoCountHeroElement.querySelector('span.font-bold');
-                if (countSpan) countSpan.textContent = "שגיאה";
+                if(countSpan) countSpan.textContent = "שגיאה";
                 else videoCountHeroElement.innerHTML = `שגיאה בטעינת מספר הסרטונים.`;
             }
-            if (videoCardsContainer) videoCardsContainer.innerHTML = '';
-            allVideos = [];
-            throw error;
+            if (videoCardsContainer) videoCardsContainer.innerHTML = ''; 
+            allVideos = []; 
+            throw error; 
         }
     }
 
-    // --- Rendering ---
     function renderHomepageCategoryButtons() {
         const loadingCategoriesSkeleton = document.getElementById('loading-homepage-categories-skeleton');
         if (!homepageCategoriesGrid) {
@@ -247,12 +244,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (loadingCategoriesSkeleton) loadingCategoriesSkeleton.style.display = 'none';
-        homepageCategoriesGrid.innerHTML = '';
+        homepageCategoriesGrid.innerHTML = ''; 
 
         PREDEFINED_CATEGORIES.filter(cat => cat.id !== 'all').forEach(cat => {
             const link = document.createElement('a');
             link.href = `category.html?name=${cat.id}`;
-            const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`;
+            const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`; 
             link.className = `category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50`;
             link.setAttribute('aria-label', `עבור לקטגוריית ${cat.name}`);
             link.innerHTML = `
@@ -264,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function () {
             homepageCategoriesGrid.appendChild(link);
         });
     }
-
+    
     function loadAndRenderPopularTags(forCategoryId = null) {
         if (!popularTagsContainer) return;
         if (!allVideos || allVideos.length === 0) {
@@ -273,15 +270,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const tagCounts = {};
-        const videosToConsider = (forCategoryId && forCategoryId !== 'all')
-            ? allVideos.filter(v => v.category === forCategoryId)
+        const videosToConsider = (forCategoryId && forCategoryId !== 'all') 
+            ? allVideos.filter(v => v.category === forCategoryId) 
             : allVideos;
 
         if (videosToConsider.length === 0 && forCategoryId && forCategoryId !== 'all') {
             popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 dark:text-slate-400 text-sm">אין סרטונים בקטגוריה זו להצגת תגיות.</p>`;
             return;
         }
-
+        
         videosToConsider.forEach(video => {
             if (video.tags && Array.isArray(video.tags)) {
                 video.tags.forEach(tag => {
@@ -305,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const tagElement = document.createElement('button');
             tagElement.className = 'tag bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-800 dark:text-purple-200 dark:hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-1 dark:focus:ring-offset-slate-800 transition-colors text-sm font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5';
             tagElement.dataset.tagValue = tag;
-            const iconClass = getIconForTag(tag);
+            const iconClass = getIconForTag(tag); 
             tagElement.innerHTML = `<i class="fas ${iconClass} opacity-80 text-xs"></i> ${escapeHTML(capitalizeFirstLetter(tag))}`;
             popularTagsContainer.appendChild(tagElement);
         });
@@ -332,7 +329,7 @@ document.addEventListener('DOMContentLoaded', function () {
             "עשה זאת בעצמך": "fa-hand-sparkles", "הכנופיה": "fa-users-cog", "יונדאי i10": "fa-car",
             "ניקוי מצערת": "fa-spray-can-sparkles", "וסת לחץ": "fa-gauge-high", "אספנות": "fa-gem", "נוזל בלמים": "fa-tint"
         };
-        return tagIcons[tag.toLowerCase()] || "fa-tag"; // Ensure tag is lowercase for matching
+        return tagIcons[tag.toLowerCase()] || "fa-tag"; 
     }
 
     function createVideoCardElement(video) {
@@ -340,7 +337,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' ||
             typeof video.thumbnail !== 'string' || typeof video.category !== 'string' ||
             !Array.isArray(video.tags)) {
-            return null;
+            return null; 
         }
 
         const cardClone = videoCardTemplate.content.cloneNode(true);
@@ -353,7 +350,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         cardElement.dataset.category = video.category;
-        cardElement.dataset.tags = video.tags.join(',');
+        cardElement.dataset.tags = video.tags.join(','); 
 
         const sanitizedTitle = escapeHTML(video.title);
         const videoLink = `https://www.youtube.com/watch?v=${video.id}`;
@@ -367,12 +364,12 @@ document.addEventListener('DOMContentLoaded', function () {
             thumbnailImgElement.src = video.thumbnail;
             thumbnailImgElement.alt = `תמונה ממוזערת של הסרטון: ${sanitizedTitle}`;
             thumbnailImgElement.classList.remove('hidden');
-            thumbnailImgElement.onerror = function () {
-                thumbnailImgElement.classList.add('hidden');
-                if (videoThumbnailContainer) videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700');
+            thumbnailImgElement.onerror = function() { 
+                this.classList.add('hidden');
+                if (videoThumbnailContainer) videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700'); 
             };
         } else if (thumbnailImgElement) {
-            thumbnailImgElement.classList.add('hidden');
+            thumbnailImgElement.classList.add('hidden'); 
             if (videoThumbnailContainer) videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700');
         }
 
@@ -386,11 +383,11 @@ document.addEventListener('DOMContentLoaded', function () {
             playButtonElement.dataset.videoId = video.id;
             playButtonElement.setAttribute('aria-label', `נגן את הסרטון ${sanitizedTitle}`);
         }
-
+        
         const iframeEl = cardElement.querySelector('.video-iframe');
         if (iframeEl) {
-            iframeEl.title = `נגן וידאו: ${sanitizedTitle}`;
-            iframeEl.setAttribute('loading', 'lazy');
+            iframeEl.title = `נגן וידאו: ${sanitizedTitle}`; 
+            iframeEl.setAttribute('loading', 'lazy'); 
         }
 
         const videoTitleLinkEl = cardElement.querySelector('.video-link');
@@ -404,15 +401,15 @@ document.addEventListener('DOMContentLoaded', function () {
         if (channelNameElement && video.channel) {
             channelNameElement.textContent = escapeHTML(video.channel);
         } else if (channelNameElement) {
-            channelNameElement.textContent = '';
+            channelNameElement.textContent = ''; 
         }
-
+        
         if (channelLogoElement && video.channelImage) {
             channelLogoElement.src = video.channelImage;
             channelLogoElement.alt = `לוגו הערוץ ${escapeHTML(video.channel || 'לא ידוע')}`;
             channelLogoElement.classList.remove('hidden');
-            channelLogoElement.onerror = function () {
-                channelLogoElement.classList.add('hidden');
+            channelLogoElement.onerror = function() { 
+                this.classList.add('hidden');
             };
         } else if (channelLogoElement) {
             channelLogoElement.classList.add('hidden');
@@ -422,10 +419,10 @@ document.addEventListener('DOMContentLoaded', function () {
         if (tagsContainerEl) {
             if (video.tags && video.tags.length > 0) {
                 tagsContainerEl.innerHTML = video.tags.map(tag =>
-                    `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(capitalizeFirstLetter(tag))}</span>`
+                    `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-xs font-medium px-2 py-0.5 rounded-md">${escapeHTML(capitalizeFirstLetter(tag))}</span>`
                 ).join('');
             } else {
-                tagsContainerEl.innerHTML = '';
+                tagsContainerEl.innerHTML = ''; 
             }
         }
 
@@ -433,29 +430,30 @@ document.addEventListener('DOMContentLoaded', function () {
         if (categoryDisplayEl) {
             const categoryData = PREDEFINED_CATEGORIES.find(c => c.id === video.category);
             const categoryName = categoryData ? categoryData.name : capitalizeFirstLetter(video.category);
-            const iconElement = categoryDisplayEl.querySelector('i');
-            categoryDisplayEl.innerHTML = '';
-            if (iconElement) categoryDisplayEl.appendChild(iconElement.cloneNode(true));
-            categoryDisplayEl.appendChild(document.createTextNode(` ${escapeHTML(categoryName)}`));
+            const iconElement = categoryDisplayEl.querySelector('i'); 
+            categoryDisplayEl.innerHTML = ''; 
+            if (iconElement) categoryDisplayEl.appendChild(iconElement.cloneNode(true)); 
+            categoryDisplayEl.appendChild(document.createTextNode(` ${escapeHTML(categoryName)}`)); 
         }
 
         return cardElement;
     }
 
+
     function renderFilteredVideos() {
         if (!videoCardsContainer) return;
-        videoCardsContainer.innerHTML = '';
+        videoCardsContainer.innerHTML = ''; 
 
         const filteredVideos = getFilteredVideos();
-
+        
         let feedbackEl = document.getElementById('video-grid-loading-feedback');
         if (!feedbackEl) {
             feedbackEl = document.createElement('div');
             feedbackEl.id = 'video-grid-loading-feedback';
-            feedbackEl.setAttribute('aria-live', 'polite');
-            feedbackEl.className = 'sr-only';
+            feedbackEl.setAttribute('aria-live', 'polite'); 
+            feedbackEl.className = 'sr-only'; 
             if (videoCardsContainer.parentNode) {
-                videoCardsContainer.parentNode.appendChild(feedbackEl);
+                 videoCardsContainer.parentNode.appendChild(feedbackEl);
             }
         }
 
@@ -471,7 +469,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 feedbackEl.textContent = "לא נמצאו סרטונים התואמים לסינון.";
             }
             if (loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) {
-                loadingPlaceholder.classList.add('hidden');
+                 loadingPlaceholder.classList.add('hidden');
             }
             return;
         }
@@ -496,7 +494,7 @@ document.addEventListener('DOMContentLoaded', function () {
         currentFilters.tags.forEach(tagName => {
             const tagChip = document.createElement('span');
             tagChip.className = 'flex items-center gap-1.5 bg-purple-600 text-white dark:bg-purple-500 dark:text-white text-sm font-medium ps-3 pe-2 py-1.5 rounded-full cursor-default transition-all hover:bg-purple-700 dark:hover:bg-purple-600';
-
+            
             const textNode = document.createTextNode(escapeHTML(capitalizeFirstLetter(tagName)));
             const removeButton = document.createElement('button');
             removeButton.type = 'button';
@@ -514,18 +512,17 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- Filtering Logic ---
     function getFilteredVideos() {
         if (!allVideos || allVideos.length === 0) return [];
         return allVideos.filter(video => {
             const categoryMatch = currentFilters.category === 'all' || video.category === currentFilters.category;
             const tagsMatch = currentFilters.tags.length === 0 || currentFilters.tags.every(filterTag => video.tags.includes(filterTag));
-
+            
             let searchTermMatch = true;
             if (currentFilters.searchTerm) {
                 const searchTermLower = currentFilters.searchTerm.toLowerCase();
                 searchTermMatch = video.title.toLowerCase().includes(searchTermLower) ||
-                    video.tags.some(tag => tag.toLowerCase().includes(searchTermLower));
+                                  video.tags.some(tag => tag.toLowerCase().includes(searchTermLower));
             }
 
             const hebrewContentMatch = !currentFilters.hebrewOnly || video.hebrewContent;
@@ -533,7 +530,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- Event Handlers ---
     function setupEventListeners() {
         darkModeToggles.forEach(toggle => {
             toggle.addEventListener('click', toggleDarkMode);
@@ -557,22 +553,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 scrollToVideoGridIfNeeded();
             });
         }
-
+        
         if (popularTagsContainer) {
-            popularTagsContainer.addEventListener('click', function (event) {
+            popularTagsContainer.addEventListener('click', function(event) {
                 const clickedTagElement = event.target.closest('button.tag');
                 if (clickedTagElement && clickedTagElement.dataset.tagValue) {
                     toggleTagSelection(clickedTagElement.dataset.tagValue, clickedTagElement);
                 }
             });
         }
-
+        
         if (customTagForm) {
-            customTagForm.addEventListener('submit', function (event) {
+            customTagForm.addEventListener('submit', function(event) {
                 event.preventDefault();
                 const newTagName = tagSearchInput.value.trim().toLowerCase();
                 if (newTagName) {
                     const existingPopularTag = popularTagsContainer ? popularTagsContainer.querySelector(`button.tag[data-tag-value="${escapeAttributeValue(newTagName)}"]`) : null;
+                    
                     const feedbackClasses = {
                         success: ['border-green-500', 'focus:border-green-500', 'focus:ring-green-500', 'dark:border-green-400', 'dark:focus:border-green-400', 'dark:focus:ring-green-400'],
                         warning: ['border-yellow-500', 'focus:border-yellow-500', 'focus:ring-yellow-500', 'dark:border-yellow-400', 'dark:focus:border-yellow-400', 'dark:focus:ring-yellow-400']
@@ -580,7 +577,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     
                     let currentFeedback = [];
                     if (!currentFilters.tags.includes(newTagName)) {
-                        toggleTagSelection(newTagName, existingPopularTag);
+                        toggleTagSelection(newTagName, existingPopularTag); 
                         currentFeedback = feedbackClasses.success;
                     } else {
                         currentFeedback = feedbackClasses.warning;
@@ -588,14 +585,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     tagSearchInput.classList.add(...currentFeedback);
                     setTimeout(() => {
                         tagSearchInput.classList.remove(...currentFeedback);
-                    }, 1500);
+                    }, 1500); 
                 }
-                tagSearchInput.value = '';
+                tagSearchInput.value = ''; 
             });
         }
 
         if (videoCardsContainer) {
-            videoCardsContainer.addEventListener('click', function (event) {
+            videoCardsContainer.addEventListener('click', function(event) {
                 const playButton = event.target.closest('.play-video-button');
                 if (playButton) handlePlayVideo(playButton);
             });
@@ -605,7 +602,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (mobileSearchForm) mobileSearchForm.addEventListener('submit', (e) => handleSearchSubmit(e, mobileSearchInput));
         if (desktopSearchInput) desktopSearchInput.addEventListener('input', (e) => handleSearchInputDebounced(e.target.value));
         if (mobileSearchInput) mobileSearchInput.addEventListener('input', (e) => handleSearchInputDebounced(e.target.value));
-
+    
         if (backToTopButton) {
             window.addEventListener('scroll', toggleBackToTopButtonVisibility);
             backToTopButton.addEventListener('click', scrollToTop);
@@ -637,10 +634,12 @@ document.addEventListener('DOMContentLoaded', function () {
         let href = link.getAttribute('href');
 
         if (href.startsWith('index.html#') && isHomePage()) {
-            href = href.substring(href.indexOf('#'));
+            href = href.substring(href.indexOf('#')); 
         }
-
-        if (link.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
+    
+        if (link.closest('#mobile-menu')) {
+            setTimeout(closeMobileMenu, 150); 
+        }
 
         if (link.closest('header nav')) {
             document.querySelectorAll('header nav .nav-link').forEach(lnk => {
@@ -648,20 +647,25 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             link.classList.add('active', 'text-purple-600', 'dark:text-purple-400', 'font-semibold', 'bg-purple-100', 'dark:bg-purple-500/20');
         }
-
-        if (href && href.startsWith('#')) {
-            event.preventDefault();
+    
+        if (href && href.startsWith('#')) { 
+            event.preventDefault(); 
             const targetId = href.substring(1);
             const targetElement = document.getElementById(targetId);
+    
             if (targetElement) {
                 const headerElement = document.querySelector('header.sticky');
-                const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 80;
+                const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 80; 
                 const elementPosition = targetElement.getBoundingClientRect().top;
                 const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-                window.scrollTo({ top: offsetPosition, behavior: "smooth" });
+    
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
             }
-        } else if (href === 'index.html' || href === './' || href === '/') {
-            if (isHomePage()) {
+        } else if (href === 'index.html' || href === './' || href === '/') { 
+            if (isHomePage()) { 
                 event.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -673,20 +677,20 @@ document.addEventListener('DOMContentLoaded', function () {
         const activeClasses = ['active-search-tag', 'bg-purple-600', 'text-white', 'dark:bg-purple-500', 'dark:text-white', 'hover:bg-purple-700', 'dark:hover:bg-purple-600'];
         const inactiveClasses = ['bg-purple-100', 'text-purple-700', 'dark:bg-purple-800', 'dark:text-purple-200', 'hover:bg-purple-200', 'dark:hover:bg-purple-700'];
 
-        if (index > -1) {
+        if (index > -1) { 
             currentFilters.tags.splice(index, 1);
-            if (tagElement) {
+            if (tagElement) { 
                 tagElement.classList.remove(...activeClasses);
                 tagElement.classList.add(...inactiveClasses);
             }
-        } else {
+        } else { 
             currentFilters.tags.push(tagName);
-            if (tagElement) {
+            if (tagElement) { 
                 tagElement.classList.remove(...inactiveClasses);
                 tagElement.classList.add(...activeClasses);
             }
         }
-        renderSelectedTagsChips();
+        renderSelectedTagsChips(); 
         renderFilteredVideos();
         scrollToVideoGridIfNeeded();
     }
@@ -696,23 +700,23 @@ document.addEventListener('DOMContentLoaded', function () {
         searchDebounceTimer = setTimeout(() => {
             currentFilters.searchTerm = String(searchTerm).trim().toLowerCase();
             renderFilteredVideos();
-            if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
-        }, 400);
+            if (currentFilters.searchTerm) scrollToVideoGridIfNeeded(); 
+        }, 400); 
     }
 
     function handleSearchSubmit(event, searchInputElement) {
-        event.preventDefault();
+        event.preventDefault(); 
         if (searchInputElement) {
             currentFilters.searchTerm = String(searchInputElement.value).trim().toLowerCase();
             renderFilteredVideos();
-            searchInputElement.blur();
+            searchInputElement.blur(); 
             if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
         }
     }
     
     function handlePlayVideo(buttonElement) {
         const videoId = buttonElement.dataset.videoId;
-        const videoCard = buttonElement.closest('article');
+        const videoCard = buttonElement.closest('article'); 
         if (!videoCard) return;
 
         const iframe = videoCard.querySelector('.video-iframe');
@@ -721,17 +725,16 @@ document.addEventListener('DOMContentLoaded', function () {
         if (iframe && videoId) {
             const videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1&enablejsapi=1&origin=${window.location.origin}`;
             iframe.src = videoSrc;
-            iframe.classList.remove('hidden');
-            if (playIconContainer) playIconContainer.style.display = 'none';
+            iframe.classList.remove('hidden'); 
+            if (playIconContainer) playIconContainer.style.display = 'none'; 
         }
     }
 
-    // --- Utility Functions ---
     function scrollToVideoGridIfNeeded() {
         const videoGridSection = document.getElementById('video-grid-section');
         if (videoGridSection) {
             const rect = videoGridSection.getBoundingClientRect();
-            if (rect.top < 0 || rect.top > window.innerHeight * 0.66) {
+            if (rect.top < 0 || rect.top > window.innerHeight * 0.66) { 
                 const headerElement = document.querySelector('header.sticky');
                 const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 80;
                 const elementPosition = rect.top;
@@ -743,7 +746,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function toggleBackToTopButtonVisibility() {
         if (backToTopButton) {
-            if (window.pageYOffset > 300) {
+            if (window.pageYOffset > 300) { 
                 backToTopButton.classList.remove('opacity-0', 'invisible');
                 backToTopButton.classList.add('opacity-100', 'visible');
             } else {
@@ -763,14 +766,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function escapeHTML(str) {
         if (str === null || typeof str === 'undefined') return '';
-        if (typeof str !== 'string') str = String(str);
+        if (typeof str !== 'string') str = String(str); 
         const p = document.createElement('p');
         p.appendChild(document.createTextNode(str));
         return p.innerHTML;
     }
-
+    
     function escapeAttributeValue(value) {
-        return String(value).replace(/"/g, '"');
+        return String(value).replace(/"/g, '&quot;'); 
     }
 
     function capitalizeFirstLetter(string) {
@@ -778,6 +781,5 @@ document.addEventListener('DOMContentLoaded', function () {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
-    // --- Start the application ---
     initializePage();
 });
