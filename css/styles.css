@@ -1,23 +1,119 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    /* משתני צבע בסיסיים שלך יכולים להישאר כאן אם אתה משתמש בהם במקומות אחרים */
-    --color-slate-100: #f1f5f9; /* רקע גוף בהיר */
-    --color-slate-800: #1e293b; /* טקסט גוף בהיר */
-    --color-slate-900: #0f172a; /* רקע גוף כהה */
-    --color-slate-050: #f8fafc; /* טקסט גוף כהה (כמעט לבן) */
+    --color-purple-50: #f5f3ff;
+    --color-purple-100: #ede9fe;
+    --color-purple-200: #ddd6fe;
+    --color-purple-300: #c4b5fd;
+    --color-purple-400: #a78bfa;
+    --color-purple-500: #8b5cf6;
+    --color-purple-600: #7c3aed;
+    --color-purple-700: #6d28d9;
+    --color-purple-800: #5b21b6;
+    --color-purple-900: #4c1d95;
 
-    /* צבע רקע פנימי רצוי למצב לילה - שנה לערך HEX הרצוי */
-    /* לדוגמה, אפור בהיר (slate-600 של Tailwind) */
-    --dark-inner-background: #475569;
-    /* לדוגמה, אפור בהיר עם גוון סגלגל */
-    /* --dark-inner-background: #3b3861; */
-    /* לדוגמה, אפור בהיר עם גוון תכלכל */
-    /* --dark-inner-background: #34404d; */
+    --color-sky-50: #f0f9ff; /* זה הגוון המקורי, נשנה אותו בהמשך אם צריך */
 
-    /* צבע גבול פנימי רצוי למצב לילה */
-    --dark-inner-border: #64748b; /* slate-500 של Tailwind */
+    --color-slate-50: #f8fafc;
+    --color-slate-100: #f1f5f9;
+    --color-slate-200: #e2e8f0;
+    --color-slate-300: #cbd5e1;
+    --color-slate-400: #94a3b8;
+    --color-slate-500: #64748b;
+    --color-slate-600: #475569;
+    --color-slate-700: #334155;
+    --color-slate-800: #1e293b;
+    --color-slate-900: #0f172a;
+    --color-gray-950: #030712;
+
+
+    --color-white: #ffffff;
+    --color-black: #000000;
+
+    --color-yellow-300: #fde047;
+    --color-yellow-400: #facc15;
+
+    --color-indigo-600: #4f46e5;
+    --color-indigo-700: #4338ca;
+    --color-indigo-900: #312e81;
+
+    /* === Light Mode Variables === */
+    --bg-body: var(--color-slate-100);
+    --text-body: var(--color-slate-800);
+
+    --bg-header: var(--color-sky-50);
+    --text-header-link: var(--color-slate-700);
+    --text-header-link-hover: var(--color-purple-600);
+    --bg-header-link-hover: var(--color-purple-100);
+    --text-header-link-active: var(--color-purple-600);
+    --bg-header-link-active: var(--color-purple-100);
+
+    --bg-section-default: var(--color-white);
+    --text-section-heading: var(--color-slate-900);
+    --text-section-paragraph: var(--color-slate-600);
+    --border-section: var(--color-slate-200);
+
+    /* משתנים אלו היו עבור הכרטיס, כרגע העיצוב מגיע מ-Tailwind ישירות */
+    --card-bg-light: var(--color-white);
+    --card-border-light: rgba(203, 213, 225, 0.8);
+    --card-shadow-light: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --card-shadow-hover-light: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    --bg-card-tag: var(--color-purple-100);
+    --text-card-tag: var(--color-purple-700);
+
+    --hero-gradient: linear-gradient(135deg, var(--color-purple-700) 0%, var(--color-indigo-600) 100%);
+    --hero-text: var(--color-white);
+    --hero-text-accent: var(--color-purple-300);
+    --hero-text-secondary: var(--color-purple-100);
+    --hero-link-hover: var(--color-yellow-300);
+
+    --footer-bg: var(--color-slate-900);
+    --footer-text: var(--color-slate-400);
+    --footer-heading: var(--color-white);
+    --footer-link-hover: var(--color-purple-300);
+    --footer-border: var(--color-slate-700);
 }
+
+.dark {
+    /* === Dark Mode Variables === */
+    --bg-body: var(--color-slate-900);
+    --text-body: var(--color-slate-100);
+
+    --bg-header: var(--color-slate-800);
+    --text-header-link: var(--color-slate-300);
+    --text-header-link-hover: var(--color-purple-300);
+    --bg-header-link-hover: var(--color-slate-700);
+    --text-header-link-active: var(--color-purple-300);
+    --bg-header-link-active: var(--color-purple-800 / 0.5);
+
+    --bg-section-default: var(--color-slate-800);
+    --text-section-heading: var(--color-slate-50);
+    --text-section-paragraph: var(--color-slate-300);
+    --border-section: var(--color-slate-700);
+
+    /* משתנים אלו היו עבור הכרטיס, כרגע העיצוב מגיע מ-Tailwind ישירות */
+    --card-bg-dark: var(--color-slate-800);
+    --card-border-dark: rgba(51, 65, 85, 0.6);
+    --card-shadow-dark: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -4px rgba(0,0,0,0.3);
+    --card-shadow-hover-dark: 0 20px 25px -5px rgba(124, 58, 237, 0.2), 0 8px 10px -6px rgba(124, 58, 237, 0.15);
+
+    --bg-card-tag: var(--color-purple-800);
+    --text-card-tag: var(--color-purple-200);
+
+    --hero-gradient: linear-gradient(135deg, var(--color-purple-900) 0%, var(--color-indigo-900) 100%);
+    --hero-text: var(--color-slate-50);
+    --hero-text-accent: var(--color-purple-400);
+    --hero-text-secondary: var(--color-purple-200 / 0.9);
+    --hero-link-hover: var(--color-yellow-300);
+
+    --footer-bg: var(--color-gray-950);
+    --footer-text: var(--color-slate-400);
+    --footer-heading: var(--color-slate-100);
+    --footer-link-hover: var(--color-purple-300);
+    --footer-border: var(--color-slate-800);
+}
+
 
 html {
     scroll-behavior: smooth;
@@ -28,77 +124,58 @@ body {
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* הרקע והטקסט הראשיים של ה-body יגיעו מקלאסים של Tailwind */
+    background-color: var(--bg-body) !important;
+    color: var(--text-body) !important;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* סגנונות בסיסיים לתפריט הנייד (אם לא נשלטים במלואם ע"י Tailwind) */
-html[dir="rtl"].dark #mobile-menu .dark-mode-toggle-button .dot {
-    transform: translateX(-100%);
-}
+/* header.sticky נשלט ישירות ע"י Tailwind בקלאסים ב-HTML */
 
-html[dir="rtl"] #mobile-menu .dark-mode-toggle-button .dot {
-    transform: translateX(0%);
-}
-
-/* === דריסות למצב לילה === */
-
-/* רקע לכרטיסי סרטונים במצב לילה */
-/* חשוב: בקובץ ה-HTML, על ה-article של כרטיס הווידאו, ודא שאין קלאס dark:bg- משהו אחר */
-/* או שהקלאס המקורי הוא רק bg-white */
-html.dark .video-card-js-target { /* נוסיף את הקלאס הזה דרך JS */
-    background-color: var(--dark-inner-background) !important;
-    border-color: var(--dark-inner-border) !important;
-}
-html.dark .video-card-js-target .video-details-container .border-t {
-    border-top-color: var(--dark-inner-border) !important;
-}
-html.dark .video-card-js-target .video-thumbnail-container.border-b {
-    border-bottom-color: var(--dark-inner-border) !important;
-}
-
-
-/* רקע לכרטיסי ערוצים במצב לילה */
-/* חשוב: בקובץ ה-HTML, על ה-a של כרטיס הערוץ, ודא שאין קלאס dark:bg- משהו אחר */
-html.dark .channel-card {
-    background-color: var(--dark-inner-background) !important;
-    /* אם יש backdrop-blur, והרקע החיצוני של ה-section שונה, השקיפות עדיין יכולה להשפיע */
-    /* לדוגמה, אם תרצה לשמר אפקט זכוכית חלבית קלה: */
-    /* background-color: color-mix(in srgb, var(--dark-inner-background) 90%, transparent) !important; */
-}
-html.dark .channel-card .border-slate-200 { /* גבול תמונת הערוץ */
-    border-color: var(--dark-inner-border) !important;
-}
-
-
-/* רקע לאזור "אודות" במצב לילה */
-/* חשוב: בקובץ ה-HTML, על ה-section של אודות, ודא שאין קלאס dark:bg- משהו אחר */
-html.dark #about-section {
-    background-color: var(--dark-inner-background) !important;
-    /* אם יש backdrop-blur: */
-    /* background-color: color-mix(in srgb, var(--dark-inner-background) 75%, transparent) !important; */
-}
-
-/* רקע לטופס יצירת קשר במצב לילה */
-/* תן ל-div שמכיל את הטופס קלאס ייחודי, למשל 'contact-form-box' */
-html.dark .contact-form-box {
-    background-color: var(--dark-inner-background) !important;
-}
-/* שדות הקלט בתוך הטופס ישארו עם הרקע הכהה יותר שלהם (slate-700) שמוגדר ב-Tailwind */
-
-
-/* עיצובים כלליים נוספים מהקובץ הקודם */
 .hero-gradient {
-    background: linear-gradient(135deg, #6d28d9 0%, #4f46e5 100%) !important; /* דוגמה לערכים קבועים */
-    color: white !important;
+    background: var(--hero-gradient) !important;
+    color: var(--hero-text) !important;
 }
 html:not(.dark) .hero-gradient .text-purple-300 {
-    color: #c4b5fd !important;
+    color: var(--hero-text-accent) !important;
 }
-.dark .hero-gradient .dark\:text-purple-400 {
-    color: #a78bfa !important;
+.dark .hero-gradient .dark\:text-purple-400 { /*שים לב ל- \: ל-escape של הנקודתיים */
+    color: var(--hero-text-accent) !important;
 }
-/* וכו' לשאר הסגנונות הכלליים שלך */
+
+.hero-gradient a:hover {
+    color: var(--hero-link-hover) !important;
+}
+
+.search-input,
+.tag-input,
+#contact-section input,
+#contact-section textarea {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+#back-to-top-btn {
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-out;
+}
+#back-to-top-btn:hover {
+    transform: scale(1.1);
+}
+
+#site-footer {
+    background-color: var(--footer-bg) !important;
+    color: var(--footer-text) !important;
+}
+#site-footer h3 {
+    color: var(--footer-heading) !important;
+}
+#site-footer a {
+    color: var(--footer-text) !important;
+}
+#site-footer a:hover {
+    color: var(--footer-link-hover) !important;
+}
+#site-footer .border-t {
+    border-top-color: var(--footer-border) !important;
+}
 
 .line-clamp-2 {
     overflow: hidden;
