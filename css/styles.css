@@ -1,122 +1,120 @@
-@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap'); /* הוספתי משקל 900 */
 
 :root {
-    --color-purple-50: #f5f3ff; 
-    --color-purple-100: #ede9fe;
-    --color-purple-200: #ddd6fe;
-    --color-purple-300: #c4b5fd;
-    --color-purple-400: #a78bfa;
-    --color-purple-500: #8b5cf6;
-    --color-purple-600: #7c3aed;
-    --color-purple-700: #6d28d9;
-    --color-purple-800: #5b21b6;
-    --color-purple-900: #4c1d95;
+    /* --- צבעי בסיס (חלקם חדשים/מעודכנים) --- */
+    --color-primary-50: #f5f3ff; 
+    --color-primary-100: #ede9fe;
+    --color-primary-200: #ddd6fe;
+    --color-primary-300: #c4b5fd;
+    --color-primary-400: #a78bfa;
+    --color-primary-500: #8b5cf6; /* סגול ראשי */
+    --color-primary-600: #7c3aed;
+    --color-primary-700: #6d28d9;
+    --color-primary-800: #5b21b6;
+    --color-primary-900: #4c1d95;
 
-    --color-sky-50: #f0f9ff;
-    
-    --color-slate-50: #f8fafc;
-    --color-slate-100: #f1f5f9;
-    --color-slate-200: #e2e8f0;
-    --color-slate-300: #cbd5e1;
-    --color-slate-400: #94a3b8;
-    --color-slate-500: #64748b;
-    --color-slate-600: #475569;
-    --color-slate-700: #334155;
-    --color-slate-800: #1e293b;
-    --color-slate-900: #0f172a;
+    --color-gray-50: #f9fafb;
+    --color-gray-100: #f3f4f6;
+    --color-gray-200: #e5e7eb;
+    --color-gray-300: #d1d5db;
+    --color-gray-400: #9ca3af;
+    --color-gray-500: #6b7280;
+    --color-gray-600: #4b5563;
+    --color-gray-700: #374151;
+    --color-gray-800: #1f2937;
+    --color-gray-900: #111827;
     --color-gray-950: #030712; 
-    
+
     --color-white: #ffffff;
     --color-black: #000000;
 
-    --color-yellow-300: #fde047;
-    --color-yellow-400: #facc15;
-    --color-indigo-600: #4f46e5;
-    --color-indigo-700: #4338ca;
-    --color-indigo-900: #312e81;
+    --color-accent-yellow: #facc15; /* צהוב להדגשות */
+    --color-accent-pink: #ec4899; /* ורוד להדגשות */
 
     /* === Light Mode Variables === */
-    --bg-body: var(--color-slate-100);
-    --text-body: var(--color-slate-800);
+    --bg-body: var(--color-gray-100);
+    --text-body: var(--color-gray-700);
     
-    --bg-header: var(--color-sky-50); /* Can be made semi-transparent with /95 in Tailwind */
-    --text-header-link: var(--color-slate-700);
-    --text-header-link-hover: var(--color-purple-600);
-    --bg-header-link-hover: var(--color-purple-100);
-    --text-header-link-active: var(--color-purple-600);
-    --bg-header-link-active: var(--color-purple-100);
+    --bg-header: var(--color-white);
+    --border-header: var(--color-gray-200);
+    --text-header-link: var(--color-gray-600);
+    --text-header-link-hover: var(--color-primary-600);
+    --bg-header-link-hover: var(--color-primary-50);
+    --text-header-link-active: var(--color-primary-600);
+    --bg-header-link-active: var(--color-primary-100);
 
-    --bg-section-default: var(--color-white); 
-    --text-section-heading: var(--color-slate-900);
-    --text-section-paragraph: var(--color-slate-600);
-    --border-section: var(--color-slate-200);
+    --bg-section: var(--color-white); 
+    --border-section: var(--color-gray-200);
+    --text-heading: var(--color-gray-900);
+    --text-paragraph: var(--color-gray-600);
 
     --bg-card: var(--color-white); 
-    --bg-card-blur-opacity: 1; /* No blur needed in light mode by default */
-    --text-card-title: var(--color-slate-800);
-    --text-card-title-hover: var(--color-purple-600);
-    --text-card-muted: var(--color-slate-500);
-    --border-card: var(--color-slate-200);
-    --shadow-card: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-xl */
-    --shadow-card-hover: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); /* shadow-2xl */
+    --border-card: var(--color-gray-200);
+    --shadow-card: 0 4px 12px -1px rgb(0 0 0 / 0.08), 0 2px 8px -2px rgb(0 0 0 / 0.05);
+    --shadow-card-hover: 0 10px 20px -3px rgb(0 0 0 / 0.1), 0 4px 8px -4px rgb(0 0 0 / 0.1);
     
-    --bg-card-tag: var(--color-purple-100);
-    --text-card-tag: var(--color-purple-700);
+    --text-card-title: var(--color-gray-800);
+    --text-card-title-hover: var(--color-primary-600);
+    --text-card-muted: var(--color-gray-500);
+    --bg-card-tag: var(--color-primary-100);
+    --text-card-tag: var(--color-primary-700);
     
-    --hero-gradient: linear-gradient(135deg, var(--color-purple-700) 0%, var(--color-indigo-600) 100%);
+    --hero-gradient-start: var(--color-primary-600);
+    --hero-gradient-end: var(--color-accent-pink);
     --hero-text: var(--color-white);
-    --hero-text-accent: var(--color-purple-300);
-    --hero-text-secondary: var(--color-purple-100);
-    --hero-link-hover: var(--color-yellow-300);
+    --hero-text-accent: var(--color-primary-300);
+    --hero-text-secondary: var(--color-primary-100);
+    --hero-link-hover: var(--color-accent-yellow);
 
-    --footer-bg: var(--color-slate-900);
-    --footer-text: var(--color-slate-400);
+    --footer-bg: var(--color-gray-900);
+    --footer-text: var(--color-gray-400);
     --footer-heading: var(--color-white);
-    --footer-link-hover: var(--color-purple-300);
-    --footer-border: var(--color-slate-700);
+    --footer-link-hover: var(--color-primary-300);
+    --footer-border: var(--color-gray-700);
 }
 
 .dark {
     /* === Dark Mode Variables === */
-    --bg-body: var(--color-slate-900);         
-    --text-body: var(--color-slate-100);
+    --bg-body: var(--color-gray-950);         
+    --text-body: var(--color-gray-300); /* טקסט גוף כללי בהיר יותר */
     
-    --bg-header: var(--color-slate-800); /* Can be made semi-transparent with /85 in Tailwind */      
-    --text-header-link: var(--color-slate-300); 
-    --text-header-link-hover: var(--color-purple-300);
-    --bg-header-link-hover: var(--color-slate-700);
-    --text-header-link-active: var(--color-purple-300);
-    --bg-header-link-active: var(--color-purple-800 / 0.5);
+    --bg-header: var(--color-gray-900 / 0.85); /* רקע כהה עם שקיפות ל-blur */    
+    --border-header: var(--color-gray-700);
+    --text-header-link: var(--color-gray-300); 
+    --text-header-link-hover: var(--color-primary-300);
+    --bg-header-link-hover: var(--color-gray-700);
+    --text-header-link-active: var(--color-primary-300);
+    --bg-header-link-active: var(--color-primary-700 / 0.3);
 
-    --bg-section-default: var(--color-slate-800); /* For sections like filters, about */
-    --bg-section-blur-opacity: 0.75; /* For backdrop-blur effect if needed */
-    --text-section-heading: var(--color-slate-50);
-    --text-section-paragraph: var(--color-slate-300);
-    --border-section: var(--color-slate-700);
+    --bg-section: var(--color-gray-900 / 0.7); /* רקע כללי ל-sections עם שקיפות ל-blur */
+    --border-section: var(--color-gray-700);   
+    --text-heading: var(--color-gray-100);
+    --text-paragraph: var(--color-gray-400); /* טקסט פסקאות מעט בהיר יותר */
 
-    --bg-card: var(--color-slate-800); /* For video cards */      
-    --bg-card-blur-opacity: 0.75; /* For backdrop-blur effect */
-    --text-card-title: var(--color-slate-50);
-    --text-card-title-hover: var(--color-purple-300);
-    --text-card-muted: var(--color-slate-400);    
-    --border-card: var(--color-slate-700);      
-    --shadow-card: 0 4px 6px -1px var(--color-black / 0.2), 0 2px 4px -2px var(--color-black / 0.15); /* shadow-lg with darker tones */
-    --shadow-card-hover: 0 10px 15px -3px var(--color-purple-900 / 0.2), 0 4px 6px -4px var(--color-purple-900 / 0.15); /* shadow-xl related to accent */
+    /* כרטיס וידאו עצמו */
+    --bg-card: var(--color-gray-800 / 0.75); /* רקע כרטיס עם שקיפות ל-blur */
+    --border-card: var(--color-gray-700);      
+    --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.15); /* צל עדין מאוד */
+    --shadow-card-hover: 0 0 0 1.5px var(--color-primary-500), 0 8px 16px 0 var(--color-primary-900 / 0.5);
     
-    --bg-card-tag: var(--color-purple-800);         
-    --text-card-tag: var(--color-purple-200);
+    --text-card-title: var(--color-gray-100); 
+    --text-card-title-hover: var(--color-primary-300);
+    --text-card-muted: var(--color-gray-400); /* טקסט עמום, אבל יותר בהיר מבעבר */
+    --bg-card-tag: var(--color-primary-500 / 0.3);        
+    --text-card-tag: var(--color-primary-300);
 
-    --hero-gradient: linear-gradient(135deg, var(--color-purple-900) 0%, var(--color-indigo-900) 100%);
-    --hero-text: var(--color-slate-50);
-    --hero-text-accent: var(--color-purple-400);
-    --hero-text-secondary: var(--color-purple-200 / 0.9);
-    --hero-link-hover: var(--color-yellow-300);
+    --hero-gradient-start: var(--color-primary-700);
+    --hero-gradient-end: var(--color-accent-pink / 0.8);
+    --hero-text: var(--color-gray-100);
+    --hero-text-accent: var(--color-primary-400);
+    --hero-text-secondary: var(--color-primary-200 / 0.9);
+    --hero-link-hover: var(--color-accent-yellow);
 
-    --footer-bg: var(--color-gray-950);         
-    --footer-text: var(--color-slate-400);
-    --footer-heading: var(--color-slate-100);
-    --footer-link-hover: var(--color-purple-300);
-    --footer-border: var(--color-slate-800);
+    --footer-bg: var(--color-black); /* פוטר שחור לגמרי */        
+    --footer-text: var(--color-gray-500);
+    --footer-heading: var(--color-gray-100);
+    --footer-link-hover: var(--color-primary-400); 
+    --footer-border: var(--color-gray-800);
 }
 
 html { 
@@ -125,109 +123,185 @@ html {
 
 body {
     font-family: 'Rubik', sans-serif;
-    line-height: 1.65; 
+    line-height: 1.7; /* מעט יותר מרווח */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: var(--bg-body) !important; 
-    color: var(--text-body) !important;       
+    background-color: var(--bg-body); 
+    color: var(--text-body);       
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* --- Header & Footer specific styles (mostly handled by Tailwind) --- */
 header.sticky { 
-    background-color: var(--bg-header / var(--bg-header-blur-opacity, 0.95)) !important; /* Default opacity, can be overridden by Tailwind */
+    background-color: var(--bg-header) !important; /* Tailwind handles opacity via class like /95 */
+    border-bottom: 1px solid var(--border-header);
 }
-.dark header.sticky {
-    background-color: var(--bg-header / var(--bg-header-blur-opacity, 0.85)) !important;
-}
-
-.hero-gradient {
-    background: var(--hero-gradient) !important;
-    color: var(--hero-text) !important;
-}
-.hero-gradient .text-purple-300, .dark .hero-gradient .text-purple-400 { 
-    color: var(--hero-text-accent) !important;
-}
-.hero-gradient a:hover { 
-    color: var(--hero-link-hover) !important; 
-}
-
-/* Video Cards - Styles are primarily handled by Tailwind in the template */
-.video-card {
-    background-color: var(--bg-card / var(--bg-card-blur-opacity, 1));
-    border-color: var(--border-card);
-    box-shadow: var(--shadow-card);
-    transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, border-color 0.25s ease-out;
-}
-.video-card:hover {
-    transform: translateY(-6px); /* Slightly more pronounced hover */
-    box-shadow: var(--shadow-card-hover);
-}
-.dark .video-card:hover {
-    border-color: var(--color-purple-500); /* Accent border on hover for dark mode */
-}
-
-.video-card .video-title {
-    color: var(--text-card-title);
-}
-.video-card .video-title a:hover {
-    color: var(--text-card-title-hover) !important;
-}
-.video-card .video-tags span {
-    background-color: var(--bg-card-tag);
-    color: var(--text-card-tag);
-}
-.video-card .video-category-display,
-.video-card .video-channel-info {
-    color: var(--text-card-muted);
-}
-.video-card .border-t { /* Ensure this uses the card's border color */
-    border-top-color: var(--border-card);
-}
-
-/* Inputs: Tailwind handles focus rings well. Base styles for consistency if needed. */
-.search-input, .tag-input, 
-#contact-section input, #contact-section textarea {
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-    /* Tailwind classes like dark:bg-slate-700/80 or dark:bg-slate-600/80 should be used for inputs */
-}
-
-#back-to-top-btn {
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-out;
-}
-#back-to-top-btn:hover {
-    transform: scale(1.1);
-}
-
 #site-footer {
     background-color: var(--footer-bg) !important;
     color: var(--footer-text) !important;
 }
-#site-footer h3 {
-    color: var(--footer-heading) !important;
+#site-footer h3 { color: var(--footer-heading) !important; }
+#site-footer a { color: var(--footer-text) !important; }
+#site-footer a:hover { color: var(--footer-link-hover) !important; }
+#site-footer .border-t { border-top-color: var(--footer-border) !important; }
+
+
+/* --- Sections --- */
+.content-section { /* קלאס גנרי ל-sections כמו אודות, צור קשר, פילטרים */
+    background-color: var(--bg-section);
+    border: 1px solid var(--border-section);
+    border-radius: 1rem; /* rounded-xl */
+    padding: 1.5rem; /* p-6 */
+    box-shadow: var(--shadow-card); /* שימוש באותו צל כמו כרטיס */
 }
-#site-footer a {
-    color: var(--footer-text) !important; 
+.dark .content-section {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
 }
-#site-footer a:hover {
-    color: var(--footer-link-hover) !important;
+.content-section h1, .content-section h2, .content-section h3 {
+    color: var(--text-heading);
 }
-#site-footer .border-t { 
-    border-top-color: var(--footer-border) !important;
+.content-section p, .content-section label, .content-section div { /* טקסט כללי בתוך סקשנים */
+    color: var(--text-paragraph);
+}
+.dark .content-section p, .dark .content-section label, .dark .content-section div {
+    color: var(--text-paragraph); /* משתנה זה כבר מעודכן למצב כהה */
 }
 
+
+/* --- Hero Section --- */
+.hero-gradient {
+    background-image: linear-gradient(120deg, var(--hero-gradient-start), var(--hero-gradient-end)) !important;
+    color: var(--hero-text) !important;
+}
+.hero-gradient .hero-heading {
+    font-weight: 900; /* הדגשת הכותרת הראשית */
+}
+.hero-gradient .text-purple-300, .dark .hero-gradient .text-purple-400 { 
+    /* המשתנה כבר אמור לטפל בזה, אבל לוודאות */
+    color: var(--hero-text-accent) !important; 
+}
+
+
+/* --- Video Cards --- */
+.video-card-wrapper { /* ה-article עצמו */
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-card);
+    box-shadow: var(--shadow-card);
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out;
+    padding: 0.5rem; /* p-2 מסביב לתוכן הכרטיס */
+}
+.dark .video-card-wrapper {
+    backdrop-filter: blur(16px); /* טשטוש חזק יותר לכרטיסים */
+    -webkit-backdrop-filter: blur(16px);
+}
+.video-card-wrapper:hover {
+    transform: translateY(-8px) scale(1.02); /* אפקט ריחוף מודגש יותר */
+    box-shadow: var(--shadow-card-hover);
+}
+
+.video-card-wrapper .video-thumbnail-container {
+    border-radius: 0.75rem; /* rounded-xl תואם ל-Tailwind, אם ה-padding של ה-wrapper הוא 0.5rem */
+}
+
+.video-card-wrapper .video-title {
+    color: var(--text-card-title);
+    font-weight: 600; /* הדגשת כותרת הסרטון */
+}
+.video-card-wrapper .video-title a:hover {
+    color: var(--text-card-title-hover) !important;
+}
+.video-card-wrapper .video-tags span {
+    background-color: var(--bg-card-tag);
+    color: var(--text-card-tag);
+    font-weight: 500;
+    padding: 0.25rem 0.75rem; /* py-1 px-3 */
+}
+.video-card-wrapper .video-details-container { /* החלק של פרטי הסרטון */
+    padding-top: 1rem; /* p-4 */
+}
+.video-card-wrapper .video-channel-info,
+.video-card-wrapper .video-category-display {
+    color: var(--text-card-muted);
+}
+.dark .video-card-wrapper .video-channel-info, /* ודאות צבעים במצב כהה */
+.dark .video-card-wrapper .video-category-display {
+    color: var(--text-card-muted); 
+}
+
+.video-card-wrapper .border-t { 
+    border-top-color: var(--border-card);
+}
+
+
+/* --- Forms and Inputs --- */
+.search-input, .tag-input, 
+#contact-section input, #contact-section textarea {
+    background-color: var(--color-gray-50);
+    border-color: var(--color-gray-300);
+    color: var(--color-gray-800);
+    border-radius: 0.5rem; /* rounded-lg */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+.dark .search-input, .dark .tag-input, 
+.dark #contact-section input, .dark #contact-section textarea {
+    background-color: var(--color-gray-700 / 0.8); /* רקע קלט חצי שקוף */
+    border-color: var(--color-gray-600);
+    color: var(--color-gray-100);
+}
+.search-input:focus, .tag-input:focus,
+#contact-section input:focus, #contact-section textarea:focus {
+    border-color: var(--color-primary-500) !important;
+    box-shadow: 0 0 0 2px var(--color-primary-500 / 0.3) !important;
+    background-color: var(--color-white);
+}
+.dark .search-input:focus, .dark .tag-input:focus,
+.dark #contact-section input:focus, .dark #contact-section textarea:focus {
+    background-color: var(--color-gray-700); /* רקע אטום יותר בפוקוס */
+}
+/* Placeholder colors via Tailwind */
+
+
+/* --- Buttons --- */
+.btn-primary, .btn-hero-primary, .btn-hero-secondary, .btn-forum {
+    border-radius: 0.75rem; /* rounded-xl */
+    font-weight: 600;
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out, background-color 0.2s ease-out;
+}
+.btn-primary:hover, .btn-hero-primary:hover, .btn-hero-secondary:hover, .btn-forum:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px var(--color-primary-500 / 0.3);
+}
+.dark .btn-primary:hover, .dark .btn-hero-primary:hover, .dark .btn-hero-secondary:hover, .dark .btn-forum:hover {
+    box-shadow: 0 4px 15px var(--color-primary-700 / 0.4);
+}
+
+/* --- Back to Top Button --- */
+#back-to-top-btn {
+    border-radius: 9999px; /* rounded-full */
+    box-shadow: 0 4px 12px rgb(0 0 0 / 0.2);
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-out;
+}
+#back-to-top-btn:hover {
+    transform: scale(1.1) rotate(3deg); /* אפקט קטן נוסף */
+}
+
+
+/* --- Utility: Line Clamp (כבר קיים, טוב) --- */
 .line-clamp-2 {
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
-    max-height: calc(1.65em * 2); /* Assuming line-height: 1.65, adjust if needed */
+    max-height: calc(1.7em * 2); /* התאמה ל line-height החדש */
 }
 
+/* --- Utility: Floating Animation (כבר קיים, טוב) --- */
 .floating { 
-    animation: float 6s ease-in-out infinite; 
+    animation: float 8s ease-in-out infinite; /* אנימציה איטית יותר */
 }
 @keyframes float {
     0% { transform: translateY(0px); }
-    50% { transform: translateY(-12px); } /* Slightly more movement */
+    50% { transform: translateY(-15px); } 
     100% { transform: translateY(0px); }
 }
