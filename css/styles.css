@@ -1,353 +1,257 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    /* פלטת סגולים מהקודם, אולי נעדן מעט */
-    --color-purple-50: #f5f3ff; 
+    --color-purple-50: #f5f3ff;
     --color-purple-100: #ede9fe;
     --color-purple-200: #ddd6fe;
-    --color-purple-300: #c4b5fd; /* למצב כהה, טקסט סגול בהיר */
-    --color-purple-400: #a78bfa; /* למצב כהה, אייקונים והדגשות */
-    --color-purple-500: #8b5cf6; 
-    --color-purple-600: #7c3aed; /* סגול ראשי למצב בהיר */
+    --color-purple-300: #c4b5fd;
+    --color-purple-400: #a78bfa;
+    --color-purple-500: #8b5cf6;
+    --color-purple-600: #7c3aed;
     --color-purple-700: #6d28d9;
-    --color-purple-800: #5b21b6; /* רקעים סגולים כהים במצב לילה */
+    --color-purple-800: #5b21b6;
     --color-purple-900: #4c1d95;
 
     --color-sky-50: #f0f9ff;
-    
+
     --color-slate-50: #f8fafc;
     --color-slate-100: #f1f5f9;
     --color-slate-200: #e2e8f0;
     --color-slate-300: #cbd5e1;
-    --color-slate-400: #94a3b8; /* טקסט עמום במצב בהיר */
-    --color-slate-500: #64748b; /* טקסט עמום יותר במצב בהיר */
+    --color-slate-400: #94a3b8;
+    --color-slate-500: #64748b;
     --color-slate-600: #475569;
-    --color-slate-700: #334155; /* רקע כרטיס/אלמנט משני במצב לילה */
-    --color-slate-800: #1e293b; /* רקע כללי במצב לילה - טיפה כהה יותר מהקודם */
-    --color-slate-900: #0f172a; /* רקע כהה מאוד, אולי לפוטר */
-    --color-gray-950: #030712; 
+    --color-slate-700: #334155;
+    --color-slate-800: #1e293b;
+    --color-slate-900: #0f172a;
+    --color-gray-950: #030712;
+
 
     --color-white: #ffffff;
     --color-black: #000000;
 
     --color-yellow-300: #fde047;
     --color-yellow-400: #facc15;
+
     --color-indigo-600: #4f46e5;
     --color-indigo-700: #4338ca;
     --color-indigo-900: #312e81;
 
     /* === Light Mode Variables === */
-    --bg-body-light: var(--color-slate-100);
-    --text-body-light: var(--color-slate-800);
-    
-    --bg-header-light: var(--color-sky-50);
-    --text-header-link-light: var(--color-slate-700);
-    --text-header-link-hover-light: var(--color-purple-600);
-    --bg-header-link-hover-light: var(--color-purple-50);
-    --text-header-link-active-light: var(--color-purple-600);
-    --bg-header-link-active-light: var(--color-purple-100);
+    --bg-body: var(--color-slate-100);
+    --text-body: var(--color-slate-800);
 
-    --bg-section-light: var(--color-white); 
-    --text-heading-light: var(--color-slate-900);
-    --text-paragraph-light: var(--color-slate-600);
-    --border-default-light: var(--color-slate-200);
+    --bg-header: var(--color-sky-50); /* Can be made semi-transparent with /95 in Tailwind */
+    --text-header-link: var(--color-slate-700);
+    --text-header-link-hover: var(--color-purple-600);
+    --bg-header-link-hover: var(--color-purple-100);
+    --text-header-link-active: var(--color-purple-600);
+    --bg-header-link-active: var(--color-purple-100);
 
-    --bg-card-light: var(--color-white); /* רקע כרטיס זהה לרקע סקשן, עם הפרדה ע"י צל וגבול */
-    --border-card-light: var(--color-slate-200);
-    --shadow-card-light: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.04); /* צל עדין יותר */
-    --shadow-card-hover-light: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.04);
-    
-    --text-card-title-light: var(--color-slate-800);
-    --text-card-title-hover-light: var(--color-purple-600);
-    --text-card-muted-light: var(--color-slate-500);
-    --bg-card-tag-light: var(--color-purple-100);
-    --text-card-tag-light: var(--color-purple-700);
-    
-    --hero-gradient-start-light: var(--color-purple-700);
-    --hero-gradient-end-light: var(--color-indigo-600);
-    --hero-text-light: var(--color-white);
-    --hero-text-accent-light: var(--color-purple-300);
-    --hero-text-secondary-light: var(--color-purple-100);
-    --hero-link-hover-light: var(--color-yellow-300);
+    --bg-section-default: var(--color-white);
+    --text-section-heading: var(--color-slate-900);
+    --text-section-paragraph: var(--color-slate-600);
+    --border-section: var(--color-slate-200);
 
-    --footer-bg-light: var(--color-slate-900);
-    --footer-text-light: var(--color-slate-400);
-    --footer-heading-light: var(--color-white);
-    --footer-link-hover-light: var(--color-purple-300);
-    --footer-border-light: var(--color-slate-700);
+    --bg-card: var(--color-slate-50); /* Updated for video cards to be slightly off-white */
+    --bg-card-blur-opacity: 1;
+    --text-card-title: var(--color-slate-800);
+    --text-card-title-hover: var(--color-purple-600);
+    --text-card-muted: var(--color-slate-500);
+    --border-card: var(--color-slate-200);
+    --shadow-card: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1); /* shadow-xl */
+    --shadow-card-hover: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); /* shadow-2xl */
+
+    --bg-card-tag: var(--color-purple-100);
+    --text-card-tag: var(--color-purple-700);
+
+    --hero-gradient: linear-gradient(135deg, var(--color-purple-700) 0%, var(--color-indigo-600) 100%);
+    --hero-text: var(--color-white);
+    --hero-text-accent: var(--color-purple-300);
+    --hero-text-secondary: var(--color-purple-100);
+    --hero-link-hover: var(--color-yellow-300);
+
+    --footer-bg: var(--color-slate-900);
+    --footer-text: var(--color-slate-400);
+    --footer-heading: var(--color-white);
+    --footer-link-hover: var(--color-purple-300);
+    --footer-border: var(--color-slate-700);
 }
 
 .dark {
-    /* === Dark Mode Variables - שיפור קונטרסט ועידון === */
-    --bg-body-dark: var(--color-slate-900); /* רקע גוף מעט בהיר יותר מ-gray-950 */      
-    --text-body-dark: var(--color-slate-200); /* טקסט גוף כללי בהיר יותר */
-    
-    --bg-header-dark: var(--color-slate-800 / 0.9); /* חזרנו לרקע header המקורי, עם שקיפות */    
-    --text-header-link-dark: var(--color-slate-200); /* טקסט קישור בהיר */
-    --text-header-link-hover-dark: var(--color-purple-300);
-    --bg-header-link-hover-dark: var(--color-slate-700);
-    --text-header-link-active-dark: var(--color-purple-300);
-    --bg-header-link-active-dark: var(--color-purple-700 / 0.3);
+    /* === Dark Mode Variables === */
+    --bg-body: var(--color-slate-900);
+    --text-body: var(--color-slate-100);
 
-    --bg-section-dark: var(--color-slate-800); /* רקע סקשנים כמו פילטר, אודות */
-    --text-heading-dark: var(--color-slate-100); /* כותרות בהירות מאוד */
-    --text-paragraph-dark: var(--color-slate-300); /* פסקאות בהירות יותר */
-    --border-default-dark: var(--color-slate-700);
+    --bg-header: var(--color-slate-800); /* Can be made semi-transparent with /85 in Tailwind */
+    --text-header-link: var(--color-slate-300);
+    --text-header-link-hover: var(--color-purple-300);
+    --bg-header-link-hover: var(--color-slate-700);
+    --text-header-link-active: var(--color-purple-300);
+    --bg-header-link-active: var(--color-purple-800 / 0.5);
 
-    /* כרטיס וידאו עצמו - עם רקע מעט שונה וגבול */
-    --bg-card-dark: var(--color-slate-700); /* רקע כרטיס טיפה בהיר מרקע הסקשן הכללי */
-    --border-card-dark: var(--color-slate-600); /* גבול עדין לכרטיס */
-    --shadow-card-dark: 0 2px 4px rgb(0 0 0 / 0.2); /* צל עדין יותר וכהה */
-    --shadow-card-hover-dark: 0 5px 10px rgb(0 0 0 / 0.3), 0 0 0 1px var(--color-purple-500); /* הדגשת גבול ב-hover */
-    
-    --text-card-title-dark: var(--color-slate-100); /* כותרת כרטיס בהירה */
-    --text-card-title-hover-dark: var(--color-purple-300);
-    --text-card-muted-dark: var(--color-slate-400); /* טקסט עמום יותר בהיר */
-    --bg-card-tag-dark: var(--color-purple-500 / 0.25); /* תגית עם רקע סגול שקוף */       
-    --text-card-tag-dark: var(--color-purple-300); /* טקסט תגית סגול בהיר */
+    --bg-section-default: var(--color-slate-800); /* For sections like filters, about */
+    --bg-section-blur-opacity: 0.75; /* For backdrop-blur effect if needed */
+    --text-section-heading: var(--color-slate-50);
+    --text-section-paragraph: var(--color-slate-300);
+    --border-section: var(--color-slate-700);
 
-    --hero-gradient-start-dark: var(--color-purple-800);
-    --hero-gradient-end-dark: var(--color-indigo-900);
-    --hero-text-dark: var(--color-slate-100);
-    --hero-text-accent-dark: var(--color-purple-400); /* צבע הדגשה בהירו, בהיר יותר */
-    --hero-text-secondary-dark: var(--color-purple-300 / 0.9);
-    --hero-link-hover-dark: var(--color-yellow-300);
+    --bg-card: var(--color-slate-800); /* Updated for video cards - now opaque */
+    --bg-card-blur-opacity: 1; /* No blur as it's opaque */
+    --text-card-title: var(--color-slate-50);
+    --text-card-title-hover: var(--color-purple-300);
+    --text-card-muted: var(--color-slate-400);
+    --border-card: var(--color-slate-700);
+    --shadow-card: 0 4px 6px -1px var(--color-black / 0.2), 0 2px 4px -2px var(--color-black / 0.15); /* shadow-lg with darker tones */
+    --shadow-card-hover: 0 10px 15px -3px var(--color-purple-900 / 0.2), 0 4px 6px -4px var(--color-purple-900 / 0.15); /* shadow-xl related to accent */
 
-    --footer-bg-dark: var(--color-gray-950);         
-    --footer-text-dark: var(--color-slate-400); /* טקסט פוטר מעט בהיר יותר */
-    --footer-heading-dark: var(--color-slate-100);
-    --footer-link-hover-dark: var(--color-purple-300);
-    --footer-border-dark: var(--color-slate-800);
+    --bg-card-tag: var(--color-purple-800);
+    --text-card-tag: var(--color-purple-200);
+
+    --hero-gradient: linear-gradient(135deg, var(--color-purple-900) 0%, var(--color-indigo-900) 100%);
+    --hero-text: var(--color-slate-50);
+    --hero-text-accent: var(--color-purple-400);
+    --hero-text-secondary: var(--color-purple-200 / 0.9);
+    --hero-link-hover: var(--color-yellow-300);
+
+    --footer-bg: var(--color-gray-950);
+    --footer-text: var(--color-slate-400);
+    --footer-heading: var(--color-slate-100);
+    --footer-link-hover: var(--color-purple-300);
+    --footer-border: var(--color-slate-800);
 }
 
-html { 
-    scroll-behavior: smooth; 
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
     font-family: 'Rubik', sans-serif;
-    line-height: 1.65; 
+    line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: var(--bg-body-light); 
-    color: var(--text-body-light);       
+    background-color: var(--bg-body) !important;
+    color: var(--text-body) !important;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
-.dark body {
-    background-color: var(--bg-body-dark);
-    color: var(--text-body-dark);
-}
 
-/* --- Header --- */
-header.sticky { 
-    background-color: var(--bg-header-light / 0.95); /* Tailwind handles opacity */
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--border-default-light);
+header.sticky {
+    background-color: var(--bg-header / var(--bg-header-blur-opacity, 0.95)) !important; /* Default opacity, can be overridden by Tailwind */
 }
 .dark header.sticky {
-    background-color: var(--bg-header-dark); /* כבר מכיל שקיפות */
-    border-bottom-color: var(--border-default-dark);
-}
-/* קישורי ניווט בהדר ינוהלו ע"י קלאסים של Tailwind ומשתני CSS שה-JS מוסיף */
-header nav a { color: var(--text-header-link-light); }
-.dark header nav a { color: var(--text-header-link-dark); }
-header nav a:hover { 
-    background-color: var(--bg-header-link-hover-light);
-    color: var(--text-header-link-hover-light);
-}
-.dark header nav a:hover {
-    background-color: var(--bg-header-link-hover-dark);
-    color: var(--text-header-link-hover-dark);
-}
-header nav a.active {
-    background-color: var(--bg-header-link-active-light);
-    color: var(--text-header-link-active-light);
-    font-weight: 600;
-}
-.dark header nav a.active {
-    background-color: var(--bg-header-link-active-dark);
-    color: var(--text-header-link-active-dark);
+    background-color: var(--bg-header / var(--bg-header-blur-opacity, 0.85)) !important;
 }
 
-
-/* --- Hero Section --- */
 .hero-gradient {
-    background-image: linear-gradient(135deg, var(--hero-gradient-start-light), var(--hero-gradient-end-light));
-    color: var(--hero-text-light);
+    background: var(--hero-gradient) !important;
+    color: var(--hero-text) !important;
 }
-.dark .hero-gradient {
-    background-image: linear-gradient(135deg, var(--hero-gradient-start-dark), var(--hero-gradient-end-dark));
-    color: var(--hero-text-dark);
+.hero-gradient .text-purple-300,
+.dark .hero-gradient .text-purple-400 {
+    color: var(--hero-text-accent) !important;
 }
-.hero-gradient .hero-heading .text-purple-300 { color: var(--hero-text-accent-light) !important; }
-.dark .hero-gradient .hero-heading .text-purple-400 { color: var(--hero-text-accent-dark) !important; }
-.hero-gradient a.underline:hover { color: var(--hero-link-hover-light) !important; }
-.dark .hero-gradient a.underline:hover { color: var(--hero-link-hover-dark) !important; }
-
-
-/* --- Sections (Filters, About, Contact etc.) --- */
-/* משתמשים בקלאס content-section או ישירות ב-Tailwind עם משתני CSS */
-.content-section {
-    background-color: var(--bg-section-light);
-    border-radius: 1rem; /* rounded-xl */
-    padding: 1.5rem; /* p-6 */
-    box-shadow: var(--shadow-card-light); /* צל עדין */
-    border: 1px solid var(--border-default-light);
-}
-.dark .content-section {
-    background-color: var(--bg-section-dark); /* רקע מעט כהה יותר מרקע הגוף */
-    border-color: var(--border-default-dark);
-    box-shadow: var(--shadow-card-dark);
-    /* אם רוצים אפקט glassmorphism עדין לסקשנים במצב כהה: */
-    /* background-color: var(--color-slate-800 / 0.6); */
-    /* backdrop-filter: blur(10px); */
-    /* -webkit-backdrop-filter: blur(10px); */
-}
-.content-section h1, .content-section h2, .content-section h3 {
-    color: var(--text-heading-light);
-}
-.dark .content-section h1, .dark .content-section h2, .dark .content-section h3 {
-    color: var(--text-heading-dark);
-}
-.content-section p, .content-section label, .content-section div {
-    color: var(--text-paragraph-light);
-}
-.dark .content-section p, .dark .content-section label, .dark .content-section div {
-    color: var(--text-paragraph-dark);
+.hero-gradient a:hover {
+    color: var(--hero-link-hover) !important;
 }
 
 
-/* --- Video Cards --- */
-/* ה-article יקבל את הקלאס video-card-wrapper */
-.video-card-wrapper { 
-    background-color: var(--bg-card-light);
-    border: 1px solid var(--border-card-light);
-    box-shadow: var(--shadow-card-light);
-    border-radius: 0.75rem; /* rounded-xl */
+/* Video Cards - Styles are primarily handled by Tailwind in the template,
+   but these ensure variables are respected if Tailwind classes are built using them.
+   The new video card design uses bg-slate-50 dark:bg-slate-800 directly via Tailwind.
+*/
+.video-card {
+    background-color: var(--bg-card); /* Respects the new var(--bg-card) values */
+    border-color: var(--border-card);
+    box-shadow: var(--shadow-card);
     transition: transform 0.25s ease-out, box-shadow 0.25s ease-out, border-color 0.25s ease-out;
-    /* padding: 0; /* אם התוכן הפנימי ינהל את הריווח */
-}
-.dark .video-card-wrapper {
-    background-color: var(--bg-card-dark);
-    border-color: var(--border-card-dark);
-    box-shadow: var(--shadow-card-dark);
-}
-.video-card-wrapper:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-card-hover-light);
-}
-.dark .video-card-wrapper:hover {
-    box-shadow: var(--shadow-card-hover-dark);
-    border-color: var(--color-purple-500); /* הדגשת גבול בסגול ב-hover */
 }
 
-.video-card-wrapper .video-thumbnail-container {
-    border-top-left-radius: inherit; /* יורש מה-wrapper */
-    border-top-right-radius: inherit;
-}
-.video-card-wrapper .video-details-container {
-    padding: 1rem; /* p-4 */
+.video-card:hover {
+    transform: translateY(-6px); /* Slightly more pronounced hover */
+    box-shadow: var(--shadow-card-hover);
 }
 
-.video-card-wrapper .video-title {
-    color: var(--text-card-title-light);
-    font-weight: 600;
-}
-.dark .video-card-wrapper .video-title {
-    color: var(--text-card-title-dark);
-}
-.video-card-wrapper .video-title a:hover {
-    color: var(--text-card-title-hover-light) !important;
-}
-.dark .video-card-wrapper .video-title a:hover {
-    color: var(--text-card-title-hover-dark) !important;
-}
-
-.video-card-wrapper .video-tags span {
-    background-color: var(--bg-card-tag-light);
-    color: var(--text-card-tag-light);
-    font-weight: 500;
-    padding: 0.2rem 0.6rem; 
-    border-radius: 9999px; /* rounded-full */
-}
-.dark .video-card-wrapper .video-tags span {
-    background-color: var(--bg-card-tag-dark);
-    color: var(--text-card-tag-dark);
-}
-.video-card-wrapper .video-channel-info,
-.video-card-wrapper .video-category-display {
-    color: var(--text-card-muted-light);
-}
-.dark .video-card-wrapper .video-channel-info,
-.dark .video-card-wrapper .video-category-display {
-    color: var(--text-card-muted-dark); 
-}
-.video-card-wrapper .video-details-container .border-t { 
-    border-top-color: var(--border-card-light);
-}
-.dark .video-card-wrapper .video-details-container .border-t { 
-    border-top-color: var(--border-card-dark);
+/* Specific dark mode hover border for accent, if desired beyond Tailwind classes */
+.dark .video-card:hover {
+    /* Example: border-color: var(--color-purple-500); -- Tailwind class dark:hover:border-purple-500 is preferred and used */
 }
 
 
-/* --- Forms and Inputs --- */
-.search-input, .tag-input, 
-#contact-section input, #contact-section textarea {
-    background-color: var(--color-slate-50);
-    border-color: var(--color-slate-300);
-    color: var(--color-slate-800);
-    border-radius: 0.5rem; /* rounded-lg */
+.video-card .video-title {
+    color: var(--text-card-title);
+}
+.video-card .video-title a:hover {
+    color: var(--text-card-title-hover) !important;
+}
+
+.video-card .video-tags span { /* Tailwind classes directly style this now */
+    background-color: var(--bg-card-tag);
+    color: var(--text-card-tag);
+}
+
+.video-card .video-category-display,
+.video-card .video-channel-info {
+    color: var(--text-card-muted);
+}
+
+.video-card .border-t { /* Ensure this uses the card's border color */
+    border-top-color: var(--border-card);
+}
+
+/* Inputs: Tailwind handles focus rings well. Base styles for consistency if needed. */
+.search-input,
+.tag-input,
+#contact-section input,
+#contact-section textarea {
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-}
-.dark .search-input, .dark .tag-input, 
-.dark #contact-section input, .dark #contact-section textarea {
-    background-color: var(--color-slate-700); 
-    border-color: var(--color-slate-600);
-    color: var(--color-slate-100);
-}
-.dark #contact-section input::placeholder, .dark #contact-section textarea::placeholder,
-.dark .search-input::placeholder, .dark .tag-input::placeholder { /* שיפור צבע placeholder במצב לילה */
-    color: var(--color-slate-400);
+    /* Tailwind classes like dark:bg-slate-700/80 or dark:bg-slate-600/80 should be used for inputs */
 }
 
-/* Focus states are mostly handled by Tailwind focus:ring utilities */
+#back-to-top-btn {
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-out;
+}
+#back-to-top-btn:hover {
+    transform: scale(1.1);
+}
 
-
-/* --- Footer --- */
 #site-footer {
-    background-color: var(--footer-bg-light);
-    color: var(--footer-text-light);
+    background-color: var(--footer-bg) !important;
+    color: var(--footer-text) !important;
 }
-.dark #site-footer {
-    background-color: var(--footer-bg-dark);
-    color: var(--footer-text-dark);
+#site-footer h3 {
+    color: var(--footer-heading) !important;
 }
-#site-footer h3 { color: var(--footer-heading-light); }
-.dark #site-footer h3 { color: var(--footer-heading-dark); }
-#site-footer a { color: var(--footer-text-light); }
-.dark #site-footer a { color: var(--footer-text-dark); }
-#site-footer a:hover { color: var(--footer-link-hover-light); }
-.dark #site-footer a:hover { color: var(--footer-link-hover-dark); }
-#site-footer .border-t { border-top-color: var(--footer-border-light); }
-.dark #site-footer .border-t { border-top-color: var(--footer-border-dark); }
+#site-footer a {
+    color: var(--footer-text) !important;
+}
+#site-footer a:hover {
+    color: var(--footer-link-hover) !important;
+}
+#site-footer .border-t {
+    border-top-color: var(--footer-border) !important;
+}
 
-
-/* --- Utility: Line Clamp (כבר קיים, טוב) --- */
 .line-clamp-2 {
     overflow: hidden;
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
-    max-height: calc(1.65em * 2); 
+    max-height: calc(1.65em * 2); /* Assuming line-height: 1.65, adjust if needed */
 }
 
-/* --- Utility: Floating Animation (כבר קיים, טוב) --- */
-.floating { 
-    animation: float 7s ease-in-out infinite; 
+.floating {
+    animation: float 6s ease-in-out infinite;
 }
+
 @keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); } 
-    100% { transform: translateY(0px); }
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-12px); /* Slightly more movement */
+    }
+    100% {
+        transform: translateY(0px);
+    }
 }
