@@ -25,6 +25,44 @@
             transform: translateX(0%);
         }
     </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAR-טיב - סרטוני רכבים כשרים</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
+    <script>
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+    <style>
+        html[dir="rtl"].dark #mobile-menu .dark-mode-toggle-button .dot {
+            transform: translateX(-100%);
+        }
+
+        html[dir="rtl"] #mobile-menu .dark-mode-toggle-button .dot {
+            transform: translateX(0%);
+        }
+
+        /* CSS לבדיקה - הכנס לכאן */
+        .video-card-override {
+            background-color: lightcoral !important; /* צבע רקע מאוד בולט לבדיקה */
+            border: 5px solid navy !important;      /* גבול עבה ובולט לבדיקה */
+            border-radius: 20px !important;         /* עיגול פינות בולט */
+            margin-bottom: 20px !important;         /* רווח בין הכרטיסים לבדיקה */
+            padding: 10px !important;               /* ריפוד פנימי לבדיקה */
+        }
+
+        .video-card-override:hover {
+            transform: scale(1.1) translateY(-10px) !important; /* הגדלה ותזוזה בולטות */
+            background-color: lightgreen !important; /* שינוי רקע במעבר */
+        }
+
+    </style>
 </head>
 
 <body
@@ -547,7 +585,7 @@
     </footer>
 
         <template id="video-card-template">
-        <article
+       <article
             class_exists="video-card-override group flex flex-col overflow-hidden">
             <div
                 class_exists="video-thumbnail-container aspect-video bg-slate-200 dark:bg-slate-700 relative flex items-center justify-center overflow-hidden border-b border-slate-200 dark:border-slate-700/60">
