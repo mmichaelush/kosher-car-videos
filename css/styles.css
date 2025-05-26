@@ -1,16 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    /* ... (שאר המשתנים שלך נשארים כפי שהם) ... */
-    --card-bg-light: #ffffff; /* לבן נקי */
-    --card-bg-dark: #1e293b;  /* slate-800 */
-    --card-border-light: rgba(203, 213, 225, 0.8); /* slate-300 עם שקיפות */
-    --card-border-dark: rgba(51, 65, 85, 0.6);   /* slate-700 עם שקיפות */
-    --card-shadow-light: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
-    --card-shadow-hover-light: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-xl */
-    --card-shadow-dark: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -4px rgba(0,0,0,0.3);
-    --card-shadow-hover-dark: 0 20px 25px -5px rgba(124, 58, 237, 0.2), 0 8px 10px -6px rgba(124, 58, 237, 0.15); /* צל סגול במעבר */
-
     --color-purple-50: #f5f3ff;
     --color-purple-100: #ede9fe;
     --color-purple-200: #ddd6fe;
@@ -34,7 +24,7 @@
     --color-slate-700: #334155;
     --color-slate-800: #1e293b;
     --color-slate-900: #0f172a;
-    --color-gray-950: #030712;
+    --color-gray-950: #030712; /* שהיה קיים קודם */
 
 
     --color-white: #ffffff;
@@ -51,7 +41,7 @@
     --bg-body: var(--color-slate-100);
     --text-body: var(--color-slate-800);
 
-    --bg-header: var(--color-sky-50); 
+    --bg-header: var(--color-sky-50);
     --text-header-link: var(--color-slate-700);
     --text-header-link-hover: var(--color-purple-600);
     --bg-header-link-hover: var(--color-purple-100);
@@ -62,6 +52,13 @@
     --text-section-heading: var(--color-slate-900);
     --text-section-paragraph: var(--color-slate-600);
     --border-section: var(--color-slate-200);
+
+    /* משתנים אלו היו עבור הכרטיס, כרגע העיצוב מגיע מ-Tailwind ישירות */
+    /* ניתן להסיר אותם אם לא משתמשים בהם במקומות אחרים */
+    --card-bg-light: var(--color-white);
+    --card-border-light: rgba(203, 213, 225, 0.8); /* slate-300 עם שקיפות */
+    --card-shadow-light: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+    --card-shadow-hover-light: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-xl */
 
     --bg-card-tag: var(--color-purple-100);
     --text-card-tag: var(--color-purple-700);
@@ -84,20 +81,28 @@
     --bg-body: var(--color-slate-900);
     --text-body: var(--color-slate-100);
 
-    --bg-header: var(--color-slate-800); 
+    --bg-header: var(--color-slate-800);
     --text-header-link: var(--color-slate-300);
     --text-header-link-hover: var(--color-purple-300);
     --bg-header-link-hover: var(--color-slate-700);
     --text-header-link-active: var(--color-purple-300);
     --bg-header-link-active: var(--color-purple-800 / 0.5);
 
-    --bg-section-default: var(--color-slate-800); 
+    --bg-section-default: var(--color-slate-800);
     --text-section-heading: var(--color-slate-50);
     --text-section-paragraph: var(--color-slate-300);
     --border-section: var(--color-slate-700);
-    
-    --bg-card-tag: var(--color-purple-800); 
-    --text-card-tag: var(--color-purple-200); 
+
+    /* משתנים אלו היו עבור הכרטיס, כרגע העיצוב מגיע מ-Tailwind ישירות */
+    /* ניתן להסיר אותם אם לא משתמשים בהם במקומות אחרים */
+    --card-bg-dark: var(--color-slate-800);  /* slate-800 */
+    --card-border-dark: rgba(51, 65, 85, 0.6);   /* slate-700 עם שקיפות */
+    --card-shadow-dark: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -4px rgba(0,0,0,0.3);
+    --card-shadow-hover-dark: 0 20px 25px -5px rgba(124, 58, 237, 0.2), 0 8px 10px -6px rgba(124, 58, 237, 0.15); /* צל סגול במעבר */
+
+
+    --bg-card-tag: var(--color-purple-800);
+    --text-card-tag: var(--color-purple-200);
 
     --hero-gradient: linear-gradient(135deg, var(--color-purple-900) 0%, var(--color-indigo-900) 100%);
     --hero-text: var(--color-slate-50);
@@ -128,63 +133,26 @@ body {
 }
 
 header.sticky {
-    background-color: var(--bg-header / 0.95) !important; 
+    /* Tailwind classes bg-sky-50/95 dark:bg-slate-800/85 handle this directly */
+    /* This ensures backdrop-blur can work correctly with Tailwind's opacity modifiers */
 }
-.dark header.sticky {
-    background-color: var(--bg-header / 0.85) !important;
-}
+
 
 .hero-gradient {
     background: var(--hero-gradient) !important;
     color: var(--hero-text) !important;
 }
-.hero-gradient .text-purple-300,
-.dark .hero-gradient .text-purple-400 {
+.hero-gradient .text-purple-300, /* For light mode hero text */
+html:not(.dark) .hero-gradient .text-purple-300 { /* More specific for light */
     color: var(--hero-text-accent) !important;
 }
+.dark .hero-gradient .dark\:text-purple-400 { /* For dark mode hero text from Tailwind */
+    color: var(--hero-text-accent) !important; /* This variable is for dark mode in hero */
+}
+
 .hero-gradient a:hover {
     color: var(--hero-link-hover) !important;
 }
-
-/* ================================= */
-/* Video Card Override Styles        */
-/* ================================= */
-.video-card-override {
-    background-color: var(--card-bg-light) !important;
-    border-radius: 1rem !important; /* 16px, corresponds to rounded-2xl */
-    border: 1px solid var(--card-border-light) !important;
-    box-shadow: var(--card-shadow-light) !important;
-    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out !important;
-    /* flex, flex-col, overflow-hidden are still handled by Tailwind in the template */
-}
-
-.dark .video-card-override {
-    background-color: var(--card-bg-dark) !important;
-    border-color: var(--card-border-dark) !important;
-    box-shadow: var(--card-shadow-dark) !important;
-}
-
-.video-card-override:hover {
-    transform: translateY(-4px) scale(1.03) !important; /* תזוזה למעלה והגדלה קלה */
-    box-shadow: var(--card-shadow-hover-light) !important;
-    border-color: var(--color-purple-400) !important; /* הדגשת גבול בסגול במעבר */
-}
-
-.dark .video-card-override:hover {
-    box-shadow: var(--card-shadow-hover-dark) !important;
-    border-color: var(--color-purple-500) !important; /* הדגשת גבול בסגול במצב כהה */
-}
-
-/* Ensure inner elements (like title) still get their Tailwind styles */
-.video-card-override .video-title a {
-    /* Tailwind classes for text color and hover are in the HTML template */
-    /* If they don't work, you might need to add them here too with !important */
-    /* e.g., color: var(--text-card-title) !important; */
-}
-
-/* ================================= */
-/* End Video Card Override Styles    */
-/* ================================= */
 
 
 .search-input,
@@ -209,7 +177,7 @@ header.sticky {
     color: var(--footer-heading) !important;
 }
 #site-footer a {
-    color: var(--footer-text) !important; 
+    color: var(--footer-text) !important;
 }
 #site-footer a:hover {
     color: var(--footer-link-hover) !important;
@@ -234,7 +202,7 @@ header.sticky {
         transform: translateY(0px);
     }
     50% {
-        transform: translateY(-10px); 
+        transform: translateY(-10px);
     }
     100% {
         transform: translateY(0px);
