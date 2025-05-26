@@ -340,32 +340,22 @@ document.addEventListener('DOMContentLoaded', function () {
             return null; 
         }
 
-        const cardClone = videoCardTemplate.content.cloneNode(true);
-        const cardElement = cardClone.querySelector('article'); // זהו אלמנט ה-article הראשי של הכרטיס
+       const cardClone = videoCardTemplate.content.cloneNode(true);
+        const cardElement = cardClone.querySelector('article'); 
         if (!cardElement) return null;
 
-        // --- התחל קטע קריטי ---
-        // ודא שהאלמנט הראשי (cardElement) עצמו מעובד אם יש לו class_exists
         if (cardElement.hasAttribute('class_exists')) {
             cardElement.setAttribute('class', cardElement.getAttribute('class_exists'));
             cardElement.removeAttribute('class_exists');
         }
 
-        // לאחר מכן, עבד את כל האלמנטים הפנימיים שיש להם class_exists
         const innerElementsWithClassExists = cardElement.querySelectorAll('[class_exists]');
         innerElementsWithClassExists.forEach(el => {
-            if (el.hasAttribute('class_exists')) { // בדיקה נוספת ליתר ביטחון
+            if (el.hasAttribute('class_exists')) { 
                 el.setAttribute('class', el.getAttribute('class_exists'));
                 el.removeAttribute('class_exists');
             }
         });
-        // --- סוף קטע קריטי ---
-
-
-        cardElement.dataset.category = video.category;
-        cardElement.dataset.tags = video.tags.join(','); 
-
-        // ... (שאר הקוד של הפונקציה נשאר כפי שהוא) ...
 
         const sanitizedTitle = escapeHTML(video.title);
         const videoLink = `https://www.youtube.com/watch?v=${video.id}`;
