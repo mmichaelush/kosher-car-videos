@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
+
     <script>
-        // סקריפט לקביעת מצב כהה/בהיר בטעינה
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -18,6 +18,7 @@
         }
     </script>
     <style>
+        /* סגנונות בסיסיים לתפריט הנייד וכו' */
         html[dir="rtl"].dark #mobile-menu .dark-mode-toggle-button .dot {
             transform: translateX(-100%);
         }
@@ -30,6 +31,7 @@
 
 <body
     class="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 font-rubik antialiased transition-colors duration-300">
+
 
     <div class="m-10 p-10 bg-red-200 dark:bg-blue-800 text-black dark:text-yellow-300 border-4 border-green-500">
         טקסט בדיקה למצב כהה. במצב רגיל - רקע אדום בהיר וטקסט שחור. במצב לילה - רקע כחול כהה וטקסט צהוב.
