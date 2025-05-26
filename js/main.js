@@ -1,7 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("CAR-טיב: DOMContentLoaded event fired. Version 3.2 (JS Truly Full).");
-
-    // --- DOM Element Selectors ---
     const bodyElement = document.body;
     const darkModeToggles = document.querySelectorAll('.dark-mode-toggle-button'); 
 
@@ -30,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectedTagsContainer = document.getElementById('selected-tags-container');
     const backToTopButton = document.getElementById('back-to-top-btn');
 
-    // --- State and Configuration ---
     let allVideos = [];
     let currentFilters = {
         category: 'all',
@@ -52,9 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
         { id: "collectors", name: "רכבי אספנות", description: "קלאסיקות ופנינים מוטוריות", icon: "fa-car-side", gradient: "from-red-500 to-pink-600", darkGradient: "dark:from-red-600 dark:to-pink-700" }
     ];
 
-    // --- Initialization ---
     async function initializePage() {
-        console.log("CAR-טיב: Initializing page (JS Truly Full V3.2)...");
         initializeDarkModeVisuals(); 
         setupEventListeners();
         updateFooterYear();
@@ -74,7 +68,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     currentFilters.category = 'all';
                     if (homepageCategoriesGrid && isHomePage()) renderHomepageCategoryButtons();
-                    console.warn("CAR-טיב: Context issue or category page without name. Defaulting to 'all'.");
                 }
                 loadAndRenderPopularTags(currentFilters.category !== 'all' ? currentFilters.category : null);
                 renderFilteredVideos();
@@ -83,10 +76,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (popularTagsContainer) popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא ניתן לטעון תגיות ללא סרטונים.</p>';
             }
         } catch (error) {
-            console.error("CAR-טיב: Critical error during page initialization:", error);
             displayErrorState(`שגיאה קריטית בטעינת נתוני הסרטונים: ${error.message}`);
         }
-        console.log("CAR-טיב: Page initialization complete (JS Truly Full V3.2).");
     }
 
     function displayErrorState(message) {
@@ -133,17 +124,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if(heroSection) heroSection.style.display = 'none';
     }
 
-    // --- Dark Mode ---
     function updateDarkModeToggleVisuals(toggleButton, isDark) {
         const moonIcon = toggleButton.querySelector('.fa-moon');
         const sunIcon = toggleButton.querySelector('.fa-sun');
-        const toggleDot = toggleButton.querySelector('.dot'); // For mobile toggle
+        const toggleDot = toggleButton.querySelector('.dot');
 
         if (isDark) {
             if (moonIcon) moonIcon.classList.add('hidden');
             if (sunIcon) sunIcon.classList.remove('hidden');
-            if (toggleDot) { // Specifically for the mobile toggle with a dot
-                // For RTL, this should move the dot to the left end
+            if (toggleDot) { 
                 toggleDot.style.transform = 'translateX(-100%)'; 
             }
             toggleButton.setAttribute('aria-checked', 'true');
@@ -182,7 +171,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // --- Data Loading ---
     async function loadLocalVideos() {
         if (loadingPlaceholder) {
             loadingPlaceholder.classList.remove('hidden');
@@ -201,7 +189,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' ||
                         typeof video.category !== 'string' || !Array.isArray(video.tags) ||
                         typeof video.hebrewContent !== 'boolean') {
-                        console.warn(`CAR-טיב: סרטון באינדקס ${index} חסר שדות חיוניים או עם טיפוסים שגויים.`, video);
                         return null;
                     }
                     return { ...video, category: video.category.toLowerCase(), tags: video.tags.map(tag => String(tag).toLowerCase()) };
@@ -217,7 +204,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 else videoCountHeroElement.innerHTML = `במאגר יש כרגע <span class="font-bold text-white dark:text-gray-50">${allVideos.length}</span> סרטונים.`;
             }
         } catch (error) {
-            console.error("CAR-טיב: לא ניתן לטעון או לפענח את videos.json:", error);
             if (videoCountHeroElement) {
                  const countSpan = videoCountHeroElement.querySelector('span.font-bold');
                  if (countSpan) countSpan.textContent = "שגיאה";
@@ -229,7 +215,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // --- Homepage Categories Rendering ---
     function renderHomepageCategoryButtons() {
         const loadingCategoriesSkeleton = document.getElementById('loading-homepage-categories-skeleton');
         if (!homepageCategoriesGrid) {
@@ -243,7 +228,6 @@ document.addEventListener('DOMContentLoaded', function() {
         PREDEFINED_CATEGORIES.filter(cat => cat.id !== 'all').forEach(cat => {
             const link = document.createElement('a');
             link.href = `category.html?name=${cat.id}`; 
-            // Tailwind will pick the correct gradient based on whether .dark is on <html>
             const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`;
 
             link.className = `category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50`;
@@ -260,7 +244,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- Popular Tags Rendering ---
     function loadAndRenderPopularTags(forCategoryId = null) {
         if (!popularTagsContainer) return;
         if (!allVideos || allVideos.length === 0) {
@@ -330,12 +313,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
  function createVideoCardElement(video) {
-    if (!videoCardTemplate) { 
-        console.error("CAR-טיב: Video card template not found."); 
-        return null; 
-    }
+    if (!videoCardTemplate) return null; 
     
-    // בדיקת שדות חובה מה-JSON (כולל duration ו-thumbnail)
     if (!video || typeof video.id !== 'string' || 
         typeof video.title !== 'string' ||
         typeof video.duration !== 'string' || 
@@ -343,20 +322,14 @@ document.addEventListener('DOMContentLoaded', function() {
         typeof video.thumbnail !== 'string' || 
         typeof video.category !== 'string' || 
         !Array.isArray(video.tags)
-        /* video.channelImage הוא אופציונלי */
         ) {
-        console.warn(`CAR-טיב: Skipping video due to missing/invalid data (id: ${video.id || 'N/A'}). Video data:`, video); 
         return null;
     }
 
     const cardClone = videoCardTemplate.content.cloneNode(true);
     const cardElement = cardClone.querySelector('article');
-    if (!cardElement) { 
-        console.error("CAR-טיב: Could not find 'article' in template clone."); 
-        return null; 
-    }
+    if (!cardElement) return null; 
 
-    // הפעלת הקלאסים שהוגדרו ב-class_exists
     cardElement.querySelectorAll('[class_exists]').forEach(el => {
         el.setAttribute('class', el.getAttribute('class_exists'));
         el.removeAttribute('class_exists');
@@ -368,7 +341,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const sanitizedTitle = escapeHTML(video.title);
     const videoLink = `https://www.youtube.com/watch?v=${video.id}`;
     
-    // --- תמונת הסרטון ומשך ---
     const thumbnailImgElement = cardElement.querySelector('.video-thumbnail-img');
     const playButtonElement = cardElement.querySelector('.play-video-button');
     const videoThumbnailContainer = cardElement.querySelector('.video-thumbnail-container');
@@ -377,18 +349,16 @@ document.addEventListener('DOMContentLoaded', function() {
     if (thumbnailImgElement && video.thumbnail) {
         thumbnailImgElement.src = video.thumbnail;
         thumbnailImgElement.alt = `תמונה ממוזערת של הסרטון: ${sanitizedTitle}`;
-        thumbnailImgElement.classList.remove('hidden'); // ודא שהוא גלוי אם יש תמונה
+        thumbnailImgElement.classList.remove('hidden');
 
         thumbnailImgElement.onerror = function() {
-            console.warn(`CAR-טיב: Error loading video thumbnail for ${video.id}. Hiding image.`);
             thumbnailImgElement.classList.add('hidden');
-            if (videoThumbnailContainer) { // החזר רקע דיפולטי אם התמונה נכשלה
-                videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700'); // קלאסים מהתבנית המקורית
+            if (videoThumbnailContainer) {
+                videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700');
             }
-            // כפתור ה-Play כבר אמור להיות גלוי
         };
     } else if (thumbnailImgElement) {
-        thumbnailImgElement.classList.add('hidden'); // אם אין URL לתמונה
+        thumbnailImgElement.classList.add('hidden');
          if (videoThumbnailContainer) { 
              videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700');
          }
@@ -396,9 +366,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (durationElement && video.duration) {
         durationElement.textContent = escapeHTML(video.duration);
-        // הקלאסים לעיצוב ה-duration כבר נמצאים ב-HTML template
     } else if (durationElement) {
-        durationElement.classList.add('hidden'); // הסתר אם אין מידע על משך
+        durationElement.classList.add('hidden');
     }
     
     if (playButtonElement) { 
@@ -418,16 +387,14 @@ document.addEventListener('DOMContentLoaded', function() {
         videoTitleLinkEl.textContent = sanitizedTitle; 
     }
     
-    // --- מידע על הערוץ ---
     const channelLogoElement = cardElement.querySelector('.channel-logo');
     const channelNameElement = cardElement.querySelector('.channel-name');
 
     if (channelNameElement && video.channel) {
         channelNameElement.textContent = escapeHTML(video.channel);
     } else if (channelNameElement) {
-        channelNameElement.textContent = ''; // נקה אם אין שם ערוץ
+        channelNameElement.textContent = '';
     }
-
 
     if (channelLogoElement && video.channelImage) {
         channelLogoElement.src = video.channelImage;
@@ -435,19 +402,16 @@ document.addEventListener('DOMContentLoaded', function() {
         channelLogoElement.classList.remove('hidden');
 
         channelLogoElement.onerror = function() {
-            console.warn(`CAR-טיב: Error loading channel image for ${video.channel}. Hiding logo.`);
             channelLogoElement.classList.add('hidden');
         };
     } else if (channelLogoElement) {
         channelLogoElement.classList.add('hidden');
     }
 
-    // --- תגיות ---
      const tagsContainerEl = cardElement.querySelector('.video-tags');
     if (tagsContainerEl) {
         if (video.tags && video.tags.length > 0) {
             tagsContainerEl.innerHTML = video.tags.map(tag => 
-                // חזרה לעיצוב הסגול הבהיר המקורי לתגיות
                 `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-xs font-medium px-2 py-0.5 rounded-full">${escapeHTML(capitalizeFirstLetter(tag))}</span>`
             ).join('');
         } else { 
@@ -455,27 +419,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // --- קטגוריה ---
     const categoryDisplayEl = cardElement.querySelector('.video-category-display');
     if (categoryDisplayEl) {
         const categoryData = PREDEFINED_CATEGORIES.find(c => c.id === video.category);
         const categoryName = categoryData ? categoryData.name : video.category;
-        const categoryIcon = categoryData ? categoryData.icon : 'fa-folder-open';
-        // ה-HTML template כבר מכיל את האייקון, אנחנו רק מעדכנים את הטקסט
-        // ודא שה-span בתוך categoryDisplayEl יכול להכיל את הטקסט, או שנה את ה-innerHTML של categoryDisplayEl כולו.
-        // אם ה-HTML הוא: <span class_exists="video-category-display"><i ...></i><!-- Category --></span>
-        // אז נעדכן את ה-textContent של ה-span כולו או נחליף את ההערה:
         const iconElement = categoryDisplayEl.querySelector('i');
-        categoryDisplayEl.innerHTML = ''; // נקה תוכן קודם
-        if (iconElement) categoryDisplayEl.appendChild(iconElement.cloneNode(true)); // הוסף את האייקון מחדש
-        categoryDisplayEl.appendChild(document.createTextNode(` ${escapeHTML(categoryName)}`)); // הוסף רווח ושם קטגוריה
+        categoryDisplayEl.innerHTML = ''; 
+        if (iconElement) categoryDisplayEl.appendChild(iconElement.cloneNode(true));
+        categoryDisplayEl.appendChild(document.createTextNode(` ${escapeHTML(categoryName)}`));
     }
     
     return cardElement;
 }
 
     function renderFilteredVideos() {
-        if (!videoCardsContainer) { console.error("CAR-טיב: Missing videoCardsContainer."); return; }
+        if (!videoCardsContainer) return;
 
         videoCardsContainer.innerHTML = '';
         const filteredVideos = getFilteredVideos();
@@ -485,13 +443,10 @@ document.addEventListener('DOMContentLoaded', function() {
             feedbackEl.id = 'video-grid-loading-feedback';
             feedbackEl.setAttribute('aria-live', 'polite');
             feedbackEl.className = 'sr-only'; 
-            if (videoCardsContainer.parentNode) { // Append only if parentNode exists
+            if (videoCardsContainer.parentNode) {
                  videoCardsContainer.parentNode.appendChild(feedbackEl);
-            } else {
-                console.warn("CAR-טיב: videoCardsContainer parentNode not found, ARIA feedback may not work.");
             }
         }
-
 
         if (filteredVideos.length === 0) {
             if (noVideosFoundMessage) {
@@ -522,7 +477,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function handlePlayVideo(buttonElement) {
         const videoId = buttonElement.dataset.videoId;
         const videoCard = buttonElement.closest('article');
-        if (!videoCard) { console.error("CAR-טיב: handlePlayVideo - Could not find parent article."); return; }
+        if (!videoCard) return;
 
         const iframe = videoCard.querySelector('.video-iframe');
         const playIconContainer = buttonElement; 
@@ -560,7 +515,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // --- Filtering Logic ---
     function getFilteredVideos() {
         if (!allVideos || allVideos.length === 0) return [];
         return allVideos.filter(video => {
@@ -575,7 +529,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- Event Listeners Setup ---
     function setupEventListeners() {
         darkModeToggles.forEach(toggle => {
             toggle.addEventListener('click', toggleDarkMode);
@@ -650,7 +603,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // --- Event Handlers ---
     function openMobileMenu() {
         if (mobileMenu) mobileMenu.classList.remove('translate-x-full');
         if (backdrop) { backdrop.classList.remove('invisible', 'opacity-0'); backdrop.classList.add('visible', 'opacity-100'); }
@@ -669,9 +621,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const link = event.currentTarget;
         let href = link.getAttribute('href');
         
-        // Handle cases like "index.html#some-section" when already on index.html
         if (href.startsWith('index.html#') && isHomePage()) {
-            href = href.substring(href.indexOf('#')); // Convert to just "#some-section"
+            href = href.substring(href.indexOf('#'));
         }
 
         if (link.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
@@ -699,7 +650,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 event.preventDefault(); 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
-            // else allow normal navigation to index.html from other pages
         }
     }
 
@@ -737,7 +687,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function handleSearchSubmit(event, searchInputElement) {
         event.preventDefault();
-        if (searchInputElement) { // Check if the element exists
+        if (searchInputElement) {
             currentFilters.searchTerm = String(searchInputElement.value).trim().toLowerCase();
             renderFilteredVideos();
             searchInputElement.blur();
@@ -745,12 +695,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
         
-    // --- Utility Functions ---
     function scrollToVideoGridIfNeeded() {
         const videoGridSection = document.getElementById('video-grid-section');
         if (videoGridSection) {
             const rect = videoGridSection.getBoundingClientRect();
-             if (rect.top < 0 || rect.top > window.innerHeight * 0.66) { // Only scroll if section is not mostly in view
+             if (rect.top < 0 || rect.top > window.innerHeight * 0.66) {
                 const headerElement = document.querySelector('header.sticky');
                 const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 80;
                 const elementPosition = rect.top;
@@ -797,6 +746,5 @@ document.addEventListener('DOMContentLoaded', function() {
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
-    // --- Start the application ---
     initializePage();
 });
