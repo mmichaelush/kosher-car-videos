@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="he" dir="rtl" class=""> <!-- JS יוסיף/יסיר 'dark' -->
+<html lang="he" dir="rtl" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
     <script>
-        // מניעת FOUC למצב כהה - עדיפות ל-localStorage ואז למערכת ההפעלה
         if (localStorage.getItem('theme') === 'dark' || 
             (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -18,18 +17,14 @@
         }
     </script>
     <style>
-        /* Inline style for initial dot position on mobile dark mode toggle (RTL) */
-        /* This helps prevent FOUC if JS loads late */
         html[dir="rtl"].dark #mobile-menu .dark-mode-toggle-button .dot { transform: translateX(-100%); }
         html[dir="rtl"] #mobile-menu .dark-mode-toggle-button .dot { transform: translateX(0%); }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-200 font-rubik antialiased transition-colors duration-300">
+<body class="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 font-rubik antialiased transition-colors duration-300">
 
-    <!-- Mobile Menu Backdrop -->
     <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black bg-opacity-75 z-40 md:hidden transition-opacity duration-300 opacity-0 invisible"></div>
 
-    <!-- Mobile Menu -->
     <aside id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-800 shadow-xl z-50 p-6 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out">
         <div class="flex justify-between items-center mb-8">
             <a href="index.html" class="flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded">
@@ -66,7 +61,7 @@
         </div>
     </aside>
 
-    <header class="bg-sky-50 dark:bg-slate-800 shadow-md sticky top-0 z-30 transition-colors duration-300">
+    <header class="bg-sky-50/95 dark:bg-slate-800/85 shadow-md sticky top-0 z-30 transition-colors duration-300 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <div class="flex items-center">
@@ -76,19 +71,19 @@
                         <span class="text-2xl font-bold text-slate-900 dark:text-slate-100 hidden sm:block">CAR-טיב</span>
                     </a>
                     <nav class="hidden md:mr-8 md:flex items-center space-x-1 lg:space-x-2" aria-label="ניווט ראשי">
-                        <a href="index.html" class="nav-link flex items-center px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-home ml-2 opacity-80"></i>בית</a>
-                        <a href="index.html#homepage-categories-section" class="nav-link flex items-center px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-th-large ml-2 opacity-80"></i>קטגוריות</a>
-                        <a href="index.html#video-grid-section" class="nav-link flex items-center px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-play-circle ml-2 opacity-80"></i>סרטונים</a>
-                        <a href="#featured-channels-section" class="nav-link flex items-center px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-tv ml-2 opacity-80"></i>ערוצים</a>
-                        <a href="#forum-inspiration-section" class="nav-link flex items-center px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-comments ml-2 opacity-80"></i>שאלות</a>
-                        <a href="#about-section" class="nav-link flex items-center px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-info-circle ml-2 opacity-80"></i>אודות</a>
-                        <a href="#contact-section" class="nav-link flex items-center px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-envelope ml-2 opacity-80"></i>צור קשר</a>
+                        <a href="index.html" class="nav-link flex items-center px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-home ml-2 opacity-80"></i>בית</a>
+                        <a href="index.html#homepage-categories-section" class="nav-link flex items-center px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-th-large ml-2 opacity-80"></i>קטגוריות</a>
+                        <a href="index.html#video-grid-section" class="nav-link flex items-center px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-play-circle ml-2 opacity-80"></i>סרטונים</a>
+                        <a href="#featured-channels-section" class="nav-link flex items-center px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-tv ml-2 opacity-80"></i>ערוצים</a>
+                        <a href="#forum-inspiration-section" class="nav-link flex items-center px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-comments ml-2 opacity-80"></i>שאלות</a>
+                        <a href="#about-section" class="nav-link flex items-center px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-info-circle ml-2 opacity-80"></i>אודות</a>
+                        <a href="#contact-section" class="nav-link flex items-center px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-envelope ml-2 opacity-80"></i>צור קשר</a>
                     </nav>
                 </div>
                 <div class="flex items-center space-x-2 rtl:space-x-reverse">
                     <div class="hidden md:block">
                         <form role="search" id="desktop-search-form" class="relative">
-                            <input type="search" id="desktop-search-input" class="search-input block w-48 lg:w-60 pr-4 pl-10 py-2.5 text-sm border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500 transition-all duration-300 focus:w-60 lg:focus:w-72" placeholder="חיפוש סרטונים...">
+                            <input type="search" id="desktop-search-input" class="search-input block w-48 lg:w-60 pr-4 pl-10 py-2.5 text-sm border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500 transition-all duration-300 focus:w-60 lg:focus:w-72" placeholder="חיפוש סרטונים...">
                             <button type="submit" aria-label="בצע חיפוש" class="absolute left-0 top-0 h-full px-3 text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-search"></i></button>
                         </form>
                     </div>
@@ -106,8 +101,8 @@
         <div class="absolute inset-0 opacity-10 dark:opacity-[0.07]">
             <img src="data/assets/images/circuit-board.svg" alt="" class="w-full h-full object-cover">
         </div>
-        <div class="absolute top-1/4 left-1/4 w-20 h-20 md:w-32 md:h-32 rounded-full bg-purple-400/20 dark:bg-purple-500/10 filter blur-2xl floating" aria-hidden="true"></div>
-        <div class="absolute bottom-1/3 right-1/3 w-28 h-28 md:w-40 md:h-40 rounded-full bg-indigo-400/20 dark:bg-indigo-500/10 filter blur-2xl floating" style="animation-delay: 2s;" aria-hidden="true"></div>
+        <div class="absolute top-1/4 left-1/4 w-20 h-20 md:w-32 md:h-32 rounded-full bg-purple-400/10 dark:bg-purple-600/10 filter blur-2xl floating" aria-hidden="true"></div>
+        <div class="absolute bottom-1/3 right-1/3 w-28 h-28 md:w-40 md:h-40 rounded-full bg-indigo-400/10 dark:bg-indigo-600/10 filter blur-2xl floating" style="animation-delay: 2s;" aria-hidden="true"></div>
         
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center">
@@ -122,12 +117,12 @@
                 במאגר יש כרגע <span class="font-bold text-white dark:text-gray-50"> ? </span> סרטונים.
                 </p>
                 <div class="mt-10 flex flex-col sm:flex-row justify-center gap-4 sm:gap-6">
-                    <a href="#video-grid-section" class="btn-hero-secondary group relative inline-flex items-center justify-center px-8 py-3.5 text-lg font-semibold text-purple-700 bg-white hover:bg-purple-50 dark:text-purple-200 dark:bg-purple-600 dark:hover:bg-purple-500 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 transition-all duration-300 ease-out overflow-hidden">
-                        <span class="absolute inset-0 bg-purple-100 dark:bg-purple-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
+                    <a href="#video-grid-section" class="btn-hero-secondary group relative inline-flex items-center justify-center px-8 py-3.5 text-lg font-semibold text-purple-700 bg-white hover:bg-purple-50 dark:text-purple-100 dark:bg-purple-500 dark:hover:bg-purple-400 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 transition-all duration-300 ease-out overflow-hidden">
+                        <span class="absolute inset-0 bg-purple-100 dark:bg-purple-400 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></span>
                         <i class="fas fa-play ml-2 transform group-hover:scale-110 transition-transform duration-300"></i>
                         <span class="relative z-10">צפו עכשיו</span>
                     </a>
-                    <a href="#about-section" class="btn-hero-primary group relative inline-flex items-center justify-center px-8 py-3.5 text-lg font-semibold text-white bg-purple-600 hover:bg-purple-700 dark:text-purple-100 dark:bg-purple-500 dark:hover:bg-purple-400 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-400 dark:focus:ring-purple-300 transition-all duration-300 ease-out overflow-hidden">
+                    <a href="#about-section" class="btn-hero-primary group relative inline-flex items-center justify-center px-8 py-3.5 text-lg font-semibold text-white bg-purple-600 hover:bg-purple-700 dark:text-purple-200 dark:bg-purple-600 dark:hover:bg-purple-500 rounded-xl shadow-lg hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-400 dark:focus:ring-purple-300 transition-all duration-300 ease-out overflow-hidden">
                         <span class="absolute inset-0 bg-white dark:bg-purple-300 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></span>
                         <i class="fas fa-info-circle ml-2 transform group-hover:rotate-12 transition-transform duration-300"></i>
                         <span class="relative z-10">עוד עלינו</span>
@@ -139,7 +134,7 @@
 
     <div class="md:hidden px-4 -mt-10 mb-8 relative z-20">
         <form role="search" id="mobile-search-form" class="relative flex items-center">
-            <input type="search" id="mobile-search-input" class="search-input block w-full pr-4 pl-12 py-3.5 text-base shadow-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500" placeholder="חיפוש סרטונים...">
+            <input type="search" id="mobile-search-input" class="search-input block w-full pr-4 pl-12 py-3.5 text-base shadow-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500" placeholder="חיפוש סרטונים...">
             <button type="submit" aria-label="בצע חיפוש" class="absolute left-0 top-0 h-full px-4 text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-search text-lg"></i></button>
         </form>
     </div>
@@ -167,7 +162,7 @@
            </div>
         </section>
 
-        <section class="mb-12 md:mb-16 bg-white dark:bg-slate-800 p-6 sm:p-8 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700" aria-labelledby="filter-heading">
+        <section class="mb-12 md:mb-16 bg-white dark:bg-slate-800/75 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-xl dark:shadow-black/30 border border-slate-200 dark:border-slate-700" aria-labelledby="filter-heading">
             <h2 id="filter-heading" class="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6 flex items-center">
                 <i class="fas fa-filter text-purple-600 dark:text-purple-400 mr-3"></i> סנן תוצאות
             </h2>
@@ -189,7 +184,7 @@
                         <p class="w-full text-slate-500 dark:text-slate-400 text-sm">טוען תגיות...</p>
                     </div>
                     <form id="custom-tag-form" class="relative">
-                        <input type="text" id="tag-search-input" class="tag-input pr-28 sm:pr-32 w-full border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500" placeholder="הקלד תגית והקש Enter...">
+                        <input type="text" id="tag-search-input" class="tag-input pr-28 sm:pr-32 w-full border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500" placeholder="הקלד תגית והקש Enter...">
                         <button type="submit" class="absolute left-1.5 top-1/2 transform -translate-y-1/2 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white px-4 py-1.5 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-800">הוסף</button>
                     </form>
                     <div id="selected-tags-container" class="flex flex-wrap gap-2 mt-4" aria-label="תגיות שנבחרו"></div>
@@ -207,21 +202,21 @@
             <div id="no-videos-found" class="hidden col-span-full text-center text-slate-500 dark:text-slate-400 py-16"></div>
         </section>
 
-        <section id="featured-channels-section" class="bg-purple-50 dark:bg-slate-800/50 py-16 md:py-20 transition-colors duration-300">
+        <section id="featured-channels-section" class="bg-purple-50 dark:bg-slate-800/60 py-16 md:py-20 transition-colors duration-300 rounded-2xl">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <h2 class="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-12 text-center"><i class="fas fa-star text-yellow-400 dark:text-yellow-300 mr-3"></i> ערוצים מומלצים</h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    <a href="https://www.youtube.com/@autoTV-israel" target="_blank" rel="noopener noreferrer" class="channel-card group block p-6 bg-white dark:bg-slate-700 rounded-xl shadow-lg hover:shadow-xl dark:hover:shadow-purple-500/30 text-center transition-all duration-300 transform hover:-translate-y-1.5 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-800">
+                    <a href="https://www.youtube.com/@autoTV-israel" target="_blank" rel="noopener noreferrer" class="channel-card group block p-6 bg-white dark:bg-slate-700/80 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl dark:hover:shadow-purple-600/40 text-center transition-all duration-300 transform hover:-translate-y-1.5 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-800">
                         <img src="https://yt3.googleusercontent.com/3qebPD_7MkRKogWeCpxol5jOQEI_QCr_XbSxd5Fg-YvkpofzuJr3mZzXTDWhP8DQlbjKqnY95Q=s72-c-k-c0x00ffffff-no-rj" alt="אוטו ישראל" class="h-20 w-20 mx-auto rounded-full object-cover mb-4 border-2 border-slate-200 dark:border-slate-600 group-hover:border-purple-400 dark:group-hover:border-purple-500 transition-colors" loading="lazy">
                         <h3 class="font-semibold text-slate-800 dark:text-slate-100 group-hover:text-purple-600 dark:group-hover:text-purple-400">אוטו ישראל</h3>
                         <p class="text-purple-600 dark:text-purple-400 text-sm">מבחני רכב</p>
                     </a>
-                    <a href="https://www.youtube.com/@Knufia" target="_blank" rel="noopener noreferrer" class="channel-card group block p-6 bg-white dark:bg-slate-700 rounded-xl shadow-lg hover:shadow-xl dark:hover:shadow-purple-500/30 text-center transition-all duration-300 transform hover:-translate-y-1.5 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-800">
+                    <a href="https://www.youtube.com/@Knufia" target="_blank" rel="noopener noreferrer" class="channel-card group block p-6 bg-white dark:bg-slate-700/80 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl dark:hover:shadow-purple-600/40 text-center transition-all duration-300 transform hover:-translate-y-1.5 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-800">
                         <img src="https://yt3.googleusercontent.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s72-c-k-c0x00ffffff-no-rj" alt="הכנופיה" class="h-20 w-20 mx-auto rounded-full object-cover mb-4 border-2 border-slate-200 dark:border-slate-600 group-hover:border-purple-400 dark:group-hover:border-purple-500 transition-colors" loading="lazy">
                         <h3 class="font-semibold text-slate-800 dark:text-slate-100 group-hover:text-purple-600 dark:group-hover:text-purple-400">הכנופיה</h3>
                         <p class="text-purple-600 dark:text-purple-400 text-sm">פרויקטים ושיפורים</p>
                     </a>
-                    <a href="https://www.youtube.com/@chrisfix" target="_blank" rel="noopener noreferrer" class="channel-card group block p-6 bg-white dark:bg-slate-700 rounded-xl shadow-lg hover:shadow-xl dark:hover:shadow-purple-500/30 text-center transition-all duration-300 transform hover:-translate-y-1.5 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-800">
+                    <a href="https://www.youtube.com/@chrisfix" target="_blank" rel="noopener noreferrer" class="channel-card group block p-6 bg-white dark:bg-slate-700/80 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl dark:hover:shadow-purple-600/40 text-center transition-all duration-300 transform hover:-translate-y-1.5 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-800">
                         <img src="https://yt3.googleusercontent.com/ytc/AIdro_lsMlPXxQcSMI_EveG6eb7sd1T9vFkEQrXKruSjabO_ANY=s72-c-k-c0x00ffffff-no-rj" alt="ChrisFix" class="h-20 w-20 mx-auto rounded-full object-cover mb-4 border-2 border-slate-200 dark:border-slate-600 group-hover:border-purple-400 dark:group-hover:border-purple-500 transition-colors" loading="lazy">
                         <h3 class="font-semibold text-slate-800 dark:text-slate-100 group-hover:text-purple-600 dark:group-hover:text-purple-400">ChrisFix</h3>
                         <p class="text-purple-600 dark:text-purple-400 text-sm">מדריכי תיקונים</p>
@@ -230,7 +225,7 @@
             </div>
         </section>
         
-        <section id="forum-inspiration-section" class="bg-gradient-to-br from-purple-700 to-indigo-700 dark:from-purple-800 dark:to-indigo-800 text-white py-20 md:py-28 relative overflow-hidden my-12 rounded-2xl shadow-2xl">
+        <section id="forum-inspiration-section" class="bg-gradient-to-br from-purple-700 to-indigo-700 dark:from-purple-800 dark:to-indigo-900 text-white py-20 md:py-28 relative overflow-hidden my-12 rounded-2xl shadow-2xl">
              <div class="absolute inset-0 opacity-[0.03] mix-blend-overlay dark:opacity-[0.05]">
                 <svg width="100%" height="100%"><defs><pattern id="patt" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="1" cy="1" r="1" fill="currentColor"></circle></pattern></defs><rect width="100%" height="100%" fill="url(#patt)"></rect></svg>
             </div>
@@ -239,7 +234,7 @@
                     <i class="fas fa-comments fa-3x mb-6 text-purple-300 dark:text-purple-400"></i>
                     <h2 class="text-3xl sm:text-4xl font-extrabold mb-6 text-white dark:text-gray-50">שאלה או דיון בנושא רכב?</h2>
                     <p class="text-lg sm:text-xl max-w-2xl mx-auto text-purple-100 dark:text-purple-200/90 opacity-95 mb-10">הכנסו לפורום שלנו פורום "רכבים זה לזה" , שתפו, התייעצו וקבלו תשובות ממומחים וחברים.</p>
-                    <a href="https://rechavimzelaze.ovh/" target="_blank" rel="noopener noreferrer" class="btn-forum group relative inline-flex items-center justify-center px-10 py-4 text-xl font-bold text-purple-700 bg-white hover:bg-purple-50 dark:text-purple-200 dark:bg-purple-600 dark:hover:bg-purple-500 rounded-xl shadow-xl hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-4 focus:ring-offset-purple-700 dark:focus:ring-offset-purple-800 focus:ring-white dark:focus:ring-purple-300 transition-all duration-300 ease-out transform hover:-translate-y-1">
+                    <a href="https://rechavimzelaze.ovh/" target="_blank" rel="noopener noreferrer" class="btn-forum group relative inline-flex items-center justify-center px-10 py-4 text-xl font-bold text-purple-700 bg-white hover:bg-purple-50 dark:text-purple-100 dark:bg-purple-500 dark:hover:bg-purple-400 rounded-xl shadow-xl hover:shadow-2xl focus:outline-none focus:ring-2 focus:ring-offset-4 focus:ring-offset-purple-700 dark:focus:ring-offset-purple-800 focus:ring-white dark:focus:ring-purple-300 transition-all duration-300 ease-out transform hover:-translate-y-1">
                         <span class="absolute inset-0 w-full h-full border-2 border-transparent group-hover:border-purple-200 dark:group-hover:border-purple-400 rounded-xl transition-all duration-300 animate-pulse group-hover:animate-none"></span>
                         <i class="fas fa-external-link-alt ml-3 transform group-hover:scale-110 transition-transform"></i>
                         <span class="relative z-10">כניסה לפורום</span>
@@ -248,7 +243,7 @@
             </div>
         </section>
 
-        <section id="about-section" class="py-20 md:py-28 bg-white dark:bg-slate-800/75 transition-colors duration-300">
+        <section id="about-section" class="py-20 md:py-28 bg-white dark:bg-slate-800/75 backdrop-blur-sm transition-colors duration-300 rounded-2xl">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16 md:mb-20">
                      <i class="fas fa-info-circle fa-3x mb-4 text-purple-600 dark:text-purple-400"></i>
@@ -269,13 +264,13 @@
                         <div class="aspect-w-16 aspect-h-9 sm:aspect-w-4 sm:aspect-h-3 rounded-2xl overflow-hidden shadow-2xl dark:shadow-black/50">
                             <img src="data/assets/images/about-us-car.jpg" alt="אאוטלנדר משודרגת" class="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" loading="lazy">
                         </div>
-                        <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-purple-500/30 dark:bg-purple-600/20 rounded-lg transform rotate-12 -z-10 hidden sm:block transition-all duration-300 group-hover:opacity-40 group-hover:rotate-6" aria-hidden="true"></div>
+                        <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-purple-500/20 dark:bg-purple-600/10 rounded-lg transform rotate-12 -z-10 hidden sm:block transition-all duration-300 group-hover:opacity-40 group-hover:rotate-6" aria-hidden="true"></div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="contact-section" class="py-20 md:py-28 bg-purple-50 dark:bg-slate-800/50 transition-colors duration-300">
+        <section id="contact-section" class="py-20 md:py-28 bg-purple-50 dark:bg-slate-800/60 transition-colors duration-300 rounded-2xl">
              <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16 md:mb-20">
                     <i class="fas fa-paper-plane fa-3x mb-4 text-purple-600 dark:text-purple-400"></i>
@@ -286,19 +281,19 @@
                     <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="space-y-6">
                         <div>
                             <label for="contact-name" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">שם מלא</label>
-                            <input type="text" name="name" id="contact-name" autocomplete="name" required class="search-input py-3 px-4 block w-full shadow-sm focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-600 text-slate-900 dark:text-slate-100 rounded-lg placeholder-slate-400 dark:placeholder-slate-500">
+                            <input type="text" name="name" id="contact-name" autocomplete="name" required class="search-input py-3 px-4 block w-full shadow-sm focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-600/80 text-slate-900 dark:text-slate-100 rounded-lg placeholder-slate-400 dark:placeholder-slate-500">
                         </div>
                         <div>
                             <label for="contact-email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">כתובת אימייל</label>
-                            <input id="contact-email" name="email" type="email" autocomplete="email" required class="search-input py-3 px-4 block w-full shadow-sm focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-600 text-slate-900 dark:text-slate-100 rounded-lg placeholder-slate-400 dark:placeholder-slate-500">
+                            <input id="contact-email" name="email" type="email" autocomplete="email" required class="search-input py-3 px-4 block w-full shadow-sm focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-600/80 text-slate-900 dark:text-slate-100 rounded-lg placeholder-slate-400 dark:placeholder-slate-500">
                         </div>
                         <div>
                             <label for="contact-subject" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">נושא הפנייה</label>
-                            <input type="text" name="subject" id="contact-subject" required class="search-input py-3 px-4 block w-full shadow-sm focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-600 text-slate-900 dark:text-slate-100 rounded-lg placeholder-slate-400 dark:placeholder-slate-500">
+                            <input type="text" name="subject" id="contact-subject" required class="search-input py-3 px-4 block w-full shadow-sm focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-600/80 text-slate-900 dark:text-slate-100 rounded-lg placeholder-slate-400 dark:placeholder-slate-500">
                         </div>
                         <div>
                             <label for="contact-message" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">הודעה</label>
-                            <textarea id="contact-message" name="message" rows="5" required class="search-input py-3 px-4 block w-full shadow-sm focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-600 text-slate-900 dark:text-slate-100 rounded-lg placeholder-slate-400 dark:placeholder-slate-500"></textarea>
+                            <textarea id="contact-message" name="message" rows="5" required class="search-input py-3 px-4 block w-full shadow-sm focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-600/80 text-slate-900 dark:text-slate-100 rounded-lg placeholder-slate-400 dark:placeholder-slate-500"></textarea>
                         </div>
                         <div class="text-center pt-3">
                             <button type="submit" class="btn-primary !text-lg !px-10 !py-3.5 w-full sm:w-auto text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:ring-offset-2 dark:focus:ring-offset-slate-700"><i class="fas fa-paper-plane"></i> שלח הודעה</button>
@@ -362,34 +357,26 @@
 
 <template id="video-card-template">
     <article 
-        class_exists="video-card-wrapper group flex flex-col bg-white dark:bg-slate-800 rounded-xl lg:rounded-2xl shadow-xl hover:shadow-2xl dark:shadow-2xl dark:hover:shadow-purple-900/50 transition-all duration-300 ease-out hover:-translate-y-2 border border-slate-200 dark:border-slate-700 hover:border-purple-300 dark:hover:border-purple-600 overflow-hidden">
+        class_exists="video-card group flex flex-col bg-white dark:bg-slate-800/75 backdrop-blur-sm rounded-xl lg:rounded-2xl shadow-xl hover:shadow-2xl dark:shadow-lg dark:hover:shadow-purple-700/20 transition-all duration-300 ease-out hover:-translate-y-1.5 border border-slate-200 dark:border-slate-700 hover:border-purple-300 dark:hover:border-purple-500 overflow-hidden">
         
-        <!-- החלק של התמונה (thumbnail) -->
-        <div class_exists="video-thumbnail-container aspect-video bg-slate-200 dark:bg-slate-600 relative overflow-hidden">
-            <img src="" alt="" class_exists="video-thumbnail-img absolute inset-0 w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105" loading="lazy">
-            
-            <span class_exists="video-duration absolute bottom-2 right-2 rtl:bottom-2 rtl:left-2 rtl:right-auto bg-black/70 text-white text-xs font-semibold px-2 py-1 rounded-md z-10 backdrop-blur-sm"></span>
-
-            <button class_exists="play-video-button absolute inset-0 w-full h-full flex items-center justify-center text-white z-20 focus:outline-none opacity-0 group-hover:opacity-100 transition-opacity duration-300" aria-label="נגן סרטון">
-                <!-- כפתור ה-Play שקוף ומופיע רק ב-hover -->
-                <div class_exists="bg-black/40 dark:bg-black/60 backdrop-blur-md rounded-full p-3 md:p-4 transition-colors duration-300">
-                    <i class_exists="fas fa-play text-3xl md:text-4xl text-white drop-shadow-lg"></i> 
-                </div>
+        <div class_exists="video-thumbnail-container aspect-video bg-slate-200 dark:bg-slate-700 relative flex items-center justify-center overflow-hidden">
+            <img src="" alt="" class_exists="video-thumbnail-img absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 opacity-90 group-hover:opacity-100" loading="lazy">
+            <span class_exists="video-duration absolute bottom-2 right-2 rtl:bottom-2 rtl:left-2 rtl:right-auto bg-black/75 text-white text-xs font-semibold px-2 py-1 rounded-md z-10 backdrop-blur-sm"></span>
+            <button class_exists="play-video-button absolute inset-0 w-full h-full flex items-center justify-center text-white z-20 transition-all duration-300 group-hover:scale-110 group-hover:opacity-90 focus:outline-none" aria-label="נגן סרטון">
+                <i class_exists="fas fa-play-circle fa-5x sm:fa-6x text-purple-500 dark:text-purple-400 opacity-80 group-hover:opacity-100 drop-shadow-lg"></i>
             </button>
             <iframe class_exists="video-iframe hidden absolute inset-0 w-full h-full z-30" loading="lazy" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
         
-        <!-- החלק של פרטי הסרטון (טקסט) -->
         <div class_exists="video-details-container p-4 sm:p-5 flex flex-col flex-grow">
             <div class_exists="video-channel-info flex items-center text-xs text-slate-500 dark:text-slate-400 mb-2">
-                <img src="" alt="" class_exists="channel-logo h-6 w-6 rounded-full mr-2 object-cover border-2 border-white dark:border-slate-600 shadow-sm">
+                <img src="" alt="" class_exists="channel-logo h-6 w-6 rounded-full mr-2 object-cover border-2 border-white dark:border-slate-600 shadow-sm hidden">
                 <span class_exists="channel-name font-medium hover:text-purple-600 dark:hover:text-purple-400 transition-colors"></span>
             </div>
             <h3 class_exists="video-title font-semibold text-lg text-slate-800 dark:text-slate-100 mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors leading-tight line-clamp-2">
-                <a href="" target="_blank" rel="noopener noreferrer" class_exists="video-link focus:outline-none"></a>
+                <a href="" target="_blank" rel="noopener noreferrer" class_exists="video-link hover:underline focus:outline-none focus:ring-1 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-sm"></a>
             </h3>
             <div class_exists="video-tags flex flex-wrap gap-1.5 mb-auto mt-1 text-xs">
-                <!-- התגיות יקבלו עיצוב סגול מה-JS -->
             </div>
             <div class_exists="flex items-center justify-between text-slate-500 dark:text-slate-400 text-xs mt-4 pt-3 border-t border-slate-200 dark:border-slate-700">
                 <span class_exists="video-category-display flex items-center"><i class_exists="fas fa-folder-open ml-1.5 opacity-70 text-purple-500 dark:text-purple-400"></i></span>
@@ -397,6 +384,7 @@
         </div>
     </article>
 </template>
+
     <button id="back-to-top-btn" aria-label="חזור לראש העמוד"
             class="fixed bottom-6 right-6 rtl:left-6 rtl:right-auto z-50 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white rounded-full p-2.5 shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-900 opacity-0 invisible transition-all duration-300 ease-in-out h-10 w-10 flex items-center justify-center">
         <i class="fas fa-arrow-up text-md"></i>
