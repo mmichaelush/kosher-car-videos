@@ -344,11 +344,19 @@ document.addEventListener('DOMContentLoaded', function () {
         const cardElement = cardClone.querySelector('article');
         if (!cardElement) return null;
 
+       // Process child elements first
         cardElement.querySelectorAll('[class_exists]').forEach(el => {
-            el.setAttribute('class', el.getAttribute('class_exists'));
-            el.removeAttribute('class_exists');
+            if (el.hasAttribute('class_exists')) { // Double check
+                el.setAttribute('class', el.getAttribute('class_exists'));
+                el.removeAttribute('class_exists');
+            }
         });
 
+        // Then process the parent cardElement itself
+        if (cardElement.hasAttribute('class_exists')) {
+            cardElement.setAttribute('class', cardElement.getAttribute('class_exists'));
+            cardElement.removeAttribute('class_exists');
+        }
         cardElement.dataset.category = video.category;
         cardElement.dataset.tags = video.tags.join(','); 
 
