@@ -199,19 +199,3 @@ html:not(.dark) .hero-gradient .text-purple-300 {
         transform: translateY(0px);
     }
 }
-
-.video-thumbnail-container.aspect-video-fallback {
-  position: relative;
-  width: 100%;
-  padding-top: 56.25%; /* 9 / 16 * 100% = יחס 16:9 */
-}
-
-.video-thumbnail-container.aspect-video-fallback > img,
-.video-thumbnail-container.aspect-video-fallback > iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* אם זו תמונה */
-}
