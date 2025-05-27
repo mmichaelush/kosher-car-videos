@@ -5,10 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAR-טיב - סרטוני רכבים כשרים</title>
-    <!-- הוחלף ב-Play CDN -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
     <script>
-      // הגדרת darkMode עבור Play CDN (ליתר ביטחון)
       tailwind.config = {
         darkMode: 'class',
         theme: {
@@ -20,7 +18,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="css/styles.css"> <!-- אם יש לך קובץ CSS מותאם אישית בנוסף ל-Tailwind -->
+    <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
 
     <script>
@@ -565,7 +563,8 @@
         <article
             class_exists="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-xl dark:shadow-black/40 dark:hover:shadow-purple-500/30 transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-[1.03] border border-slate-200 dark:border-slate-500 hover:border-purple-300 dark:hover:border-purple-500 overflow-hidden">
             <div
-                class_exists="video-thumbnail-container aspect-video bg-slate-200 dark:bg-slate-700 relative flex items-center justify-center overflow-hidden border-b border-slate-200 dark:border-slate-500">
+                class_exists="video-thumbnail-container bg-slate-200 dark:bg-slate-700 relative overflow-hidden border-b border-slate-200 dark:border-slate-500">
+                <!-- הקלאסים aspect-video, flex, items-center, justify-center הוסרו מכאן -->
                 <img src="" alt=""
                     class_exists="video-thumbnail-img absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 opacity-90 group-hover:opacity-100"
                     loading="lazy">
