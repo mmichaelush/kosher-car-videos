@@ -8,12 +8,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const backdrop = document.getElementById('mobile-menu-backdrop');
     const videoCountHeroElement = document.getElementById('video-count-hero');
     const currentYearFooter = document.getElementById('current-year-footer');
-
     const desktopSearchForm = document.getElementById('desktop-search-form') || document.getElementById('desktop-search-form-category');
     const mobileSearchForm = document.getElementById('mobile-search-form') || document.getElementById('mobile-search-form-category');
     const desktopSearchInput = document.getElementById('desktop-search-input') || document.getElementById('desktop-search-input-category');
     const mobileSearchInput = document.getElementById('mobile-search-input') || document.getElementById('mobile-search-input-category');
-
     const videoCardsContainer = document.getElementById('video-cards-container');
     const loadingPlaceholder = document.getElementById('loading-videos-placeholder');
     const noVideosFoundMessage = document.getElementById('no-videos-found');
@@ -42,11 +40,11 @@ document.addEventListener('DOMContentLoaded', function () {
         { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "fa-film" },
         { id: "review", name: "סקירות רכב", description: "מבחנים והשוואות", icon: "fa-magnifying-glass-chart", gradient: "from-purple-500 to-indigo-600", darkGradient: "dark:from-purple-600 dark:to-indigo-700" },
         { id: "maintenance", name: "טיפולים", description: "תחזוקה שוטפת ומניעתית", icon: "fa-oil-can", gradient: "from-blue-500 to-cyan-600", darkGradient: "dark:from-blue-600 dark:to-cyan-700" },
-        { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה", icon: "fa-tools", gradient: "from-green-500 to-teal-600", darkGradient: "dark:from-green-600 dark:to-teal-700" },
+        { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה עצמית", icon: "fa-tools", gradient: "from-green-500 to-teal-600", darkGradient: "dark:from-green-600 dark:to-teal-700" },
         { id: "troubleshooting", name: "תיקון תקלות", description: "פתרון ותיקון בעיות ותקלות", icon: "fa-microscope", gradient: "from-lime-400 to-yellow-500", darkGradient: "dark:from-lime-500 dark:to-yellow-600" },
-        { id: "upgrades", name: "שיפורים ושדרוגים", description: "שדרוג הרכב והוספת אביזרים", icon: "fa-rocket", gradient: "from-orange-500 to-red-600", darkGradient: "dark:from-orange-600 dark:to-red-700" },
-        { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "fa-cogs", gradient: "from-yellow-500 to-amber-600", darkGradient: "dark:from-yellow-600 dark:to-amber-700" },
-        { id: "collectors", name: "רכבי אספנות", description: "נוסטלגיה מרכבים שהיו וישנם", icon: "fa-car-side", gradient: "from-red-500 to-pink-600", darkGradient: "dark:from-red-600 dark:to-pink-700" }
+        { id: "upgrades", name: "שיפורים ושדרוגים", description: "שדרוג ושיפור הרכב והוספת אביזרים", icon: "fa-rocket", gradient: "from-orange-500 to-red-600", darkGradient: "dark:from-orange-600 dark:to-red-700" },
+        { id: "systems", name: "מערכות הרכב", description: "הסברים על מערכות, מכלולים וטכנולוגיות", icon: "fa-cogs", gradient: "from-yellow-500 to-amber-600", darkGradient: "dark:from-yellow-600 dark:to-amber-700" },
+        { id: "collectors", name: "רכבי אספנות", description: "נוסטלגית רכבים מימים שעברו", icon: "fa-car-side", gradient: "from-red-500 to-pink-600", darkGradient: "dark:from-red-600 dark:to-pink-700" }
     ];
 
     // --- Initialization ---
