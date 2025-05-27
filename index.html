@@ -22,7 +22,6 @@
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
 
     <script>
-        // סקריפט לקביעת מצב כהה/בהיר בטעינת הדף
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
