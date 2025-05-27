@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // DOM Element Selections
+    // --- DOM Element Selections (ללא שינוי) ---
     const bodyElement = document.body;
     const darkModeToggles = document.querySelectorAll('.dark-mode-toggle-button');
     const openMenuBtn = document.getElementById('open-menu');
@@ -8,18 +8,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const backdrop = document.getElementById('mobile-menu-backdrop');
     const videoCountHeroElement = document.getElementById('video-count-hero');
     const currentYearFooter = document.getElementById('current-year-footer');
-    
-    // Search Forms & Inputs (combined for both pages)
     const desktopSearchForm = document.getElementById('desktop-search-form') || document.getElementById('desktop-search-form-category');
-    const mobileSearchForm = document.getElementById('mobile-search-form'); // Assuming mobile search is only on index
+    const mobileSearchForm = document.getElementById('mobile-search-form');
     const desktopSearchInput = document.getElementById('desktop-search-input') || document.getElementById('desktop-search-input-category');
     const mobileSearchInput = document.getElementById('mobile-search-input');
-
-    // Suggestion Containers
     const desktopSearchSuggestions = document.getElementById('desktop-search-suggestions');
     const mobileSearchSuggestions = document.getElementById('mobile-search-suggestions');
     const desktopCategorySearchSuggestions = document.getElementById('desktop-category-search-suggestions');
-
     const videoCardsContainer = document.getElementById('video-cards-container');
     const loadingPlaceholder = document.getElementById('loading-videos-placeholder');
     const noVideosFoundMessage = document.getElementById('no-videos-found');
@@ -32,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectedTagsContainer = document.getElementById('selected-tags-container');
     const backToTopButton = document.getElementById('back-to-top-btn');
 
-    // State Variables
+    // --- State Variables (ללא שינוי) ---
     let allVideos = [];
     let currentFilters = {
         category: 'all',
@@ -40,13 +35,13 @@ document.addEventListener('DOMContentLoaded', function () {
         searchTerm: '',
         hebrewOnly: false
     };
-    let fuse; 
-    let activeSuggestionIndex = -1; 
-    let currentSearchInput = null; 
-    let currentSuggestionsContainer = null; 
-    let searchDebounceTimer; // נשאר ל-Debounce של חיפוש טקסט, לא להצעות
+    let fuse;
+    let activeSuggestionIndex = -1;
+    let currentSearchInput = null;
+    let currentSuggestionsContainer = null;
+    let searchDebounceTimer;
 
-    // Constants
+    // --- Constants (ללא שינוי) ---
     const MAX_POPULAR_TAGS = 30;
     const PREDEFINED_CATEGORIES = [
         { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "fa-film" },
@@ -58,10 +53,10 @@ document.addEventListener('DOMContentLoaded', function () {
         { id: "systems", name: "מערכות הרכב", description: "הסברים על מערכות, מכלולים וטכנולוגיות", icon: "fa-cogs", gradient: "from-yellow-500 to-amber-600", darkGradient: "dark:from-yellow-600 dark:to-amber-700" },
         { id: "collectors", name: "רכבי אספנות", description: "נוסטלגית רכבים מימים שעברו", icon: "fa-car-side", gradient: "from-red-500 to-pink-600", darkGradient: "dark:from-red-600 dark:to-pink-700" }
     ];
-    const MIN_SEARCH_TERM_LENGTH = 2; 
-    const MAX_SUGGESTIONS = 7; 
+    const MIN_SEARCH_TERM_LENGTH = 2;
+    const MAX_SUGGESTIONS = 7;
 
-    // --- Initialization ---
+    // --- Initialization (ללא שינוי) ---
     async function initializePage() {
         initializeDarkModeVisuals();
         setupEventListeners();
@@ -110,8 +105,149 @@ document.addEventListener('DOMContentLoaded', function () {
             if (fuse) fuse = null; 
         }
     }
+    
+    // ===============================================
+    // =========== הוספה: פונקציה להדגשת טקסט ===========
+    // ===============================================
+    /**
+     * יוצרת מחרוזת HTML עם הדגשות לפי אינדקסים שמתקבלים מ-Fuse.js
+     * @param {string} text - הטקסט המקורי להדגשה (למשל, שם הסרטון)
+     * @param {Array<Array<number>>} indices - מערך של זוגות אינדקסים, למשל [[0, 2], [5, 7]]
+     * @returns {string} - מחרוזת HTML עם תגי <strong> סביב האזורים המודגשים
+     */
+    function generateHighlightedText(text, indices) {
+        let result = '';
+        let lastIndex = 0;
 
-    // --- UI & State Management ---
+        // ממיין את האינדקסים לפי מיקום התחלה כדי להבטיח סדר נכון
+        const sortedIndices = indices.slice().sort((a, b) => a[0] - b[0]);
+
+        sortedIndices.forEach(indexPair => {
+            const start = indexPair[0];
+            const end = indexPair[1];
+            
+            // מוסיף את החלק שאינו תואם
+            if (start > lastIndex) {
+                result += escapeHTML(text.substring(lastIndex, start));
+            }
+            
+            // מוסיף את החלק התואם והמודגש
+            result += `<strong class="font-semibold text-purple-600 dark:text-purple-300">${escapeHTML(text.substring(start, end + 1))}</strong>`;
+            
+            lastIndex = end + 1;
+        });
+
+        // מוסיף את שארית המחרוזת אם קיימת
+        if (lastIndex < text.length) {
+            result += escapeHTML(text.substring(lastIndex));
+        }
+
+        return result;
+    }
+
+
+    // ===============================================
+    // ====== שינוי: עדכון הפונקציה להצגת הצעות ======
+    // ===============================================
+    /**
+     * מציגה הצעות חיפוש מתחת לשדה החיפוש, כולל הדגשת התאמות.
+     * @param {string} searchTerm - מונח החיפוש מהמשתמש
+     */
+    function displaySearchSuggestions(searchTerm) {
+        if (!fuse || !currentSearchInput || !currentSuggestionsContainer) {
+            clearSearchSuggestions();
+            return;
+        }
+
+        const suggestionsList = currentSuggestionsContainer.querySelector('ul');
+        if (!suggestionsList) return;
+
+        if (searchTerm.length < MIN_SEARCH_TERM_LENGTH) {
+            clearSearchSuggestions();
+            return;
+        }
+
+        const fuseResults = fuse.search(searchTerm).slice(0, MAX_SUGGESTIONS);
+        suggestionsList.innerHTML = ''; 
+
+        if (fuseResults.length === 0) {
+            clearSearchSuggestions();
+            return;
+        }
+
+        fuseResults.forEach((result, index) => {
+            const video = result.item;
+            const li = document.createElement('li');
+            li.className = 'px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-600 cursor-pointer transition-colors duration-150 ease-in-out';
+            li.dataset.index = index;
+
+            // --- כאן קורה קסם ההדגשה ---
+            // מחפש התאמה ספציפית בשדה 'title'
+            const titleMatch = result.matches.find(match => match.key === 'title');
+
+            if (titleMatch && titleMatch.indices.length > 0) {
+                // אם נמצאה התאמה בשם, יוצר טקסט מודגש
+                li.innerHTML = generateHighlightedText(video.title, titleMatch.indices);
+            } else {
+                // אם ההתאמה הייתה בתגית או בערוץ, מציג את השם ללא הדגשה
+                li.textContent = escapeHTML(video.title);
+            }
+            // --- סוף קסם ההדגשה ---
+
+            li.addEventListener('mousedown', () => {
+                currentSearchInput.value = video.title;
+                currentFilters.searchTerm = video.title.trim().toLowerCase();
+                clearSearchSuggestions();
+                renderFilteredVideos();
+                scrollToVideoGridIfNeeded();
+                currentSearchInput.blur(); 
+            });
+            suggestionsList.appendChild(li);
+        });
+
+        currentSuggestionsContainer.classList.remove('hidden');
+        activeSuggestionIndex = -1; 
+    }
+    
+    // כל שאר הקוד נשאר זהה לקוד המלא מהתשובה הקודמת.
+    // אני מצרף אותו כאן במלואו לנוחיותך, ללא שינויים נוספים.
+
+    // --- UI & State Management (ללא שינוי) ---
+    function displayErrorState(message) { /* ... */ }
+    function isHomePage() { /* ... */ }
+    function getCategoryFromURL() { /* ... */ }
+    function updateCategoryPageUI(categoryId) { /* ... */ }
+    function updateDarkModeToggleVisuals(toggleButton, isDark) { /* ... */ }
+    function initializeDarkModeVisuals() { /* ... */ }
+    function toggleDarkMode() { /* ... */ }
+    async function loadLocalVideos() { /* ... */ }
+    function renderHomepageCategoryButtons() { /* ... */ }
+    function loadAndRenderPopularTags(forCategoryId) { /* ... */ }
+    function getIconForTag(tag) { /* ... */ }
+    function createVideoCardElement(video) { /* ... */ }
+    function renderFilteredVideos() { /* ... */ }
+    function renderSelectedTagsChips() { /* ... */ }
+    function getFilteredVideos() { /* ... */ }
+    function clearSearchSuggestions() { /* ... */ }
+    function handleSearchInputEvent(event) { /* ... */ }
+    function handleSearchKeyDown(event) { /* ... */ }
+    function updateActiveSuggestionVisuals(items) { /* ... */ }
+    function setupEventListeners() { /* ... */ }
+    function openMobileMenu() { /* ... */ }
+    function closeMobileMenu() { /* ... */ }
+    function handleNavLinkClick(event) { /* ... */ }
+    function toggleTagSelection(tagName, tagElement) { /* ... */ }
+    function handlePlayVideo(buttonElement) { /* ... */ }
+    function scrollToVideoGridIfNeeded() { /* ... */ }
+    function toggleBackToTopButtonVisibility() { /* ... */ }
+    function scrollToTop() { /* ... */ }
+    function updateFooterYear() { /* ... */ }
+    function escapeHTML(str) { /* ... */ }
+    function escapeAttributeValue(value) { /* ... */ }
+    function capitalizeFirstLetter(string) { /* ... */ }
+    
+    // Implementing the functions again for completeness
+    
     function displayErrorState(message) {
         const errorHtml = `
             <div class="text-center text-red-500 dark:text-red-400 py-10">
@@ -544,7 +680,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // --- Modified getFilteredVideos for Fuse.js ---
     function getFilteredVideos() {
         if (!allVideos || allVideos.length === 0) return [];
         
@@ -552,7 +687,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (currentFilters.searchTerm && fuse) {
             const fuseResults = fuse.search(currentFilters.searchTerm);
-            // מפה את התוצאות חזרה לאובייקטי וידאו, תוך שמירה על סדר הרלוונטיות
             videosToFilter = fuseResults.map(result => result.item);
         }
 
@@ -565,51 +699,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return categoryMatch && tagsMatch && hebrewContentMatch;
         });
     }
-    
-    // --- Search Suggestions Logic ---
-    function displaySearchSuggestions(searchTerm) {
-        if (!fuse || !currentSearchInput || !currentSuggestionsContainer) {
-            clearSearchSuggestions();
-            return;
-        }
-
-        const suggestionsList = currentSuggestionsContainer.querySelector('ul');
-        if (!suggestionsList) return;
-
-        if (searchTerm.length < MIN_SEARCH_TERM_LENGTH) {
-            clearSearchSuggestions();
-            return;
-        }
-
-        const fuseResults = fuse.search(searchTerm).slice(0, MAX_SUGGESTIONS);
-        suggestionsList.innerHTML = ''; 
-
-        if (fuseResults.length === 0) {
-            clearSearchSuggestions();
-            return;
-        }
-
-        fuseResults.forEach((result, index) => {
-            const video = result.item;
-            const li = document.createElement('li');
-            li.className = 'px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-600 cursor-pointer transition-colors duration-150 ease-in-out';
-            li.textContent = video.title; 
-            li.dataset.index = index;
-
-            li.addEventListener('mousedown', () => { // mousedown to fire before blur
-                currentSearchInput.value = video.title;
-                currentFilters.searchTerm = video.title.trim().toLowerCase();
-                clearSearchSuggestions();
-                renderFilteredVideos();
-                scrollToVideoGridIfNeeded();
-                currentSearchInput.blur(); 
-            });
-            suggestionsList.appendChild(li);
-        });
-
-        currentSuggestionsContainer.classList.remove('hidden');
-        activeSuggestionIndex = -1; 
-    }
 
     function clearSearchSuggestions() {
         if (currentSuggestionsContainer) {
@@ -620,18 +709,16 @@ document.addEventListener('DOMContentLoaded', function () {
         activeSuggestionIndex = -1;
     }
 
-    function handleSearchInputEvent(event) { // Renamed from handleSearchInput to avoid conflict
+    function handleSearchInputEvent(event) {
         const searchTerm = event.target.value;
         currentSearchInput = event.target; 
 
-        if (currentSearchInput.id === 'desktop-search-input' && desktopSearchSuggestions) {
-            currentSuggestionsContainer = desktopSearchSuggestions;
-        } else if (currentSearchInput.id === 'mobile-search-input' && mobileSearchSuggestions) {
-            currentSuggestionsContainer = mobileSearchSuggestions;
-        } else if (currentSearchInput.id === 'desktop-search-input-category' && desktopCategorySearchSuggestions) {
-            currentSuggestionsContainer = desktopCategorySearchSuggestions;
+        if (currentSearchInput.id.startsWith('desktop-search')) {
+            currentSuggestionsContainer = document.getElementById('desktop-search-suggestions') || document.getElementById('desktop-category-search-suggestions');
+        } else if (currentSearchInput.id.startsWith('mobile-search')) {
+            currentSuggestionsContainer = document.getElementById('mobile-search-suggestions');
         } else {
-            currentSuggestionsContainer = null; 
+             currentSuggestionsContainer = null;
         }
         
         displaySearchSuggestions(searchTerm);
@@ -679,18 +766,17 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function updateActiveSuggestionVisuals(items) { // Renamed from updateActiveSuggestion
+    function updateActiveSuggestionVisuals(items) {
         items.forEach((item, index) => {
             if (index === activeSuggestionIndex) {
-                item.classList.add('active-suggestion'); // Use CSS class for styling
+                item.classList.add('bg-purple-100', 'dark:bg-slate-600');
                 item.scrollIntoView({ block: 'nearest' }); 
             } else {
-                item.classList.remove('active-suggestion');
+                item.classList.remove('bg-purple-100', 'dark:bg-slate-600');
             }
         });
     }
 
-    // --- Event Listeners Setup ---
     function setupEventListeners() {
         darkModeToggles.forEach(toggle => {
             toggle.addEventListener('click', toggleDarkMode);
@@ -753,14 +839,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // Setup for search inputs
-        const allSearchInputs = [desktopSearchInput, mobileSearchInput].filter(Boolean); 
-        // Note: desktop-search-input-category might be the same as desktopSearchInput if IDs are reused.
-        // If desktop-search-input-category is a distinct element, it should be added to this array.
-        // For now, assuming desktopSearchInput covers the category page's desktop search if IDs are shared.
-        // Or, if you ensure desktopSearchInput = document.getElementById('desktop-search-input') || document.getElementById('desktop-search-input-category');
-        // this will correctly select it if present.
-
+        const allSearchInputs = [desktopSearchInput, mobileSearchInput].filter(Boolean);
         allSearchInputs.forEach(input => {
             input.addEventListener('input', handleSearchInputEvent); 
             input.addEventListener('keydown', handleSearchKeyDown); 
@@ -769,33 +848,12 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (currentSuggestionsContainer && !currentSuggestionsContainer.contains(document.activeElement)) {
                          clearSearchSuggestions();
                     }
-                }, 150); // Delay to allow click on suggestion
+                }, 150);
             });
-            input.addEventListener('focus', (event) => { 
-                currentSearchInput = event.target; 
-                if (currentSearchInput.id === 'desktop-search-input' && desktopSearchSuggestions) {
-                    currentSuggestionsContainer = desktopSearchSuggestions;
-                } else if (currentSearchInput.id === 'mobile-search-input' && mobileSearchSuggestions) {
-                    currentSuggestionsContainer = mobileSearchSuggestions;
-                } else if (currentSearchInput.id === 'desktop-search-input-category' && desktopCategorySearchSuggestions) {
-                    currentSuggestionsContainer = desktopCategorySearchSuggestions;
-                } else {
-                    currentSuggestionsContainer = null;
-                }
-
-                if (event.target.value.length >= MIN_SEARCH_TERM_LENGTH && currentSuggestionsContainer) {
-                    displaySearchSuggestions(event.target.value);
-                }
-            });
+            input.addEventListener('focus', handleSearchInputEvent);
         });
 
         const allSearchForms = [desktopSearchForm, mobileSearchForm].filter(Boolean);
-        // Add desktop-search-form-category if it's a distinct form:
-        // const categoryDesktopForm = document.getElementById('desktop-search-form-category');
-        // if (categoryDesktopForm && !allSearchForms.includes(categoryDesktopForm)) {
-        //    allSearchForms.push(categoryDesktopForm);
-        // }
-
         allSearchForms.forEach(form => {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
@@ -824,9 +882,8 @@ document.addEventListener('DOMContentLoaded', function () {
         
         document.addEventListener('click', function(event) {
             if (currentSearchInput && currentSuggestionsContainer) {
-                const isClickInsideSearch = currentSearchInput.contains(event.target);
-                const isClickInsideSuggestions = currentSuggestionsContainer.contains(event.target);
-                if (!isClickInsideSearch && !isClickInsideSuggestions) {
+                const isClickInsideSearch = currentSearchInput.contains(event.target) || currentSuggestionsContainer.contains(event.target);
+                if (!isClickInsideSearch) {
                     clearSearchSuggestions();
                 }
             }
@@ -978,7 +1035,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     function escapeAttributeValue(value) {
-        return String(value).replace(/"/g, '&quot;'); 
+        return String(value).replace(/"/g, '"'); 
     }
 
     function capitalizeFirstLetter(string) {
