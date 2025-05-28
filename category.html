@@ -146,14 +146,14 @@
             </div>
             <div class="flex items-center space-x-1 md:space-x-1.5 lg:space-x-2 rtl:space-x-reverse">
                 <div class="hidden md:block">
-                    <form role="search" id="desktop-search-form" class="relative"> <!-- ID זהה ל-index.html -->
-                        <input type="search" id="desktop-search-input"
+                    <form role="search" id="desktop-search-form" class="relative"> 
+                        <input type="search" id="desktop-search-input" 
                             class="search-input block md:w-28 lg:w-40 xl:w-56 pr-4 pl-10 py-2.5 text-sm border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500 transition-all duration-300 lg:focus:w-52 xl:focus:w-64"
-                            placeholder="חיפוש סרטונים..." autocomplete="off"> <!-- Placeholder שונה -->
+                            placeholder="חיפוש סרטונים..." autocomplete="off">
                         <button type="submit" aria-label="בצע חיפוש"
                             class="absolute left-0 top-0 h-full px-3 text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-300"><i
                                 class="fas fa-search"></i></button>
-                        <div id="desktop-search-suggestions" class="search-suggestions-container absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-lg z-50 hidden"> <!-- ID זהה ל-index.html -->
+                        <div id="desktop-search-suggestions" class="search-suggestions-container absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-lg z-50 hidden"> 
                             <ul class="max-h-72 overflow-y-auto">
                             </ul>
                         </div>
@@ -196,6 +196,25 @@
                     </li>
                 </ol>
             </nav>
+        </section>
+
+        <section id="main-content-search-section" class="my-8 md:my-12"> 
+            <div class="max-w-2xl mx-auto px-4">
+                <h2 class="sr-only">חיפוש סרטונים בקטגוריה</h2> 
+                <form role="search" id="main-content-search-form" class="relative flex items-center">
+                    <input type="search" id="main-content-search-input"
+                        class="search-input block w-full pr-4 pl-12 py-3.5 text-base shadow-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500"
+                        placeholder="חפש סרטונים בקטגוריה זו..." autocomplete="off">
+                    <button type="submit" aria-label="בצע חיפוש"
+                        class="absolute left-0 top-0 h-full px-4 text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-300">
+                        <i class="fas fa-search text-lg"></i>
+                    </button>
+                    <div id="main-content-search-suggestions" class="search-suggestions-container absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-lg z-50 hidden">
+                        <ul class="max-h-60 overflow-y-auto">
+                        </ul>
+                    </div>
+                </form>
+            </div>
         </section>
 
         <section
@@ -369,7 +388,6 @@
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen></iframe>
             </div>
-            <!-- שונה הרקע כאן למצב בהיר -->
             <div class_exists="video-details-container bg-slate-50 dark:bg-slate-700 p-4 sm:p-5 flex flex-col flex-grow">
                 <div class_exists="video-channel-info flex items-center text-xs text-slate-500 dark:text-slate-300 mb-2.5">
                     <img src="" alt=""
