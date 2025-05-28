@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-
+    // --- DOM Element Selections ---
     const bodyElement = document.body;
     const darkModeToggles = document.querySelectorAll('.dark-mode-toggle-button');
     const openMenuBtn = document.getElementById('open-menu');
@@ -8,13 +8,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const backdrop = document.getElementById('mobile-menu-backdrop');
     const videoCountHeroElement = document.getElementById('video-count-hero');
     const currentYearFooter = document.getElementById('current-year-footer');
-    const desktopSearchForm = document.getElementById('desktop-search-form') || document.getElementById('desktop-search-form-category');
+    
+    const desktopSearchForm = document.getElementById('desktop-search-form');
     const mobileSearchForm = document.getElementById('mobile-search-form');
-    const desktopSearchInput = document.getElementById('desktop-search-input') || document.getElementById('desktop-search-input-category');
+    const mainContentSearchForm = document.getElementById('main-content-search-form'); // תיבת חיפוש חדשה
+
+    const desktopSearchInput = document.getElementById('desktop-search-input');
     const mobileSearchInput = document.getElementById('mobile-search-input');
+    const mainContentSearchInput = document.getElementById('main-content-search-input'); // תיבת חיפוש חדשה
+    
     const desktopSearchSuggestions = document.getElementById('desktop-search-suggestions');
     const mobileSearchSuggestions = document.getElementById('mobile-search-suggestions');
-    const desktopCategorySearchSuggestions = document.getElementById('desktop-category-search-suggestions');
+    const mainContentSearchSuggestions = document.getElementById('main-content-search-suggestions'); // תיבת חיפוש חדשה
+    
     const videoCardsContainer = document.getElementById('video-cards-container');
     const loadingPlaceholder = document.getElementById('loading-videos-placeholder');
     const noVideosFoundMessage = document.getElementById('no-videos-found');
@@ -27,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectedTagsContainer = document.getElementById('selected-tags-container');
     const backToTopButton = document.getElementById('back-to-top-btn');
 
+    // --- State Variables ---
     let allVideos = [];
     let currentFilters = {
         category: 'all',
@@ -38,8 +45,9 @@ document.addEventListener('DOMContentLoaded', function () {
     let activeSuggestionIndex = -1;
     let currentSearchInput = null;
     let currentSuggestionsContainer = null;
-    let searchDebounceTimer;
+    // let searchDebounceTimer; // לא בשימוש כרגע, אבל נשאר אם יוחלט להוסיף debounce
 
+    // --- Constants ---
     const MAX_POPULAR_TAGS = 30;
     const PREDEFINED_CATEGORIES = [
         { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "fa-film" },
@@ -54,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const MIN_SEARCH_TERM_LENGTH = 2;
     const MAX_SUGGESTIONS = 7;
 
+    // --- Initialization ---
     async function initializePage() {
         initializeDarkModeVisuals();
         setupEventListeners();
@@ -106,26 +115,19 @@ document.addEventListener('DOMContentLoaded', function () {
     function generateHighlightedText(text, indices) {
         let result = '';
         let lastIndex = 0;
-
         const sortedIndices = indices.slice().sort((a, b) => a[0] - b[0]);
-
         sortedIndices.forEach(indexPair => {
             const start = indexPair[0];
             const end = indexPair[1];
-            
             if (start > lastIndex) {
                 result += escapeHTML(text.substring(lastIndex, start));
             }
-            
             result += `<strong class="font-semibold text-purple-600 dark:text-purple-300">${escapeHTML(text.substring(start, end + 1))}</strong>`;
-            
             lastIndex = end + 1;
         });
-
         if (lastIndex < text.length) {
             result += escapeHTML(text.substring(lastIndex));
         }
-
         return result;
     }
 
@@ -134,7 +136,6 @@ document.addEventListener('DOMContentLoaded', function () {
             clearSearchSuggestions();
             return;
         }
-
         const suggestionsList = currentSuggestionsContainer.querySelector('ul');
         if (!suggestionsList) return;
 
@@ -142,29 +143,23 @@ document.addEventListener('DOMContentLoaded', function () {
             clearSearchSuggestions();
             return;
         }
-
         const fuseResults = fuse.search(searchTerm).slice(0, MAX_SUGGESTIONS);
         suggestionsList.innerHTML = ''; 
-
         if (fuseResults.length === 0) {
             clearSearchSuggestions();
             return;
         }
-
         fuseResults.forEach((result, index) => {
             const video = result.item;
             const li = document.createElement('li');
             li.className = 'px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-600 cursor-pointer transition-colors duration-150 ease-in-out';
             li.dataset.index = index;
-
             const titleMatch = result.matches.find(match => match.key === 'title');
-
             if (titleMatch && titleMatch.indices.length > 0) {
                 li.innerHTML = generateHighlightedText(video.title, titleMatch.indices);
             } else {
                 li.textContent = escapeHTML(video.title);
             }
-
             li.addEventListener('mousedown', () => {
                 currentSearchInput.value = video.title;
                 currentFilters.searchTerm = video.title.trim().toLowerCase();
@@ -175,11 +170,10 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             suggestionsList.appendChild(li);
         });
-
         currentSuggestionsContainer.classList.remove('hidden');
         activeSuggestionIndex = -1; 
     }
-        
+    
     function displayErrorState(message) {
         const errorHtml = `
             <div class="text-center text-red-500 dark:text-red-400 py-10">
@@ -646,9 +640,11 @@ document.addEventListener('DOMContentLoaded', function () {
         currentSearchInput = event.target; 
 
         if (currentSearchInput.id.startsWith('desktop-search')) {
-            currentSuggestionsContainer = document.getElementById('desktop-search-suggestions') || document.getElementById('desktop-category-search-suggestions');
+            currentSuggestionsContainer = desktopSearchSuggestions;
         } else if (currentSearchInput.id.startsWith('mobile-search')) {
-            currentSuggestionsContainer = document.getElementById('mobile-search-suggestions');
+            currentSuggestionsContainer = mobileSearchSuggestions;
+        } else if (currentSearchInput.id.startsWith('main-content-search')) { // תמיכה בתיבה החדשה
+            currentSuggestionsContainer = mainContentSearchSuggestions;
         } else {
              currentSuggestionsContainer = null;
         }
@@ -701,10 +697,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateActiveSuggestionVisuals(items) {
         items.forEach((item, index) => {
             if (index === activeSuggestionIndex) {
-                item.classList.add('bg-purple-100', 'dark:bg-slate-600');
+                item.classList.add('bg-purple-100', 'dark:bg-slate-600'); // או 'active-suggestion' כפי שהיה ב-style
                 item.scrollIntoView({ block: 'nearest' }); 
             } else {
-                item.classList.remove('bg-purple-100', 'dark:bg-slate-600');
+                item.classList.remove('bg-purple-100', 'dark:bg-slate-600'); // או 'active-suggestion'
             }
         });
     }
@@ -771,7 +767,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        const allSearchInputs = [desktopSearchInput, mobileSearchInput].filter(Boolean);
+        const allSearchInputs = [desktopSearchInput, mobileSearchInput, mainContentSearchInput].filter(Boolean);
         allSearchInputs.forEach(input => {
             input.addEventListener('input', handleSearchInputEvent); 
             input.addEventListener('keydown', handleSearchKeyDown); 
@@ -785,7 +781,7 @@ document.addEventListener('DOMContentLoaded', function () {
             input.addEventListener('focus', handleSearchInputEvent);
         });
 
-        const allSearchForms = [desktopSearchForm, mobileSearchForm].filter(Boolean);
+        const allSearchForms = [desktopSearchForm, mobileSearchForm, mainContentSearchForm].filter(Boolean);
         allSearchForms.forEach(form => {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
