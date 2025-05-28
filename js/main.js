@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // --- DOM Element Selections ---
+
     const bodyElement = document.body;
     const darkModeToggles = document.querySelectorAll('.dark-mode-toggle-button');
     const openMenuBtn = document.getElementById('open-menu');
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const loadingPlaceholder = document.getElementById('loading-videos-placeholder');
     const noVideosFoundMessage = document.getElementById('no-videos-found');
     const videoCardTemplate = document.getElementById('video-card-template');
-    const homepageCategoriesGrid = document.getElementById('homepage-categories-grid'); // קיים רק ב-index.html
+    const homepageCategoriesGrid = document.getElementById('homepage-categories-grid');
     const hebrewFilterToggle = document.getElementById('hebrew-filter-toggle');
     const popularTagsContainer = document.getElementById('popular-tags-container');
     const tagSearchInput = document.getElementById('tag-search-input');
@@ -155,10 +155,14 @@ document.addEventListener('DOMContentLoaded', function () {
             li.addEventListener('mousedown', () => {
                 currentSearchInput.value = video.title;
                 currentFilters.searchTerm = video.title.trim().toLowerCase();
-                clearSearchSuggestions();
                 renderFilteredVideos();
                 scrollToVideoGridIfNeeded();
-                currentSearchInput.blur(); 
+                
+                const inputToBlur = currentSearchInput;
+                clearSearchSuggestions(); 
+                if (inputToBlur) {
+                    inputToBlur.blur(); 
+                }
             });
             suggestionsList.appendChild(li);
         });
@@ -213,7 +217,6 @@ document.addEventListener('DOMContentLoaded', function () {
             breadcrumbCategoryName.textContent = escapeHTML(categoryName);
         }
 
-        // מסתיר אלמנטים של דף הבית אם אנחנו לא בדף הבית
         const homepageCategoriesSection = document.getElementById('homepage-categories-section');
         if (homepageCategoriesSection && !isHomePage()) homepageCategoriesSection.style.display = 'none';
 
@@ -674,15 +677,17 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
             case 'Enter':
                 event.preventDefault();
+                const inputForEnter = currentSearchInput;
                 if (activeSuggestionIndex > -1 && items[activeSuggestionIndex]) {
                     items[activeSuggestionIndex].dispatchEvent(new Event('mousedown')); 
                 } else {
-                     if (currentSearchInput) {
-                        currentFilters.searchTerm = currentSearchInput.value.trim().toLowerCase();
+                     if (inputForEnter) {
+                        currentFilters.searchTerm = inputForEnter.value.trim().toLowerCase();
                         renderFilteredVideos();
-                        clearSearchSuggestions();
-                        currentSearchInput.blur();
                         if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
+                        
+                        clearSearchSuggestions();
+                        if (inputForEnter) inputForEnter.blur();
                     }
                 }
                 break;
@@ -742,7 +747,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (customTagForm) {
             customTagForm.addEventListener('submit', function(event) {
                 event.preventDefault();
-                if (!tagSearchInput) return; // בדיקה שהאלמנט קיים
+                if (!tagSearchInput) return;
                 const newTagName = tagSearchInput.value.trim().toLowerCase();
                 if (newTagName) {
                     const existingPopularTag = popularTagsContainer ? popularTagsContainer.querySelector(`button.tag[data-tag-value="${escapeAttributeValue(newTagName)}"]`) : null;
@@ -770,15 +775,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const allSearchInputs = [desktopSearchInput, mobileSearchInput, mainContentSearchInput].filter(Boolean);
         allSearchInputs.forEach(input => {
             input.addEventListener('input', handleSearchInputEvent); 
-            input.addEventListener('search', (event) => {
-                if (event.target.value.trim() === '') {
-                    handleSearchInputEvent(event); 
-                }
-            });
+            input.addEventListener('search', handleSearchInputEvent); // CHANGED: handleSearchInputEvent will now handle 'search' event
             input.addEventListener('keydown', handleSearchKeyDown); 
             input.addEventListener('blur', () => {
                 setTimeout(() => {
-                    if (currentSuggestionsContainer && !currentSuggestionsContainer.contains(document.activeElement)) {
+                    if (currentSuggestionsContainer && !currentSuggestionsContainer.contains(document.activeElement) &&
+                        currentSearchInput && !currentSearchInput.contains(document.activeElement)) {
                          clearSearchSuggestions();
                     }
                 }, 150);
@@ -794,9 +796,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (inputForForm) {
                     currentFilters.searchTerm = inputForForm.value.trim().toLowerCase();
                     renderFilteredVideos();
-                    clearSearchSuggestions(); 
-                    inputForForm.blur();
                     if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
+                    
+                    clearSearchSuggestions();
+                    if (inputForForm) inputForForm.blur();
                 }
             });
         });
