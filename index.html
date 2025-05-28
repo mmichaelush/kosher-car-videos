@@ -38,12 +38,11 @@
         html[dir="rtl"] #mobile-menu .dark-mode-toggle-button .dot {
             transform: translateX(0%);
         }
-        /* ניתן להוסיף כאן עיצובים נוספים להצעות החיפוש אם צריך */
         .search-suggestions-container ul li.active-suggestion {
-            background-color: var(--color-purple-100); /* התאמה למצב בהיר */
+            background-color: var(--color-purple-100);
         }
         .dark .search-suggestions-container ul li.active-suggestion {
-            background-color: var(--color-purple-700); /* התאמה למצב כהה */
+            background-color: var(--color-purple-700);
         }
     </style>
 </head>
@@ -229,10 +228,8 @@
             <button type="submit" aria-label="בצע חיפוש"
                 class="absolute left-0 top-0 h-full px-4 text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-300"><i
                     class="fas fa-search text-lg"></i></button>
-            <!-- הוספת רשימת הצעות למובייל -->
             <div id="mobile-search-suggestions" class="search-suggestions-container absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-lg z-50 hidden">
                 <ul class="max-h-60 overflow-y-auto">
-                    <!-- הצעות יוכנסו כאן על ידי JS -->
                 </ul>
             </div>
         </form>
@@ -261,6 +258,29 @@
                     class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 dark:focus:ring-offset-slate-900 transition-transform hover:scale-105">
                     <i class="fas fa-film ml-2"></i> לכל הסרטונים
                 </a>
+            </div>
+        </section>
+
+        <section id="main-content-search-section" class="my-12 md:my-16">
+            <div class="max-w-2xl mx-auto px-4">
+                <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6 text-center">
+                    <i class="fas fa-search text-purple-600 dark:text-purple-400 mr-2"></i>
+                    הכנס טקסט לחיפוש
+                </h2>
+                <form role="search" id="main-content-search-form" class="relative flex items-center">
+                    <input type="search" id="main-content-search-input"
+                        class="search-input block w-full pr-4 pl-12 py-3.5 text-base shadow-xl border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500"
+                        placeholder="חפש בכל האתר..." autocomplete="off">
+                    <button type="submit" aria-label="בצע חיפוש"
+                        class="absolute left-0 top-0 h-full px-4 text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-300">
+                        <i class="fas fa-search text-lg"></i>
+                    </button>
+                    <div id="main-content-search-suggestions" class="search-suggestions-container absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-lg z-50 hidden">
+                        <ul class="max-h-60 overflow-y-auto">
+                            <!-- הצעות יוכנסו כאן על ידי JS -->
+                        </ul>
+                    </div>
+                </form>
             </div>
         </section>
 
@@ -577,7 +597,7 @@
         </div>
     </footer>
 
-        <template id="video-card-template">
+    <template id="video-card-template">
         <article
             class_exists="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-xl dark:shadow-black/40 dark:hover:shadow-purple-500/30 transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-[1.03] border border-slate-200 dark:border-slate-500 hover:border-purple-300 dark:hover:border-purple-500 overflow-hidden">
             <div
@@ -598,7 +618,8 @@
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen></iframe>
             </div>
-            <div class_exists="video-details-container bg-white dark:bg-slate-700 p-4 sm:p-5 flex flex-col flex-grow">
+            <!-- שונה הרקע כאן למצב בהיר -->
+            <div class_exists="video-details-container bg-slate-50 dark:bg-slate-700 p-4 sm:p-5 flex flex-col flex-grow">
                 <div class_exists="video-channel-info flex items-center text-xs text-slate-500 dark:text-slate-300 mb-2.5">
                     <img src="" alt=""
                         class_exists="channel-logo h-7 w-7 rounded-full mr-2.5 object-cover border-2 border-transparent group-hover:border-purple-200 dark:group-hover:border-purple-500 transition-colors shadow-sm hidden"
