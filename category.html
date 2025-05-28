@@ -130,30 +130,30 @@
                     <a href="index.html#video-grid-section"
                         class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300">
                         <i class="fas fa-play-circle md:ml-1 lg:ml-2 opacity-80"></i>כל הסרטונים</a>
-                    <a href="#featured-channels-section"
+                    <a href="index.html#featured-channels-section" 
                         class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300">
                         <i class="fas fa-tv md:ml-1 lg:ml-2 opacity-80"></i>ערוצים</a>
-                    <a href="#forum-inspiration-section"
+                    <a href="index.html#forum-inspiration-section" 
                         class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300">
                         <i class="fas fa-comments md:ml-1 lg:ml-2 opacity-80"></i>שאלות</a>
-                    <a href="#about-section"
+                    <a href="index.html#about-section" 
                         class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300">
                         <i class="fas fa-info-circle md:ml-1 lg:ml-2 opacity-80"></i>אודות</a>
-                    <a href="#contact-section"
+                    <a href="index.html#contact-section" 
                         class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300">
                         <i class="fas fa-envelope md:ml-1 lg:ml-2 opacity-80"></i>צור קשר</a>
                 </nav>
             </div>
             <div class="flex items-center space-x-1 md:space-x-1.5 lg:space-x-2 rtl:space-x-reverse">
                 <div class="hidden md:block">
-                    <form role="search" id="desktop-search-form" class="relative">
-                        <input type="search" id="desktop-search-input" 
+                    <form role="search" id="desktop-search-form" class="relative"> <!-- ID זהה ל-index.html -->
+                        <input type="search" id="desktop-search-input" <!-- ID זהה ל-index.html -->
                             class="search-input block md:w-28 lg:w-40 xl:w-56 pr-4 pl-10 py-2.5 text-sm border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500 transition-all duration-300 lg:focus:w-52 xl:focus:w-64"
-                            placeholder="חיפוש..." autocomplete="off">
+                            placeholder="חיפוש סרטונים..." autocomplete="off"> <!-- Placeholder שונה -->
                         <button type="submit" aria-label="בצע חיפוש"
                             class="absolute left-0 top-0 h-full px-3 text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-300"><i
                                 class="fas fa-search"></i></button>
-                        <div id="desktop-search-suggestions" class="search-suggestions-container absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-lg z-50 hidden"> 
+                        <div id="desktop-search-suggestions" class="search-suggestions-container absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-md shadow-lg z-50 hidden"> <!-- ID זהה ל-index.html -->
                             <ul class="max-h-72 overflow-y-auto">
                             </ul>
                         </div>
@@ -348,7 +348,7 @@
         </div>
     </footer>
 
-        <template id="video-card-template">
+    <template id="video-card-template">
         <article
             class_exists="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-xl dark:shadow-black/40 dark:hover:shadow-purple-500/30 transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-[1.03] border border-slate-200 dark:border-slate-500 hover:border-purple-300 dark:hover:border-purple-500 overflow-hidden">
             <div
@@ -369,7 +369,8 @@
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowfullscreen></iframe>
             </div>
-            <div class_exists="video-details-container bg-white dark:bg-slate-700 p-4 sm:p-5 flex flex-col flex-grow">
+            <!-- שונה הרקע כאן למצב בהיר -->
+            <div class_exists="video-details-container bg-slate-50 dark:bg-slate-700 p-4 sm:p-5 flex flex-col flex-grow">
                 <div class_exists="video-channel-info flex items-center text-xs text-slate-500 dark:text-slate-300 mb-2.5">
                     <img src="" alt=""
                         class_exists="channel-logo h-7 w-7 rounded-full mr-2.5 object-cover border-2 border-transparent group-hover:border-purple-200 dark:group-hover:border-purple-500 transition-colors shadow-sm hidden"
