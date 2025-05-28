@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-
+    // --- DOM Element Selections ---
     const bodyElement = document.body;
     const darkModeToggles = document.querySelectorAll('.dark-mode-toggle-button');
     const openMenuBtn = document.getElementById('open-menu');
@@ -8,15 +8,15 @@ document.addEventListener('DOMContentLoaded', function () {
     const backdrop = document.getElementById('mobile-menu-backdrop');
     const videoCountHeroElement = document.getElementById('video-count-hero');
     const currentYearFooter = document.getElementById('current-year-footer');
-    const desktopSearchForm = document.getElementById('desktop-search-form'); 
+    const desktopSearchForm = document.getElementById('desktop-search-form');
     const mobileSearchForm = document.getElementById('mobile-search-form');
-    const mainContentSearchForm = document.getElementById('main-content-search-form'); 
-    const desktopSearchInput = document.getElementById('desktop-search-input'); 
-    const mobileSearchInput = document.getElementById('mobile-search-input'); 
+    const mainContentSearchForm = document.getElementById('main-content-search-form');
+    const desktopSearchInput = document.getElementById('desktop-search-input');
+    const mobileSearchInput = document.getElementById('mobile-search-input');
     const mainContentSearchInput = document.getElementById('main-content-search-input');
-    const desktopSearchSuggestions = document.getElementById('desktop-search-suggestions'); 
-    const mobileSearchSuggestions = document.getElementById('mobile-search-suggestions'); 
-    const mainContentSearchSuggestions = document.getElementById('main-content-search-suggestions'); 
+    const desktopSearchSuggestions = document.getElementById('desktop-search-suggestions');
+    const mobileSearchSuggestions = document.getElementById('mobile-search-suggestions');
+    const mainContentSearchSuggestions = document.getElementById('main-content-search-suggestions');
     const videoCardsContainer = document.getElementById('video-cards-container');
     const loadingPlaceholder = document.getElementById('loading-videos-placeholder');
     const noVideosFoundMessage = document.getElementById('no-videos-found');
@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let activeSuggestionIndex = -1;
     let currentSearchInput = null;
     let currentSuggestionsContainer = null;
+    let blockSuggestionDisplay = false; // דגל חדש לשליטה על הצגת הצעות
 
     const MAX_POPULAR_TAGS = 30;
     const PREDEFINED_CATEGORIES = [
@@ -73,10 +74,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         { name: 'channel', weight: 0.1 }
                     ],
                     includeScore: true,
-                    includeMatches: true, 
-                    threshold: 0.4, 
+                    includeMatches: true,
+                    threshold: 0.4,
                     minMatchCharLength: MIN_SEARCH_TERM_LENGTH,
-                    ignoreLocation: true, 
+                    ignoreLocation: true,
                 };
                 fuse = new Fuse(allVideos, fuseOptions);
 
@@ -100,10 +101,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         } catch (error) {
             displayErrorState(`שגיאה קריטית בטעינת נתוני הסרטונים: ${error.message}`);
-            if (fuse) fuse = null; 
+            if (fuse) fuse = null;
         }
     }
-    
+
     function generateHighlightedText(text, indices) {
         let result = '';
         let lastIndex = 0;
@@ -124,6 +125,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function displaySearchSuggestions(searchTerm) {
+        if (blockSuggestionDisplay) return; // אם הדגל פעיל, אל תציג הצעות
+
         if (!fuse || !currentSearchInput || !currentSuggestionsContainer) {
             clearSearchSuggestions();
             return;
@@ -136,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         const fuseResults = fuse.search(searchTerm).slice(0, MAX_SUGGESTIONS);
-        suggestionsList.innerHTML = ''; 
+        suggestionsList.innerHTML = '';
         if (fuseResults.length === 0) {
             clearSearchSuggestions();
             return;
@@ -152,24 +155,23 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 li.textContent = escapeHTML(video.title);
             }
-            li.addEventListener('mousedown', () => {
+            li.addEventListener('mousedown', (e) => { // שימוש ב-mousedown
+                e.preventDefault(); // מנע איבוד פוקוס מיידי
+                blockSuggestionDisplay = true; // חסום הצגת הצעות עד שהפוקוס יטופל
                 currentSearchInput.value = video.title;
                 currentFilters.searchTerm = video.title.trim().toLowerCase();
                 renderFilteredVideos();
+                clearSearchSuggestions();
+                currentSearchInput.blur(); // הסר פוקוס מהשדה
                 scrollToVideoGridIfNeeded();
-                
-                const inputToBlur = currentSearchInput;
-                clearSearchSuggestions(); 
-                if (inputToBlur) {
-                    inputToBlur.blur(); 
-                }
+                setTimeout(() => { blockSuggestionDisplay = false; }, 50); // אפשר הצגת הצעות אחרי השהיה קצרה
             });
             suggestionsList.appendChild(li);
         });
         currentSuggestionsContainer.classList.remove('hidden');
-        activeSuggestionIndex = -1; 
+        activeSuggestionIndex = -1;
     }
-    
+
     function displayErrorState(message) {
         const errorHtml = `
             <div class="text-center text-red-500 dark:text-red-400 py-10">
@@ -261,7 +263,7 @@ document.addEventListener('DOMContentLoaded', function () {
             updateDarkModeToggleVisuals(toggle, isNowDark);
         });
         if (isHomePage() && homepageCategoriesGrid) {
-             renderHomepageCategoryButtons();
+            renderHomepageCategoryButtons();
         }
     }
 
@@ -279,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function () {
         try {
             const response = await fetch('data/videos.json');
             if (!response.ok) throw new Error(`שגיאת HTTP ${response.status} בטעינת videos.json.`);
-            
+
             const responseText = await response.text();
             try {
                 allVideos = JSON.parse(responseText);
@@ -289,14 +291,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' ||
                         typeof video.category !== 'string' || !Array.isArray(video.tags) ||
                         typeof video.hebrewContent !== 'boolean') {
-                        return null; 
+                        return null;
                     }
                     return {
                         ...video,
-                        category: video.category.toLowerCase(), 
-                        tags: video.tags.map(tag => String(tag).toLowerCase()) 
+                        category: video.category.toLowerCase(),
+                        tags: video.tags.map(tag => String(tag).toLowerCase())
                     };
-                }).filter(video => video !== null); 
+                }).filter(video => video !== null);
 
             } catch (jsonError) {
                 throw new Error(`שגיאה בפענוח קובץ videos.json: ${jsonError.message}`);
@@ -306,18 +308,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (videoCountHeroElement) {
                 const countSpan = videoCountHeroElement.querySelector('span.font-bold');
-                if(countSpan) countSpan.textContent = allVideos.length;
+                if (countSpan) countSpan.textContent = allVideos.length;
                 else videoCountHeroElement.innerHTML = `במאגר יש כרגע <span class="font-bold text-white dark:text-gray-50">${allVideos.length}</span> סרטונים.`;
             }
         } catch (error) {
             if (videoCountHeroElement) {
                 const countSpan = videoCountHeroElement.querySelector('span.font-bold');
-                if(countSpan) countSpan.textContent = "שגיאה";
+                if (countSpan) countSpan.textContent = "שגיאה";
                 else videoCountHeroElement.innerHTML = `שגיאה בטעינת מספר הסרטונים.`;
             }
-            if (videoCardsContainer) videoCardsContainer.innerHTML = ''; 
-            allVideos = []; 
-            throw error; 
+            if (videoCardsContainer) videoCardsContainer.innerHTML = '';
+            allVideos = [];
+            throw error;
         }
     }
 
@@ -329,12 +331,12 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (loadingCategoriesSkeleton) loadingCategoriesSkeleton.style.display = 'none';
-        homepageCategoriesGrid.innerHTML = ''; 
+        homepageCategoriesGrid.innerHTML = '';
 
         PREDEFINED_CATEGORIES.filter(cat => cat.id !== 'all').forEach(cat => {
             const link = document.createElement('a');
             link.href = `category.html?name=${cat.id}`;
-            const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`; 
+            const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`;
             link.className = `category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50`;
             link.setAttribute('aria-label', `עבור לקטגוריית ${cat.name}`);
             link.innerHTML = `
@@ -346,7 +348,7 @@ document.addEventListener('DOMContentLoaded', function () {
             homepageCategoriesGrid.appendChild(link);
         });
     }
-    
+
     function loadAndRenderPopularTags(forCategoryId = null) {
         if (!popularTagsContainer) return;
         if (!allVideos || allVideos.length === 0) {
@@ -355,15 +357,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const tagCounts = {};
-        const videosToConsider = (forCategoryId && forCategoryId !== 'all') 
-            ? allVideos.filter(v => v.category === forCategoryId) 
+        const videosToConsider = (forCategoryId && forCategoryId !== 'all')
+            ? allVideos.filter(v => v.category === forCategoryId)
             : allVideos;
 
         if (videosToConsider.length === 0 && forCategoryId && forCategoryId !== 'all') {
             popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 dark:text-slate-400 text-sm">אין סרטונים בקטגוריה זו להצגת תגיות.</p>`;
             return;
         }
-        
+
         videosToConsider.forEach(video => {
             if (video.tags && Array.isArray(video.tags)) {
                 video.tags.forEach(tag => {
@@ -387,7 +389,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const tagElement = document.createElement('button');
             tagElement.className = 'tag bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-800 dark:text-purple-200 dark:hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-1 dark:focus:ring-offset-slate-800 transition-colors text-sm font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5';
             tagElement.dataset.tagValue = tag;
-            const iconClass = getIconForTag(tag); 
+            const iconClass = getIconForTag(tag);
             tagElement.innerHTML = `<i class="fas ${iconClass} opacity-80 text-xs"></i> ${escapeHTML(capitalizeFirstLetter(tag))}`;
             popularTagsContainer.appendChild(tagElement);
         });
@@ -414,19 +416,19 @@ document.addEventListener('DOMContentLoaded', function () {
             "עשה זאת בעצמך": "fa-hand-sparkles", "הכנופיה": "fa-users-cog", "יונדאי i10": "fa-car",
             "ניקוי מצערת": "fa-spray-can-sparkles", "וסת לחץ": "fa-gauge-high", "אספנות": "fa-gem", "נוזל בלמים": "fa-tint"
         };
-        return tagIcons[tag.toLowerCase()] || "fa-tag"; 
+        return tagIcons[tag.toLowerCase()] || "fa-tag";
     }
 
-   function createVideoCardElement(video) {
+    function createVideoCardElement(video) {
         if (!videoCardTemplate) return null;
         if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' ||
             typeof video.thumbnail !== 'string' || typeof video.category !== 'string' ||
             !Array.isArray(video.tags)) {
-            return null; 
+            return null;
         }
 
-       const cardClone = videoCardTemplate.content.cloneNode(true);
-        const cardElement = cardClone.querySelector('article'); 
+        const cardClone = videoCardTemplate.content.cloneNode(true);
+        const cardElement = cardClone.querySelector('article');
         if (!cardElement) return null;
 
         if (cardElement.hasAttribute('class_exists')) {
@@ -436,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const innerElementsWithClassExists = cardElement.querySelectorAll('[class_exists]');
         innerElementsWithClassExists.forEach(el => {
-            if (el.hasAttribute('class_exists')) { 
+            if (el.hasAttribute('class_exists')) {
                 el.setAttribute('class', el.getAttribute('class_exists'));
                 el.removeAttribute('class_exists');
             }
@@ -454,12 +456,12 @@ document.addEventListener('DOMContentLoaded', function () {
             thumbnailImgElement.src = video.thumbnail;
             thumbnailImgElement.alt = `תמונה ממוזערת של הסרטון: ${sanitizedTitle}`;
             thumbnailImgElement.classList.remove('hidden');
-            thumbnailImgElement.onerror = function() { 
+            thumbnailImgElement.onerror = function () {
                 this.classList.add('hidden');
-                if (videoThumbnailContainer) videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700'); 
+                if (videoThumbnailContainer) videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700');
             };
         } else if (thumbnailImgElement) {
-            thumbnailImgElement.classList.add('hidden'); 
+            thumbnailImgElement.classList.add('hidden');
             if (videoThumbnailContainer) videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700');
         }
 
@@ -473,11 +475,11 @@ document.addEventListener('DOMContentLoaded', function () {
             playButtonElement.dataset.videoId = video.id;
             playButtonElement.setAttribute('aria-label', `נגן את הסרטון ${sanitizedTitle}`);
         }
-        
+
         const iframeEl = cardElement.querySelector('.video-iframe');
         if (iframeEl) {
-            iframeEl.title = `נגן וידאו: ${sanitizedTitle}`; 
-            iframeEl.setAttribute('loading', 'lazy'); 
+            iframeEl.title = `נגן וידאו: ${sanitizedTitle}`;
+            iframeEl.setAttribute('loading', 'lazy');
         }
 
         const videoTitleLinkEl = cardElement.querySelector('.video-link');
@@ -491,14 +493,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (channelNameElement && video.channel) {
             channelNameElement.textContent = escapeHTML(video.channel);
         } else if (channelNameElement) {
-            channelNameElement.textContent = ''; 
+            channelNameElement.textContent = '';
         }
-        
+
         if (channelLogoElement && video.channelImage) {
             channelLogoElement.src = video.channelImage;
             channelLogoElement.alt = `לוגו הערוץ ${escapeHTML(video.channel || 'לא ידוע')}`;
             channelLogoElement.classList.remove('hidden');
-            channelLogoElement.onerror = function() { 
+            channelLogoElement.onerror = function () {
                 this.classList.add('hidden');
             };
         } else if (channelLogoElement) {
@@ -512,7 +514,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-xs font-medium px-2 py-0.5 rounded-md">${escapeHTML(capitalizeFirstLetter(tag))}</span>`
                 ).join('');
             } else {
-                tagsContainerEl.innerHTML = ''; 
+                tagsContainerEl.innerHTML = '';
             }
         }
 
@@ -520,30 +522,29 @@ document.addEventListener('DOMContentLoaded', function () {
         if (categoryDisplayEl) {
             const categoryData = PREDEFINED_CATEGORIES.find(c => c.id === video.category);
             const categoryName = categoryData ? categoryData.name : capitalizeFirstLetter(video.category);
-            const iconElement = categoryDisplayEl.querySelector('i'); 
-            categoryDisplayEl.innerHTML = ''; 
-            if (iconElement) categoryDisplayEl.appendChild(iconElement.cloneNode(true)); 
-            categoryDisplayEl.appendChild(document.createTextNode(` ${escapeHTML(categoryName)}`)); 
+            const iconElement = categoryDisplayEl.querySelector('i');
+            categoryDisplayEl.innerHTML = '';
+            if (iconElement) categoryDisplayEl.appendChild(iconElement.cloneNode(true));
+            categoryDisplayEl.appendChild(document.createTextNode(` ${escapeHTML(categoryName)}`));
         }
 
         return cardElement;
     }
 
-
     function renderFilteredVideos() {
         if (!videoCardsContainer) return;
-        videoCardsContainer.innerHTML = ''; 
+        videoCardsContainer.innerHTML = '';
 
         const filteredVideos = getFilteredVideos();
-        
+
         let feedbackEl = document.getElementById('video-grid-loading-feedback');
         if (!feedbackEl) {
             feedbackEl = document.createElement('div');
             feedbackEl.id = 'video-grid-loading-feedback';
-            feedbackEl.setAttribute('aria-live', 'polite'); 
-            feedbackEl.className = 'sr-only'; 
+            feedbackEl.setAttribute('aria-live', 'polite');
+            feedbackEl.className = 'sr-only';
             if (videoCardsContainer.parentNode) {
-                 videoCardsContainer.parentNode.appendChild(feedbackEl);
+                videoCardsContainer.parentNode.appendChild(feedbackEl);
             }
         }
 
@@ -559,7 +560,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 feedbackEl.textContent = "לא נמצאו סרטונים התואמים לסינון.";
             }
             if (loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) {
-                 loadingPlaceholder.classList.add('hidden');
+                loadingPlaceholder.classList.add('hidden');
             }
             return;
         }
@@ -584,7 +585,7 @@ document.addEventListener('DOMContentLoaded', function () {
         currentFilters.tags.forEach(tagName => {
             const tagChip = document.createElement('span');
             tagChip.className = 'flex items-center gap-1.5 bg-purple-600 text-white dark:bg-purple-500 dark:text-white text-sm font-medium ps-3 pe-2 py-1.5 rounded-full cursor-default transition-all hover:bg-purple-700 dark:hover:bg-purple-600';
-            
+
             const textNode = document.createTextNode(escapeHTML(capitalizeFirstLetter(tagName)));
             const removeButton = document.createElement('button');
             removeButton.type = 'button';
@@ -604,7 +605,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function getFilteredVideos() {
         if (!allVideos || allVideos.length === 0) return [];
-        
+
         let videosToFilter = allVideos;
 
         if (currentFilters.searchTerm && fuse) {
@@ -614,7 +615,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return videosToFilter.filter(video => {
             const categoryMatch = currentFilters.category === 'all' || video.category.toLowerCase() === currentFilters.category.toLowerCase();
-            const tagsMatch = currentFilters.tags.length === 0 || currentFilters.tags.every(filterTag => 
+            const tagsMatch = currentFilters.tags.length === 0 || currentFilters.tags.every(filterTag =>
                 video.tags.map(t => t.toLowerCase()).includes(filterTag.toLowerCase())
             );
             const hebrewContentMatch = !currentFilters.hebrewOnly || video.hebrewContent;
@@ -632,8 +633,9 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function handleSearchInputEvent(event) {
-        const searchTerm = event.target.value;
-        currentSearchInput = event.target; 
+        currentSearchInput = event.target;
+        const searchTerm = currentSearchInput.value.trim();
+
 
         if (currentSearchInput.id.startsWith('desktop-search')) {
             currentSuggestionsContainer = desktopSearchSuggestions;
@@ -642,19 +644,24 @@ document.addEventListener('DOMContentLoaded', function () {
         } else if (currentSearchInput.id.startsWith('main-content-search')) {
             currentSuggestionsContainer = mainContentSearchSuggestions;
         } else {
-             currentSuggestionsContainer = null;
+            currentSuggestionsContainer = null;
         }
-        
-        if (searchTerm.trim() === '') {
+
+        if (searchTerm === '') {
             currentFilters.searchTerm = '';
             renderFilteredVideos();
-            clearSearchSuggestions(); 
+            clearSearchSuggestions();
         } else {
-            displaySearchSuggestions(searchTerm);
+            // אם יש טקסט, נציג הצעות (אלא אם הדגל blockSuggestionDisplay פעיל)
+            if (!blockSuggestionDisplay) {
+                displaySearchSuggestions(searchTerm);
+            }
         }
     }
-    
+
+
     function handleSearchKeyDown(event) {
+        if (blockSuggestionDisplay) return;
         if (!currentSuggestionsContainer || currentSuggestionsContainer.classList.contains('hidden')) {
             return;
         }
@@ -677,23 +684,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
             case 'Enter':
                 event.preventDefault();
-                const inputForEnter = currentSearchInput;
+                blockSuggestionDisplay = true;
                 if (activeSuggestionIndex > -1 && items[activeSuggestionIndex]) {
-                    items[activeSuggestionIndex].dispatchEvent(new Event('mousedown')); 
+                    items[activeSuggestionIndex].dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
                 } else {
-                     if (inputForEnter) {
-                        currentFilters.searchTerm = inputForEnter.value.trim().toLowerCase();
+                    if (currentSearchInput) {
+                        currentFilters.searchTerm = currentSearchInput.value.trim().toLowerCase();
                         renderFilteredVideos();
-                        if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
-                        
                         clearSearchSuggestions();
-                        if (inputForEnter) inputForEnter.blur();
+                        currentSearchInput.blur();
+                        if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
                     }
                 }
+                setTimeout(() => { blockSuggestionDisplay = false; }, 50);
                 break;
             case 'Escape':
                 event.preventDefault();
                 clearSearchSuggestions();
+                currentSearchInput.blur(); // גם כאן, הסר פוקוס אחרי Escape
                 break;
         }
     }
@@ -701,10 +709,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateActiveSuggestionVisuals(items) {
         items.forEach((item, index) => {
             if (index === activeSuggestionIndex) {
-                item.classList.add('bg-purple-100', 'dark:bg-slate-600'); 
-                item.scrollIntoView({ block: 'nearest' }); 
+                item.classList.add('bg-purple-100', 'dark:bg-slate-600');
+                item.scrollIntoView({ block: 'nearest' });
             } else {
-                item.classList.remove('bg-purple-100', 'dark:bg-slate-600'); 
+                item.classList.remove('bg-purple-100', 'dark:bg-slate-600');
             }
         });
     }
@@ -724,28 +732,28 @@ document.addEventListener('DOMContentLoaded', function () {
                 link.addEventListener('click', handleNavLinkClick);
             }
         });
-        
+
         if (hebrewFilterToggle) {
             hebrewFilterToggle.addEventListener('change', function () {
                 currentFilters.hebrewOnly = this.checked;
                 renderFilteredVideos();
                 scrollToVideoGridIfNeeded();
-                clearSearchSuggestions(); 
+                clearSearchSuggestions();
             });
         }
-        
+
         if (popularTagsContainer) {
-            popularTagsContainer.addEventListener('click', function(event) {
+            popularTagsContainer.addEventListener('click', function (event) {
                 const clickedTagElement = event.target.closest('button.tag');
                 if (clickedTagElement && clickedTagElement.dataset.tagValue) {
                     toggleTagSelection(clickedTagElement.dataset.tagValue, clickedTagElement);
-                    clearSearchSuggestions(); 
+                    clearSearchSuggestions();
                 }
             });
         }
-        
+
         if (customTagForm) {
-            customTagForm.addEventListener('submit', function(event) {
+            customTagForm.addEventListener('submit', function (event) {
                 event.preventDefault();
                 if (!tagSearchInput) return;
                 const newTagName = tagSearchInput.value.trim().toLowerCase();
@@ -757,7 +765,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     };
                     let currentFeedback = [];
                     if (!currentFilters.tags.includes(newTagName)) {
-                        toggleTagSelection(newTagName, existingPopularTag); 
+                        toggleTagSelection(newTagName, existingPopularTag);
                         currentFeedback = feedbackClasses.success;
                     } else {
                         currentFeedback = feedbackClasses.warning;
@@ -765,61 +773,73 @@ document.addEventListener('DOMContentLoaded', function () {
                     tagSearchInput.classList.add(...currentFeedback);
                     setTimeout(() => {
                         tagSearchInput.classList.remove(...currentFeedback);
-                    }, 1500); 
+                    }, 1500);
                 }
-                tagSearchInput.value = ''; 
-                clearSearchSuggestions(); 
+                tagSearchInput.value = '';
+                clearSearchSuggestions();
             });
         }
 
         const allSearchInputs = [desktopSearchInput, mobileSearchInput, mainContentSearchInput].filter(Boolean);
         allSearchInputs.forEach(input => {
-            input.addEventListener('input', handleSearchInputEvent); 
-            input.addEventListener('search', handleSearchInputEvent); // CHANGED: handleSearchInputEvent will now handle 'search' event
-            input.addEventListener('keydown', handleSearchKeyDown); 
+            input.addEventListener('input', handleSearchInputEvent);
+            input.addEventListener('search', (event) => { // אירוע ה-X של הדפדפן
+                if (event.target.value === '') { // ודא שהשדה באמת ריק
+                    handleSearchInputEvent(event); // טפל בזה כאילו המשתמש מחק ידנית
+                }
+            });
+            input.addEventListener('keydown', handleSearchKeyDown);
             input.addEventListener('blur', () => {
                 setTimeout(() => {
-                    if (currentSuggestionsContainer && !currentSuggestionsContainer.contains(document.activeElement) &&
-                        currentSearchInput && !currentSearchInput.contains(document.activeElement)) {
-                         clearSearchSuggestions();
+                    // סגור הצעות רק אם הפוקוס לא עבר להצעה עצמה
+                    // והדגל blockSuggestionDisplay אינו פעיל
+                    if (!blockSuggestionDisplay && currentSuggestionsContainer && !currentSuggestionsContainer.contains(document.activeElement)) {
+                        clearSearchSuggestions();
                     }
-                }, 150);
+                }, 100); // השהייה קטנה
             });
-            input.addEventListener('focus', handleSearchInputEvent);
+            input.addEventListener('focus', (event) => {
+                // בטעינה, לאפשר לדגל blockSuggestionDisplay להיות false
+                blockSuggestionDisplay = false;
+                handleSearchInputEvent(event);
+            });
         });
 
         const allSearchForms = [desktopSearchForm, mobileSearchForm, mainContentSearchForm].filter(Boolean);
         allSearchForms.forEach(form => {
             form.addEventListener('submit', (e) => {
-                e.preventDefault();
+                e.preventDefault(); // מנע הגשה רגילה של הטופס שמרעננת את הדף
+                blockSuggestionDisplay = true;
                 const inputForForm = form.querySelector('input[type="search"]');
                 if (inputForForm) {
                     currentFilters.searchTerm = inputForForm.value.trim().toLowerCase();
                     renderFilteredVideos();
-                    if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
-                    
                     clearSearchSuggestions();
-                    if (inputForForm) inputForForm.blur();
+                    inputForForm.blur(); // הסר פוקוס
+                    if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
                 }
+                setTimeout(() => { blockSuggestionDisplay = false; }, 50);
             });
         });
 
         if (videoCardsContainer) {
-            videoCardsContainer.addEventListener('click', function(event) {
+            videoCardsContainer.addEventListener('click', function (event) {
                 const playButton = event.target.closest('.play-video-button');
                 if (playButton) handlePlayVideo(playButton);
             });
         }
-        
+
         if (backToTopButton) {
             window.addEventListener('scroll', toggleBackToTopButtonVisibility);
             backToTopButton.addEventListener('click', scrollToTop);
         }
-        
-        document.addEventListener('click', function(event) {
-            if (currentSearchInput && currentSuggestionsContainer) {
-                const isClickInsideSearch = currentSearchInput.contains(event.target) || currentSuggestionsContainer.contains(event.target);
-                if (!isClickInsideSearch) {
+
+        // סגירת הצעות אם לוחצים מחוץ לשדה החיפוש או ההצעות
+        document.addEventListener('click', function (event) {
+            if (currentSearchInput && currentSuggestionsContainer && !blockSuggestionDisplay) {
+                const isClickInsideSearchInput = currentSearchInput.contains(event.target);
+                const isClickInsideSuggestions = currentSuggestionsContainer.contains(event.target);
+                if (!isClickInsideSearchInput && !isClickInsideSuggestions) {
                     clearSearchSuggestions();
                 }
             }
@@ -851,11 +871,11 @@ document.addEventListener('DOMContentLoaded', function () {
         let href = link.getAttribute('href');
 
         if (href.startsWith('index.html#') && isHomePage()) {
-            href = href.substring(href.indexOf('#')); 
+            href = href.substring(href.indexOf('#'));
         }
-    
+
         if (link.closest('#mobile-menu')) {
-            setTimeout(closeMobileMenu, 150); 
+            setTimeout(closeMobileMenu, 150);
         }
 
         if (link.closest('header nav')) {
@@ -864,25 +884,25 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             link.classList.add('active', 'text-purple-600', 'dark:text-purple-400', 'font-semibold', 'bg-purple-100', 'dark:bg-purple-500/20');
         }
-    
-        if (href && href.startsWith('#')) { 
-            event.preventDefault(); 
+
+        if (href && href.startsWith('#')) {
+            event.preventDefault();
             const targetId = href.substring(1);
             const targetElement = document.getElementById(targetId);
-    
+
             if (targetElement) {
                 const headerElement = document.querySelector('header.sticky');
-                const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 80; 
+                const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 80;
                 const elementPosition = targetElement.getBoundingClientRect().top;
                 const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-    
+
                 window.scrollTo({
                     top: offsetPosition,
                     behavior: "smooth"
                 });
             }
-        } else if (href === 'index.html' || href === './' || href === '/') { 
-            if (isHomePage()) { 
+        } else if (href === 'index.html' || href === './' || href === '/') {
+            if (isHomePage()) {
                 event.preventDefault();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
@@ -894,37 +914,37 @@ document.addEventListener('DOMContentLoaded', function () {
         const activeClasses = ['active-search-tag', 'bg-purple-600', 'text-white', 'dark:bg-purple-500', 'dark:text-white', 'hover:bg-purple-700', 'dark:hover:bg-purple-600'];
         const inactiveClasses = ['bg-purple-100', 'text-purple-700', 'dark:bg-purple-800', 'dark:text-purple-200', 'hover:bg-purple-200', 'dark:hover:bg-purple-700'];
 
-        if (index > -1) { 
+        if (index > -1) {
             currentFilters.tags.splice(index, 1);
-            if (tagElement) { 
+            if (tagElement) {
                 tagElement.classList.remove(...activeClasses);
                 tagElement.classList.add(...inactiveClasses);
             }
-        } else { 
+        } else {
             currentFilters.tags.push(tagName);
-            if (tagElement) { 
+            if (tagElement) {
                 tagElement.classList.remove(...inactiveClasses);
                 tagElement.classList.add(...activeClasses);
             }
         }
-        renderSelectedTagsChips(); 
+        renderSelectedTagsChips();
         renderFilteredVideos();
         scrollToVideoGridIfNeeded();
     }
 
     function handlePlayVideo(buttonElement) {
         const videoId = buttonElement.dataset.videoId;
-        const videoCard = buttonElement.closest('article'); 
+        const videoCard = buttonElement.closest('article');
         if (!videoCard) return;
 
         const iframe = videoCard.querySelector('.video-iframe');
-        const playIconContainer = buttonElement; 
+        const playIconContainer = buttonElement;
 
         if (iframe && videoId) {
             const videoSrc = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1&enablejsapi=1&origin=${window.location.origin}`;
             iframe.src = videoSrc;
-            iframe.classList.remove('hidden'); 
-            if (playIconContainer) playIconContainer.style.display = 'none'; 
+            iframe.classList.remove('hidden');
+            if (playIconContainer) playIconContainer.style.display = 'none';
         }
     }
 
@@ -932,7 +952,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const videoGridSection = document.getElementById('video-grid-section');
         if (videoGridSection) {
             const rect = videoGridSection.getBoundingClientRect();
-            if (rect.top < 0 || rect.top > window.innerHeight * 0.66) { 
+            if (rect.top < 0 || rect.top > window.innerHeight * 0.66) {
                 const headerElement = document.querySelector('header.sticky');
                 const headerOffset = headerElement ? headerElement.offsetHeight + 20 : 80;
                 const elementPosition = rect.top;
@@ -944,7 +964,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function toggleBackToTopButtonVisibility() {
         if (backToTopButton) {
-            if (window.pageYOffset > 300) { 
+            if (window.pageYOffset > 300) {
                 backToTopButton.classList.remove('opacity-0', 'invisible');
                 backToTopButton.classList.add('opacity-100', 'visible');
             } else {
@@ -964,14 +984,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function escapeHTML(str) {
         if (str === null || typeof str === 'undefined') return '';
-        if (typeof str !== 'string') str = String(str); 
+        if (typeof str !== 'string') str = String(str);
         const p = document.createElement('p');
         p.appendChild(document.createTextNode(str));
         return p.innerHTML;
     }
-    
+
     function escapeAttributeValue(value) {
-        return String(value).replace(/"/g, '"'); 
+        return String(value).replace(/"/g, '"');
     }
 
     function capitalizeFirstLetter(string) {
