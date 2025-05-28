@@ -9,24 +9,23 @@ document.addEventListener('DOMContentLoaded', function () {
     const videoCountHeroElement = document.getElementById('video-count-hero');
     const currentYearFooter = document.getElementById('current-year-footer');
     
-    // מאחדים את כל שדות החיפוש וההצעות תחת שמות גנריים אם הם זהים, או שמות ייחודיים אם הם שונים
-    const desktopSearchForm = document.getElementById('desktop-search-form'); // זהה בשני העמודים
-    const mobileSearchForm = document.getElementById('mobile-search-form'); // קיים רק ב-index.html
-    const mainContentSearchForm = document.getElementById('main-content-search-form'); // קיים בשני העמודים עם אותו ID
+    const desktopSearchForm = document.getElementById('desktop-search-form');
+    const mobileSearchForm = document.getElementById('mobile-search-form');
+    const mainContentSearchForm = document.getElementById('main-content-search-form'); 
     
-    const desktopSearchInput = document.getElementById('desktop-search-input'); // זהה בשני העמודים
-    const mobileSearchInput = document.getElementById('mobile-search-input'); // קיים רק ב-index.html
-    const mainContentSearchInput = document.getElementById('main-content-search-input'); // קיים בשני העמודים עם אותו ID
+    const desktopSearchInput = document.getElementById('desktop-search-input');
+    const mobileSearchInput = document.getElementById('mobile-search-input');
+    const mainContentSearchInput = document.getElementById('main-content-search-input');
 
-    const desktopSearchSuggestions = document.getElementById('desktop-search-suggestions'); // זהה בשני העמודים
-    const mobileSearchSuggestions = document.getElementById('mobile-search-suggestions'); // קיים רק ב-index.html
-    const mainContentSearchSuggestions = document.getElementById('main-content-search-suggestions'); // קיים בשני העמודים עם אותו ID
+    const desktopSearchSuggestions = document.getElementById('desktop-search-suggestions');
+    const mobileSearchSuggestions = document.getElementById('mobile-search-suggestions');
+    const mainContentSearchSuggestions = document.getElementById('main-content-search-suggestions'); 
     
     const videoCardsContainer = document.getElementById('video-cards-container');
     const loadingPlaceholder = document.getElementById('loading-videos-placeholder');
     const noVideosFoundMessage = document.getElementById('no-videos-found');
     const videoCardTemplate = document.getElementById('video-card-template');
-    const homepageCategoriesGrid = document.getElementById('homepage-categories-grid'); // קיים רק ב-index.html
+    const homepageCategoriesGrid = document.getElementById('homepage-categories-grid'); 
     const hebrewFilterToggle = document.getElementById('hebrew-filter-toggle');
     const popularTagsContainer = document.getElementById('popular-tags-container');
     const tagSearchInput = document.getElementById('tag-search-input');
@@ -146,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const fuseResults = fuse.search(searchTerm).slice(0, MAX_SUGGESTIONS);
         suggestionsList.innerHTML = ''; 
         if (fuseResults.length === 0) {
-            clearSearchSuggestions();
+            currentSuggestionsContainer.classList.add('suggestions-hidden');
             return;
         }
         fuseResults.forEach((result, index) => {
@@ -170,7 +169,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             suggestionsList.appendChild(li);
         });
-        currentSuggestionsContainer.classList.remove('hidden');
+        currentSuggestionsContainer.classList.remove('suggestions-hidden');
         activeSuggestionIndex = -1; 
     }
     
@@ -197,7 +196,6 @@ document.addEventListener('DOMContentLoaded', function () {
     function isHomePage() {
         const path = window.location.pathname;
         const filename = path.substring(path.lastIndexOf('/') + 1);
-        // מרחיב את הבדיקה לכלול גם כאשר אין שם קובץ (שורש האתר)
         return filename === '' || filename === 'index.html' || (filename.toLowerCase() === document.location.host.toLowerCase() && path.endsWith('/'));
     }
 
@@ -222,7 +220,6 @@ document.addEventListener('DOMContentLoaded', function () {
             breadcrumbCategoryName.textContent = escapeHTML(categoryName);
         }
 
-        // מסתיר אלמנטים של דף הבית אם אנחנו לא בדף הבית
         const homepageCategoriesSection = document.getElementById('homepage-categories-section');
         if (homepageCategoriesSection && !isHomePage()) homepageCategoriesSection.style.display = 'none';
 
@@ -632,7 +629,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (currentSuggestionsContainer) {
             const suggestionsList = currentSuggestionsContainer.querySelector('ul');
             if (suggestionsList) suggestionsList.innerHTML = '';
-            currentSuggestionsContainer.classList.add('hidden');
+            currentSuggestionsContainer.classList.add('suggestions-hidden');
         }
         activeSuggestionIndex = -1;
     }
@@ -641,29 +638,27 @@ document.addEventListener('DOMContentLoaded', function () {
         const searchTerm = event.target.value;
         currentSearchInput = event.target; 
 
-        // קביעת מיכל ההצעות הנכון
         if (currentSearchInput.id.startsWith('desktop-search')) {
             currentSuggestionsContainer = desktopSearchSuggestions;
-        } else if (currentSearchInput.id.startsWith('mobile-search')) {
+        } else if (currentSearchInput.id.startsWith('mobile-search') && mobileSearchSuggestions) {
             currentSuggestionsContainer = mobileSearchSuggestions;
-        } else if (currentSearchInput.id.startsWith('main-content-search')) {
+        } else if (currentSearchInput.id.startsWith('main-content-search') && mainContentSearchSuggestions) {
             currentSuggestionsContainer = mainContentSearchSuggestions;
         } else {
              currentSuggestionsContainer = null;
         }
         
-        // אם השדה ריק (למשל, אחרי לחיצה על X), בצע חיפוש ריק כדי לרענן
-        if (searchTerm.trim() === '') {
+        if (searchTerm.trim() === '' && (event.type === 'input' || event.type === 'search')) {
             currentFilters.searchTerm = '';
             renderFilteredVideos();
-            clearSearchSuggestions(); // נקה הצעות אם היו
+            clearSearchSuggestions(); 
         } else {
             displaySearchSuggestions(searchTerm);
         }
     }
     
     function handleSearchKeyDown(event) {
-        if (!currentSuggestionsContainer || currentSuggestionsContainer.classList.contains('hidden')) {
+        if (!currentSuggestionsContainer || currentSuggestionsContainer.classList.contains('suggestions-hidden')) {
             return;
         }
 
@@ -707,10 +702,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateActiveSuggestionVisuals(items) {
         items.forEach((item, index) => {
             if (index === activeSuggestionIndex) {
-                item.classList.add('bg-purple-100', 'dark:bg-slate-600'); 
+                item.classList.add('active-suggestion');
                 item.scrollIntoView({ block: 'nearest' }); 
             } else {
-                item.classList.remove('bg-purple-100', 'dark:bg-slate-600'); 
+                item.classList.remove('active-suggestion');
             }
         });
     }
@@ -753,7 +748,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (customTagForm) {
             customTagForm.addEventListener('submit', function(event) {
                 event.preventDefault();
-                if (!tagSearchInput) return; // בדיקה שהאלמנט קיים
+                if (!tagSearchInput) return; 
                 const newTagName = tagSearchInput.value.trim().toLowerCase();
                 if (newTagName) {
                     const existingPopularTag = popularTagsContainer ? popularTagsContainer.querySelector(`button.tag[data-tag-value="${escapeAttributeValue(newTagName)}"]`) : null;
@@ -778,17 +773,10 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
 
-        // מערך של כל שדות החיפוש הקיימים בדף
         const allSearchInputs = [desktopSearchInput, mobileSearchInput, mainContentSearchInput].filter(Boolean);
         allSearchInputs.forEach(input => {
             input.addEventListener('input', handleSearchInputEvent); 
-            // הוספת Event Listener לאירוע 'search' (כאשר המשתמש מוחק את השדה דרך ה-X)
-            input.addEventListener('search', (event) => {
-                // אם השדה ריק אחרי המחיקה, נפעיל את הלוגיקה של חיפוש ריק
-                if (event.target.value.trim() === '') {
-                    handleSearchInputEvent(event); // קורא לפונקציה הקיימת שתטפל בזה
-                }
-            });
+            input.addEventListener('search', handleSearchInputEvent); // הוספת מאזין לאירוע search
             input.addEventListener('keydown', handleSearchKeyDown); 
             input.addEventListener('blur', () => {
                 setTimeout(() => {
