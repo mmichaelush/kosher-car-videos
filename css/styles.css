@@ -196,3 +196,23 @@ html:not(.dark) .hero-gradient .text-purple-300 {
 .video-thumbnail-container > img {
   object-fit: cover;
 }
+/* ... (קוד CSS קיים) ... */
+
+.search-suggestions-container {
+    /* אפשר להוסיף transition אם רוצים אנימציה עדינה של הופעה/היעלמות */
+    transition: opacity 0.15s ease-out, visibility 0.15s ease-out;
+}
+
+.search-suggestions-container.suggestions-hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none; /* חשוב למנוע אינטראקציה כשהאלמנט שקוף אך עדיין "קיים" */
+}
+
+/* ודא שההגדרות הקיימות להצעות פעילות נשמרות */
+.search-suggestions-container ul li.active-suggestion {
+    background-color: var(--color-purple-100); /* התאמה למצב בהיר */
+}
+.dark .search-suggestions-container ul li.active-suggestion {
+    background-color: var(--color-purple-700); /* התאמה למצב כהה */
+}
