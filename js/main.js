@@ -8,24 +8,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const backdrop = document.getElementById('mobile-menu-backdrop');
     const videoCountHeroElement = document.getElementById('video-count-hero');
     const currentYearFooter = document.getElementById('current-year-footer');
-    
-    const desktopSearchForm = document.getElementById('desktop-search-form');
+    const desktopSearchForm = document.getElementById('desktop-search-form'); 
     const mobileSearchForm = document.getElementById('mobile-search-form');
     const mainContentSearchForm = document.getElementById('main-content-search-form'); 
-    
-    const desktopSearchInput = document.getElementById('desktop-search-input');
-    const mobileSearchInput = document.getElementById('mobile-search-input');
+    const desktopSearchInput = document.getElementById('desktop-search-input'); 
+    const mobileSearchInput = document.getElementById('mobile-search-input'); 
     const mainContentSearchInput = document.getElementById('main-content-search-input');
-
-    const desktopSearchSuggestions = document.getElementById('desktop-search-suggestions');
-    const mobileSearchSuggestions = document.getElementById('mobile-search-suggestions');
+    const desktopSearchSuggestions = document.getElementById('desktop-search-suggestions'); 
+    const mobileSearchSuggestions = document.getElementById('mobile-search-suggestions'); 
     const mainContentSearchSuggestions = document.getElementById('main-content-search-suggestions'); 
-    
     const videoCardsContainer = document.getElementById('video-cards-container');
     const loadingPlaceholder = document.getElementById('loading-videos-placeholder');
     const noVideosFoundMessage = document.getElementById('no-videos-found');
     const videoCardTemplate = document.getElementById('video-card-template');
-    const homepageCategoriesGrid = document.getElementById('homepage-categories-grid'); 
+    const homepageCategoriesGrid = document.getElementById('homepage-categories-grid'); // קיים רק ב-index.html
     const hebrewFilterToggle = document.getElementById('hebrew-filter-toggle');
     const popularTagsContainer = document.getElementById('popular-tags-container');
     const tagSearchInput = document.getElementById('tag-search-input');
@@ -33,7 +29,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const selectedTagsContainer = document.getElementById('selected-tags-container');
     const backToTopButton = document.getElementById('back-to-top-btn');
 
-    // --- State Variables ---
     let allVideos = [];
     let currentFilters = {
         category: 'all',
@@ -46,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let currentSearchInput = null;
     let currentSuggestionsContainer = null;
 
-    // --- Constants ---
     const MAX_POPULAR_TAGS = 30;
     const PREDEFINED_CATEGORIES = [
         { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "fa-film" },
@@ -61,7 +55,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const MIN_SEARCH_TERM_LENGTH = 2;
     const MAX_SUGGESTIONS = 7;
 
-    // --- Initialization ---
     async function initializePage() {
         initializeDarkModeVisuals();
         setupEventListeners();
@@ -145,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const fuseResults = fuse.search(searchTerm).slice(0, MAX_SUGGESTIONS);
         suggestionsList.innerHTML = ''; 
         if (fuseResults.length === 0) {
-            currentSuggestionsContainer.classList.add('suggestions-hidden');
+            clearSearchSuggestions();
             return;
         }
         fuseResults.forEach((result, index) => {
@@ -169,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             suggestionsList.appendChild(li);
         });
-        currentSuggestionsContainer.classList.remove('suggestions-hidden');
+        currentSuggestionsContainer.classList.remove('hidden');
         activeSuggestionIndex = -1; 
     }
     
@@ -220,6 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
             breadcrumbCategoryName.textContent = escapeHTML(categoryName);
         }
 
+        // מסתיר אלמנטים של דף הבית אם אנחנו לא בדף הבית
         const homepageCategoriesSection = document.getElementById('homepage-categories-section');
         if (homepageCategoriesSection && !isHomePage()) homepageCategoriesSection.style.display = 'none';
 
@@ -629,7 +623,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (currentSuggestionsContainer) {
             const suggestionsList = currentSuggestionsContainer.querySelector('ul');
             if (suggestionsList) suggestionsList.innerHTML = '';
-            currentSuggestionsContainer.classList.add('suggestions-hidden');
+            currentSuggestionsContainer.classList.add('hidden');
         }
         activeSuggestionIndex = -1;
     }
@@ -640,15 +634,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (currentSearchInput.id.startsWith('desktop-search')) {
             currentSuggestionsContainer = desktopSearchSuggestions;
-        } else if (currentSearchInput.id.startsWith('mobile-search') && mobileSearchSuggestions) {
+        } else if (currentSearchInput.id.startsWith('mobile-search')) {
             currentSuggestionsContainer = mobileSearchSuggestions;
-        } else if (currentSearchInput.id.startsWith('main-content-search') && mainContentSearchSuggestions) {
+        } else if (currentSearchInput.id.startsWith('main-content-search')) {
             currentSuggestionsContainer = mainContentSearchSuggestions;
         } else {
              currentSuggestionsContainer = null;
         }
         
-        if (searchTerm.trim() === '' && (event.type === 'input' || event.type === 'search')) {
+        if (searchTerm.trim() === '') {
             currentFilters.searchTerm = '';
             renderFilteredVideos();
             clearSearchSuggestions(); 
@@ -658,7 +652,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     
     function handleSearchKeyDown(event) {
-        if (!currentSuggestionsContainer || currentSuggestionsContainer.classList.contains('suggestions-hidden')) {
+        if (!currentSuggestionsContainer || currentSuggestionsContainer.classList.contains('hidden')) {
             return;
         }
 
@@ -702,10 +696,10 @@ document.addEventListener('DOMContentLoaded', function () {
     function updateActiveSuggestionVisuals(items) {
         items.forEach((item, index) => {
             if (index === activeSuggestionIndex) {
-                item.classList.add('active-suggestion');
+                item.classList.add('bg-purple-100', 'dark:bg-slate-600'); 
                 item.scrollIntoView({ block: 'nearest' }); 
             } else {
-                item.classList.remove('active-suggestion');
+                item.classList.remove('bg-purple-100', 'dark:bg-slate-600'); 
             }
         });
     }
@@ -748,7 +742,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (customTagForm) {
             customTagForm.addEventListener('submit', function(event) {
                 event.preventDefault();
-                if (!tagSearchInput) return; 
+                if (!tagSearchInput) return; // בדיקה שהאלמנט קיים
                 const newTagName = tagSearchInput.value.trim().toLowerCase();
                 if (newTagName) {
                     const existingPopularTag = popularTagsContainer ? popularTagsContainer.querySelector(`button.tag[data-tag-value="${escapeAttributeValue(newTagName)}"]`) : null;
@@ -776,7 +770,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const allSearchInputs = [desktopSearchInput, mobileSearchInput, mainContentSearchInput].filter(Boolean);
         allSearchInputs.forEach(input => {
             input.addEventListener('input', handleSearchInputEvent); 
-            input.addEventListener('search', handleSearchInputEvent); // הוספת מאזין לאירוע search
+            input.addEventListener('search', (event) => {
+                if (event.target.value.trim() === '') {
+                    handleSearchInputEvent(event); 
+                }
+            });
             input.addEventListener('keydown', handleSearchKeyDown); 
             input.addEventListener('blur', () => {
                 setTimeout(() => {
