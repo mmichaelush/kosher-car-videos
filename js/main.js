@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let activeSuggestionIndex = -1;
     let currentSearchInput = null;
     let currentSuggestionsContainer = null;
-    let blockSuggestionDisplay = false; // דגל חדש לשליטה על הצגת הצעות
+    let isSuggestionClicked = false; // דגל לזיהוי לחיצה על הצעה
 
     const MAX_POPULAR_TAGS = 30;
     const PREDEFINED_CATEGORIES = [
@@ -125,12 +125,17 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function displaySearchSuggestions(searchTerm) {
-        if (blockSuggestionDisplay) return; // אם הדגל פעיל, אל תציג הצעות
-
         if (!fuse || !currentSearchInput || !currentSuggestionsContainer) {
             clearSearchSuggestions();
             return;
         }
+
+        // ודא שהשדה הנוכחי בפוקוס לפני הצגת הצעות
+        if (document.activeElement !== currentSearchInput) {
+            clearSearchSuggestions();
+            return;
+        }
+
         const suggestionsList = currentSuggestionsContainer.querySelector('ul');
         if (!suggestionsList) return;
 
@@ -155,17 +160,20 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 li.textContent = escapeHTML(video.title);
             }
-            li.addEventListener('mousedown', (e) => { // שימוש ב-mousedown
-                e.preventDefault(); // מנע איבוד פוקוס מיידי
-                blockSuggestionDisplay = true; // חסום הצגת הצעות עד שהפוקוס יטופל
+
+            li.addEventListener('mousedown', (e) => {
+                isSuggestionClicked = true; // סמן שהייתה לחיצה על הצעה
                 currentSearchInput.value = video.title;
                 currentFilters.searchTerm = video.title.trim().toLowerCase();
                 renderFilteredVideos();
-                clearSearchSuggestions();
-                currentSearchInput.blur(); // הסר פוקוס מהשדה
+                // אין צורך לנקות הצעות או לעשות blur כאן, אירוע ה-blur של השדה יטפל בזה
                 scrollToVideoGridIfNeeded();
-                setTimeout(() => { blockSuggestionDisplay = false; }, 50); // אפשר הצגת הצעות אחרי השהיה קצרה
             });
+            // מונע מאירוע ה-blur של שדה החיפוש להיקרא מיד אם לוחצים על הצעה
+            li.addEventListener('mouseup', () => {
+                 setTimeout(() => { isSuggestionClicked = false; currentSearchInput.blur(); }, 0);
+            });
+
             suggestionsList.appendChild(li);
         });
         currentSuggestionsContainer.classList.remove('hidden');
@@ -636,7 +644,7 @@ document.addEventListener('DOMContentLoaded', function () {
         currentSearchInput = event.target;
         const searchTerm = currentSearchInput.value.trim();
 
-
+        // קביעת מיכל ההצעות הנכון
         if (currentSearchInput.id.startsWith('desktop-search')) {
             currentSuggestionsContainer = desktopSearchSuggestions;
         } else if (currentSearchInput.id.startsWith('mobile-search')) {
@@ -652,16 +660,12 @@ document.addEventListener('DOMContentLoaded', function () {
             renderFilteredVideos();
             clearSearchSuggestions();
         } else {
-            // אם יש טקסט, נציג הצעות (אלא אם הדגל blockSuggestionDisplay פעיל)
-            if (!blockSuggestionDisplay) {
-                displaySearchSuggestions(searchTerm);
-            }
+            displaySearchSuggestions(searchTerm);
         }
     }
 
 
     function handleSearchKeyDown(event) {
-        if (blockSuggestionDisplay) return;
         if (!currentSuggestionsContainer || currentSuggestionsContainer.classList.contains('hidden')) {
             return;
         }
@@ -684,10 +688,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 break;
             case 'Enter':
                 event.preventDefault();
-                blockSuggestionDisplay = true;
                 if (activeSuggestionIndex > -1 && items[activeSuggestionIndex]) {
+                    // מדמה לחיצת עכבר על ההצעה כדי להפעיל את הלוגיקה שלה
                     items[activeSuggestionIndex].dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
-                } else {
+                     // לאחר מכן, הסר פוקוס
+                    if(currentSearchInput) currentSearchInput.blur();
+
+                } else { // אם אין הצעה פעילה, בצע חיפוש רגיל
                     if (currentSearchInput) {
                         currentFilters.searchTerm = currentSearchInput.value.trim().toLowerCase();
                         renderFilteredVideos();
@@ -696,12 +703,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
                     }
                 }
-                setTimeout(() => { blockSuggestionDisplay = false; }, 50);
                 break;
             case 'Escape':
                 event.preventDefault();
                 clearSearchSuggestions();
-                currentSearchInput.blur(); // גם כאן, הסר פוקוס אחרי Escape
+                if (currentSearchInput) currentSearchInput.blur();
                 break;
         }
     }
@@ -783,42 +789,51 @@ document.addEventListener('DOMContentLoaded', function () {
         const allSearchInputs = [desktopSearchInput, mobileSearchInput, mainContentSearchInput].filter(Boolean);
         allSearchInputs.forEach(input => {
             input.addEventListener('input', handleSearchInputEvent);
-            input.addEventListener('search', (event) => { // אירוע ה-X של הדפדפן
-                if (event.target.value === '') { // ודא שהשדה באמת ריק
-                    handleSearchInputEvent(event); // טפל בזה כאילו המשתמש מחק ידנית
+            input.addEventListener('search', (event) => {
+                if (event.target.value === '') {
+                    handleSearchInputEvent(event);
                 }
             });
             input.addEventListener('keydown', handleSearchKeyDown);
+
+            input.addEventListener('focus', (event) => {
+                currentSearchInput = event.target; // עדכן את השדה הנוכחי
+                if (currentSearchInput.id.startsWith('desktop-search')) {
+                    currentSuggestionsContainer = desktopSearchSuggestions;
+                } else if (currentSearchInput.id.startsWith('mobile-search')) {
+                    currentSuggestionsContainer = mobileSearchSuggestions;
+                } else if (currentSearchInput.id.startsWith('main-content-search')) {
+                    currentSuggestionsContainer = mainContentSearchSuggestions;
+                }
+                // הצג הצעות רק אם יש טקסט
+                if (event.target.value.trim().length >= MIN_SEARCH_TERM_LENGTH) {
+                    displaySearchSuggestions(event.target.value.trim());
+                }
+            });
+
             input.addEventListener('blur', () => {
+                // השהייה קטנה כדי לאפשר ל-mousedown על הצעה להתרחש
                 setTimeout(() => {
-                    // סגור הצעות רק אם הפוקוס לא עבר להצעה עצמה
-                    // והדגל blockSuggestionDisplay אינו פעיל
-                    if (!blockSuggestionDisplay && currentSuggestionsContainer && !currentSuggestionsContainer.contains(document.activeElement)) {
+                    if (!isSuggestionClicked) { // אם לא נלחצה הצעה
                         clearSearchSuggestions();
                     }
-                }, 100); // השהייה קטנה
-            });
-            input.addEventListener('focus', (event) => {
-                // בטעינה, לאפשר לדגל blockSuggestionDisplay להיות false
-                blockSuggestionDisplay = false;
-                handleSearchInputEvent(event);
+                    // isSuggestionClicked יתאפס אחרי ה-mouseup של ההצעה
+                }, 50);
             });
         });
 
         const allSearchForms = [desktopSearchForm, mobileSearchForm, mainContentSearchForm].filter(Boolean);
         allSearchForms.forEach(form => {
             form.addEventListener('submit', (e) => {
-                e.preventDefault(); // מנע הגשה רגילה של הטופס שמרעננת את הדף
-                blockSuggestionDisplay = true;
+                e.preventDefault();
                 const inputForForm = form.querySelector('input[type="search"]');
                 if (inputForForm) {
                     currentFilters.searchTerm = inputForForm.value.trim().toLowerCase();
                     renderFilteredVideos();
                     clearSearchSuggestions();
-                    inputForForm.blur(); // הסר פוקוס
+                    inputForForm.blur();
                     if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
                 }
-                setTimeout(() => { blockSuggestionDisplay = false; }, 50);
             });
         });
 
@@ -834,12 +849,11 @@ document.addEventListener('DOMContentLoaded', function () {
             backToTopButton.addEventListener('click', scrollToTop);
         }
 
-        // סגירת הצעות אם לוחצים מחוץ לשדה החיפוש או ההצעות
         document.addEventListener('click', function (event) {
-            if (currentSearchInput && currentSuggestionsContainer && !blockSuggestionDisplay) {
+            if (currentSearchInput && currentSuggestionsContainer) {
                 const isClickInsideSearchInput = currentSearchInput.contains(event.target);
                 const isClickInsideSuggestions = currentSuggestionsContainer.contains(event.target);
-                if (!isClickInsideSearchInput && !isClickInsideSuggestions) {
+                if (!isClickInsideSearchInput && !isClickInsideSuggestions && !isSuggestionClicked) {
                     clearSearchSuggestions();
                 }
             }
