@@ -196,6 +196,7 @@ html:not(.dark) .hero-gradient .text-purple-300 {
 .video-thumbnail-container > img {
   object-fit: cover;
 }
+//מכאן זמני
 /* נטרול עיצובי ברירת מחדל של דפדפנים לשדות חיפוש */
 input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button,
@@ -209,5 +210,5 @@ input[type="search"] {
   -webkit-appearance: textfield; 
   -moz-appearance: textfield;    
   appearance: textfield;         
-  /* box-sizing: content-box;  <-- נסה עם ובלי השורה הזו, תלוי בהגדרות הכלליות שלך */
+   box-sizing: content-box;
 }
