@@ -198,18 +198,22 @@ html:not(.dark) .hero-gradient .text-purple-300 {
 }
 //מכאן זמני
 /* css/styles.css */
+input[type="search"].search-input { /* סלקטור יותר ספציפי */
+  -webkit-appearance: none;
+  appearance: none;
+  border-width: 0 !important; /* אפס את רוחב הגבול לגמרי */
+  /* אם עדיין מופיע משהו, אפשר גם: */
+  /* border-style: none !important; */
+  /* border-color: transparent !important; */
+  outline: none;
+  box-shadow: none; /* למנוע צלליות ברירת מחדל */
+}
 
-/* איפוס כללי יותר לשדות חיפוש כדי למנוע הפתעות מהדפדפן */
-input[type="search"] {
-  -webkit-appearance: none; /* הסרת מראה ברירת מחדל של WebKit */
-  -moz-appearance: none;    /* הסרת מראה ברירת מחדל של Firefox */
-  appearance: none;         /* הסרת מראה ברירת מחדל כללי */
-  
-  /* ודא שאין גבולות ברירת מחדל שאתה לא רוצה. 
-     הקלאס border-slate-300 שלך אמור להוסיף את הגבול הרצוי.
-     אם אתה רוצה לוודא שאין שום גבול תחתון בהתחלה: */
-  border-bottom-width: 0px !important; /* נסה עם !important רק לבדיקה */
-  /* או אם הקו הוא outline: */
-  outline: none !important; /* נסה עם !important רק לבדיקה */
-  box-shadow: none !important; /* ודא שאין צללית ברירת מחדל שיוצרת קו */
+/* שמור את הכללים האלה לניקוי קישוטי WebKit */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  display: none;
 }
