@@ -210,5 +210,13 @@ input[type="search"] {
   -webkit-appearance: textfield; 
   -moz-appearance: textfield;    
   appearance: textfield;         
-   box-sizing: content-box;
+  // box-sizing: content-box;
+}
+input[type="search"] {
+  -webkit-appearance: textfield !important; 
+  appearance: textfield !important;         
+}
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none !important; 
+  display: none !important; 
 }
