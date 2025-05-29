@@ -41,7 +41,12 @@ document.addEventListener('DOMContentLoaded', function () {
     let activeSuggestionIndex = -1;
     let currentSearchInput = null;
     let currentSuggestionsContainer = null;
-    let isSuggestionClicked = false; // דגל למניעת סגירת הצעות מוקדמת ב-blur
+    let isSuggestionClicked = false; 
+
+    // משתנים חדשים לטעינה הדרגתית
+    let videosToShowInitially = 30; 
+    let videosToLoadMore = 15;    
+    let currentlyDisplayedVideosCount = 0; 
 
     const MAX_POPULAR_TAGS = 30;
     const PREDEFINED_CATEGORIES = [
@@ -78,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (homepageCategoriesGrid && isHomePage()) renderHomepageCategoryButtons();
                 }
                 loadAndRenderPopularTags(currentFilters.category !== 'all' ? currentFilters.category : null);
-                renderFilteredVideos();
+                renderFilteredVideos(false); // טעינה ראשונית
             } else {
                 displayErrorState("לא נטענו סרטונים. בדוק את קובץ הנתונים `data/videos.json`.");
                 if (popularTagsContainer) popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא ניתן לטעון תגיות ללא סרטונים.</p>';
@@ -137,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 isSuggestionClicked = true; 
                 currentSearchInput.value = video.title;
                 currentFilters.searchTerm = video.title.trim().toLowerCase();
-                renderFilteredVideos();
+                renderFilteredVideos(false); // איפוס וטעינה מחדש של התוצאות עם החיפוש החדש
                 scrollToVideoGridIfNeeded();
             });
             li.addEventListener('mouseup', () => {
@@ -415,23 +420,76 @@ document.addEventListener('DOMContentLoaded', function () {
         return cardElement;
     }
 
-    function renderFilteredVideos() { 
+    function renderFilteredVideos(loadMore = false) {
         if (!videoCardsContainer) return;
-        videoCardsContainer.innerHTML = '';
-        const filteredVideos = getFilteredVideos();
+
+        const allMatchingVideos = getFilteredVideos();
+        let videosToRender;
+
+        if (loadMore) {
+            const nextVideosToShow = currentlyDisplayedVideosCount + videosToLoadMore;
+            videosToRender = allMatchingVideos.slice(currentlyDisplayedVideosCount, nextVideosToShow);
+            currentlyDisplayedVideosCount = Math.min(nextVideosToShow, allMatchingVideos.length);
+        } else {
+            videoCardsContainer.innerHTML = ''; 
+            videosToRender = allMatchingVideos.slice(0, videosToShowInitially);
+            currentlyDisplayedVideosCount = videosToRender.length;
+        }
+
         let feedbackEl = document.getElementById('video-grid-loading-feedback');
         if (!feedbackEl) { feedbackEl = document.createElement('div'); feedbackEl.id = 'video-grid-loading-feedback'; feedbackEl.setAttribute('aria-live', 'polite'); feedbackEl.className = 'sr-only'; if (videoCardsContainer.parentNode) videoCardsContainer.parentNode.appendChild(feedbackEl); }
-        if (filteredVideos.length === 0) {
+
+        if (allMatchingVideos.length === 0 && !loadMore) {
             if (noVideosFoundMessage) { noVideosFoundMessage.classList.remove('hidden'); noVideosFoundMessage.innerHTML = `<div class="col-span-full text-center text-slate-500 dark:text-slate-400 py-16"><i class="fas fa-video-slash fa-4x mb-6 text-purple-400 dark:text-purple-500"></i><p class="text-2xl font-semibold mb-2">לא נמצאו סרטונים</p><p class="text-lg">נסה לשנות את הסינון או מונח החיפוש.</p></div>`; feedbackEl.textContent = "לא נמצאו סרטונים התואמים לסינון."; }
             if (loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) loadingPlaceholder.classList.add('hidden');
+            removeLoadMoreButton();
             return;
         }
-        if (noVideosFoundMessage) noVideosFoundMessage.classList.add('hidden');
-        if (loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) loadingPlaceholder.classList.add('hidden');
+
+        if (!loadMore) { 
+          if (noVideosFoundMessage) noVideosFoundMessage.classList.add('hidden');
+          if (loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) loadingPlaceholder.classList.add('hidden');
+        }
+        
+        if (videosToRender.length === 0 && loadMore) {
+            removeLoadMoreButton();
+            return;
+        }
+        
         const fragment = document.createDocumentFragment();
-        filteredVideos.forEach((video) => { const cardElement = createVideoCardElement(video); if (cardElement) fragment.appendChild(cardElement); });
-        videoCardsContainer.appendChild(fragment);
-        feedbackEl.textContent = `נמצאו ${filteredVideos.length} סרטונים.`;
+        videosToRender.forEach((video) => { const cardElement = createVideoCardElement(video); if (cardElement) fragment.appendChild(cardElement); });
+        videoCardsContainer.appendChild(fragment); 
+
+        feedbackEl.textContent = `מוצגים ${currentlyDisplayedVideosCount} מתוך ${allMatchingVideos.length} סרטונים תואמים.`;
+        updateLoadMoreButton(allMatchingVideos.length); 
+    }
+
+    function updateLoadMoreButton(totalMatchingVideos) {
+        let loadMoreBtn = document.getElementById('load-more-videos-btn');
+        if (currentlyDisplayedVideosCount < totalMatchingVideos) {
+            if (!loadMoreBtn) {
+                loadMoreBtn = document.createElement('button');
+                loadMoreBtn.id = 'load-more-videos-btn';
+                loadMoreBtn.textContent = 'טען עוד סרטונים';
+                loadMoreBtn.className = 'mt-8 mb-4 mx-auto block px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 dark:focus:ring-offset-slate-900 transition-transform hover:scale-105';
+                loadMoreBtn.addEventListener('click', () => renderFilteredVideos(true));
+                if (videoCardsContainer && videoCardsContainer.parentNode) {
+                    videoCardsContainer.parentNode.insertBefore(loadMoreBtn, videoCardsContainer.nextSibling);
+                }
+            }
+            loadMoreBtn.classList.remove('hidden');
+        } else {
+            if (loadMoreBtn) {
+                loadMoreBtn.classList.add('hidden');
+            }
+        }
+    }
+
+    function removeLoadMoreButton() {
+        const loadMoreBtn = document.getElementById('load-more-videos-btn');
+        if (loadMoreBtn) {
+            loadMoreBtn.remove();
+        }
     }
 
     function renderSelectedTagsChips() { 
@@ -484,7 +542,7 @@ document.addEventListener('DOMContentLoaded', function () {
         else currentSuggestionsContainer = null;
         
         clearSearchSuggestions();
-        renderFilteredVideos();
+        renderFilteredVideos(false); // קריטי: טען מחדש עם loadMore = false
     }
 
     function handleSearchInputEvent(event) {
@@ -497,18 +555,17 @@ document.addEventListener('DOMContentLoaded', function () {
         else currentSuggestionsContainer = null;
 
         if (searchTerm === '') {
-            if (currentFilters.searchTerm !== '') { // רק אם באמת היה חיפוש קודם
+            if (currentFilters.searchTerm !== '') { 
                 currentFilters.searchTerm = '';
-                clearSearchSuggestions(); // נקה הצעות
-                renderFilteredVideos(); // עדכן תוצאות מיד
+                clearSearchSuggestions(); 
+                renderFilteredVideos(false); // טען מחדש עם loadMore = false
             } else {
-                 // אם השדה היה ריק ונשאר ריק, אולי רק לוודא שההצעות נקיות
                  if(currentSuggestionsContainer && !currentSuggestionsContainer.classList.contains('hidden')){
                        clearSearchSuggestions();
                  }
             }
         } else {
-            currentFilters.searchTerm = searchTerm; // עדכן את מונח החיפוש בפילטרים
+            currentFilters.searchTerm = searchTerm;
             displaySearchSuggestions(searchTerm);
         }
     }
@@ -533,10 +590,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 event.preventDefault();
                 if (activeSuggestionIndex > -1 && items[activeSuggestionIndex]) {
                     items[activeSuggestionIndex].dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
-                } else { // אם אין הצעה פעילה, בצע חיפוש על הטקסט הנוכחי
+                } else { 
                     if (currentSearchInput) { 
-                        // currentFilters.searchTerm כבר אמור להיות מעודכן מ-handleSearchInputEvent
-                        renderFilteredVideos(); 
+                        renderFilteredVideos(false); // טען מחדש עם loadMore = false
                         clearSearchSuggestions(); 
                         currentSearchInput.blur(); 
                         if (currentFilters.searchTerm) scrollToVideoGridIfNeeded(); 
@@ -569,7 +625,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         if (hebrewFilterToggle) hebrewFilterToggle.addEventListener('change', function () {
             currentFilters.hebrewOnly = this.checked;
-            renderFilteredVideos();
+            renderFilteredVideos(false); // טען מחדש עם loadMore = false
             scrollToVideoGridIfNeeded();
             if(currentSearchInput) clearSearchSuggestions();
         });
@@ -577,6 +633,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const clickedTagElement = event.target.closest('button.tag');
             if (clickedTagElement && clickedTagElement.dataset.tagValue) {
                 toggleTagSelection(clickedTagElement.dataset.tagValue, clickedTagElement);
+                 // renderFilteredVideos(false) יקרה בתוך toggleTagSelection
                 if(currentSearchInput) clearSearchSuggestions();
             }
         });
@@ -584,7 +641,11 @@ document.addEventListener('DOMContentLoaded', function () {
             event.preventDefault();
             if (!tagSearchInput) return;
             const newTagName = tagSearchInput.value.trim().toLowerCase();
-            if (newTagName) { /* ... (לוגיקת הוספת תגית) ... */ } // השארתי את זה כ placeholder אם תרצה להוסיף לוגיקה
+            if (newTagName) { 
+                // ... (לוגיקה להוספת תגית, אם היא קיימת)
+                 const existingPopularTag = popularTagsContainer ? popularTagsContainer.querySelector(`button.tag[data-tag-value="${escapeAttributeValue(newTagName)}"]`) : null;
+                 toggleTagSelection(newTagName, existingPopularTag); // זה יקרא ל-renderFilteredVideos(false)
+            }
             tagSearchInput.value = '';
             if(currentSearchInput) clearSearchSuggestions();
         });
@@ -592,7 +653,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const allSearchInputs = [desktopSearchInput, mobileSearchInput, mainContentSearchInput].filter(Boolean);
         allSearchInputs.forEach(input => {
             input.addEventListener('input', handleSearchInputEvent);
-            input.addEventListener('search', (event) => { // X מובנה של הדפדפן
+            input.addEventListener('search', (event) => { 
                 if (event.target.value === '') {
                     resetSearch(event.target); 
                 }
@@ -619,11 +680,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 const inputForForm = form.querySelector('input[type="search"]');
                 if (inputForForm && inputForForm.value.trim() !== '') {
                     currentFilters.searchTerm = inputForForm.value.trim().toLowerCase();
-                    renderFilteredVideos();
+                    renderFilteredVideos(false); // טען מחדש עם loadMore = false
                     clearSearchSuggestions();
                     inputForForm.blur();
                     if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
-                } else if (inputForForm) { // אם שלחו טופס ריק, אפשר לאפס את החיפוש
+                } else if (inputForForm) {
                     resetSearch(inputForForm);
                 }
             });
@@ -725,7 +786,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
         renderSelectedTagsChips();
-        renderFilteredVideos();
+        renderFilteredVideos(false); // טען מחדש עם loadMore = false
         scrollToVideoGridIfNeeded();
     }
     function handlePlayVideo(buttonElement) { 
