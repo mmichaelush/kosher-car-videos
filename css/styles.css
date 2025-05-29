@@ -216,13 +216,13 @@ input[type="search"]:focus-visible {
 /* ניסיון לשלוט על ה-ring של Tailwind בצורה יותר מפורשת מההתחלה */
 /* אם אתה רוצה להסיר לגמרי את האפקט של focus:ring, אתה יכול להשתמש בזה. */
 /* אבל אם אתה רוצה לשמר אותו, ודא שהוא לא נראה כמו קו. */
-/*
+
 input[type="search"]:focus {
   --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
   --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(var(--tw-ring-width) + var(--tw-ring-offset-width)) var(--tw-ring-color);
   box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
 }
-*/
+
 
 /* הסרת קישוטי WebKit פנימיים (כמו שכבר ניסינו, אבל חשוב לשמור) */
 input[type="search"]::-webkit-search-decoration,
