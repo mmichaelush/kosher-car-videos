@@ -15,11 +15,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const mobileSearchInput = document.getElementById('mobile-search-input');
     const mainContentSearchInput = document.getElementById('main-content-search-input');
     
-    // כפתורי ניקוי מותאמים אישית
-    const desktopSearchClearBtn = document.getElementById('desktop-search-clear-btn');
-    const mobileSearchClearBtn = document.getElementById('mobile-search-clear-btn'); // הוסף ID כזה ל-HTML אם רלוונטי
-    const mainContentSearchClearBtn = document.getElementById('main-content-search-clear-btn'); // הוסף ID כזה ל-HTML אם רלוונטי
-
     const desktopSearchSuggestions = document.getElementById('desktop-search-suggestions');
     const mobileSearchSuggestions = document.getElementById('mobile-search-suggestions');
     const mainContentSearchSuggestions = document.getElementById('main-content-search-suggestions');
@@ -46,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let activeSuggestionIndex = -1;
     let currentSearchInput = null;
     let currentSuggestionsContainer = null;
-    let isSuggestionClicked = false;
+    let isSuggestionClicked = false; // דגל למניעת סגירת הצעות מוקדמת ב-blur
 
     const MAX_POPULAR_TAGS = 30;
     const PREDEFINED_CATEGORIES = [
@@ -66,27 +61,12 @@ document.addEventListener('DOMContentLoaded', function () {
         initializeDarkModeVisuals();
         setupEventListeners();
         updateFooterYear();
-
         const categoryFromURL = getCategoryFromURL();
-
         try {
             await loadLocalVideos();
-
             if (allVideos && allVideos.length > 0) {
-                const fuseOptions = {
-                    keys: [
-                        { name: 'title', weight: 0.6 },
-                        { name: 'tags', weight: 0.3 },
-                        { name: 'channel', weight: 0.1 }
-                    ],
-                    includeScore: true,
-                    includeMatches: true,
-                    threshold: 0.4,
-                    minMatchCharLength: MIN_SEARCH_TERM_LENGTH,
-                    ignoreLocation: true,
-                };
+                const fuseOptions = { keys: [{ name: 'title', weight: 0.6 }, { name: 'tags', weight: 0.3 }, { name: 'channel', weight: 0.1 }], includeScore: true, includeMatches: true, threshold: 0.4, minMatchCharLength: MIN_SEARCH_TERM_LENGTH, ignoreLocation: true };
                 fuse = new Fuse(allVideos, fuseOptions);
-
                 if (isHomePage()) {
                     if (homepageCategoriesGrid) renderHomepageCategoryButtons();
                     currentFilters.category = 'all';
@@ -101,9 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 renderFilteredVideos();
             } else {
                 displayErrorState("לא נטענו סרטונים. בדוק את קובץ הנתונים `data/videos.json`.");
-                if (popularTagsContainer) {
-                    popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא ניתן לטעון תגיות ללא סרטונים.</p>';
-                }
+                if (popularTagsContainer) popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא ניתן לטעון תגיות ללא סרטונים.</p>';
             }
         } catch (error) {
             displayErrorState(`שגיאה קריטית בטעינת נתוני הסרטונים: ${error.message}`);
@@ -118,15 +96,11 @@ document.addEventListener('DOMContentLoaded', function () {
         sortedIndices.forEach(indexPair => {
             const start = indexPair[0];
             const end = indexPair[1];
-            if (start > lastIndex) {
-                result += escapeHTML(text.substring(lastIndex, start));
-            }
+            if (start > lastIndex) result += escapeHTML(text.substring(lastIndex, start));
             result += `<strong class="font-semibold text-purple-600 dark:text-purple-300">${escapeHTML(text.substring(start, end + 1))}</strong>`;
             lastIndex = end + 1;
         });
-        if (lastIndex < text.length) {
-            result += escapeHTML(text.substring(lastIndex));
-        }
+        if (lastIndex < text.length) result += escapeHTML(text.substring(lastIndex));
         return result;
     }
 
@@ -136,12 +110,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         if (document.activeElement !== currentSearchInput) {
-            return;
+            return; 
         }
-
         const suggestionsList = currentSuggestionsContainer.querySelector('ul');
         if (!suggestionsList) return;
-
         if (searchTerm.length < MIN_SEARCH_TERM_LENGTH) {
             clearSearchSuggestions();
             return;
@@ -158,36 +130,27 @@ document.addEventListener('DOMContentLoaded', function () {
             li.className = 'px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-600 cursor-pointer transition-colors duration-150 ease-in-out';
             li.dataset.index = index;
             const titleMatch = result.matches.find(match => match.key === 'title');
-            if (titleMatch && titleMatch.indices.length > 0) {
-                li.innerHTML = generateHighlightedText(video.title, titleMatch.indices);
-            } else {
-                li.textContent = escapeHTML(video.title);
-            }
-
+            if (titleMatch && titleMatch.indices.length > 0) li.innerHTML = generateHighlightedText(video.title, titleMatch.indices);
+            else li.textContent = escapeHTML(video.title);
+            
             li.addEventListener('mousedown', (e) => {
-                isSuggestionClicked = true;
+                isSuggestionClicked = true; 
                 currentSearchInput.value = video.title;
                 currentFilters.searchTerm = video.title.trim().toLowerCase();
-                
-                if (currentSearchInput === desktopSearchInput) toggleClearButtonVisibility(currentSearchInput, desktopSearchClearBtn);
-                if (currentSearchInput === mobileSearchInput) toggleClearButtonVisibility(currentSearchInput, mobileSearchClearBtn);
-                if (currentSearchInput === mainContentSearchInput) toggleClearButtonVisibility(currentSearchInput, mainContentSearchClearBtn);
-
                 renderFilteredVideos();
                 scrollToVideoGridIfNeeded();
             });
             li.addEventListener('mouseup', () => {
-                 currentSearchInput.blur();
-                 setTimeout(() => { isSuggestionClicked = false; }, 0);
+                 if(currentSearchInput) currentSearchInput.blur(); 
+                 setTimeout(() => { isSuggestionClicked = false; }, 0); 
             });
-
             suggestionsList.appendChild(li);
         });
         currentSuggestionsContainer.classList.remove('hidden');
         activeSuggestionIndex = -1;
     }
     
-    function displayErrorState(message) {
+    function displayErrorState(message) { 
         const errorHtml = `
             <div class="text-center text-red-500 dark:text-red-400 py-10">
                 <i class="fas fa-exclamation-triangle fa-3x mb-4"></i>
@@ -207,18 +170,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function isHomePage() {
+    function isHomePage() { 
         const path = window.location.pathname;
         const filename = path.substring(path.lastIndexOf('/') + 1);
         return filename === '' || filename === 'index.html' || (filename.toLowerCase() === document.location.host.toLowerCase() && path.endsWith('/'));
     }
 
-    function getCategoryFromURL() {
+    function getCategoryFromURL() { 
         const params = new URLSearchParams(window.location.search);
         return params.get('name');
     }
 
-    function updateCategoryPageUI(categoryId) {
+    function updateCategoryPageUI(categoryId) { 
         const categoryData = PREDEFINED_CATEGORIES.find(cat => cat.id.toLowerCase() === categoryId.toLowerCase());
         const categoryName = categoryData ? categoryData.name : capitalizeFirstLetter(categoryId);
         const categoryIcon = categoryData ? categoryData.icon : 'fa-folder-open';
@@ -241,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (heroSection && !isHomePage()) heroSection.style.display = 'none';
     }
 
-    function updateDarkModeToggleVisuals(toggleButton, isDark) {
+    function updateDarkModeToggleVisuals(toggleButton, isDark) { 
         const moonIcon = toggleButton.querySelector('.fa-moon');
         const sunIcon = toggleButton.querySelector('.fa-sun');
         const toggleDot = toggleButton.querySelector('.dot');
@@ -259,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function initializeDarkModeVisuals() {
+    function initializeDarkModeVisuals() { 
         const isCurrentlyDark = document.documentElement.classList.contains('dark');
         darkModeToggles.forEach(toggle => {
             updateDarkModeToggleVisuals(toggle, isCurrentlyDark);
@@ -269,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function toggleDarkMode() {
+    function toggleDarkMode() { 
         const htmlEl = document.documentElement;
         htmlEl.classList.toggle('dark');
         const isNowDark = htmlEl.classList.contains('dark');
@@ -282,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    async function loadLocalVideos() {
+    async function loadLocalVideos() { 
         if (loadingPlaceholder) {
             loadingPlaceholder.classList.remove('hidden');
             loadingPlaceholder.innerHTML = `
@@ -338,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function renderHomepageCategoryButtons() {
+    function renderHomepageCategoryButtons() { 
         const loadingCategoriesSkeleton = document.getElementById('loading-homepage-categories-skeleton');
         if (!homepageCategoriesGrid) {
             if (loadingCategoriesSkeleton) loadingCategoriesSkeleton.innerHTML = "<p class='col-span-full text-red-500 dark:text-red-400'>שגיאה: מיכל הקטגוריות לא נמצא.</p>";
@@ -364,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function loadAndRenderPopularTags(forCategoryId = null) {
+    function loadAndRenderPopularTags(forCategoryId = null) { 
         if (!popularTagsContainer) return;
         if (!allVideos || allVideos.length === 0) {
             popularTagsContainer.innerHTML = '<p class="w-full text-slate-500 dark:text-slate-400 text-sm">אין סרטונים לטעינת תגיות.</p>';
@@ -410,235 +373,99 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function getIconForTag(tag) {
-        const tagIcons = {
-            "מנוע": "fa-cogs", "בלמים": "fa-hand-paper", "גיר": "fa-cog", "תיבת הילוכים": "fa-cog",
-            "שמן מנוע": "fa-oil-can", "מצבר": "fa-car-battery", "מערכת בלימה": "fa-car-crash",
-            "בדיקת רכב": "fa-stethoscope", "תחזוקה": "fa-tools", "טיפול": "fa-wrench",
-            "בדיקה לפני קנייה": "fa-search-dollar", "שיפורים": "fa-rocket", "אביזרים": "fa-box-open",
-            "רכב חשמלי": "fa-charging-station", "טעינה": "fa-plug", "חשמל": "fa-bolt", "חיישנים": "fa-rss",
-            "מערכת בטיחות": "fa-shield-alt", "מצלמות רוורס": "fa-video", "תאורה": "fa-lightbulb",
-            "מערכת מולטימדיה": "fa-music", "בקרת שיוט": "fa-road", "מערכות הרכב": "fa-sliders-h",
-            "היברידי": "fa-battery-half", "בנזין": "fa-fire", "דיזל": "fa-gas-pump",
-            "הנעה כפולה": "fa-compass", "רכב שטח": "fa-mountain", "שטח": "fa-mountain",
-            "רכב משפחתי": "fa-car", "מיני רכב": "fa-car-side", "קלאסי": "fa-car-side", "רכבי אספנות": "fa-car-alt",
-            "וואן": "fa-shuttle-van", "רכב עבודה": "fa-truck", "טנדר": "fa-truck-pickup", "משאית": "fa-truck-moving",
-            "קרוואן": "fa-caravan", "טויוטה": "fa-horse-head", "טסלה": "fa-leaf", "יונדאי": "fa-hippo", "סובארו": "fa-paw",
-            "פורד": "fa-flag-usa", "מרצדס": "fa-star", "ב.מ.וו": "fa-gem",
-            "סקירה": "fa-search", "השוואה": "fa-balance-scale", "מבחן דרכים": "fa-road", "חוות דעת": "fa-comment-dots",
-            "ביטוח": "fa-file-invoice-dollar", "נהיגה": "fa-person-biking", "נהיגה בטוחה": "fa-shield-heart",
-            "אבחון": "fa-stethoscope", "כשל טכני": "fa-exclamation-triangle", "איתור תקלות": "fa-microscope",
-            "עשה זאת בעצמך": "fa-hand-sparkles", "הכנופיה": "fa-users-cog", "יונדאי i10": "fa-car",
-            "ניקוי מצערת": "fa-spray-can-sparkles", "וסת לחץ": "fa-gauge-high", "אספנות": "fa-gem", "נוזל בלמים": "fa-tint"
-        };
+    function getIconForTag(tag) { 
+        const tagIcons = { "מנוע": "fa-cogs", "בלמים": "fa-hand-paper", "גיר": "fa-cog", "תיבת הילוכים": "fa-cog", "שמן מנוע": "fa-oil-can", "מצבר": "fa-car-battery", "מערכת בלימה": "fa-car-crash", "בדיקת רכב": "fa-stethoscope", "תחזוקה": "fa-tools", "טיפול": "fa-wrench", "בדיקה לפני קנייה": "fa-search-dollar", "שיפורים": "fa-rocket", "אביזרים": "fa-box-open", "רכב חשמלי": "fa-charging-station", "טעינה": "fa-plug", "חשמל": "fa-bolt", "חיישנים": "fa-rss", "מערכת בטיחות": "fa-shield-alt", "מצלמות רוורס": "fa-video", "תאורה": "fa-lightbulb", "מערכת מולטימדיה": "fa-music", "בקרת שיוט": "fa-road", "מערכות הרכב": "fa-sliders-h", "היברידי": "fa-battery-half", "בנזין": "fa-fire", "דיזל": "fa-gas-pump", "הנעה כפולה": "fa-compass", "רכב שטח": "fa-mountain", "שטח": "fa-mountain", "רכב משפחתי": "fa-car", "מיני רכב": "fa-car-side", "קלאסי": "fa-car-side", "רכבי אספנות": "fa-car-alt", "וואן": "fa-shuttle-van", "רכב עבודה": "fa-truck", "טנדר": "fa-truck-pickup", "משאית": "fa-truck-moving", "קרוואן": "fa-caravan", "טויוטה": "fa-horse-head", "טסלה": "fa-leaf", "יונדאי": "fa-hippo", "סובארו": "fa-paw", "פורד": "fa-flag-usa", "מרצדס": "fa-star", "ב.מ.וו": "fa-gem", "סקירה": "fa-search", "השוואה": "fa-balance-scale", "מבחן דרכים": "fa-road", "חוות דעת": "fa-comment-dots", "ביטוח": "fa-file-invoice-dollar", "נהיגה": "fa-person-biking", "נהיגה בטוחה": "fa-shield-heart", "אבחון": "fa-stethoscope", "כשל טכני": "fa-exclamation-triangle", "איתור תקלות": "fa-microscope", "עשה זאת בעצמך": "fa-hand-sparkles", "הכנופיה": "fa-users-cog", "יונדאי i10": "fa-car", "ניקוי מצערת": "fa-spray-can-sparkles", "וסת לחץ": "fa-gauge-high", "אספנות": "fa-gem", "נוזל בלמים": "fa-tint" };
         return tagIcons[tag.toLowerCase()] || "fa-tag";
     }
 
-    function createVideoCardElement(video) {
+    function createVideoCardElement(video) { 
         if (!videoCardTemplate) return null;
-        if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' ||
-            typeof video.thumbnail !== 'string' || typeof video.category !== 'string' ||
-            !Array.isArray(video.tags)) {
-            return null;
-        }
-
+        if (!video || typeof video.id !== 'string' || typeof video.title !== 'string' || typeof video.thumbnail !== 'string' || typeof video.category !== 'string' || !Array.isArray(video.tags)) return null;
         const cardClone = videoCardTemplate.content.cloneNode(true);
         const cardElement = cardClone.querySelector('article');
         if (!cardElement) return null;
-
-        if (cardElement.hasAttribute('class_exists')) {
-            cardElement.setAttribute('class', cardElement.getAttribute('class_exists'));
-            cardElement.removeAttribute('class_exists');
-        }
-
+        if (cardElement.hasAttribute('class_exists')) { cardElement.setAttribute('class', cardElement.getAttribute('class_exists')); cardElement.removeAttribute('class_exists'); }
         const innerElementsWithClassExists = cardElement.querySelectorAll('[class_exists]');
-        innerElementsWithClassExists.forEach(el => {
-            if (el.hasAttribute('class_exists')) {
-                el.setAttribute('class', el.getAttribute('class_exists'));
-                el.removeAttribute('class_exists');
-            }
-        });
-
+        innerElementsWithClassExists.forEach(el => { if (el.hasAttribute('class_exists')) { el.setAttribute('class', el.getAttribute('class_exists')); el.removeAttribute('class_exists'); } });
         const sanitizedTitle = escapeHTML(video.title);
         const videoLink = `https://www.youtube.com/watch?v=${video.id}`;
-
         const thumbnailImgElement = cardElement.querySelector('.video-thumbnail-img');
         const playButtonElement = cardElement.querySelector('.play-video-button');
         const videoThumbnailContainer = cardElement.querySelector('.video-thumbnail-container');
         const durationElement = cardElement.querySelector('.video-duration');
-
-        if (thumbnailImgElement && video.thumbnail) {
-            thumbnailImgElement.src = video.thumbnail;
-            thumbnailImgElement.alt = `תמונה ממוזערת של הסרטון: ${sanitizedTitle}`;
-            thumbnailImgElement.classList.remove('hidden');
-            thumbnailImgElement.onerror = function () {
-                this.classList.add('hidden');
-                if (videoThumbnailContainer) videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700');
-            };
-        } else if (thumbnailImgElement) {
-            thumbnailImgElement.classList.add('hidden');
-            if (videoThumbnailContainer) videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700');
-        }
-
-        if (durationElement && video.duration) {
-            durationElement.textContent = escapeHTML(video.duration);
-        } else if (durationElement) {
-            durationElement.classList.add('hidden');
-        }
-
-        if (playButtonElement) {
-            playButtonElement.dataset.videoId = video.id;
-            playButtonElement.setAttribute('aria-label', `נגן את הסרטון ${sanitizedTitle}`);
-        }
-
+        if (thumbnailImgElement && video.thumbnail) { thumbnailImgElement.src = video.thumbnail; thumbnailImgElement.alt = `תמונה ממוזערת של הסרטון: ${sanitizedTitle}`; thumbnailImgElement.classList.remove('hidden'); thumbnailImgElement.onerror = function () { this.classList.add('hidden'); if (videoThumbnailContainer) videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700'); }; }
+        else if (thumbnailImgElement) { thumbnailImgElement.classList.add('hidden'); if (videoThumbnailContainer) videoThumbnailContainer.classList.add('bg-slate-200', 'dark:bg-slate-700');}
+        if (durationElement && video.duration) durationElement.textContent = escapeHTML(video.duration);
+        else if (durationElement) durationElement.classList.add('hidden');
+        if (playButtonElement) { playButtonElement.dataset.videoId = video.id; playButtonElement.setAttribute('aria-label', `נגן את הסרטון ${sanitizedTitle}`);}
         const iframeEl = cardElement.querySelector('.video-iframe');
-        if (iframeEl) {
-            iframeEl.title = `נגן וידאו: ${sanitizedTitle}`;
-            iframeEl.setAttribute('loading', 'lazy');
-        }
-
+        if (iframeEl) { iframeEl.title = `נגן וידאו: ${sanitizedTitle}`; iframeEl.setAttribute('loading', 'lazy');}
         const videoTitleLinkEl = cardElement.querySelector('.video-link');
-        if (videoTitleLinkEl) {
-            videoTitleLinkEl.href = videoLink;
-            videoTitleLinkEl.textContent = sanitizedTitle;
-        }
-
+        if (videoTitleLinkEl) { videoTitleLinkEl.href = videoLink; videoTitleLinkEl.textContent = sanitizedTitle;}
         const channelLogoElement = cardElement.querySelector('.channel-logo');
         const channelNameElement = cardElement.querySelector('.channel-name');
-        if (channelNameElement && video.channel) {
-            channelNameElement.textContent = escapeHTML(video.channel);
-        } else if (channelNameElement) {
-            channelNameElement.textContent = '';
-        }
-
-        if (channelLogoElement && video.channelImage) {
-            channelLogoElement.src = video.channelImage;
-            channelLogoElement.alt = `לוגו הערוץ ${escapeHTML(video.channel || 'לא ידוע')}`;
-            channelLogoElement.classList.remove('hidden');
-            channelLogoElement.onerror = function () {
-                this.classList.add('hidden');
-            };
-        } else if (channelLogoElement) {
-            channelLogoElement.classList.add('hidden');
-        }
-
+        if (channelNameElement && video.channel) channelNameElement.textContent = escapeHTML(video.channel);
+        else if (channelNameElement) channelNameElement.textContent = '';
+        if (channelLogoElement && video.channelImage) { channelLogoElement.src = video.channelImage; channelLogoElement.alt = `לוגו הערוץ ${escapeHTML(video.channel || 'לא ידוע')}`; channelLogoElement.classList.remove('hidden'); channelLogoElement.onerror = function() { this.classList.add('hidden'); }; }
+        else if (channelLogoElement) channelLogoElement.classList.add('hidden');
         const tagsContainerEl = cardElement.querySelector('.video-tags');
-        if (tagsContainerEl) {
-            if (video.tags && video.tags.length > 0) {
-                tagsContainerEl.innerHTML = video.tags.map(tag =>
-                    `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-xs font-medium px-2 py-0.5 rounded-md">${escapeHTML(capitalizeFirstLetter(tag))}</span>`
-                ).join('');
-            } else {
-                tagsContainerEl.innerHTML = '';
-            }
-        }
-
+        if (tagsContainerEl) { if (video.tags && video.tags.length > 0) tagsContainerEl.innerHTML = video.tags.map(tag => `<span class="inline-block bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-xs font-medium px-2 py-0.5 rounded-md">${escapeHTML(capitalizeFirstLetter(tag))}</span>`).join(''); else tagsContainerEl.innerHTML = '';}
         const categoryDisplayEl = cardElement.querySelector('.video-category-display');
-        if (categoryDisplayEl) {
-            const categoryData = PREDEFINED_CATEGORIES.find(c => c.id === video.category);
-            const categoryName = categoryData ? categoryData.name : capitalizeFirstLetter(video.category);
-            const iconElement = categoryDisplayEl.querySelector('i');
-            categoryDisplayEl.innerHTML = '';
-            if (iconElement) categoryDisplayEl.appendChild(iconElement.cloneNode(true));
-            categoryDisplayEl.appendChild(document.createTextNode(` ${escapeHTML(categoryName)}`));
-        }
-
+        if (categoryDisplayEl) { const categoryData = PREDEFINED_CATEGORIES.find(c => c.id === video.category); const categoryName = categoryData ? categoryData.name : capitalizeFirstLetter(video.category); const iconElement = categoryDisplayEl.querySelector('i'); categoryDisplayEl.innerHTML = ''; if (iconElement) categoryDisplayEl.appendChild(iconElement.cloneNode(true)); categoryDisplayEl.appendChild(document.createTextNode(` ${escapeHTML(categoryName)}`));}
         return cardElement;
     }
 
-    function renderFilteredVideos() {
+    function renderFilteredVideos() { 
         if (!videoCardsContainer) return;
         videoCardsContainer.innerHTML = '';
-
         const filteredVideos = getFilteredVideos();
-
         let feedbackEl = document.getElementById('video-grid-loading-feedback');
-        if (!feedbackEl) {
-            feedbackEl = document.createElement('div');
-            feedbackEl.id = 'video-grid-loading-feedback';
-            feedbackEl.setAttribute('aria-live', 'polite');
-            feedbackEl.className = 'sr-only';
-            if (videoCardsContainer.parentNode) {
-                videoCardsContainer.parentNode.appendChild(feedbackEl);
-            }
-        }
-
+        if (!feedbackEl) { feedbackEl = document.createElement('div'); feedbackEl.id = 'video-grid-loading-feedback'; feedbackEl.setAttribute('aria-live', 'polite'); feedbackEl.className = 'sr-only'; if (videoCardsContainer.parentNode) videoCardsContainer.parentNode.appendChild(feedbackEl); }
         if (filteredVideos.length === 0) {
-            if (noVideosFoundMessage) {
-                noVideosFoundMessage.classList.remove('hidden');
-                noVideosFoundMessage.innerHTML = `
-                    <div class="col-span-full text-center text-slate-500 dark:text-slate-400 py-16">
-                        <i class="fas fa-video-slash fa-4x mb-6 text-purple-400 dark:text-purple-500"></i>
-                        <p class="text-2xl font-semibold mb-2">לא נמצאו סרטונים</p>
-                        <p class="text-lg">נסה לשנות את הסינון או מונח החיפוש.</p>
-                    </div>`;
-                feedbackEl.textContent = "לא נמצאו סרטונים התואמים לסינון.";
-            }
-            if (loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) {
-                loadingPlaceholder.classList.add('hidden');
-            }
+            if (noVideosFoundMessage) { noVideosFoundMessage.classList.remove('hidden'); noVideosFoundMessage.innerHTML = `<div class="col-span-full text-center text-slate-500 dark:text-slate-400 py-16"><i class="fas fa-video-slash fa-4x mb-6 text-purple-400 dark:text-purple-500"></i><p class="text-2xl font-semibold mb-2">לא נמצאו סרטונים</p><p class="text-lg">נסה לשנות את הסינון או מונח החיפוש.</p></div>`; feedbackEl.textContent = "לא נמצאו סרטונים התואמים לסינון."; }
+            if (loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) loadingPlaceholder.classList.add('hidden');
             return;
         }
-
         if (noVideosFoundMessage) noVideosFoundMessage.classList.add('hidden');
-        if (loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) {
-            loadingPlaceholder.classList.add('hidden');
-        }
-
+        if (loadingPlaceholder && !loadingPlaceholder.classList.contains('hidden')) loadingPlaceholder.classList.add('hidden');
         const fragment = document.createDocumentFragment();
-        filteredVideos.forEach((video) => {
-            const cardElement = createVideoCardElement(video);
-            if (cardElement) fragment.appendChild(cardElement);
-        });
+        filteredVideos.forEach((video) => { const cardElement = createVideoCardElement(video); if (cardElement) fragment.appendChild(cardElement); });
         videoCardsContainer.appendChild(fragment);
         feedbackEl.textContent = `נמצאו ${filteredVideos.length} סרטונים.`;
     }
 
-    function renderSelectedTagsChips() {
+    function renderSelectedTagsChips() { 
         if (!selectedTagsContainer) return;
         selectedTagsContainer.innerHTML = '';
         currentFilters.tags.forEach(tagName => {
             const tagChip = document.createElement('span');
             tagChip.className = 'flex items-center gap-1.5 bg-purple-600 text-white dark:bg-purple-500 dark:text-white text-sm font-medium ps-3 pe-2 py-1.5 rounded-full cursor-default transition-all hover:bg-purple-700 dark:hover:bg-purple-600';
-
             const textNode = document.createTextNode(escapeHTML(capitalizeFirstLetter(tagName)));
             const removeButton = document.createElement('button');
             removeButton.type = 'button';
             removeButton.className = 'text-xs opacity-75 hover:opacity-100 focus:opacity-100 focus:outline-none';
             removeButton.innerHTML = `<i class="fas fa-times"></i>`;
             removeButton.setAttribute('aria-label', `הסר תגית ${escapeHTML(capitalizeFirstLetter(tagName))}`);
-            removeButton.onclick = () => {
-                const popularTagEl = popularTagsContainer ? popularTagsContainer.querySelector(`button.tag[data-tag-value="${escapeAttributeValue(tagName)}"]`) : null;
-                toggleTagSelection(tagName, popularTagEl);
-            };
-
+            removeButton.onclick = () => { const popularTagEl = popularTagsContainer ? popularTagsContainer.querySelector(`button.tag[data-tag-value="${escapeAttributeValue(tagName)}"]`) : null; toggleTagSelection(tagName, popularTagEl); };
             tagChip.appendChild(textNode);
             tagChip.appendChild(removeButton);
             selectedTagsContainer.appendChild(tagChip);
         });
     }
 
-    function getFilteredVideos() {
+    function getFilteredVideos() { 
         if (!allVideos || allVideos.length === 0) return [];
-
         let videosToFilter = allVideos;
-
-        if (currentFilters.searchTerm && fuse) {
-            const fuseResults = fuse.search(currentFilters.searchTerm);
-            videosToFilter = fuseResults.map(result => result.item);
-        }
-
+        if (currentFilters.searchTerm && fuse) { const fuseResults = fuse.search(currentFilters.searchTerm); videosToFilter = fuseResults.map(result => result.item); }
         return videosToFilter.filter(video => {
             const categoryMatch = currentFilters.category === 'all' || video.category.toLowerCase() === currentFilters.category.toLowerCase();
-            const tagsMatch = currentFilters.tags.length === 0 || currentFilters.tags.every(filterTag =>
-                video.tags.map(t => t.toLowerCase()).includes(filterTag.toLowerCase())
-            );
+            const tagsMatch = currentFilters.tags.length === 0 || currentFilters.tags.every(filterTag => video.tags.map(t => t.toLowerCase()).includes(filterTag.toLowerCase()));
             const hebrewContentMatch = !currentFilters.hebrewOnly || video.hebrewContent;
             return categoryMatch && tagsMatch && hebrewContentMatch;
         });
     }
 
-    function clearSearchSuggestions() {
+    function clearSearchSuggestions() { 
         if (currentSuggestionsContainer) {
             const suggestionsList = currentSuggestionsContainer.querySelector('ul');
             if (suggestionsList) suggestionsList.innerHTML = '';
@@ -647,107 +474,72 @@ document.addEventListener('DOMContentLoaded', function () {
         activeSuggestionIndex = -1;
     }
 
-    function toggleClearButtonVisibility(inputElement, clearButtonElement) {
-        if (!inputElement || !clearButtonElement) return;
-        if (inputElement.value.trim() !== '') {
-            clearButtonElement.classList.remove('hidden');
-        } else {
-            clearButtonElement.classList.add('hidden');
-        }
-    }
-
     function resetSearch(inputElement) {
         if (!inputElement) return;
-
-        inputElement.value = ''; 
+        inputElement.value = '';
         currentFilters.searchTerm = '';
+        if (inputElement.id.startsWith('desktop-search')) currentSuggestionsContainer = desktopSearchSuggestions;
+        else if (inputElement.id.startsWith('mobile-search')) currentSuggestionsContainer = mobileSearchSuggestions;
+        else if (inputElement.id.startsWith('main-content-search')) currentSuggestionsContainer = mainContentSearchSuggestions;
+        else currentSuggestionsContainer = null;
         
-        if (inputElement.id.startsWith('desktop-search')) {
-            currentSuggestionsContainer = desktopSearchSuggestions;
-        } else if (inputElement.id.startsWith('mobile-search')) {
-            currentSuggestionsContainer = mobileSearchSuggestions;
-        } else if (inputElement.id.startsWith('main-content-search')) {
-            currentSuggestionsContainer = mainContentSearchSuggestions;
-        } else {
-            currentSuggestionsContainer = null;
-        }
         clearSearchSuggestions();
-
-        renderFilteredVideos(); 
-        
-        const clearBtnId = inputElement.id.replace('-input', '-clear-btn');
-        const clearBtn = document.getElementById(clearBtnId);
-        if (clearBtn) {
-            clearBtn.classList.add('hidden');
-        }
+        renderFilteredVideos();
     }
 
     function handleSearchInputEvent(event) {
         currentSearchInput = event.target;
         const searchTerm = currentSearchInput.value.trim();
 
-        const clearBtnId = currentSearchInput.id.replace('-input', '-clear-btn');
-        const clearBtn = document.getElementById(clearBtnId);
-        if (clearBtn) toggleClearButtonVisibility(currentSearchInput, clearBtn);
-
-        if (currentSearchInput.id.startsWith('desktop-search')) {
-            currentSuggestionsContainer = desktopSearchSuggestions;
-        } else if (currentSearchInput.id.startsWith('mobile-search')) {
-            currentSuggestionsContainer = mobileSearchSuggestions;
-        } else if (currentSearchInput.id.startsWith('main-content-search')) {
-            currentSuggestionsContainer = mainContentSearchSuggestions;
-        } else {
-            currentSuggestionsContainer = null;
-        }
+        if (currentSearchInput.id.startsWith('desktop-search')) currentSuggestionsContainer = desktopSearchSuggestions;
+        else if (currentSearchInput.id.startsWith('mobile-search')) currentSuggestionsContainer = mobileSearchSuggestions;
+        else if (currentSearchInput.id.startsWith('main-content-search')) currentSuggestionsContainer = mainContentSearchSuggestions;
+        else currentSuggestionsContainer = null;
 
         if (searchTerm === '') {
             if (currentFilters.searchTerm !== '') { // רק אם באמת היה חיפוש קודם
                 currentFilters.searchTerm = '';
-                renderFilteredVideos();
+                clearSearchSuggestions(); // נקה הצעות
+                renderFilteredVideos(); // עדכן תוצאות מיד
+            } else {
+                 // אם השדה היה ריק ונשאר ריק, אולי רק לוודא שההצעות נקיות
+                 if(currentSuggestionsContainer && !currentSuggestionsContainer.classList.contains('hidden')){
+                       clearSearchSuggestions();
+                 }
             }
-            clearSearchSuggestions();
         } else {
             currentFilters.searchTerm = searchTerm; // עדכן את מונח החיפוש בפילטרים
             displaySearchSuggestions(searchTerm);
         }
     }
-
-    function handleSearchKeyDown(event) {
+    
+    function handleSearchKeyDown(event) { 
         if (!currentSuggestionsContainer || currentSuggestionsContainer.classList.contains('hidden')) {
             return;
         }
-
         const suggestionsList = currentSuggestionsContainer.querySelector('ul');
         const items = suggestionsList ? Array.from(suggestionsList.querySelectorAll('li')) : [];
-
-        if (items.length === 0 && event.key !== 'Escape') return; // אפשר לצאת עם Escape גם אם אין הצעות
-
+        if (items.length === 0 && event.key !== 'Escape') return; 
         switch (event.key) {
             case 'ArrowDown':
                 event.preventDefault();
-                if (items.length > 0) {
-                    activeSuggestionIndex = (activeSuggestionIndex + 1) % items.length;
-                    updateActiveSuggestionVisuals(items);
-                }
+                if (items.length > 0) { activeSuggestionIndex = (activeSuggestionIndex + 1) % items.length; updateActiveSuggestionVisuals(items); }
                 break;
             case 'ArrowUp':
                 event.preventDefault();
-                 if (items.length > 0) {
-                    activeSuggestionIndex = (activeSuggestionIndex - 1 + items.length) % items.length;
-                    updateActiveSuggestionVisuals(items);
-                }
+                 if (items.length > 0) { activeSuggestionIndex = (activeSuggestionIndex - 1 + items.length) % items.length; updateActiveSuggestionVisuals(items); }
                 break;
             case 'Enter':
                 event.preventDefault();
                 if (activeSuggestionIndex > -1 && items[activeSuggestionIndex]) {
                     items[activeSuggestionIndex].dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
-                } else {
-                    if (currentSearchInput) {
+                } else { // אם אין הצעה פעילה, בצע חיפוש על הטקסט הנוכחי
+                    if (currentSearchInput) { 
                         // currentFilters.searchTerm כבר אמור להיות מעודכן מ-handleSearchInputEvent
-                        renderFilteredVideos(); // רק רענן את התוצאות
-                        clearSearchSuggestions();
-                        currentSearchInput.blur();
-                        if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
+                        renderFilteredVideos(); 
+                        clearSearchSuggestions(); 
+                        currentSearchInput.blur(); 
+                        if (currentFilters.searchTerm) scrollToVideoGridIfNeeded(); 
                     }
                 }
                 break;
@@ -759,162 +551,102 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    function updateActiveSuggestionVisuals(items) {
+    function updateActiveSuggestionVisuals(items) { 
         items.forEach((item, index) => {
-            if (index === activeSuggestionIndex) {
-                item.classList.add('bg-purple-100', 'dark:bg-slate-600');
-                item.scrollIntoView({ block: 'nearest' });
-            } else {
-                item.classList.remove('bg-purple-100', 'dark:bg-slate-600');
-            }
+            if (index === activeSuggestionIndex) { item.classList.add('bg-purple-100', 'dark:bg-slate-600'); item.scrollIntoView({ block: 'nearest' }); }
+            else { item.classList.remove('bg-purple-100', 'dark:bg-slate-600'); }
         });
     }
 
     function setupEventListeners() {
-        darkModeToggles.forEach(toggle => {
-            toggle.addEventListener('click', toggleDarkMode);
-        });
-
+        darkModeToggles.forEach(toggle => toggle.addEventListener('click', toggleDarkMode));
         if (openMenuBtn) openMenuBtn.addEventListener('click', openMobileMenu);
         if (closeMenuBtn) closeMenuBtn.addEventListener('click', closeMobileMenu);
         if (backdrop) backdrop.addEventListener('click', closeMobileMenu);
-
         document.querySelectorAll('#mobile-menu .nav-link, #site-footer a, header nav a').forEach(link => {
             const href = link.getAttribute('href');
-            if (href && (href.startsWith('#') || href === 'index.html' || href === './' || href === '/' || href.startsWith('index.html#'))) {
-                link.addEventListener('click', handleNavLinkClick);
+            if (href && (href.startsWith('#') || href === 'index.html' || href === './' || href === '/' || href.startsWith('index.html#'))) link.addEventListener('click', handleNavLinkClick);
+        });
+        if (hebrewFilterToggle) hebrewFilterToggle.addEventListener('change', function () {
+            currentFilters.hebrewOnly = this.checked;
+            renderFilteredVideos();
+            scrollToVideoGridIfNeeded();
+            if(currentSearchInput) clearSearchSuggestions();
+        });
+        if (popularTagsContainer) popularTagsContainer.addEventListener('click', function (event) {
+            const clickedTagElement = event.target.closest('button.tag');
+            if (clickedTagElement && clickedTagElement.dataset.tagValue) {
+                toggleTagSelection(clickedTagElement.dataset.tagValue, clickedTagElement);
+                if(currentSearchInput) clearSearchSuggestions();
             }
         });
-
-        if (hebrewFilterToggle) {
-            hebrewFilterToggle.addEventListener('change', function () {
-                currentFilters.hebrewOnly = this.checked;
-                renderFilteredVideos();
-                scrollToVideoGridIfNeeded();
-                if (currentSearchInput) clearSearchSuggestions(); // נקה הצעות רק אם יש שדה חיפוש פעיל
-            });
-        }
-
-        if (popularTagsContainer) {
-            popularTagsContainer.addEventListener('click', function (event) {
-                const clickedTagElement = event.target.closest('button.tag');
-                if (clickedTagElement && clickedTagElement.dataset.tagValue) {
-                    toggleTagSelection(clickedTagElement.dataset.tagValue, clickedTagElement);
-                     if (currentSearchInput) clearSearchSuggestions();
-                }
-            });
-        }
-
-        if (customTagForm) {
-            customTagForm.addEventListener('submit', function (event) {
-                event.preventDefault();
-                if (!tagSearchInput) return;
-                const newTagName = tagSearchInput.value.trim().toLowerCase();
-                if (newTagName) {
-                    // ... (לוגיקת הוספת תגית)
-                }
-                tagSearchInput.value = '';
-                if (currentSearchInput) clearSearchSuggestions();
-            });
-        }
+        if (customTagForm) customTagForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            if (!tagSearchInput) return;
+            const newTagName = tagSearchInput.value.trim().toLowerCase();
+            if (newTagName) { /* ... (לוגיקת הוספת תגית) ... */ } // השארתי את זה כ placeholder אם תרצה להוסיף לוגיקה
+            tagSearchInput.value = '';
+            if(currentSearchInput) clearSearchSuggestions();
+        });
 
         const allSearchInputs = [desktopSearchInput, mobileSearchInput, mainContentSearchInput].filter(Boolean);
         allSearchInputs.forEach(input => {
             input.addEventListener('input', handleSearchInputEvent);
-
             input.addEventListener('search', (event) => { // X מובנה של הדפדפן
                 if (event.target.value === '') {
-                    // handleSearchInputEvent יטפל בזה, כי אירוע input יופעל גם
-                    // רק נוודא שכפתור הניקוי שלנו מוסתר
-                    const clearBtnId = event.target.id.replace('-input', '-clear-btn');
-                    const clearBtn = document.getElementById(clearBtnId);
-                    if (clearBtn) clearBtn.classList.add('hidden');
+                    resetSearch(event.target); 
                 }
             });
-
             input.addEventListener('keydown', handleSearchKeyDown);
             input.addEventListener('focus', (event) => {
                 isSuggestionClicked = false;
                 currentSearchInput = event.target;
-
-                const clearBtnId = currentSearchInput.id.replace('-input', '-clear-btn');
-                const clearBtn = document.getElementById(clearBtnId);
-                if(clearBtn) toggleClearButtonVisibility(currentSearchInput, clearBtn);
-
                 if (currentSearchInput.id.startsWith('desktop-search')) currentSuggestionsContainer = desktopSearchSuggestions;
                 else if (currentSearchInput.id.startsWith('mobile-search')) currentSuggestionsContainer = mobileSearchSuggestions;
                 else if (currentSearchInput.id.startsWith('main-content-search')) currentSuggestionsContainer = mainContentSearchSuggestions;
-                
-                if (event.target.value.trim().length >= MIN_SEARCH_TERM_LENGTH) {
-                    displaySearchSuggestions(event.target.value.trim());
-                }
+                if (event.target.value.trim().length >= MIN_SEARCH_TERM_LENGTH) displaySearchSuggestions(event.target.value.trim());
+                else clearSearchSuggestions();
             });
             input.addEventListener('blur', () => {
-                setTimeout(() => {
-                    if (!isSuggestionClicked) {
-                        clearSearchSuggestions();
-                        if (currentSearchInput && currentSearchInput.value.trim() === '') {
-                             const clearBtnId = currentSearchInput.id.replace('-input', '-clear-btn');
-                             const clearBtn = document.getElementById(clearBtnId);
-                             if (clearBtn) clearBtn.classList.add('hidden');
-                        }
-                    }
-                }, 150);
+                setTimeout(() => { if (!isSuggestionClicked) clearSearchSuggestions(); }, 150);
             });
         });
-
-        // מאזינים לכפתורי הניקוי המותאמים אישית
-        if (desktopSearchClearBtn && desktopSearchInput) {
-            desktopSearchClearBtn.addEventListener('click', () => resetSearch(desktopSearchInput));
-        }
-        if (mobileSearchClearBtn && mobileSearchInput) {
-            mobileSearchClearBtn.addEventListener('click', () => resetSearch(mobileSearchInput));
-        }
-        if (mainContentSearchClearBtn && mainContentSearchInput) {
-            mainContentSearchClearBtn.addEventListener('click', () => resetSearch(mainContentSearchInput));
-        }
 
         const allSearchForms = [desktopSearchForm, mobileSearchForm, mainContentSearchForm].filter(Boolean);
         allSearchForms.forEach(form => {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const inputForForm = form.querySelector('input[type="search"]');
-                if (inputForForm && inputForForm.value.trim() !== '') { // רק אם יש ערך לחיפוש
+                if (inputForForm && inputForForm.value.trim() !== '') {
                     currentFilters.searchTerm = inputForForm.value.trim().toLowerCase();
                     renderFilteredVideos();
                     clearSearchSuggestions();
                     inputForForm.blur();
                     if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
-                } else if (inputForForm) { // אם אין ערך והמשתמש לחץ submit, אפשר לאפס
+                } else if (inputForForm) { // אם שלחו טופס ריק, אפשר לאפס את החיפוש
                     resetSearch(inputForForm);
                 }
             });
         });
 
-        if (videoCardsContainer) {
-            videoCardsContainer.addEventListener('click', function (event) {
-                const playButton = event.target.closest('.play-video-button');
-                if (playButton) handlePlayVideo(playButton);
-            });
-        }
-
+        if (videoCardsContainer) videoCardsContainer.addEventListener('click', function (event) {
+            const playButton = event.target.closest('.play-video-button');
+            if (playButton) handlePlayVideo(playButton);
+        });
         if (backToTopButton) {
             window.addEventListener('scroll', toggleBackToTopButtonVisibility);
             backToTopButton.addEventListener('click', scrollToTop);
         }
-
         document.addEventListener('click', function (event) {
             if (currentSearchInput && currentSuggestionsContainer) {
                 const isClickInsideSearchInput = currentSearchInput.contains(event.target);
                 const isClickInsideSuggestions = currentSuggestionsContainer.contains(event.target);
-                if (!isClickInsideSearchInput && !isClickInsideSuggestions && !isSuggestionClicked) {
-                    clearSearchSuggestions();
-                }
+                if (!isClickInsideSearchInput && !isClickInsideSuggestions && !isSuggestionClicked) clearSearchSuggestions();
             }
         });
     }
     
-    function openMobileMenu() {
+    function openMobileMenu() { 
         if (mobileMenu) mobileMenu.classList.remove('translate-x-full');
         if (backdrop) {
             backdrop.classList.remove('invisible', 'opacity-0');
@@ -923,8 +655,7 @@ document.addEventListener('DOMContentLoaded', function () {
         bodyElement.classList.add('overflow-hidden', 'md:overflow-auto');
         if (openMenuBtn) openMenuBtn.setAttribute('aria-expanded', 'true');
     }
-
-    function closeMobileMenu() {
+    function closeMobileMenu() { 
         if (mobileMenu) mobileMenu.classList.add('translate-x-full');
         if (backdrop) {
             backdrop.classList.remove('visible', 'opacity-100');
@@ -933,8 +664,7 @@ document.addEventListener('DOMContentLoaded', function () {
         bodyElement.classList.remove('overflow-hidden', 'md:overflow-auto');
         if (openMenuBtn) openMenuBtn.setAttribute('aria-expanded', 'false');
     }
-
-    function handleNavLinkClick(event) {
+    function handleNavLinkClick(event) { 
         const link = event.currentTarget;
         let href = link.getAttribute('href');
 
@@ -976,8 +706,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-
-    function toggleTagSelection(tagName, tagElement) {
+    function toggleTagSelection(tagName, tagElement) { 
         const index = currentFilters.tags.indexOf(tagName);
         const activeClasses = ['active-search-tag', 'bg-purple-600', 'text-white', 'dark:bg-purple-500', 'dark:text-white', 'hover:bg-purple-700', 'dark:hover:bg-purple-600'];
         const inactiveClasses = ['bg-purple-100', 'text-purple-700', 'dark:bg-purple-800', 'dark:text-purple-200', 'hover:bg-purple-200', 'dark:hover:bg-purple-700'];
@@ -999,8 +728,7 @@ document.addEventListener('DOMContentLoaded', function () {
         renderFilteredVideos();
         scrollToVideoGridIfNeeded();
     }
-
-    function handlePlayVideo(buttonElement) {
+    function handlePlayVideo(buttonElement) { 
         const videoId = buttonElement.dataset.videoId;
         const videoCard = buttonElement.closest('article');
         if (!videoCard) return;
@@ -1015,8 +743,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (playIconContainer) playIconContainer.style.display = 'none';
         }
     }
-
-    function scrollToVideoGridIfNeeded() {
+    function scrollToVideoGridIfNeeded() { 
         const videoGridSection = document.getElementById('video-grid-section');
         if (videoGridSection) {
             const rect = videoGridSection.getBoundingClientRect();
@@ -1029,8 +756,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-
-    function toggleBackToTopButtonVisibility() {
+    function toggleBackToTopButtonVisibility() { 
         if (backToTopButton) {
             if (window.pageYOffset > 300) {
                 backToTopButton.classList.remove('opacity-0', 'invisible');
@@ -1041,28 +767,23 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
     }
-
-    function scrollToTop() {
+    function scrollToTop() { 
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-
-    function updateFooterYear() {
+    function updateFooterYear() { 
         if (currentYearFooter) currentYearFooter.textContent = new Date().getFullYear();
     }
-
-    function escapeHTML(str) {
+    function escapeHTML(str) { 
         if (str === null || typeof str === 'undefined') return '';
         if (typeof str !== 'string') str = String(str);
         const p = document.createElement('p');
         p.appendChild(document.createTextNode(str));
         return p.innerHTML;
     }
-
-    function escapeAttributeValue(value) {
+    function escapeAttributeValue(value) { 
         return String(value).replace(/"/g, '"');
     }
-
-    function capitalizeFirstLetter(string) {
+    function capitalizeFirstLetter(string) { 
         if (!string) return '';
         return string.charAt(0).toUpperCase() + string.slice(1);
     }
