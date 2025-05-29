@@ -51,10 +51,7 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/-kRyYLJHgws/hqdefault.jpg",
     "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "tags": ["טסלה","פוליש ווקס","פחחות וצבע","תיקון צבע","חידוש צבע","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -65,25 +62,18 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/-sm04IDmZ6U/hqdefault.jpg",
     "category": "collectors",
-    "tags": [
-      "אספנות",
-      "פיג'ו 304",
-      "הכנופיה"
-    ],
+    "tags": ["קרבורטור","אספנות","פיג'ו 304","הכנופיה"],
     "hebrewContent": true
   },
   {
     "id": "0N5ectZsdxU",
-    "title": "תיקון בהדפסת תלת מימד [זרוע מצערת P0488/P1498/P2125 בפיג'ו\\סיטרואן HDI]",
+    "title": "תיקון בהדפסת תלת מימד זרוע מצערת בפיג'ו\סיטרואן [P0488/P1498/P2125קוד תקלה]",
     "duration": "6:21",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/0N5ectZsdxU/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "troubleshooting",
+    "tags": ["הדפסת תלת מימד","זרוע מצערת","מצערת","פיג'ו","סיטרואן","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -94,37 +84,29 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/0__xzS6_5Vo/hqdefault.jpg",
     "category": "collectors",
-    "tags": [
-      "אספנות",
-      "פיג'ו 204",
-      "הכנופיה"
-    ],
+    "tags": ["אספנות","פיג'ו 204","הכנופיה"],
     "hebrewContent": true
   },
   {
     "id": "0oyIXQmvpQQ",
-    "title": "עבודת מתלים והיגוי | שיפוץ פיג'ו 204 - חלק",
+    "title": "עבודת מתלים והיגוי | שיפוץ פיג'ו 204 - חלק 2",
     "duration": "7:55",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/0oyIXQmvpQQ/hqdefault.jpg",
     "category": "collectors",
-    "tags": [
-      "אספנות",
-      "פיג'ו 204",
-      "הכנופיה"
-    ],
+    "tags": ["מתלים","היגוי","פרונט","אספנות","פיג'ו 204","הכנופיה"],
     "hebrewContent": true
   },
   {
     "id": "1ej7KETgo7Q",
-    "title": "שיפוץ רכב אספנות פיג'ו 204 '72 [הרכבות ופלאגים] - פרק",
+    "title": "שיפוץ רכב אספנות פיג'ו 204 '72 [הרכבות ופלאגים] - פרק 7",
     "duration": "8:39",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/1ej7KETgo7Q/hqdefault.jpg",
     "category": "collectors",
-    "tags": [
+    "tags": ["פלאגים",
       "אספנות",
       "פיג'ו 204",
       "הכנופיה"
