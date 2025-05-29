@@ -197,26 +197,38 @@ html:not(.dark) .hero-gradient .text-purple-300 {
   object-fit: cover;
 }
 //מכאן זמני
-/* נטרול עיצובי ברירת מחדל של דפדפנים לשדות חיפוש */
+/* איפוס כללי יותר לשדות חיפוש כדי למנוע הפתעות מהדפדפן */
+input[type="search"] {
+  -webkit-appearance: none; /* הסרת מראה ברירת מחדל של WebKit */
+  -moz-appearance: none;    /* הסרת מראה ברירת מחדל של Firefox */
+  appearance: none;         /* הסרת מראה ברירת מחדל כללי */
+  outline: none;            /* הסרת קו מתאר (outline) ברירת מחדל בפוקוס */
+  box-shadow: none;         /* הסרת צללית ברירת מחדל (אם קיימת) */
+  /* חשוב: אם אתה רוצה את הגבולות שהגדרת עם Tailwind, אל תוסיף כאן border: none */
+}
+
+/* טיפול ספציפי ב-focus-visible אם הקו מופיע רק עם פוקוס "מקלדת" */
+input[type="search"]:focus-visible {
+  outline: none; /* ודא שאין outline גם במצב זה */
+  box-shadow: none; /* נסה גם לאפס box-shadow כאן אם ה-ring הוא הבעיה */
+}
+
+/* ניסיון לשלוט על ה-ring של Tailwind בצורה יותר מפורשת מההתחלה */
+/* אם אתה רוצה להסיר לגמרי את האפקט של focus:ring, אתה יכול להשתמש בזה. */
+/* אבל אם אתה רוצה לשמר אותו, ודא שהוא לא נראה כמו קו. */
+/*
+input[type="search"]:focus {
+  --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(var(--tw-ring-width) + var(--tw-ring-offset-width)) var(--tw-ring-color);
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+}
+*/
+
+/* הסרת קישוטי WebKit פנימיים (כמו שכבר ניסינו, אבל חשוב לשמור) */
 input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
-  -webkit-appearance: none; 
-  display: none; 
-}
-
-input[type="search"] {
-  -webkit-appearance: textfield; 
-  -moz-appearance: textfield;    
-  appearance: textfield;         
-  // box-sizing: content-box;
-}
-input[type="search"] {
-  -webkit-appearance: textfield !important; 
-  appearance: textfield !important;         
-}
-input[type="search"]::-webkit-search-decoration {
-  -webkit-appearance: none !important; 
-  display: none !important; 
+  -webkit-appearance: none;
+  display: none;
 }
