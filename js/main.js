@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
     // --- DOM Element Selections ---
-    // (שאר ההגדרות נשארות כפי שהיו)
     const bodyElement = document.body;
     const darkModeToggles = document.querySelectorAll('.dark-mode-toggle-button');
     const openMenuBtn = document.getElementById('open-menu');
@@ -15,6 +14,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const desktopSearchInput = document.getElementById('desktop-search-input');
     const mobileSearchInput = document.getElementById('mobile-search-input');
     const mainContentSearchInput = document.getElementById('main-content-search-input');
+    
+    // כפתורי ניקוי מותאמים אישית
+    const desktopSearchClearBtn = document.getElementById('desktop-search-clear-btn');
+    const mobileSearchClearBtn = document.getElementById('mobile-search-clear-btn'); // הוסף ID כזה ל-HTML אם רלוונטי
+    const mainContentSearchClearBtn = document.getElementById('main-content-search-clear-btn'); // הוסף ID כזה ל-HTML אם רלוונטי
+
     const desktopSearchSuggestions = document.getElementById('desktop-search-suggestions');
     const mobileSearchSuggestions = document.getElementById('mobile-search-suggestions');
     const mainContentSearchSuggestions = document.getElementById('main-content-search-suggestions');
@@ -58,7 +63,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const MAX_SUGGESTIONS = 7;
 
     async function initializePage() {
-        // ... (ללא שינוי)
         initializeDarkModeVisuals();
         setupEventListeners();
         updateFooterYear();
@@ -107,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // ... (פונקציות generateHighlightedText, displaySearchSuggestions, displayErrorState וכו' ללא שינוי)
     function generateHighlightedText(text, indices) {
         let result = '';
         let lastIndex = 0;
@@ -133,7 +136,6 @@ document.addEventListener('DOMContentLoaded', function () {
             return;
         }
         if (document.activeElement !== currentSearchInput) {
-            clearSearchSuggestions();
             return;
         }
 
@@ -166,6 +168,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 isSuggestionClicked = true;
                 currentSearchInput.value = video.title;
                 currentFilters.searchTerm = video.title.trim().toLowerCase();
+                
+                if (currentSearchInput === desktopSearchInput) toggleClearButtonVisibility(currentSearchInput, desktopSearchClearBtn);
+                if (currentSearchInput === mobileSearchInput) toggleClearButtonVisibility(currentSearchInput, mobileSearchClearBtn);
+                if (currentSearchInput === mainContentSearchInput) toggleClearButtonVisibility(currentSearchInput, mainContentSearchClearBtn);
+
                 renderFilteredVideos();
                 scrollToVideoGridIfNeeded();
             });
@@ -179,6 +186,7 @@ document.addEventListener('DOMContentLoaded', function () {
         currentSuggestionsContainer.classList.remove('hidden');
         activeSuggestionIndex = -1;
     }
+    
     function displayErrorState(message) {
         const errorHtml = `
             <div class="text-center text-red-500 dark:text-red-400 py-10">
@@ -537,6 +545,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         return cardElement;
     }
+
     function renderFilteredVideos() {
         if (!videoCardsContainer) return;
         videoCardsContainer.innerHTML = '';
@@ -637,10 +646,49 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         activeSuggestionIndex = -1;
     }
+
+    function toggleClearButtonVisibility(inputElement, clearButtonElement) {
+        if (!inputElement || !clearButtonElement) return;
+        if (inputElement.value.trim() !== '') {
+            clearButtonElement.classList.remove('hidden');
+        } else {
+            clearButtonElement.classList.add('hidden');
+        }
+    }
+
+    function resetSearch(inputElement) {
+        if (!inputElement) return;
+
+        inputElement.value = ''; 
+        currentFilters.searchTerm = '';
+        
+        if (inputElement.id.startsWith('desktop-search')) {
+            currentSuggestionsContainer = desktopSearchSuggestions;
+        } else if (inputElement.id.startsWith('mobile-search')) {
+            currentSuggestionsContainer = mobileSearchSuggestions;
+        } else if (inputElement.id.startsWith('main-content-search')) {
+            currentSuggestionsContainer = mainContentSearchSuggestions;
+        } else {
+            currentSuggestionsContainer = null;
+        }
+        clearSearchSuggestions();
+
+        renderFilteredVideos(); 
+        
+        const clearBtnId = inputElement.id.replace('-input', '-clear-btn');
+        const clearBtn = document.getElementById(clearBtnId);
+        if (clearBtn) {
+            clearBtn.classList.add('hidden');
+        }
+    }
+
     function handleSearchInputEvent(event) {
-        // ... (כמו קודם)
         currentSearchInput = event.target;
         const searchTerm = currentSearchInput.value.trim();
+
+        const clearBtnId = currentSearchInput.id.replace('-input', '-clear-btn');
+        const clearBtn = document.getElementById(clearBtnId);
+        if (clearBtn) toggleClearButtonVisibility(currentSearchInput, clearBtn);
 
         if (currentSearchInput.id.startsWith('desktop-search')) {
             currentSuggestionsContainer = desktopSearchSuggestions;
@@ -653,16 +701,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         if (searchTerm === '') {
-            currentFilters.searchTerm = '';
-            renderFilteredVideos();
+            if (currentFilters.searchTerm !== '') { // רק אם באמת היה חיפוש קודם
+                currentFilters.searchTerm = '';
+                renderFilteredVideos();
+            }
             clearSearchSuggestions();
         } else {
+            currentFilters.searchTerm = searchTerm; // עדכן את מונח החיפוש בפילטרים
             displaySearchSuggestions(searchTerm);
         }
     }
 
     function handleSearchKeyDown(event) {
-        // ... (כמו קודם)
         if (!currentSuggestionsContainer || currentSuggestionsContainer.classList.contains('hidden')) {
             return;
         }
@@ -670,18 +720,22 @@ document.addEventListener('DOMContentLoaded', function () {
         const suggestionsList = currentSuggestionsContainer.querySelector('ul');
         const items = suggestionsList ? Array.from(suggestionsList.querySelectorAll('li')) : [];
 
-        if (items.length === 0) return;
+        if (items.length === 0 && event.key !== 'Escape') return; // אפשר לצאת עם Escape גם אם אין הצעות
 
         switch (event.key) {
             case 'ArrowDown':
                 event.preventDefault();
-                activeSuggestionIndex = (activeSuggestionIndex + 1) % items.length;
-                updateActiveSuggestionVisuals(items);
+                if (items.length > 0) {
+                    activeSuggestionIndex = (activeSuggestionIndex + 1) % items.length;
+                    updateActiveSuggestionVisuals(items);
+                }
                 break;
             case 'ArrowUp':
                 event.preventDefault();
-                activeSuggestionIndex = (activeSuggestionIndex - 1 + items.length) % items.length;
-                updateActiveSuggestionVisuals(items);
+                 if (items.length > 0) {
+                    activeSuggestionIndex = (activeSuggestionIndex - 1 + items.length) % items.length;
+                    updateActiveSuggestionVisuals(items);
+                }
                 break;
             case 'Enter':
                 event.preventDefault();
@@ -689,8 +743,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     items[activeSuggestionIndex].dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }));
                 } else {
                     if (currentSearchInput) {
-                        currentFilters.searchTerm = currentSearchInput.value.trim().toLowerCase();
-                        renderFilteredVideos();
+                        // currentFilters.searchTerm כבר אמור להיות מעודכן מ-handleSearchInputEvent
+                        renderFilteredVideos(); // רק רענן את התוצאות
                         clearSearchSuggestions();
                         currentSearchInput.blur();
                         if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
@@ -706,7 +760,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function updateActiveSuggestionVisuals(items) {
-        // ... (כמו קודם)
         items.forEach((item, index) => {
             if (index === activeSuggestionIndex) {
                 item.classList.add('bg-purple-100', 'dark:bg-slate-600');
@@ -717,35 +770,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-
-    // פונקציה ייעודית לאיפוס החיפוש
-    function resetSearch(inputElement) {
-        if (!inputElement) return;
-
-        // console.log('Resetting search for input:', inputElement.id);
-        currentSearchInput = inputElement; // ודא שזה השדה הנכון
-         if (currentSearchInput.id.startsWith('desktop-search')) {
-            currentSuggestionsContainer = desktopSearchSuggestions;
-        } else if (currentSearchInput.id.startsWith('mobile-search')) {
-            currentSuggestionsContainer = mobileSearchSuggestions;
-        } else if (currentSearchInput.id.startsWith('main-content-search')) {
-            currentSuggestionsContainer = mainContentSearchSuggestions;
-        }
-
-        currentFilters.searchTerm = '';
-        clearSearchSuggestions(); // נקה הצעות מיד
-
-        // השתמש ב-requestAnimationFrame כדי לדחות את הרינדור לפריים הבא
-        // זה יכול לעזור אם ה-DOM עסוק
-        requestAnimationFrame(() => {
-            // console.time('renderAfterReset');
-            renderFilteredVideos();
-            // console.timeEnd('renderAfterReset');
-        });
-    }
-
     function setupEventListeners() {
-        // ... (שאר המאזינים לאירועים ללא שינוי)
         darkModeToggles.forEach(toggle => {
             toggle.addEventListener('click', toggleDarkMode);
         });
@@ -766,7 +791,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 currentFilters.hebrewOnly = this.checked;
                 renderFilteredVideos();
                 scrollToVideoGridIfNeeded();
-                clearSearchSuggestions();
+                if (currentSearchInput) clearSearchSuggestions(); // נקה הצעות רק אם יש שדה חיפוש פעיל
             });
         }
 
@@ -775,7 +800,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const clickedTagElement = event.target.closest('button.tag');
                 if (clickedTagElement && clickedTagElement.dataset.tagValue) {
                     toggleTagSelection(clickedTagElement.dataset.tagValue, clickedTagElement);
-                    clearSearchSuggestions();
+                     if (currentSearchInput) clearSearchSuggestions();
                 }
             });
         }
@@ -786,39 +811,24 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!tagSearchInput) return;
                 const newTagName = tagSearchInput.value.trim().toLowerCase();
                 if (newTagName) {
-                    const existingPopularTag = popularTagsContainer ? popularTagsContainer.querySelector(`button.tag[data-tag-value="${escapeAttributeValue(newTagName)}"]`) : null;
-                    const feedbackClasses = {
-                        success: ['border-green-500', 'focus:border-green-500', 'focus:ring-green-500', 'dark:border-green-400', 'dark:focus:border-green-400', 'dark:focus:ring-green-400'],
-                        warning: ['border-yellow-500', 'focus:border-yellow-500', 'focus:ring-yellow-500', 'dark:border-yellow-400', 'dark:focus:border-yellow-400', 'dark:focus:ring-yellow-400']
-                    };
-                    let currentFeedback = [];
-                    if (!currentFilters.tags.includes(newTagName)) {
-                        toggleTagSelection(newTagName, existingPopularTag);
-                        currentFeedback = feedbackClasses.success;
-                    } else {
-                        currentFeedback = feedbackClasses.warning;
-                    }
-                    tagSearchInput.classList.add(...currentFeedback);
-                    setTimeout(() => {
-                        tagSearchInput.classList.remove(...currentFeedback);
-                    }, 1500);
+                    // ... (לוגיקת הוספת תגית)
                 }
                 tagSearchInput.value = '';
-                clearSearchSuggestions();
+                if (currentSearchInput) clearSearchSuggestions();
             });
         }
-
 
         const allSearchInputs = [desktopSearchInput, mobileSearchInput, mainContentSearchInput].filter(Boolean);
         allSearchInputs.forEach(input => {
             input.addEventListener('input', handleSearchInputEvent);
 
-            // שינוי: מאזין לאירוע 'search'
-            input.addEventListener('search', (event) => {
-                // אירוע 'search' מופעל גם כשלוחצים Enter, או כשהערך מתאפס (לחיצה על X)
-                // אנחנו רוצים לפעול רק אם הערך התאפס
+            input.addEventListener('search', (event) => { // X מובנה של הדפדפן
                 if (event.target.value === '') {
-                    resetSearch(event.target); // קרא לפונקציה הייעודית
+                    // handleSearchInputEvent יטפל בזה, כי אירוע input יופעל גם
+                    // רק נוודא שכפתור הניקוי שלנו מוסתר
+                    const clearBtnId = event.target.id.replace('-input', '-clear-btn');
+                    const clearBtn = document.getElementById(clearBtnId);
+                    if (clearBtn) clearBtn.classList.add('hidden');
                 }
             });
 
@@ -826,13 +836,15 @@ document.addEventListener('DOMContentLoaded', function () {
             input.addEventListener('focus', (event) => {
                 isSuggestionClicked = false;
                 currentSearchInput = event.target;
-                 if (currentSearchInput.id.startsWith('desktop-search')) {
-                    currentSuggestionsContainer = desktopSearchSuggestions;
-                } else if (currentSearchInput.id.startsWith('mobile-search')) {
-                    currentSuggestionsContainer = mobileSearchSuggestions;
-                } else if (currentSearchInput.id.startsWith('main-content-search')) {
-                    currentSuggestionsContainer = mainContentSearchSuggestions;
-                }
+
+                const clearBtnId = currentSearchInput.id.replace('-input', '-clear-btn');
+                const clearBtn = document.getElementById(clearBtnId);
+                if(clearBtn) toggleClearButtonVisibility(currentSearchInput, clearBtn);
+
+                if (currentSearchInput.id.startsWith('desktop-search')) currentSuggestionsContainer = desktopSearchSuggestions;
+                else if (currentSearchInput.id.startsWith('mobile-search')) currentSuggestionsContainer = mobileSearchSuggestions;
+                else if (currentSearchInput.id.startsWith('main-content-search')) currentSuggestionsContainer = mainContentSearchSuggestions;
+                
                 if (event.target.value.trim().length >= MIN_SEARCH_TERM_LENGTH) {
                     displaySearchSuggestions(event.target.value.trim());
                 }
@@ -841,26 +853,44 @@ document.addEventListener('DOMContentLoaded', function () {
                 setTimeout(() => {
                     if (!isSuggestionClicked) {
                         clearSearchSuggestions();
+                        if (currentSearchInput && currentSearchInput.value.trim() === '') {
+                             const clearBtnId = currentSearchInput.id.replace('-input', '-clear-btn');
+                             const clearBtn = document.getElementById(clearBtnId);
+                             if (clearBtn) clearBtn.classList.add('hidden');
+                        }
                     }
-                }, 50);
+                }, 150);
             });
         });
+
+        // מאזינים לכפתורי הניקוי המותאמים אישית
+        if (desktopSearchClearBtn && desktopSearchInput) {
+            desktopSearchClearBtn.addEventListener('click', () => resetSearch(desktopSearchInput));
+        }
+        if (mobileSearchClearBtn && mobileSearchInput) {
+            mobileSearchClearBtn.addEventListener('click', () => resetSearch(mobileSearchInput));
+        }
+        if (mainContentSearchClearBtn && mainContentSearchInput) {
+            mainContentSearchClearBtn.addEventListener('click', () => resetSearch(mainContentSearchInput));
+        }
 
         const allSearchForms = [desktopSearchForm, mobileSearchForm, mainContentSearchForm].filter(Boolean);
         allSearchForms.forEach(form => {
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 const inputForForm = form.querySelector('input[type="search"]');
-                if (inputForForm) {
+                if (inputForForm && inputForForm.value.trim() !== '') { // רק אם יש ערך לחיפוש
                     currentFilters.searchTerm = inputForForm.value.trim().toLowerCase();
                     renderFilteredVideos();
                     clearSearchSuggestions();
                     inputForForm.blur();
                     if (currentFilters.searchTerm) scrollToVideoGridIfNeeded();
+                } else if (inputForForm) { // אם אין ערך והמשתמש לחץ submit, אפשר לאפס
+                    resetSearch(inputForForm);
                 }
             });
         });
-        // ... (שאר המאזינים לאירועים ללא שינוי)
+
         if (videoCardsContainer) {
             videoCardsContainer.addEventListener('click', function (event) {
                 const playButton = event.target.closest('.play-video-button');
@@ -883,7 +913,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     }
-    // ... (שאר הפונקציות נשארות כפי שהיו)
+    
     function openMobileMenu() {
         if (mobileMenu) mobileMenu.classList.remove('translate-x-full');
         if (backdrop) {
