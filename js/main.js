@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // --- DOM Element Selections ---
+
     const bodyElement = document.body;
     const darkModeToggles = document.querySelectorAll('.dark-mode-toggle-button');
     const openMenuBtn = document.getElementById('open-menu');
@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
     const desktopSearchInput = document.getElementById('desktop-search-input');
     const mobileSearchInput = document.getElementById('mobile-search-input');
     const mainContentSearchInput = document.getElementById('main-content-search-input');
-    
     const desktopSearchSuggestions = document.getElementById('desktop-search-suggestions');
     const mobileSearchSuggestions = document.getElementById('mobile-search-suggestions');
     const mainContentSearchSuggestions = document.getElementById('main-content-search-suggestions');
@@ -32,12 +31,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let allVideos = [];
     let currentFilters = {
-        category: 'all', // זה יתעדכן בהתאם לדף
+        category: 'all', 
         tags: [],
         searchTerm: '',
         hebrewOnly: false
     };
-    let fuse; // יאותחל עם כל הסרטונים
+    let fuse; 
     let activeSuggestionIndex = -1;
     let currentSearchInput = null;
     let currentSuggestionsContainer = null;
@@ -53,10 +52,10 @@ document.addEventListener('DOMContentLoaded', function () {
         { id: "review", name: "סקירות רכב", description: "מבחנים והשוואות", icon: "fa-magnifying-glass-chart", gradient: "from-purple-500 to-indigo-600", darkGradient: "dark:from-purple-600 dark:to-indigo-700" },
         { id: "maintenance", name: "טיפולים", description: "תחזוקה שוטפת ומניעתית", icon: "fa-oil-can", gradient: "from-blue-500 to-cyan-600", darkGradient: "dark:from-blue-600 dark:to-cyan-700" },
         { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה עצמית", icon: "fa-tools", gradient: "from-green-500 to-teal-600", darkGradient: "dark:from-green-600 dark:to-teal-700" },
-        { id: "troubleshooting", name: "תיקון תקלות", description: "פתרון ותיקון בעיות ותקלות", icon: "fa-microscope", gradient: "from-lime-400 to-yellow-500", darkGradient: "dark:from-lime-500 dark:to-yellow-600" },
+        { id: "troubleshooting", name: "תיקון ואיתור תקלות", description: "פתרון אבחון ותיקון בעיות ותקלות", icon: "fa-microscope", gradient: "from-lime-400 to-yellow-500", darkGradient: "dark:from-lime-500 dark:to-yellow-600" },
         { id: "upgrades", name: "שיפורים ושדרוגים", description: "שדרוג ושיפור הרכב והוספת אביזרים", icon: "fa-rocket", gradient: "from-orange-500 to-red-600", darkGradient: "dark:from-orange-600 dark:to-red-700" },
         { id: "systems", name: "מערכות הרכב", description: "הסברים על מערכות, מכלולים וטכנולוגיות", icon: "fa-cogs", gradient: "from-yellow-500 to-amber-600", darkGradient: "dark:from-yellow-600 dark:to-amber-700" },
-        { id: "collectors", name: "רכבי אספנות", description: "נוסטלגית רכבים מימים שעברו", icon: "fa-car-side", gradient: "from-red-500 to-pink-600", darkGradient: "dark:from-red-600 dark:to-pink-700" }
+        { id: "collectors", name: "רכבי אספנות", description: "רכבים נוסטלגים מימים שחלפו", icon: "fa-car-side", gradient: "from-red-500 to-pink-600", darkGradient: "dark:from-red-600 dark:to-pink-700" }
     ];
     const MIN_SEARCH_TERM_LENGTH = 2;
     const MAX_SUGGESTIONS = 7;
@@ -485,14 +484,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 loadMoreBtn.className = 'mt-8 mb-4 mx-auto block px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 dark:focus:ring-offset-slate-900 transition-transform hover:scale-105';
                 loadMoreBtn.addEventListener('click', () => renderFilteredVideos(true));
                 if (videoCardsContainer && videoCardsContainer.parentNode) {
-                    // הוסף את הכפתור אחרי מיכל הסרטונים (או בכל מקום אחר רצוי)
                     videoCardsContainer.parentNode.insertBefore(loadMoreBtn, videoCardsContainer.nextSibling);
                 }
             }
             loadMoreBtn.classList.remove('hidden');
         } else {
             if (loadMoreBtn) {
-                loadMoreBtn.classList.add('hidden'); // או loadMoreBtn.remove(); אם רוצים להסיר לגמרי
+                loadMoreBtn.classList.add('hidden'); 
             }
         }
     }
@@ -527,23 +525,20 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!allVideos || allVideos.length === 0) return [];
         let videosToFilter = allVideos;
 
-        // סינון ראשוני לפי קטגוריה (אם לא 'all')
         if (currentFilters.category !== 'all') {
             videosToFilter = videosToFilter.filter(video => video.category.toLowerCase() === currentFilters.category.toLowerCase());
         }
 
-        // סינון לפי מונח חיפוש (אם קיים) על התוצאות שכבר סוננו לפי קטגוריה
-        if (currentFilters.searchTerm && fuse) { // שימוש ב-fuse הכללי, אבל על רשימה מצומצמת יותר אם יש קטגוריה
+        if (currentFilters.searchTerm && fuse) { 
             const fuseInstanceForSearch = (currentFilters.category !== 'all') ? new Fuse(videosToFilter, fuse.options) : fuse;
             const fuseResults = fuseInstanceForSearch.search(currentFilters.searchTerm);
             videosToFilter = fuseResults.map(result => result.item);
         }
         
-        // סינונים נוספים (תגיות, שפה) על התוצאות המעודכנות
         return videosToFilter.filter(video => {
             const tagsMatch = currentFilters.tags.length === 0 || currentFilters.tags.every(filterTag => video.tags.map(t => t.toLowerCase()).includes(filterTag.toLowerCase()));
             const hebrewContentMatch = !currentFilters.hebrewOnly || video.hebrewContent;
-            return tagsMatch && hebrewContentMatch; // הקטגוריה כבר טופלה
+            return tagsMatch && hebrewContentMatch; 
         });
     }
 
@@ -559,7 +554,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function resetSearch(inputElement) {
         if (!inputElement) return;
         inputElement.value = '';
-        currentFilters.searchTerm = ''; // רק אפס את מונח החיפוש
+        currentFilters.searchTerm = ''; 
         
         if (inputElement.id.startsWith('desktop-search')) currentSuggestionsContainer = desktopSearchSuggestions;
         else if (inputElement.id.startsWith('mobile-search')) currentSuggestionsContainer = mobileSearchSuggestions;
