@@ -871,12 +871,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 // חדשששששששש
 
-// ... (כל הקוד הקודם של main.js) ...
-
-// --- כלי לבדיקת ID של סרטון יוטיוב ישירות מהקובץ ---
-
 function extractYouTubeVideoId(url) {
-    // ... (אותה פונקציה כמו קודם)
     if (!url) return null;
     let videoId = null;
     const patterns = [
@@ -884,6 +879,7 @@ function extractYouTubeVideoId(url) {
         /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([\w-]{11})/,
         /(?:https?:\/\/)?(?:www\.)?youtube\.com\/oembed\?url=.*watch%3Fv%3D([\w-]{11})/
     ];
+
     for (const pattern of patterns) {
         const match = url.match(pattern);
         if (match && match[1]) {
@@ -899,9 +895,9 @@ async function checkVideoIdDirectlyFromFile(videoIdToCheck) {
         return { exists: false, message: "לא סופק ID לבדיקה." };
     }
     try {
-        const response = await fetch('data/videos.json'); // טען את הקובץ מחדש
+        const response = await fetch('data/videos.json'); 
         if (!response.ok) {
-            throw new Error(`שגיאת HTTP ${response.status} בטעינת videos.json.`);
+            throw new Error(`שגיאת HTTP ${response.status} בטעינת videos.json. ודא שהקובץ זמין בנתיב الصحيح.`);
         }
         const videosFromFile = await response.json();
         if (!Array.isArray(videosFromFile)) {
@@ -910,45 +906,49 @@ async function checkVideoIdDirectlyFromFile(videoIdToCheck) {
 
         const foundVideo = videosFromFile.find(video => video.id === videoIdToCheck);
         if (foundVideo) {
-            return { exists: true, message: `הסרטון עם ID: ${videoIdToCheck} (כותרת: "${foundVideo.title}") כבר קיים בקובץ videos.json.` };
+            return { 
+                exists: true, 
+                message: `הסרטון עם ID: ${videoIdToCheck} (כותרת: "${foundVideo.title}") כבר קיים בקובץ videos.json.` 
+            };
         } else {
-            return { exists: false, message: `הסרטון עם ID: ${videoIdToCheck} אינו קיים בקובץ videos.json.` };
+            return { 
+                exists: false, 
+                message: `הסרטון עם ID: ${videoIdToCheck} אינו קיים בקובץ videos.json.` 
+            };
         }
     } catch (error) {
         console.error("שגיאה בבדיקת ID מול הקובץ:", error);
-        return { exists: false, message: `שגיאה בבדיקת ID מול הקובץ: ${error.message}` };
+        return { 
+            exists: false, 
+            message: `שגיאה בבדיקת ID מול הקובץ: ${error.message}` 
+        };
     }
 }
 
 async function promptAndCheckVideoIdFromFile() {
     const userInput = prompt("הכנס קישור לסרטון יוטיוב לבדיקה מול הקובץ:");
+
     if (userInput === null || userInput.trim() === "") {
+        // המשתמש לחץ Cancel או לא הכניס כלום
         return;
     }
+
     const videoId = extractYouTubeVideoId(userInput);
+
     if (videoId) {
-        // הצג הודעת "טוען..." אם הבדיקה עשויה לקחת זמן (אופציונלי)
-        // alert("בודק מול הקובץ..."); 
-        const result = await checkVideoIdDirectlyFromFile(videoId);
+        const result = await checkVideoIdDirectlyFromFile(videoId);        
         alert(result.message + (result.exists ? "" : " אפשר להוסיף!"));
     } else {
         alert("לא זוהה ID תקין של סרטון יוטיוב מהקישור שהוכנס.");
     }
 }
 
-// ... (שאר הפונקציות של main.js כמו initializePage, setupEventListeners וכו')
-
-// בתוך פונקציית setupEventListeners, נוסיף את המאזין החדש:
-function setupEventListeners() {
-    // ... (כל המאזינים הקודמים) ...
-
     const checkIdLink = document.getElementById('check-yt-id-link');
     if (checkIdLink) {
         checkIdLink.addEventListener('click', function(event) {
-            event.preventDefault(); // מנע מהקישור לנסות לנווט
+            event.preventDefault();
             promptAndCheckVideoIdFromFile();
         });
     }
 }
-
 window.checkMyYouTubeLink = checkYouTubeLink;
