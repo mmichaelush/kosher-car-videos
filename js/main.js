@@ -871,6 +871,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 // חדשששששששש
 
+// --- פונקציות קיימות לכלי בדיקת ID (כפי שסיפקת) ---
 function extractYouTubeVideoId(url) {
     if (!url) return null;
     let videoId = null;
@@ -897,7 +898,7 @@ async function checkVideoIdDirectlyFromFile(videoIdToCheck) {
     try {
         const response = await fetch('data/videos.json'); 
         if (!response.ok) {
-            throw new Error(`שגיאת HTTP ${response.status} בטעינת videos.json. ודא שהקובץ זמין בנתיב הנכון.`);
+            throw new Error(`שגיאת HTTP ${response.status} בטעינת videos.json. ודא שהקובץ זמין בנתיב الصحيح.`);
         }
         const videosFromFile = await response.json();
         if (!Array.isArray(videosFromFile)) {
@@ -926,7 +927,8 @@ async function checkVideoIdDirectlyFromFile(videoIdToCheck) {
 }
 
 async function promptAndCheckVideoIdFromFile() {
-    const userInput = prompt("הכנס קישור לסרטון יוטיוב לבדיקה עם כבר קיים באתר:");
+    console.log("promptAndCheckVideoIdFromFile called"); // לדיבוג
+    const userInput = prompt("הכנס קישור לסרטון יוטיוב לבדיקה מול הקובץ:");
 
     if (userInput === null || userInput.trim() === "") {
         return;
@@ -943,20 +945,35 @@ async function promptAndCheckVideoIdFromFile() {
 }
 
 function handleHashChangeForCheckerTool() {
+    console.log("hashchange event fired. Current hash:", window.location.hash); // לדיבוג
     if (window.location.hash === '#check-yt-id') { 
-        console.log("Hash #check-yt-id detected. Launching tool via hashchange..."); 
-        setTimeout(promptAndCheckVideoIdFromFile, 150); 
+        console.log("Hash #check-yt-id detected by hashchange event. Launching tool...");
+        promptAndCheckVideoIdFromFile(); 
     }
 }
 
-function setupMyToolEventListeners() {
-    const checkIdLinkFooter = document.getElementById('check-yt-id-link');
-    
+async function activateCheckerTool() {
+    console.log("activateCheckerTool called by click"); 
+    if (window.location.hash === '#check-yt-id') {
+        await promptAndCheckVideoIdFromFile();
+    } else {
+        window.location.hash = '#check-yt-id';
+    }
+}
+
+function setupEventListeners() {
+    const checkIdLinkFooter = document.getElementById('check-yt-id-link'); // ודא שה-ID תואם ל-HTML
+    if (checkIdLinkFooter) {
+        checkIdLinkFooter.addEventListener('click', function(event) {
+            event.preventDefault(); 
+            activateCheckerTool();
+        });
+    }
     window.addEventListener('hashchange', handleHashChangeForCheckerTool, false);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-   
-    setupMyToolEventListeners(); 
-    handleHashChangeForCheckerTool(); 
+    setupEventListeners();      
+         handleHashChangeForCheckerTool();
 });
+
