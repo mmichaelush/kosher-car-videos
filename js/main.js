@@ -929,7 +929,6 @@ async function promptAndCheckVideoIdFromFile() {
     const userInput = prompt("הכנס קישור לסרטון יוטיוב לבדיקה מול הקובץ:");
 
     if (userInput === null || userInput.trim() === "") {
-        // המשתמש לחץ Cancel או לא הכניס כלום
         return;
     }
 
@@ -950,5 +949,5 @@ async function promptAndCheckVideoIdFromFile() {
             promptAndCheckVideoIdFromFile();
         });
     }
-}
+
 window.checkMyYouTubeLink = checkYouTubeLink;
