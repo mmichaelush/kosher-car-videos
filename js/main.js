@@ -949,5 +949,3 @@ async function promptAndCheckVideoIdFromFile() {
             promptAndCheckVideoIdFromFile();
         });
     }
-
-window.checkMyYouTubeLink = checkYouTubeLink;
