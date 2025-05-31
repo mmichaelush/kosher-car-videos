@@ -871,6 +871,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 // חדשששששששש
 
+// --- פונקציות קיימות לכלי בדיקת ID (כפי שסיפקת) ---
 function extractYouTubeVideoId(url) {
     if (!url) return null;
     let videoId = null;
@@ -942,10 +943,27 @@ async function promptAndCheckVideoIdFromFile() {
     }
 }
 
-    const checkIdLink = document.getElementById('check-yt-id-link');
-    if (checkIdLink) {
-        checkIdLink.addEventListener('click', function(event) {
+function handleHashChangeForCheckerTool() {
+    if (window.location.hash === '#check-yt-id') { 
+        // history.pushState("", document.title, window.location.pathname + window.location.search);
+        setTimeout(promptAndCheckVideoIdFromFile, 150); 
+    }
+}
+
+function setupMyToolEventListeners() {
+    const checkIdLinkFooter = document.getElementById('check-yt-id-link'); // ודא שה-ID תואם למה שב-HTML
+    if (checkIdLinkFooter) {
+        checkIdLinkFooter.addEventListener('click', function(event) {
             event.preventDefault();
             promptAndCheckVideoIdFromFile();
         });
     }
+
+    window.addEventListener('hashchange', handleHashChangeForCheckerTool, false);
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    setupMyToolEventListeners(); 
+    handleHashChangeForCheckerTool(); 
+});
