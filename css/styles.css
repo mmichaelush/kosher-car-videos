@@ -196,3 +196,26 @@ html:not(.dark) .hero-gradient .text-purple-300 {
 .video-thumbnail-container > img {
   object-fit: cover;
 }
+//חדש
+
+footer-link {
+  @apply text-sm text-slate-400 transition-colors; /* קלאסים בסיסיים */
+}
+
+.footer-link:hover {
+  @apply text-purple-300; /* צבע במעבר עכבר */
+}
+
+.dark .footer-link {
+  @apply text-slate-500; /* צבע בסיסי במצב כהה */
+}
+
+.dark .footer-link:hover {
+  @apply text-purple-400; /* צבע במעבר עכבר במצב כהה */
+}
+
+/* אפשר להוסיף גם את האייקון כאן אם רוצים אחידות */
+.footer-link i {
+  @apply fa-fw ml-2 opacity-70; 
+  /* אם תרצה צבע שונה לאייקון, תוסיף כאן */
+}
