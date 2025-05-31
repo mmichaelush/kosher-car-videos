@@ -197,3 +197,101 @@ html:not(.dark) .hero-gradient .text-purple-300 {
   object-fit: cover;
 }
 //חדש
+/* css/styles.css */
+
+/* 
+  שלב 1: איפוס אגרסיבי של כל מה שקשור לגבולות, outline ו-box-shadow 
+  עבור שדות החיפוש הספציפיים שלך.
+*/
+input[type="search"].search-input,
+input[type="search"].search-input:focus,
+input[type="search"].search-input:focus-visible {
+  -webkit-appearance: none !important; /* חשוב לנטרול עיצובי WebKit */
+  appearance: none !important;         /* נטרול עיצוב כללי */
+  
+  border: none !important;             /* הסר כל גבול קיים */
+  outline: none !important;            /* הסר כל outline קיים */
+  box-shadow: none !important;         /* הסר כל box-shadow קיים */
+  
+  /* ודא שאין padding או margin שמגיעים מברירת מחדל ומשפיעים על המראה */
+  padding: 0; /* אפס פאדינג, הקלאסים שלך יוסיפו אותו מחדש */
+  margin: 0;  /* אפס מארג'ין */
+}
+
+/* 
+  שלב 2: בנייה מחדש של המראה הרצוי (כולל הגבולות) דרך ה-CSS,
+  תוך התחשבות בקלאסים של Tailwind שכבר נמצאים ב-HTML.
+  הסלקטור הזה צריך להיות מספיק חזק כדי לדרוס ברירות מחדל.
+*/
+input[type="search"].search-input {
+  display: block; /* מהקלאס .block */
+  
+  /* החזר את הפאדינג מהקלאסים שלך (py-2.5, pr-4, pl-10) */
+  /* הערכים האלה מתורגמים ל-rems על ידי Tailwind */
+  /* py-2.5 -> 0.625rem top/bottom */
+  /* pr-4 -> 1rem right */
+  /* pl-10 -> 2.5rem left */
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  padding-right: 1rem; /* אם האתר RTL, זה יהיה בצד "התחלה" */
+  padding-left: 2.5rem; /* אם האתר RTL, זה יהיה בצד "סוף" */
+
+  font-size: 0.875rem; /* מהקלאס .text-sm */
+  line-height: 1.25rem; /* מהקלאס .text-sm */
+  
+  border-radius: 0.5rem; /* מהקלאס .rounded-lg */
+
+  /* הגדרת הגבול הרצוי במצב רגיל */
+  border-width: 1px; /* או מה שאתה רוצה כברירת מחדל */
+  border-style: solid;
+  /* border-color יגיע מהקלאס border-slate-300 דרך משתני CSS של Tailwind */
+  /* אבל ליתר ביטחון, נגדיר אותו גם כאן עם משתני CSS */
+  border-color: rgb(203 213 225 / var(--tw-border-opacity, 1)); /* ערך של slate-300 */
+  --tw-border-opacity: 1; /* ודא שהאטימות מוגדרת */
+
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1)); /* ערך של bg-white */
+  --tw-bg-opacity: 0.8; /* ערך של bg-opacity-80 (מה-dark:bg-slate-700/80) - התאם אם צריך */
+  
+  color: rgb(15 23 42 / var(--tw-text-opacity, 1)); /* ערך של text-slate-900 */
+  --tw-text-opacity: 1;
+
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms; /* או 150ms, תלוי בקלאס שלך */
+}
+
+/* סגנונות למצב כהה */
+.dark input[type="search"].search-input {
+  border-color: rgb(100 116 139 / var(--tw-border-opacity, 1)); /* ערך של dark:border-slate-600 (slate-600) */
+  background-color: rgb(51 65 85 / var(--tw-bg-opacity, 1)); /* ערך של dark:bg-slate-700 */
+  --tw-bg-opacity: 0.8; /* מהקלאס dark:bg-slate-700/80 */
+  color: rgb(241 245 249 / var(--tw-text-opacity, 1)); /* ערך של dark:text-slate-100 */
+}
+
+/* סגנונות לפוקוס (כולל ה-ring) */
+input[type="search"].search-input:focus,
+input[type="search"].search-input:focus-visible {
+  /* הגדרת צבע הגבול בפוקוס */
+  border-color: rgb(139 92 246 / var(--tw-border-opacity, 1)); /* ערך של focus:border-purple-500 (purple-500) */
+  
+  /* הגדרת ה-ring של Tailwind */
+  --tw-ring-offset-shadow: var(--tw-ring-inset, ) 0 0 0 var(--tw-ring-offset-width, 0px) var(--tw-ring-offset-color, #fff);
+  --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(var(--tw-ring-width, 3px) + var(--tw-ring-offset-width, 0px)) var(--tw-ring-color, rgb(139 92 246 / 0.5)); /* ring-purple-500 */
+  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000) !important; /* הוספתי !important ל-box-shadow כאן כדי לוודא שהוא דורס */
+}
+
+.dark input[type="search"].search-input:focus,
+.dark input[type="search"].search-input:focus-visible {
+  border-color: rgb(167 139 250 / var(--tw-border-opacity, 1)); /* ערך של dark:focus:border-purple-400 (purple-400) */
+  --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(var(--tw-ring-width, 3px) + var(--tw-ring-offset-width, 0px)) var(--tw-ring-color, rgb(167 139 250 / 0.5)); /* dark:focus:ring-purple-400 */
+}
+
+
+/* נטרול קישוטי WebKit (חשוב לשמור) */
+input[type="search"]::-webkit-search-decoration,
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-results-button,
+input[type="search"]::-webkit-search-results-decoration {
+  -webkit-appearance: none !important;
+  display: none !important;
+}
