@@ -871,7 +871,6 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 // חדשששששששש
 
-// --- פונקציות קיימות לכלי בדיקת ID (כפי שסיפקת) ---
 function extractYouTubeVideoId(url) {
     if (!url) return null;
     let videoId = null;
@@ -898,7 +897,7 @@ async function checkVideoIdDirectlyFromFile(videoIdToCheck) {
     try {
         const response = await fetch('data/videos.json'); 
         if (!response.ok) {
-            throw new Error(`שגיאת HTTP ${response.status} בטעינת videos.json. ודא שהקובץ זמין בנתיב الصحيح.`);
+            throw new Error(`שגיאת HTTP ${response.status} בטעינת videos.json. ודא שהקובץ זמין בנתיב הנכון.`);
         }
         const videosFromFile = await response.json();
         if (!Array.isArray(videosFromFile)) {
@@ -927,7 +926,7 @@ async function checkVideoIdDirectlyFromFile(videoIdToCheck) {
 }
 
 async function promptAndCheckVideoIdFromFile() {
-    const userInput = prompt("הכנס קישור לסרטון יוטיוב לבדיקה מול הקובץ:");
+    const userInput = prompt("הכנס קישור לסרטון יוטיוב לבדיקה עם כבר קיים באתר:");
 
     if (userInput === null || userInput.trim() === "") {
         return;
@@ -945,25 +944,19 @@ async function promptAndCheckVideoIdFromFile() {
 
 function handleHashChangeForCheckerTool() {
     if (window.location.hash === '#check-yt-id') { 
-        // history.pushState("", document.title, window.location.pathname + window.location.search);
+        console.log("Hash #check-yt-id detected. Launching tool via hashchange..."); 
         setTimeout(promptAndCheckVideoIdFromFile, 150); 
     }
 }
 
 function setupMyToolEventListeners() {
-    const checkIdLinkFooter = document.getElementById('check-yt-id-link'); // ודא שה-ID תואם למה שב-HTML
-    if (checkIdLinkFooter) {
-        checkIdLinkFooter.addEventListener('click', function(event) {
-            event.preventDefault();
-            promptAndCheckVideoIdFromFile();
-        });
-    }
-
+    const checkIdLinkFooter = document.getElementById('check-yt-id-link');
+    
     window.addEventListener('hashchange', handleHashChangeForCheckerTool, false);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-
+   
     setupMyToolEventListeners(); 
     handleHashChangeForCheckerTool(); 
 });
