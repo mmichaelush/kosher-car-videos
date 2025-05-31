@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-
+    // --- DOM Element Selections ---
     const bodyElement = document.body;
     const darkModeToggles = document.querySelectorAll('.dark-mode-toggle-button');
     const openMenuBtn = document.getElementById('open-menu');
@@ -32,12 +32,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     let allVideos = [];
     let currentFilters = {
-        category: 'all',
+        category: 'all', // זה יתעדכן בהתאם לדף
         tags: [],
         searchTerm: '',
         hebrewOnly: false
     };
-    let fuse; 
+    let fuse; // יאותחל עם כל הסרטונים
     let activeSuggestionIndex = -1;
     let currentSearchInput = null;
     let currentSuggestionsContainer = null;
@@ -463,7 +463,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         
         if (videosToRender.length === 0 && loadMore) {
-            removeLoadMoreButton();
+            removeLoadMoreButton(); // אם אין עוד מה לטעון, הסר את הכפתור
             return;
         }
         
@@ -485,13 +485,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 loadMoreBtn.className = 'mt-8 mb-4 mx-auto block px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 dark:focus:ring-offset-slate-900 transition-transform hover:scale-105';
                 loadMoreBtn.addEventListener('click', () => renderFilteredVideos(true));
                 if (videoCardsContainer && videoCardsContainer.parentNode) {
+                    // הוסף את הכפתור אחרי מיכל הסרטונים (או בכל מקום אחר רצוי)
                     videoCardsContainer.parentNode.insertBefore(loadMoreBtn, videoCardsContainer.nextSibling);
                 }
             }
             loadMoreBtn.classList.remove('hidden');
         } else {
             if (loadMoreBtn) {
-                loadMoreBtn.classList.add('hidden'); // או loadMoreBtn.remove();
+                loadMoreBtn.classList.add('hidden'); // או loadMoreBtn.remove(); אם רוצים להסיר לגמרי
             }
         }
     }
@@ -526,20 +527,23 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!allVideos || allVideos.length === 0) return [];
         let videosToFilter = allVideos;
 
+        // סינון ראשוני לפי קטגוריה (אם לא 'all')
         if (currentFilters.category !== 'all') {
             videosToFilter = videosToFilter.filter(video => video.category.toLowerCase() === currentFilters.category.toLowerCase());
         }
 
-        if (currentFilters.searchTerm && fuse)
+        // סינון לפי מונח חיפוש (אם קיים) על התוצאות שכבר סוננו לפי קטגוריה
+        if (currentFilters.searchTerm && fuse) { // שימוש ב-fuse הכללי, אבל על רשימה מצומצמת יותר אם יש קטגוריה
             const fuseInstanceForSearch = (currentFilters.category !== 'all') ? new Fuse(videosToFilter, fuse.options) : fuse;
             const fuseResults = fuseInstanceForSearch.search(currentFilters.searchTerm);
             videosToFilter = fuseResults.map(result => result.item);
         }
         
+        // סינונים נוספים (תגיות, שפה) על התוצאות המעודכנות
         return videosToFilter.filter(video => {
             const tagsMatch = currentFilters.tags.length === 0 || currentFilters.tags.every(filterTag => video.tags.map(t => t.toLowerCase()).includes(filterTag.toLowerCase()));
             const hebrewContentMatch = !currentFilters.hebrewOnly || video.hebrewContent;
-            return tagsMatch && hebrewContentMatch;
+            return tagsMatch && hebrewContentMatch; // הקטגוריה כבר טופלה
         });
     }
 
@@ -555,7 +559,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function resetSearch(inputElement) {
         if (!inputElement) return;
         inputElement.value = '';
-        currentFilters.searchTerm = '';
+        currentFilters.searchTerm = ''; // רק אפס את מונח החיפוש
         
         if (inputElement.id.startsWith('desktop-search')) currentSuggestionsContainer = desktopSearchSuggestions;
         else if (inputElement.id.startsWith('mobile-search')) currentSuggestionsContainer = mobileSearchSuggestions;
