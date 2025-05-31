@@ -462,7 +462,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         
         if (videosToRender.length === 0 && loadMore) {
-            removeLoadMoreButton(); // אם אין עוד מה לטעון, הסר את הכפתור
+            removeLoadMoreButton(); 
             return;
         }
         
@@ -869,9 +869,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     initializePage();
 });
-// חדשששששששש
 
-// --- פונקציות קיימות לכלי בדיקת ID (כפי שסיפקת) ---
 function extractYouTubeVideoId(url) {
     if (!url) return null;
     let videoId = null;
@@ -898,7 +896,7 @@ async function checkVideoIdDirectlyFromFile(videoIdToCheck) {
     try {
         const response = await fetch('data/videos.json'); 
         if (!response.ok) {
-            throw new Error(`שגיאת HTTP ${response.status} בטעינת videos.json. ודא שהקובץ זמין בנתיב الصحيح.`);
+            throw new Error(`שגיאת HTTP ${response.status} בטעינת קובץ הנתונים ודא שהקובץ זמין בנתיב הנכון.`);
         }
         const videosFromFile = await response.json();
         if (!Array.isArray(videosFromFile)) {
@@ -909,12 +907,12 @@ async function checkVideoIdDirectlyFromFile(videoIdToCheck) {
         if (foundVideo) {
             return { 
                 exists: true, 
-                message: `הסרטון עם ID: ${videoIdToCheck} (כותרת: "${foundVideo.title}") כבר קיים בקובץ videos.json.` 
+                message: `הסרטון עם ID: ${videoIdToCheck} (עם הכותרת: "${foundVideo.title}") כבר קיים במאגר.` 
             };
         } else {
             return { 
                 exists: false, 
-                message: `הסרטון עם ID: ${videoIdToCheck} אינו קיים בקובץ videos.json.` 
+                message: `הסרטון עם ID: ${videoIdToCheck} עדיין אינו קיים במאגר .` 
             };
         }
     } catch (error) {
@@ -927,8 +925,8 @@ async function checkVideoIdDirectlyFromFile(videoIdToCheck) {
 }
 
 async function promptAndCheckVideoIdFromFile() {
-    console.log("promptAndCheckVideoIdFromFile called"); // לדיבוג
-    const userInput = prompt("הכנס קישור לסרטון יוטיוב לבדיקה מול הקובץ:");
+    console.log("promptAndCheckVideoIdFromFile called"); 
+    const userInput = prompt("הכנס קישור לסרטון יוטיוב לבדיקה עם קיים כבר במאגר:");
 
     if (userInput === null || userInput.trim() === "") {
         return;
@@ -945,7 +943,7 @@ async function promptAndCheckVideoIdFromFile() {
 }
 
 function handleHashChangeForCheckerTool() {
-    console.log("hashchange event fired. Current hash:", window.location.hash); // לדיבוג
+    console.log("hashchange event fired. Current hash:", window.location.hash);
     if (window.location.hash === '#check-yt-id') { 
         console.log("Hash #check-yt-id detected by hashchange event. Launching tool...");
         promptAndCheckVideoIdFromFile(); 
@@ -962,7 +960,7 @@ async function activateCheckerTool() {
 }
 
 function setupEventListeners() {
-    const checkIdLinkFooter = document.getElementById('check-yt-id-link'); // ודא שה-ID תואם ל-HTML
+    const checkIdLinkFooter = document.getElementById('check-yt-id-link');
     if (checkIdLinkFooter) {
         checkIdLinkFooter.addEventListener('click', function(event) {
             event.preventDefault(); 
@@ -976,4 +974,3 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();      
          handleHashChangeForCheckerTool();
 });
-
