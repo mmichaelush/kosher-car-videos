@@ -197,7 +197,7 @@ html:not(.dark) .hero-gradient .text-purple-300 {
   object-fit: cover;
 }
 //חדש
-
+/*
 footer-link {
   @apply text-sm text-slate-400 transition-colors; /* קלאסים בסיסיים */
 }
@@ -219,3 +219,4 @@ footer-link {
   @apply fa-fw ml-2 opacity-70; 
   /* אם תרצה צבע שונה לאייקון, תוסיף כאן */
 }
+*/
