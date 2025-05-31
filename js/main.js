@@ -871,8 +871,12 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 // חדשששששששש
 
+// ... (כל הקוד הקודם של main.js) ...
+
+// --- כלי לבדיקת ID של סרטון יוטיוב ישירות מהקובץ ---
 
 function extractYouTubeVideoId(url) {
+    // ... (אותה פונקציה כמו קודם)
     if (!url) return null;
     let videoId = null;
     const patterns = [
@@ -890,70 +894,61 @@ function extractYouTubeVideoId(url) {
     return videoId;
 }
 
-function isVideoIdInDatabase(videoIdToCheck) {
-    if (!videoIdToCheck || !window.allVideos || window.allVideos.length === 0) {
-        console.warn("Video ID to check is missing or video database (allVideos) is not loaded/empty.");
-        return { exists: false, message: "מאגר הסרטונים לא טעון או ריק." }; 
+async function checkVideoIdDirectlyFromFile(videoIdToCheck) {
+    if (!videoIdToCheck) {
+        return { exists: false, message: "לא סופק ID לבדיקה." };
     }
-    const foundVideo = window.allVideos.find(video => video.id === videoIdToCheck);
-    if (foundVideo) {
-        return { exists: true, message: `הסרטון עם ID: ${videoIdToCheck} (כותרת: "${foundVideo.title}") כבר קיים במאגר.` };
-    }
-    return { exists: false, message: `הסרטון עם ID: ${videoIdToCheck} אינו קיים במאגר.` };
-}
-
-function checkYouTubeLink() {
-    // ודא ש-allVideos טעון לפני הפעלת הכלי
-    if (!window.allVideos || window.allVideos.length === 0) {
-        alert("מאגר הסרטונים עדיין לא נטען במלואו. נסה שוב בעוד מספר רגעים או רענן את הדף.");
-        // נסה לטעון מחדש אם זה רלוונטי לאיך שהאפליקציה שלך בנויה
-        // או פשוט הנחה את המשתמש לחכות ולנסות שוב.
-        // אם loadLocalVideos היא פונקציה גלובלית ואתה רוצה לנסות לטעון שוב:
-        if (typeof loadLocalVideos === 'function' && (!window.allVideos || window.allVideos.length === 0)) {
-            console.log("Attempting to load video database for checker tool...");
-            loadLocalVideos().then(() => {
-                // אחרי הטעינה, נסה להציג שוב את ה-prompt אם המאגר נטען בהצלחה
-                if (window.allVideos && window.allVideos.length > 0) {
-                     console.log("Video database loaded successfully for checker tool. Retrying prompt.");
-                    setTimeout(checkYouTubeLinkPrompt, 100); // קרא לפונקציה נפרדת כדי למנוע לולאה
-                } else {
-                     alert("עדיין לא ניתן לגשת למאגר הסרטונים אחרי ניסיון טעינה.");
-                }
-            }).catch(err => {
-                 alert("שגיאה בטעינת מאגר הסרטונים עבור הכלי: " + err.message);
-            });
-            return; // צא מהפונקציה כדי לחכות לטעינה
-        } else if (!window.allVideos || window.allVideos.length === 0) {
-             return; // אם אין דרך לטעון ואין מאגר, צא.
+    try {
+        const response = await fetch('data/videos.json'); // טען את הקובץ מחדש
+        if (!response.ok) {
+            throw new Error(`שגיאת HTTP ${response.status} בטעינת videos.json.`);
         }
+        const videosFromFile = await response.json();
+        if (!Array.isArray(videosFromFile)) {
+            throw new Error("המידע בקובץ videos.json אינו מערך תקין.");
+        }
+
+        const foundVideo = videosFromFile.find(video => video.id === videoIdToCheck);
+        if (foundVideo) {
+            return { exists: true, message: `הסרטון עם ID: ${videoIdToCheck} (כותרת: "${foundVideo.title}") כבר קיים בקובץ videos.json.` };
+        } else {
+            return { exists: false, message: `הסרטון עם ID: ${videoIdToCheck} אינו קיים בקובץ videos.json.` };
+        }
+    } catch (error) {
+        console.error("שגיאה בבדיקת ID מול הקובץ:", error);
+        return { exists: false, message: `שגיאה בבדיקת ID מול הקובץ: ${error.message}` };
     }
-    // קרא לפונקציה נפרדת שמציגה את ה-prompt כדי למנוע קריאה רקורסיבית ישירה במקרה של טעינה מחדש
-    checkYouTubeLinkPrompt();
 }
 
-function checkYouTubeLinkPrompt() {
-    const userInput = prompt("הכנס קישור לסרטון יוטיוב לבדיקה:");
+async function promptAndCheckVideoIdFromFile() {
+    const userInput = prompt("הכנס קישור לסרטון יוטיוב לבדיקה מול הקובץ:");
     if (userInput === null || userInput.trim() === "") {
         return;
     }
     const videoId = extractYouTubeVideoId(userInput);
     if (videoId) {
-        const result = isVideoIdInDatabase(videoId);
+        // הצג הודעת "טוען..." אם הבדיקה עשויה לקחת זמן (אופציונלי)
+        // alert("בודק מול הקובץ..."); 
+        const result = await checkVideoIdDirectlyFromFile(videoId);
         alert(result.message + (result.exists ? "" : " אפשר להוסיף!"));
     } else {
         alert("לא זוהה ID תקין של סרטון יוטיוב מהקישור שהוכנס.");
     }
 }
 
+// ... (שאר הפונקציות של main.js כמו initializePage, setupEventListeners וכו')
 
-// אם אתה רוצה להפעיל את זה עם שילוב מקשים (לדוגמה Ctrl+Shift+I)
-// document.addEventListener('keydown', function(event) {
-//     if (event.ctrlKey && event.shiftKey && event.key === 'I') { // או כל שילוב אחר
-//         event.preventDefault();
-//         checkYouTubeLink();
-//     }
-// });
+// בתוך פונקציית setupEventListeners, נוסיף את המאזין החדש:
+function setupEventListeners() {
+    // ... (כל המאזינים הקודמים) ...
 
-// בסוף הקובץ main.js, אחרי initializePage();
-// אפשר לחשוף את הפונקציה לחלון כדי שיהיה אפשר לקרוא לה מה-console או מ-bookmarklet
+    const checkIdLink = document.getElementById('check-yt-id-link');
+    if (checkIdLink) {
+        checkIdLink.addEventListener('click', function(event) {
+            event.preventDefault(); // מנע מהקישור לנסות לנווט
+            promptAndCheckVideoIdFromFile();
+        });
+    }
+}
+
 window.checkMyYouTubeLink = checkYouTubeLink;
