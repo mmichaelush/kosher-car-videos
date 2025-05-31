@@ -197,3 +197,9 @@ html:not(.dark) .hero-gradient .text-purple-300 {
   object-fit: cover;
 }
 //חדש
+[type='text'], input:where(:not([type])), ..., [type='search'], ... {
+    border-color: #6b7280; /* אפור כהה */
+    border-width: 1px;
+    border-radius: 0px; /* זה נדרס על ידי rounded-lg שלך, וזה טוב */
+    /* ... ועוד מאפיינים ... */
+}
