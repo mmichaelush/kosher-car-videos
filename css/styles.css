@@ -199,54 +199,38 @@ html:not(.dark) .hero-gradient .text-purple-300 {
 //חדש
 /* css/styles.css */
 
+/* 
+  הגדרת ברירת מחדל בסיסית לשדות החיפוש שלך.
+  המטרה היא לוודא שהגבול מוגדר במלואו מההתחלה.
+*/
 input[type="search"].search-input {
-  /* נטרול מראה דפדפן - חשוב לשדות חיפוש */
-  -webkit-appearance: none;
-  appearance: none;
+  -webkit-appearance: none; /* נטרול מראה דפדפן */
+  appearance: none;         /* נטרול מראה דפדפן */
   
   /* 
-    המטרה כאן היא לוודא שהגדרות הגבול מהקלאסים שלך ב-HTML 
-    מוחלות באופן מלא ועקבי מההתחלה.
-    הקלאס 'border' שלך מגדיר border-width: 1px.
-    הקלאס 'border-slate-300' שלך מגדיר את הצבע.
-    נוסיף כאן במפורש border-style: solid כדי לוודא.
+    ודא שסגנון הגבול הוא 'solid'.
+    הרוחב והצבע יגיעו מהקלאסים 'border' ו-'border-slate-300' שלך ב-HTML.
   */
-  border-style: solid !important; /* ודא שסגנון הגבול הוא solid */
+  border-style: solid !important; 
 
-  /* 
-    השארנו את הקלאסים border ו-border-slate-300 ב-HTML.
-    הם אמורים לקבוע את רוחב וצבע הגבול.
-    השורה הזו היא רק ליתר ביטחון אם יש בעיית דריסה קיצונית,
-    אבל עדיף לתת לקלאסים ב-HTML לעשות את העבודה.
-    אם זה לא עובד, נסה להסיר את ההערה מהשורה הבאה:
-  */
-  /* border: 1px solid rgb(203 213 225 / var(--tw-border-opacity, 1)) !important; */
-  /* --tw-border-opacity: 1; */
-
-
-  /* ודא שאין outline או box-shadow לא רצויים במצב רגיל */
   outline: none !important; 
   outline-offset: 0 !important;
-  box-shadow: none !important;
-}
-
-/* מצב כהה - ודא שסגנון הגבול נשאר solid */
-.dark input[type="search"].search-input {
-  border-style: solid !important; /* ודא שסגנון הגבול הוא solid */
-  /* הצבע אמור להגיע מ-dark:border-slate-600 */
-  /* border-color: rgb(100 116 139 / var(--tw-border-opacity, 1)) !important; */
+  /* 
+    אל תאפס כאן box-shadow אם אתה רוצה את ה-shadow-xl שלך מה-HTML.
+    אם ה-shadow-xl הוא הבעיה, נצטרך לבדוק אותו בנפרד.
+    כרגע נניח שהבעיה היא רק הגבול.
+  */
 }
 
 /* 
-  טיפול במצב פוקוס:
+  מצב פוקוס:
   הקלאסים focus:border-purple-500 ו-focus:ring-purple-500 שלך אמורים לטפל בזה.
+  הקוד הבא רק מוודא ש-outline ו-border-style נכונים גם בפוקוס.
 */
 input[type="search"].search-input:focus,
 input[type="search"].search-input:focus-visible {
-  outline: none !important; /* ודא שאין outline ברירת מחדל */
-  border-style: solid !important; /* ודא שסגנון הגבול הוא solid גם בפוקוס */
-  
-  /* צבע הגבול וה-ring יגיעו מהקלאסים של Tailwind focus:* */
+  outline: none !important; 
+  border-style: solid !important; 
 }
 
 /* נטרול קישוטי WebKit פנימיים (חשוב לשמור) */
