@@ -197,46 +197,39 @@ html:not(.dark) .hero-gradient .text-purple-300 {
   object-fit: cover;
 }
 //חדש
-/* === איפוס ספציפי ועקשן לשדות חיפוש באתר שלך === */
+/* css/styles.css */
 
-input[type="search"].search-input,
+input[type="search"].search-input {
+  -webkit-appearance: none; /* נטרול מראה דפדפן - חשוב לשדות חיפוש */
+  appearance: none;         /* נטרול מראה דפדפן - חשוב לשדות חיפוש */
+  
+  /* ודא שאין outline ברירת מחדל */
+  outline: none; 
+  outline-offset: 0; /* אם היה outline, אפס את ההיסט שלו */
+  
+  /* 
+    הקלאסים שלך ב-HTML: 
+    'border', 'border-slate-300', 'dark:border-slate-600', 'rounded-lg'
+    אמורים לטפל במראה הגבול.
+    אין צורך להגדיר כאן border-width, border-style, או border-color 
+    אם הקלאסים האלה נמצאים ב-HTML.
+  */
+}
+
+/* מצב פוקוס - ודא שאין outline, ה-ring וה-border-color יגיעו מ-Tailwind */
 input[type="search"].search-input:focus,
 input[type="search"].search-input:focus-visible {
-  /* נטרול מלא של מראה ברירת מחדל */
-  -webkit-appearance: none !important;
-  appearance: none !important;
-  
-  /* איפוס מוחלט של כל הגדרות הגבול, ה-outline וה-box-shadow */
-  border: none !important; 
-  outline: none !important; 
-  outline-offset: 0 !important; /* חשוב לאפס גם את ההיסט */
-  box-shadow: none !important;
-}
-input[type="search"].search-input {
- 
-  border-width: 1px !important; /* אם 'border' ב-HTML לא מספיק חזק */
-  border-style: solid !important; /* אם 'border' ב-HTML לא מספיק חזק */
-  
-
+  outline: none;
 }
 
-/* נטרול קישוטי WebKit פנימיים (כגון כפתור הביטול) */
+/* נטרול קישוטי WebKit פנימיים (חשוב לשמור) */
 input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
-  -webkit-appearance: none !important;
+  -webkit-appearance: none !important; /* כאן !important יכול להיות שימושי כי אלו פסאודו-אלמנטים של הדפדפן */
   display: none !important;
 }
-header form#desktop-search-form input#desktop-search-input[type="search"].search-input {
-    /* הכללים ה"אגרסיביים" שניסינו קודם */
-    -webkit-appearance: none !important;
-    appearance: none !important;
-    border: 1px solid transparent !important; /* התחל עם שקוף */
-    outline: none !important;
-    outline-offset: 0 !important;
-    box-shadow: none !important;
-    
     /* ואז הגדר את הגבול הרצוי */
     border-color: rgb(203 213 225 / var(--tw-border-opacity, 1)) !important; /* slate-300 */
 }
