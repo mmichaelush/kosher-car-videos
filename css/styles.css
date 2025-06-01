@@ -197,70 +197,45 @@ html:not(.dark) .hero-gradient .text-purple-300 {
   object-fit: cover;
 }
 //חדש
-/* === איפוס אגרסיבי לשדות חיפוש באתר שלך === */
+/* === איפוס ספציפי ועקשן לשדות חיפוש באתר שלך === */
 
-/* 
-  מטרגט את כל שדות החיפוש עם הקלאס הספציפי שלך 'search-input'.
-  זה מגביר ספציפיות כדי לנסות לדרוס כללי Tailwind Preflight.
-*/
-input[type="search"].search-input {
-  -webkit-appearance: none !important; /* נטרול עיצובי WebKit - חשוב! */
-  appearance: none !important;         /* נטרול עיצוב כללי - חשוב! */
-  
-  /* 
-    איפוס מוחלט של כל מאפייני הגבול.
-    הקלאסים שלך ב-HTML (כמו border-slate-300 ו-rounded-lg) 
-    צריכים לבנות את הגבול מחדש, אבל אנחנו מוודאים ששום דבר לא "שורד".
-  */
-  border: 1px solid transparent !important; /* התחל עם גבול שקוף לגמרי */
-  
-  outline: none !important;            /* הסר כל outline קיים */
-  outline-offset: 0 !important;        /* אפס את ההיסט של ה-outline */
-  box-shadow: none !important;         /* הסר כל box-shadow קיים */
-}
-
-/* 
-  בנייה מחדש של הגבול הרצוי לך במצב הרגיל.
-  זה ישתמש בצבע שהגדרת עם border-slate-300 דרך משתני ה-CSS של Tailwind.
-*/
-input[type="search"].search-input {
-  /* הקלאס border-slate-300 אמור להגדיר את זה, אבל נחזק כאן */
-  border-color: rgb(203 213 225 / var(--tw-border-opacity, 1)) !important; 
-  --tw-border-opacity: 1;
-}
-
-/* מצב כהה - דריסה עבור הגבול */
-.dark input[type="search"].search-input {
-  border-color: rgb(100 116 139 / var(--tw-border-opacity, 1)) !important; /* slate-600 */
-}
-
-/* 
-  טיפול במצב פוקוס:
-  הקלאסים focus:border-purple-500 ו-focus:ring-purple-500 שלך אמורים לטפל בזה.
-  הקוד הבא הוא רק ליתר ביטחון כדי להבטיח שה-outline וה-box-shadow
-  של הפוקוס (ה-ring) הם היחידים שפעילים.
-*/
+input[type="search"].search-input,
 input[type="search"].search-input:focus,
 input[type="search"].search-input:focus-visible {
-  outline: none !important; /* ודא שאין outline ברירת מחדל */
+  /* נטרול מלא של מראה ברירת מחדל */
+  -webkit-appearance: none !important;
+  appearance: none !important;
   
-  /* הגדר מחדש את צבע הגבול בפוקוס (לפי הקלאסים שלך) */
-  border-color: rgb(139 92 246 / var(--tw-border-opacity, 1)) !important; /* focus:border-purple-500 */
-
-  /* הגדר מחדש את ה-ring של Tailwind (box-shadow) בפוקוס */
-  --tw-ring-offset-shadow: var(--tw-ring-inset, ) 0 0 0 var(--tw-ring-offset-width, 0px) var(--tw-ring-offset-color, #fff);
-  --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(var(--tw-ring-width, 3px) + var(--tw-ring-offset-width, 0px)) var(--tw-ring-color, rgb(139 92 246 / 0.5)); /* focus:ring-purple-500 */
-  box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000) !important;
+  /* איפוס מוחלט של כל הגדרות הגבול, ה-outline וה-box-shadow */
+  border: none !important; 
+  outline: none !important; 
+  outline-offset: 0 !important; /* חשוב לאפס גם את ההיסט */
+  box-shadow: none !important;
 }
 
-.dark input[type="search"].search-input:focus,
-.dark input[type="search"].search-input:focus-visible {
-  border-color: rgb(167 139 250 / var(--tw-border-opacity, 1)) !important; /* dark:focus:border-purple-400 */
-  --tw-ring-shadow: var(--tw-ring-inset, ) 0 0 0 calc(var(--tw-ring-width, 3px) + var(--tw-ring-offset-width, 0px)) var(--tw-ring-color, rgb(167 139 250 / 0.5)); /* dark:focus:ring-purple-400 */
+/* 
+  בנייה מחדש של המראה הרצוי באמצעות סלקטור ספציפי.
+  הקלאסים מה-HTML שלך (border, border-slate-300, rounded-lg וכו') 
+  עדיין חשובים כי הם מגדירים את משתני ה-CSS ש-Tailwind משתמש בהם.
+  כאן אנחנו רק מוודאים שהם מוחלים נכון.
+*/
+input[type="search"].search-input {
+  /* הגדרת הגבול הרצוי במצב רגיל */
+  /* ה-1px מגיע מהקלאס "border" שלך ב-HTML */
+  /* והצבע מהקלאס "border-slate-300" שלך ב-HTML */
+  /* ה-CSS כאן רק מוודא שהם נדרסים על פני כל ברירת מחדל אחרת */
+  border-width: 1px !important; /* אם 'border' ב-HTML לא מספיק חזק */
+  border-style: solid !important; /* אם 'border' ב-HTML לא מספיק חזק */
+  
+  /* צבע הגבול אמור להגיע מ- border-slate-300 */
+  /* border-color: rgb(203 213 225 / var(--tw-border-opacity, 1)) !important; */
+  /* --tw-border-opacity: 1; */
+  
+  /* border-radius אמור להגיע מ- rounded-lg */
+  /* border-radius: 0.5rem !important; */
 }
 
-
-/* נטרול קישוטי WebKit (חשוב לשמור) */
+/* נטרול קישוטי WebKit פנימיים (כגון כפתור הביטול) */
 input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
