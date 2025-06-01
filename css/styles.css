@@ -200,26 +200,53 @@ html:not(.dark) .hero-gradient .text-purple-300 {
 /* css/styles.css */
 
 input[type="search"].search-input {
-  -webkit-appearance: none; /* נטרול מראה דפדפן - חשוב לשדות חיפוש */
-  appearance: none;         /* נטרול מראה דפדפן - חשוב לשדות חיפוש */
-  
-  /* ודא שאין outline ברירת מחדל */
-  outline: none; 
-  outline-offset: 0; /* אם היה outline, אפס את ההיסט שלו */
+  /* נטרול מראה דפדפן - חשוב לשדות חיפוש */
+  -webkit-appearance: none;
+  appearance: none;
   
   /* 
-    הקלאסים שלך ב-HTML: 
-    'border', 'border-slate-300', 'dark:border-slate-600', 'rounded-lg'
-    אמורים לטפל במראה הגבול.
-    אין צורך להגדיר כאן border-width, border-style, או border-color 
-    אם הקלאסים האלה נמצאים ב-HTML.
+    המטרה כאן היא לוודא שהגדרות הגבול מהקלאסים שלך ב-HTML 
+    מוחלות באופן מלא ועקבי מההתחלה.
+    הקלאס 'border' שלך מגדיר border-width: 1px.
+    הקלאס 'border-slate-300' שלך מגדיר את הצבע.
+    נוסיף כאן במפורש border-style: solid כדי לוודא.
   */
+  border-style: solid !important; /* ודא שסגנון הגבול הוא solid */
+
+  /* 
+    השארנו את הקלאסים border ו-border-slate-300 ב-HTML.
+    הם אמורים לקבוע את רוחב וצבע הגבול.
+    השורה הזו היא רק ליתר ביטחון אם יש בעיית דריסה קיצונית,
+    אבל עדיף לתת לקלאסים ב-HTML לעשות את העבודה.
+    אם זה לא עובד, נסה להסיר את ההערה מהשורה הבאה:
+  */
+  /* border: 1px solid rgb(203 213 225 / var(--tw-border-opacity, 1)) !important; */
+  /* --tw-border-opacity: 1; */
+
+
+  /* ודא שאין outline או box-shadow לא רצויים במצב רגיל */
+  outline: none !important; 
+  outline-offset: 0 !important;
+  box-shadow: none !important;
 }
 
-/* מצב פוקוס - ודא שאין outline, ה-ring וה-border-color יגיעו מ-Tailwind */
+/* מצב כהה - ודא שסגנון הגבול נשאר solid */
+.dark input[type="search"].search-input {
+  border-style: solid !important; /* ודא שסגנון הגבול הוא solid */
+  /* הצבע אמור להגיע מ-dark:border-slate-600 */
+  /* border-color: rgb(100 116 139 / var(--tw-border-opacity, 1)) !important; */
+}
+
+/* 
+  טיפול במצב פוקוס:
+  הקלאסים focus:border-purple-500 ו-focus:ring-purple-500 שלך אמורים לטפל בזה.
+*/
 input[type="search"].search-input:focus,
 input[type="search"].search-input:focus-visible {
-  outline: none;
+  outline: none !important; /* ודא שאין outline ברירת מחדל */
+  border-style: solid !important; /* ודא שסגנון הגבול הוא solid גם בפוקוס */
+  
+  /* צבע הגבול וה-ring יגיעו מהקלאסים של Tailwind focus:* */
 }
 
 /* נטרול קישוטי WebKit פנימיים (חשוב לשמור) */
@@ -227,9 +254,6 @@ input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
-  -webkit-appearance: none !important; /* כאן !important יכול להיות שימושי כי אלו פסאודו-אלמנטים של הדפדפן */
+  -webkit-appearance: none !important;
   display: none !important;
-}
-    /* ואז הגדר את הגבול הרצוי */
-    border-color: rgb(203 213 225 / var(--tw-border-opacity, 1)) !important; /* slate-300 */
 }
