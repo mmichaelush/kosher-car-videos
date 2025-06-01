@@ -212,27 +212,12 @@ input[type="search"].search-input:focus-visible {
   outline-offset: 0 !important; /* חשוב לאפס גם את ההיסט */
   box-shadow: none !important;
 }
-
-/* 
-  בנייה מחדש של המראה הרצוי באמצעות סלקטור ספציפי.
-  הקלאסים מה-HTML שלך (border, border-slate-300, rounded-lg וכו') 
-  עדיין חשובים כי הם מגדירים את משתני ה-CSS ש-Tailwind משתמש בהם.
-  כאן אנחנו רק מוודאים שהם מוחלים נכון.
-*/
 input[type="search"].search-input {
-  /* הגדרת הגבול הרצוי במצב רגיל */
-  /* ה-1px מגיע מהקלאס "border" שלך ב-HTML */
-  /* והצבע מהקלאס "border-slate-300" שלך ב-HTML */
-  /* ה-CSS כאן רק מוודא שהם נדרסים על פני כל ברירת מחדל אחרת */
+ 
   border-width: 1px !important; /* אם 'border' ב-HTML לא מספיק חזק */
   border-style: solid !important; /* אם 'border' ב-HTML לא מספיק חזק */
   
-  /* צבע הגבול אמור להגיע מ- border-slate-300 */
-  /* border-color: rgb(203 213 225 / var(--tw-border-opacity, 1)) !important; */
-  /* --tw-border-opacity: 1; */
-  
-  /* border-radius אמור להגיע מ- rounded-lg */
-  /* border-radius: 0.5rem !important; */
+
 }
 
 /* נטרול קישוטי WebKit פנימיים (כגון כפתור הביטול) */
@@ -242,4 +227,16 @@ input[type="search"]::-webkit-search-results-button,
 input[type="search"]::-webkit-search-results-decoration {
   -webkit-appearance: none !important;
   display: none !important;
+}
+header form#desktop-search-form input#desktop-search-input[type="search"].search-input {
+    /* הכללים ה"אגרסיביים" שניסינו קודם */
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    border: 1px solid transparent !important; /* התחל עם שקוף */
+    outline: none !important;
+    outline-offset: 0 !important;
+    box-shadow: none !important;
+    
+    /* ואז הגדר את הגבול הרצוי */
+    border-color: rgb(203 213 225 / var(--tw-border-opacity, 1)) !important; /* slate-300 */
 }
