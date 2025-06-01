@@ -200,40 +200,27 @@ html:not(.dark) .hero-gradient .text-purple-300 {
 /* css/styles.css */
 
 /* 
-  הגדרת ברירת מחדל בסיסית לשדות החיפוש שלך.
-  המטרה היא לוודא שהגבול מוגדר במלואו מההתחלה.
+  נטרול עיצובי ברירת מחדל עקשניים של דפדפנים 
+  עבור כל שדות החיפוש עם הקלאס 'search-input'.
 */
 input[type="search"].search-input {
-  -webkit-appearance: none; /* נטרול מראה דפדפן */
-  appearance: none;         /* נטרול מראה דפדפן */
+  -webkit-appearance: none !important; /* נטרול עיצובי WebKit ספציפית */
+  appearance: none !important;         /* נטרול עיצוב כללי */
   
   /* 
-    ודא שסגנון הגבול הוא 'solid'.
-    הרוחב והצבע יגיעו מהקלאסים 'border' ו-'border-slate-300' שלך ב-HTML.
+    ודא ששום גבול ברירת מחדל לא מפריע.
+    הקלאסים שלך ב-HTML ('border', 'border-slate-300', 'rounded-lg')
+    יבנו את הגבול הרצוי.
   */
-  border-style: solid !important; 
-
+  border-style: solid !important; /* זה המפתח - לכפות סגנון גבול אחיד */
   outline: none !important; 
-  outline-offset: 0 !important;
-  /* 
-    אל תאפס כאן box-shadow אם אתה רוצה את ה-shadow-xl שלך מה-HTML.
-    אם ה-shadow-xl הוא הבעיה, נצטרך לבדוק אותו בנפרד.
-    כרגע נניח שהבעיה היא רק הגבול.
-  */
+  box-shadow: none !important; /* למקרה שיש צללית ברירת מחדל שגורמת לזה */
 }
 
 /* 
-  מצב פוקוס:
-  הקלאסים focus:border-purple-500 ו-focus:ring-purple-500 שלך אמורים לטפל בזה.
-  הקוד הבא רק מוודא ש-outline ו-border-style נכונים גם בפוקוס.
+  חשוב לשמור על נטרול קישוטי WebKit הפנימיים (כמו כפתור ביטול פנימי) 
+  שלא קשורים ישירות לגבול אבל יכולים להשפיע על המראה.
 */
-input[type="search"].search-input:focus,
-input[type="search"].search-input:focus-visible {
-  outline: none !important; 
-  border-style: solid !important; 
-}
-
-/* נטרול קישוטי WebKit פנימיים (חשוב לשמור) */
 input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
