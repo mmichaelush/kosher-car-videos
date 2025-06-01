@@ -247,30 +247,12 @@
   {
     "id": "8LyCFXK6z54",
     "title": "מה מסתיר הכיסוי? חשיפה ראשונה של הפרוייקט החדש (ישן)",
-    "duration": "12:35",
-    "channel": "Knufia | הכנופיה",
-    "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
-    "thumbnail": "https://i.ytimg.com/vi/8LyCFXK6z54/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
-    "hebrewContent": true
-  },
-  {
-    "id": "8LyCFXK6z54",
-    "title": "מה מסתיר הכיסוי? חשיפה ראשונה של הפרוייקט החדש (ישן)",
     "duration": "12:34",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/8LyCFXK6z54/hqdefault.jpg",
     "category": "collectors",
-    "tags": [
-      "אספנות",
-      "פיג'ו 304",
-      "הכנופיה"
-    ],
+    "tags": ["פרוייקט פיג'ו קבריולט","אספנות","פיג'ו 304","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -280,11 +262,8 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/8Uu0v0jcSgY/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "troubleshooting",
+    "tags": ["מצנן שמן","קולר שמן","נזילת שמן","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -294,11 +273,8 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/97HGjNr85I0/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "maintenance",
+    "tags": ["דפרנציאל","עשה זאת בעצמך","הכנופיה","נוזל דפרנציאל"],
     "hebrewContent": true
   },
   {
@@ -309,10 +285,7 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/9DuioA0v1AM/hqdefault.jpg",
     "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "tags": ["מזרקים","ניקוי מזרקים","סוזוקי","סוזוקי גרנד ויטרה","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
