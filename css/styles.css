@@ -197,34 +197,3 @@ html:not(.dark) .hero-gradient .text-purple-300 {
   object-fit: cover;
 }
 //חדש
-/* css/styles.css */
-
-/* 
-  נטרול עיצובי ברירת מחדל עקשניים של דפדפנים 
-  עבור כל שדות החיפוש עם הקלאס 'search-input'.
-*/
-input[type="search"].search-input {
-  -webkit-appearance: none !important; /* נטרול עיצובי WebKit ספציפית */
-  appearance: none !important;         /* נטרול עיצוב כללי */
-  
-  /* 
-    ודא ששום גבול ברירת מחדל לא מפריע.
-    הקלאסים שלך ב-HTML ('border', 'border-slate-300', 'rounded-lg')
-    יבנו את הגבול הרצוי.
-  */
-  border-style: solid !important; /* זה המפתח - לכפות סגנון גבול אחיד */
-  outline: none !important; 
-  box-shadow: none !important; /* למקרה שיש צללית ברירת מחדל שגורמת לזה */
-}
-
-/* 
-  חשוב לשמור על נטרול קישוטי WebKit הפנימיים (כמו כפתור ביטול פנימי) 
-  שלא קשורים ישירות לגבול אבל יכולים להשפיע על המראה.
-*/
-input[type="search"]::-webkit-search-decoration,
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-results-button,
-input[type="search"]::-webkit-search-results-decoration {
-  -webkit-appearance: none !important;
-  display: none !important;
-}
