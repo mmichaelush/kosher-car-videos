@@ -150,12 +150,29 @@
             
             
            <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                    <div class="hidden md:block">
-                        <form role="search" id="desktop-search-form" class="relative">
-                            <input type="search" id="desktop-search-input" class="search-input block w-48 lg:w-60 pr-4 pl-10 py-2.5 text-sm border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500 transition-all duration-300 focus:w-60 lg:focus:w-72" placeholder="חיפוש סרטונים...">
-                            <button type="submit" aria-label="בצע חיפוש" class="absolute left-0 top-0 h-full px-3 text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-search"></i></button>
-                        </form>
-                    </div>
+    <div class="hidden md:block">
+        <form role="search" id="desktop-search-form" class="relative">
+            <input type="search" id="desktop-search-input" 
+                   class="search-input block w-48 lg:w-60 pr-4 pl-10 py-2.5 text-sm border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500 transition-all duration-300 focus:w-60 lg:focus:w-72" 
+                   placeholder="חיפוש סרטונים..." 
+                   autocomplete="off">
+            <button type="submit" aria-label="בצע חיפוש" 
+                    class="absolute left-0 top-0 h-full px-3 text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-300">
+                <i class="fas fa-search"></i>
+            </button>
+
+            <!-- החזרת מיכל ההצעות עם עיצוב בסיסי מאוד -->
+            <div id="desktop-search-suggestions" 
+                 class="absolute top-full left-0 right-0 mt-1 z-50 hidden bg-white dark:bg-slate-800 border border-gray-300 dark:border-gray-600 rounded-md shadow-lg"> 
+                <!-- רקע לבן/כהה, גבול, צל ו-z-index כדי שיהיה מעל -->
+                <ul class="max-h-72 overflow-y-auto">
+                    <!-- הצעות יוכנסו כאן על ידי JS -->
+                </ul>
+            </div>
+        </form>
+    </div>
+    <!-- ... שאר האלמנטים שלך ... -->
+</div>
 
 
 
