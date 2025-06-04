@@ -304,21 +304,6 @@
     "hebrewContent": true
   },
   {
-    "id": "ALWBWMg7wyU",
-    "title": "המדריך המלא לבחירת וקניית רכב",
-    "duration": "16:02",
-    "channel": "Knufia | הכנופיה",
-    "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
-    "thumbnail": "https://i.ytimg.com/vi/ALWBWMg7wyU/hqdefault.jpg",
-    "category": "review",
-    "tags": [
-      "סקירות רכב",
-      "רכב בכללי",
-      "הכנופיה"
-    ],
-    "hebrewContent": true
-  },
-  {
     "id": "APXUJEOnx0c",
     "title": "שיפוץ רכב אספנות פיג'ו 204 '72 [מתלה אחורי] - פרק",
     "duration": "9:32",
@@ -508,20 +493,6 @@
     "hebrewContent": true
   },
   {
-    "id": "Jo_y8n2XAsU",
-    "title": "רכישה וייבוא חלקי חילוף לרכב מחו'ל - המדריך המלא",
-    "duration": "28:55",
-    "channel": "Knufia | הכנופיה",
-    "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
-    "thumbnail": "https://i.ytimg.com/vi/Jo_y8n2XAsU/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
-    "hebrewContent": true
-  },
-  {
     "id": "KS4WXmXM0J0",
     "title": "החלפת אטם מכסה שסתומים - כל אחד יכול! [CRDi D4EA]",
     "duration": "8:48",
@@ -543,11 +514,7 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/LXAMd_1I3yY/hqdefault.jpg",
     "category": "collectors",
-    "tags": [
-      "אספנות",
-      "פיג'ו 304",
-      "הכנופיה"
-    ],
+    "tags": ["פרוייקט פיג'ו קבריולט","אספנות","קרבורטור","פיג'ו 304","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -558,10 +525,7 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/LmYMd9XqjsI/hqdefault.jpg",
     "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "tags": ["ליטוש פנסים","פנסים","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -571,11 +535,8 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/Mi-N0uVJpIg/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "troubleshooting",
+    "tags": ["מוט קישור","מוט מייצב","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
