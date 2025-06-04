@@ -215,11 +215,8 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/7DNamYPcXUs/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "troubleshooting",
+    "tags": ["תותבי שילדה","תת שילדה","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -290,47 +287,35 @@
   },
   {
     "id": "ABKfGavseIM",
-    "title": "שיפוץ רכב אספנות פיג'ו 204 '72 [ניקלים ובעיות חשמל] - פרק",
+    "title": "שיפוץ רכב אספנות פיג'ו 204 שנת 1972 [ניקלים ובעיות חשמל] - פרק 8",
     "duration": "7:38",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/ABKfGavseIM/hqdefault.jpg",
     "category": "collectors",
-    "tags": [
-      "אספנות",
-      "פיג'ו 204",
-      "הכנופיה"
-    ],
+    "tags": ["ניקלים","אספנות","פיג'ו 204","הכנופיה","צמת חשמל"],
     "hebrewContent": true
   },
   {
     "id": "APXUJEOnx0c",
-    "title": "שיפוץ רכב אספנות פיג'ו 204 '72 [מתלה אחורי] - פרק",
+    "title": "שיפוץ רכב אספנות פיג'ו 204 שנת 1972 [מתלה אחורי] - פרק 5",
     "duration": "9:32",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/APXUJEOnx0c/hqdefault.jpg",
     "category": "collectors",
-    "tags": [
-      "אספנות",
-      "פיג'ו 204",
-      "הכנופיה"
-    ],
+    "tags": ["מתלה אחורי","מתלים","גוז'ון","אספנות","פיג'ו 204","הכנופיה","בולמים","קפיצים","בולמים אחוריים"],
     "hebrewContent": true
   },
   {
     "id": "Av7w-YJqHAU",
     "title": "הנובה של נובה - לזכרם [הצגת הפרוייקט]",
-    "duration": "8:03",
+    "duration": "3:45",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/Av7w-YJqHAU/hqdefault.jpg",
     "category": "collectors",
-    "tags": [
-      "הנובה של נובה",
-      "אספנות",
-      "הכנופיה"
-    ],
+    "tags": ["הנובה של נובה","אספנות","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -341,26 +326,18 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/BpP-YsJPctk/hqdefault.jpg",
     "category": "collectors",
-    "tags": [
-      "הנובה של נובה",
-      "אספנות",
-      "הכנופיה"
-    ],
+    "tags": ["הנובה של נובה","אספנות","הכנופיה"],
     "hebrewContent": true
   },
   {
     "id": "CHu3dnOPNvo",
-    "title": "החלפת שמן ראשונה ב...",
+    "title": "החלפת שמן ראשונה אחרי חצי יובל",
     "duration": "2:38",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/CHu3dnOPNvo/hqdefault.jpg",
-    "category": "review",
-    "tags": [
-      "סקירות רכב",
-      "רכב בכללי",
-      "הכנופיה"
-    ],
+    "category": "collectors",
+    "tags": ["החלפת שמן","אספנות","רכב בכללי","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -371,10 +348,7 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/CMW2j8Chavo/hqdefault.jpg",
     "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "tags": ["שסתום EGR","EGR","ניקוז אויר","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -385,25 +359,7 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/GO578Rasfyo/hqdefault.jpg",
     "category": "review",
-    "tags": [
-      "סקירות רכב",
-      "הכנופיה"
-    ],
-    "hebrewContent": true
-  },
-  {
-    "id": "GO578Rasfyo",
-    "title": "עדיף שלא תקנו את הרכבים האלו",
-    "duration": "11:44",
-    "channel": "Knufia | הכנופיה",
-    "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
-    "thumbnail": "https://i.ytimg.com/vi/GO578Rasfyo/hqdefault.jpg",
-    "category": "review",
-    "tags": [
-      "סקירות רכב",
-      "רכב בכללי",
-      "הכנופיה"
-    ],
+    "tags": ["רצועה טבולה","סקירות רכב","רכב בכללי","הכנופיה","מנוע פיורטק"],
     "hebrewContent": true
   },
   {
@@ -413,11 +369,8 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/HGpgta2ma4A/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "troubleshooting",
+    "tags": ["כריות בולם","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -428,7 +381,7 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/HJqtv-yhLU8/hqdefault.jpg",
     "category": "diy",
-    "tags": [
+    "tags": ["סוזוקי גרנד ויטרה","שמן דפרנציאל","דפרנציאל",
       "עשה זאת בעצמך",
       "הכנופיה"
     ],
@@ -485,11 +438,7 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/JRpML53TMhk/hqdefault.jpg",
     "category": "collectors",
-    "tags": [
-      "הנובה של נובה",
-      "אספנות",
-      "הכנופיה"
-    ],
+    "tags": ["הנובה של נובה","אספנות","הכנופיה"],
     "hebrewContent": true
   },
   {
