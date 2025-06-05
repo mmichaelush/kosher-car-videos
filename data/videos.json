@@ -413,7 +413,7 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/H_qsovLbn_s/hqdefault.jpg",
-    "category": "diy",
+    "category": "troubleshooting",
     "tags": ["רצועת תזמון","מנועי HDI","עשה זאת בעצמך","הכנופיה","פיג'ו 508"],
     "hebrewContent": true
   },
@@ -424,11 +424,8 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/I7i6vG6312Q/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "troubleshooting",
+    "tags": ["צירייה","ציריות","עשה זאת בעצמך","הכנופיה","שברולט סוניק"],
     "hebrewContent": true
   },
   {
@@ -438,11 +435,8 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/KS4WXmXM0J0/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "troubleshooting",
+    "tags": ["אטם","אטם מכסה שסתומים","מכסה שסתומים","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -486,24 +480,18 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/NMgRnHrzcLw/hqdefault.jpg",
     "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "tags": ["סטופ סטרט","מערכת סטופ סטרט","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
     "id": "PgdBq-kjbto",
-    "title": "התקנת הגבהה לג'יפ Lift Kit for Suzuki Grand Vitara",
+    "title": "התקנת הגבהה לג'יפ",
     "duration": "3:45",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/PgdBq-kjbto/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "upgrades",
+    "tags": ["הגבהה","סוזוקי גרנד ויטרה","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
