@@ -30,71 +30,11 @@
     --color-indigo-600: #4f46e5;
     --color-indigo-700: #4338ca;
     --color-indigo-900: #312e81;
-
-    --bg-body: var(--color-slate-100);
-    --text-body: var(--color-slate-800);
-    --bg-header: var(--color-sky-50);
-    --text-header-link: var(--color-slate-700);
-    --text-header-link-hover: var(--color-purple-600);
-    --bg-header-link-hover: var(--color-purple-100);
-    --text-header-link-active: var(--color-purple-600);
-    --bg-header-link-active: var(--color-purple-100);
-    --bg-section-default: var(--color-white);
-    --text-section-heading: var(--color-slate-900);
-    --text-section-paragraph: var(--color-slate-600);
-    --border-section: var(--color-slate-200);
-    --card-bg-light: var(--color-white);
-    --card-border-light: rgba(203, 213, 225, 0.8);
-    --card-shadow-light: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    --card-shadow-hover-light: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    --bg-card-tag: var(--color-purple-100);
-    --text-card-tag: var(--color-purple-700);
-    --hero-gradient: linear-gradient(135deg, var(--color-purple-700) 0%, var(--color-indigo-600) 100%);
-    --hero-text: var(--color-white);
-    --hero-text-accent: var(--color-purple-300);
-    --hero-text-secondary: var(--color-purple-100);
-    --hero-link-hover: var(--color-yellow-300);
-    --footer-bg: var(--color-slate-900);
-    --footer-text: var(--color-slate-400);
-    --footer-heading: var(--color-white);
-    --footer-link-hover: var(--color-purple-300);
-    --footer-border: var(--color-slate-700);
-}
-
-.dark {
-    /* === Dark Mode Variables === */
-    --bg-body: var(--color-slate-900);
-    --text-body: var(--color-slate-100);
-    --bg-header: var(--color-slate-800);
-    --text-header-link: var(--color-slate-300);
-    --text-header-link-hover: var(--color-purple-300);
-    --bg-header-link-hover: var(--color-slate-700);
-    --text-header-link-active: var(--color-purple-300);
-    --bg-header-link-active: var(--color-purple-800 / 0.5);
-    --bg-section-default: var(--color-slate-800);
-    --text-section-heading: var(--color-slate-50);
-    --text-section-paragraph: var(--color-slate-300);
-    --border-section: var(--color-slate-700);
-    --card-bg-dark: var(--color-slate-800);
-    --card-border-dark: rgba(51, 65, 85, 0.6);
-    --card-shadow-dark: 0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -4px rgba(0,0,0,0.3);
-    --card-shadow-hover-dark: 0 20px 25px -5px rgba(124, 58, 237, 0.2), 0 8px 10px -6px rgba(124, 58, 237, 0.15);
-    --bg-card-tag: var(--color-purple-800);
-    --text-card-tag: var(--color-purple-200);
-    --hero-gradient: linear-gradient(135deg, var(--color-purple-900) 0%, var(--color-indigo-900) 100%);
-    --hero-text: var(--color-slate-50);
-    --hero-text-accent: var(--color-purple-400);
-    --hero-text-secondary: var(--color-purple-200 / 0.9);
-    --hero-link-hover: var(--color-yellow-300);
-    --footer-bg: var(--color-gray-950);
-    --footer-text: var(--color-slate-400);
-    --footer-heading: var(--color-slate-100);
-    --footer-link-hover: var(--color-purple-300);
-    --footer-border: var(--color-slate-800);
 }
 
 html {
     scroll-behavior: smooth;
+    scroll-padding-top: 80px; /* Offset for sticky header */
 }
 
 body {
@@ -102,62 +42,15 @@ body {
     line-height: 1.65;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: var(--bg-body) !important;
-    color: var(--text-body) !important;
-    transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* --- Gradient and Animation Styles --- */
 
 .hero-gradient {
-    background: var(--hero-gradient) !important;
-    color: var(--hero-text) !important;
+    background: linear-gradient(135deg, var(--color-purple-700) 0%, var(--color-indigo-600) 100%);
 }
-html:not(.dark) .hero-gradient .text-purple-300 {
-    color: var(--hero-text-accent) !important;
-}
-.dark .hero-gradient .dark\:text-purple-400 { /*שים לב ל- \: ל-escape של הנקודתיים */
-    color: var(--hero-text-accent) !important;
-}
-
-.hero-gradient a:hover {
-    color: var(--hero-link-hover) !important;
-}
-
-.search-input,
-.tag-input,
-#contact-section input,
-#contact-section textarea {
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-}
-
-#back-to-top-btn {
-    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-out;
-}
-#back-to-top-btn:hover {
-    transform: scale(1.1);
-}
-
-#site-footer {
-    background-color: var(--footer-bg) !important;
-    color: var(--footer-text) !important;
-}
-#site-footer h3 {
-    color: var(--footer-heading) !important;
-}
-#site-footer a {
-    color: var(--footer-text) !important;
-}
-#site-footer a:hover {
-    color: var(--footer-link-hover) !important;
-}
-#site-footer .border-t {
-    border-top-color: var(--footer-border) !important;
-}
-
-.line-clamp-2 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+.dark .hero-gradient {
+    background: linear-gradient(135deg, var(--color-purple-900) 0%, var(--color-indigo-900) 100%);
 }
 
 .floating {
@@ -165,27 +58,22 @@ html:not(.dark) .hero-gradient .text-purple-300 {
 }
 
 @keyframes float {
-    0% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-10px);
-    }
-    100% {
-        transform: translateY(0px);
-    }
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
 }
+
+/* --- Component-Specific Styles --- */
 
 .video-thumbnail-container {
   position: relative; 
   width: 100%;
-  padding-top: 56.25%;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
   height: 0; 
 }
 
 .video-thumbnail-container > img,
 .video-thumbnail-container > iframe,
-.video-thumbnail-container > button
+.video-thumbnail-container > button {
   position: absolute;
   top: 0;
   left: 0;
@@ -196,4 +84,29 @@ html:not(.dark) .hero-gradient .text-purple-300 {
 .video-thumbnail-container > img {
   object-fit: cover;
 }
-//חדש
+
+.line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+
+/* Footer link styling */
+.footer-link {
+    transition: color 0.2s ease-in-out;
+}
+.dark .footer-link:hover {
+    color: var(--color-purple-300);
+}
+.footer-link:hover {
+    color: var(--color-purple-400);
+}
+
+/* Back to top button visibility and animation */
+#back-to-top-btn {
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-out;
+}
+#back-to-top-btn:hover {
+    transform: scale(1.1);
+}
