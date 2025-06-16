@@ -591,8 +591,7 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/Ts0Uiz3FICc/hqdefault.jpg",
     "category": "collectors",
-    "tags": ["אספנות","פיג'ו 304","הכנופיה",""
-    ],
+    "tags": ["אספנות","פיג'ו 304","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -603,11 +602,7 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/UvLs1DSU4Es/hqdefault.jpg",
     "category": "collectors",
-    "tags": [
-      "אספנות",
-      "פיג'ו 204",
-      "הכנופיה"
-    ],
+    "tags": ["חשמל","אספנות","פיג'ו 204","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -628,12 +623,8 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/W4VJyxguijA/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "כיסוי הגה",
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "upgrades",
+    "tags": ["כיסוי הגה","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -643,53 +634,41 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/W4bAkbUowx0/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "troubleshooting",
+    "tags": ["הגה","מסרק הגה","תפוחי הגה","תפוחים","עשה זאת בעצמך","הכנופיה","סוזוקי גרנד ויטרה"],
     "hebrewContent": true
   },
   {
     "id": "WKCSlzIYRR8",
-    "title": "נוזל בלמים ברכב - כל אחד יכול!",
+    "title": "החלפת נוזל בלמים ברכב - כל אחד יכול!",
     "duration": "5:54",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/WKCSlzIYRR8/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "maintenance",
+    "tags": ["בלמים","נוזל בלמים","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
     "id": "WWa3JElt5Rs",
-    "title": "תושבות מנוע - כל אחד יכול! [סוזוקי גרנד ויטרה]",
+    "title": "החלפת תושבות מנוע - כל אחד יכול! [סוזוקי גרנד ויטרה]",
     "duration": "4:18",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/WWa3JElt5Rs/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "troubleshooting",
+    "tags": ["תושבת מנוע","עשה זאת בעצמך","הכנופיה","סוזוקי גרנד ויטרה"],
     "hebrewContent": true
   },
   {
     "id": "WadvZQug9_4",
-    "title": "יום עבודה=שקט להרבה זמן – תחזוקה לגרנד ויטרה 2008",
+    "title": "יום עבודה = שקט להרבה זמן – תחזוקה לגרנד ויטרה 2008",
     "duration": "29:07",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/WadvZQug9_4/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "maintenance",
+    "tags": ["טיפול תקופתי","טיפול עשרת אלפים","החלפת שמנים","החלפת נוזלים","אטם מכסה שסתומים","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -699,40 +678,30 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/XRkxn5DoiVg/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "troubleshooting",
+    "tags": ["חלונות","חלון","לחצן חלון","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
     "id": "XrvJKwV52Xs",
-    "title": "בדיקה חיצונית בסיסית\n    בדיקה חיצונית בסיסית\n    0:00",
+    "title": "בדיקת רכב יד שניה - עשו זאת בעצמכם!",
     "duration": "17:33",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/XrvJKwV52Xs/hqdefault.jpg",
-    "category": "review",
-    "tags": [
-      "סקירות רכב",
-      "רכב בכללי",
-      "הכנופיה"
-    ],
+    "category": "diy",
+    "tags": ["בדיקת רכב","רכב יד שניה","רכב בכללי","הכנופיה","עשה זאת בעצמך"],
     "hebrewContent": true
   },
   {
     "id": "XvRYnCtREyc",
-    "title": "פילטר סולר - כל אחד יכול! [טויוטה לנד קרוזר]",
+    "title": "החלפת פילטר סולר - כל אחד יכול! [טויוטה לנד קרוזר]",
     "duration": "4:52",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/XvRYnCtREyc/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "maintenance",
+    "tags": ["סולר","פילטר","פילטר סולר","עשה זאת בעצמך","הכנופיה","טויוטה לנד קרוזר"],
     "hebrewContent": true
   },
   {
@@ -742,26 +711,8 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/YG_mEzy3g4M/hqdefault.jpg",
-    "category": "review",
-    "tags": [
-      "סקירות רכב",
-      "הכנופיה"
-    ],
-    "hebrewContent": true
-  },
-  {
-    "id": "YXyzinATKkg",
-    "title": "השיפוץ של ג'יזל הסתיים?! [ניגשים לטסט - פרק אחרון]",
-    "duration": "12:15",
-    "channel": "Knufia | הכנופיה",
-    "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
-    "thumbnail": "https://i.ytimg.com/vi/YXyzinATKkg/hqdefault.jpg",
     "category": "collectors",
-    "tags": [
-      "אספנות",
-      "פיג'ו 204",
-      "הכנופיה"
-    ],
+    "tags": ["אספנות","סקירות רכב","הכנופיה","מאזדה"],
     "hebrewContent": true
   },
   {
@@ -772,11 +723,7 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/Y_nyv7gNgGw/hqdefault.jpg",
     "category": "collectors",
-    "tags": [
-      "אספנות",
-      "פיג'ו 304",
-      "הכנופיה"
-    ],
+    "tags": ["הילוכים","אספנות","פיג'ו 304","הכנופיה","העברת הילוכים"],
     "hebrewContent": true
   },
   {
@@ -786,25 +733,19 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/YpuSniVEkwo/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "troubleshooting",
+    "tags": ["תותב למשולש","משולשים","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
     "id": "ZA1sYax5OmQ",
-    "title": "רצועת אביזרים - כל אחד יכול! [מיצובישי אאוטלנדר]",
+    "title": "החלפת רצועת אביזרים - כל אחד יכול! [מיצובישי אאוטלנדר]",
     "duration": "2:52",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/ZA1sYax5OmQ/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "maintenance",
+    "tags": ["רצועת אביזרים","רצועה","מיצובישי אאוטלנדר","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -815,10 +756,7 @@
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/ZB8nzwnT-KE/hqdefault.jpg",
     "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "tags": ["הונדה","איפוס התראה","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -828,11 +766,8 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/Zw_Rq9p5Q4M/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "troubleshooting",
+    "tags": ["סולר","מזרקי סולר","עשה זאת בעצמך","הכנופיה","קיה-יונדאי"],
     "hebrewContent": true
   },
   {
@@ -842,25 +777,19 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/_0IQWLlz4u4/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "troubleshooting",
+    "tags": ["משולשים","החלפת משולשים","סוזוקי גרנד ויטרה,"עשה זאת בעצמך","הכנופיה"]",
     "hebrewContent": true
   },
   {
     "id": "_p_cTJBDDks",
-    "title": "חיישן קראנק - כל אחד יכול! [קיה מג'נטיס]",
+    "title": "החלפת חיישן קראנק - כל אחד יכול! [קיה מג'נטיס]",
     "duration": "8:21",
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/_p_cTJBDDks/hqdefault.jpg",
-    "category": "diy",
-    "tags": [
-      "עשה זאת בעצמך",
-      "הכנופיה"
-    ],
+    "category": "troubleshooting",
+    "tags": ["חיישן קראנק","עשה זאת בעצמך","הכנופיה"],
     "hebrewContent": true
   },
   {
@@ -870,25 +799,8 @@
     "channel": "Knufia | הכנופיה",
     "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
     "thumbnail": "https://i.ytimg.com/vi/a4AaILQYOuE/hqdefault.jpg",
-    "category": "review",
-    "tags": [
-      "סקירות רכב",
-      "הכנופיה"
-    ],
-    "hebrewContent": true
-  },
-  {
-    "id": "a5jtXls1yKY",
-    "title": "התחדשתי - צרפתיה שעלתה חצי מיליון שקל?!",
-    "duration": "54:09",
-    "channel": "Knufia | הכנופיה",
-    "channelImage": "https://yt3.ggpht.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s48-c-k-c0x00ffffff-no-rj",
-    "thumbnail": "https://i.ytimg.com/vi/a5jtXls1yKY/hqdefault.jpg",
-    "category": "review",
-    "tags": [
-      "סקירות רכב",
-      "הכנופיה"
-    ],
+    "category": "collectors",
+    "tags": ["אספנות","סקירות רכב","הכנופיה","מאזדה RX-7"],
     "hebrewContent": true
   },
   {
