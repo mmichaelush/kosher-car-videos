@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function isHomePage() {
         const path = window.location.pathname;
         const filename = path.substring(path.lastIndexOf('/') + 1);
-        return filename === '' || filename === 'index.html' || path.endsWith('/');
+        return filename === '' || filename === 'index.html';
     }
 
     function getCategoryFromURL() {
@@ -116,14 +116,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Data Handling ---
     async function loadVideos() {
-        const dataPath = isHomePage() ? 'data/videos.json' : '../data/videos.json';
         if (dom.loadingPlaceholder) {
             dom.loadingPlaceholder.classList.remove('hidden');
             dom.loadingPlaceholder.innerHTML = `<div class="text-center py-10"><i class="fas fa-spinner fa-spin fa-3x mb-3 text-purple-600 dark:text-purple-400"></i><p class="text-lg text-slate-600 dark:text-slate-300">טוען סרטונים...</p></div>`;
         }
 
         try {
-            const response = await fetch(dataPath);
+            const response = await fetch('data/videos.json');
             if (!response.ok) throw new Error(`HTTP ${response.status} while fetching videos.json`);
             
             const rawVideos = await response.json();
@@ -173,16 +172,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Filtering Logic ---
-    function applyFilters(options = {}) {
-        const { isLoadMore = false, shouldScroll = true } = options;
-        
+    function applyFilters(isLoadMore = false, andScroll = true) {
         if (!isLoadMore) {
             state.currentlyDisplayedVideosCount = 0;
         }
         const allMatchingVideos = getFilteredVideos();
         renderVideoCards(allMatchingVideos, isLoadMore);
         
-        if (shouldScroll && !isLoadMore) {
+        if (andScroll && !isLoadMore) {
             scrollToVideoGridIfNeeded();
         }
         clearSearchSuggestions();
@@ -200,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         updateActiveTagVisuals();
         renderSelectedTagChips();
-        applyFilters();
+        applyFilters(false);
     }
 
     function addCustomTag(tagName) {
@@ -210,9 +207,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function clearAllFilters() {
-        const categoryFromURL = getCategoryFromURL();
         state.currentFilters = {
-            category: categoryFromURL ? categoryFromURL.toLowerCase() : 'all',
+            category: state.currentFilters.category,
             tags: [],
             searchTerm: '',
             hebrewOnly: false
@@ -225,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateActiveTagVisuals();
         renderSelectedTagChips();
-        applyFilters({ shouldScroll: false });
+        applyFilters(false, false);
     }
 
     // --- UI Rendering & Manipulation ---
@@ -346,12 +342,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const tagName = tagElement.dataset.tagValue;
             const isActive = state.currentFilters.tags.includes(tagName);
             tagElement.classList.toggle('active-search-tag', isActive);
-            tagElement.classList.toggle('bg-purple-100', !isActive);
-            tagElement.classList.toggle('hover:bg-purple-200', !isActive);
-            tagElement.classList.toggle('text-purple-700', !isActive);
-            tagElement.classList.toggle('dark:bg-purple-800', !isActive);
-            tagElement.classList.toggle('dark:text-purple-200', !isActive);
-            tagElement.classList.toggle('dark:hover:bg-purple-700', !isActive);
         });
     }
 
@@ -389,7 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadMoreBtn = document.createElement('button');
                 loadMoreBtn.id = 'load-more-videos-btn';
                 loadMoreBtn.className = 'mt-8 mb-4 mx-auto block px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 dark:focus:ring-offset-slate-900 transition-transform hover:scale-105';
-                loadMoreBtn.addEventListener('click', () => applyFilters({ isLoadMore: true }));
+                loadMoreBtn.addEventListener('click', () => applyFilters(true));
                 dom.videoCardsContainer?.parentNode.insertBefore(loadMoreBtn, dom.videoCardsContainer.nextSibling);
             }
             loadMoreBtn.textContent = `טען עוד (${totalMatchingVideos - state.currentlyDisplayedVideosCount} נותרו)`;
@@ -474,17 +464,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         input.addEventListener('input', (e) => handleSearchInput(e.target, suggestionsContainer));
         input.addEventListener('keydown', (e) => handleSearchKeyDown(e, suggestionsContainer));
-        input.addEventListener('focus', (e) => {
-            if (e.target.value.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH) {
-                displaySearchSuggestions(e.target.value);
-            }
-        });
         input.addEventListener('blur', () => {
             setTimeout(() => { if (!state.search.isSuggestionClicked) clearSearchSuggestions(); }, 150);
         });
         form.addEventListener('submit', (e) => {
             e.preventDefault();
-            applyFilters({ shouldScroll: true });
+            applyFilters(false);
         });
     }
 
@@ -496,12 +481,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (searchTerm.length < CONSTANTS.MIN_SEARCH_TERM_LENGTH) {
             clearSearchSuggestions();
-            if (searchTerm === '') {
-                applyFilters({ shouldScroll: false });
-            }
+            if (searchTerm === '') applyFilters(false, false);
             return;
         }
-        applyFilters({ shouldScroll: false });
         displaySearchSuggestions(searchTerm);
     }
     
@@ -530,7 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.search.isSuggestionClicked = true;
                 state.search.currentInput.value = result.item.title;
                 state.currentFilters.searchTerm = result.item.title.trim();
-                applyFilters({ shouldScroll: true });
+                applyFilters(false);
             });
             li.addEventListener('mouseup', () => {
                 setTimeout(() => { state.search.isSuggestionClicked = false; }, 50); 
@@ -562,7 +544,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (state.search.activeSuggestionIndex > -1) {
                     items[state.search.activeSuggestionIndex].dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
                 } else {
-                    applyFilters({ shouldScroll: true });
+                    applyFilters(false);
                 }
                 clearSearchSuggestions();
                 break;
@@ -664,7 +646,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Filtering
         dom.hebrewFilterToggle?.addEventListener('change', (e) => {
             state.currentFilters.hebrewOnly = e.target.checked;
-            applyFilters();
+            applyFilters(false);
         });
         dom.clearFiltersBtn?.addEventListener('click', () => clearAllFilters());
 
@@ -713,9 +695,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Search Forms Setup
-        setupSearchListeners(dom.searchInputs.desktop?.closest('form'), dom.searchInputs.desktop, dom.searchSuggestions.desktop);
-        setupSearchListeners(dom.searchInputs.mobile?.closest('form'), dom.searchInputs.mobile, dom.searchSuggestions.mobile);
-        setupSearchListeners(dom.searchInputs.main?.closest('form'), dom.searchInputs.main, dom.searchSuggestions.main);
+        setupSearchListeners(dom.searchInputs.desktop?.form, dom.searchInputs.desktop, dom.searchSuggestions.desktop);
+        setupSearchListeners(dom.searchInputs.mobile?.form, dom.searchInputs.mobile, dom.searchSuggestions.mobile);
+        setupSearchListeners(dom.searchInputs.main?.form, dom.searchInputs.main, dom.searchSuggestions.main);
 
         // Special Tools
         dom.checkYtIdLink?.addEventListener('click', (e) => {
@@ -746,7 +728,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             renderPopularTags();
-            applyFilters({ shouldScroll: false }); // Do not scroll on initial page load
+            applyFilters(false, false); // Do not scroll on initial load
 
         } catch (error) {
             console.error("Critical error initializing page:", error);
