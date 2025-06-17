@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>קטגוריה - CAR-טיב</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     <script>
       tailwind.config = {
         darkMode: 'class',
@@ -27,6 +27,7 @@
         }
     </script>
     <style>
+        /* Custom styles for RTL dark mode toggle and search suggestions */
         html[dir="rtl"].dark #mobile-menu .dark-mode-toggle-button .dot {
             transform: translateX(-100%);
         }
@@ -39,41 +40,40 @@
         .dark .search-suggestions-container ul li.active-suggestion {
             background-color: #475569; /* slate-600 */
         }
-        .skeleton-card {
-            background-color: #e2e8f0; /* slate-200 */
+        .tag.active-search-tag {
+            background-color: #7c3aed !important;
+            color: #ffffff !important;
         }
-        .dark .skeleton-card {
-             background-color: #334155; /* slate-700 */
+        .dark .tag.active-search-tag {
+            background-color: #8b5cf6 !important;
         }
     </style>
 </head>
 
 <body
     class="bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 font-rubik antialiased transition-colors duration-300">
-    
-    <div class="sr-only" id="live-feedback-region" aria-live="polite"></div>
 
     <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black bg-opacity-75 z-40 md:hidden transition-opacity duration-300 opacity-0 invisible" aria-hidden="true"></div>
 
     <aside id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-800 shadow-xl z-50 p-6 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title-cat">
         <div class="flex justify-between items-center mb-8">
-            <a href="index.html" class="flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded" aria-label="CAR-טיב דף הבית">
+            <a href="./" class="flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded" aria-label="CAR-טיב דף הבית">
                 <img src="data/assets/images/logo.png" alt="לוגו CAR-טיב" class="h-8 w-auto ml-2 dark:hidden">
                 <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב" class="h-8 w-auto ml-2 hidden dark:block">
                 <span id="mobile-menu-title-cat" class="text-xl font-bold text-slate-900 dark:text-slate-100">CAR-טיב</span>
             </a>
-            <button id="close-menu" aria-label="סגירת תפריט" class="text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded p-1">
+            <button id="close-menu-btn" aria-label="סגירת תפריט" class="text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded p-1">
                 <i class="fas fa-times text-2xl"></i>
             </button>
         </div>
         <nav class="flex flex-col space-y-1">
-            <a href="index.html" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-home w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>בית</a>
-            <a href="index.html#homepage-categories-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-th-large w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>כל הקטגוריות</a>
-            <a href="index.html#video-grid-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-play-circle w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>כל הסרטונים</a>
-            <a href="index.html#featured-channels-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-tv w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>ערוצים</a>
-            <a href="index.html#forum-inspiration-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-comments w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>שאלות</a>
-            <a href="index.html#about-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-info-circle w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>אודות</a>
-            <a href="index.html#contact-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-envelope w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>צור קשר</a>
+            <a href="./" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-home w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>בית</a>
+            <a href="./#homepage-categories-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-th-large w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>כל הקטגוריות</a>
+            <a href="./#video-grid-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-play-circle w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>כל הסרטונים</a>
+            <a href="./#featured-channels-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-tv w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>ערוצים</a>
+            <a href="./#forum-inspiration-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-comments w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>שאלות</a>
+            <a href="./#about-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-info-circle w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>אודות</a>
+            <a href="./#contact-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-envelope w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>צור קשר</a>
         </nav>
         <div class="mt-auto pt-6 border-t border-slate-200 dark:border-slate-700">
             <button role="switch" aria-label="החלף מצב תצוגה" aria-checked="false" class="dark-mode-toggle-button w-full flex items-center justify-between text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 dark:focus:ring-purple-400">
@@ -94,19 +94,19 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <div class="flex items-center">
-                    <a href="index.html" class="flex-shrink-0 flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-md p-1 -ml-1" aria-label="CAR-טיב דף הבית">
+                    <a href="./" class="flex-shrink-0 flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-md p-1 -ml-1" aria-label="CAR-טיב דף הבית">
                         <img src="data/assets/images/logo.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 md:h-12 dark:hidden">
                         <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 md:h-12 hidden dark:block">
                         <span class="text-2xl font-bold text-slate-900 dark:text-slate-100 hidden sm:block">CAR-טיב</span>
                     </a>
                     <nav class="hidden md:mr-3 lg:mr-4 md:flex items-center lg:space-x-0.5" aria-label="ניווט ראשי">
-                        <a href="index.html" class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-home md:ml-1 lg:ml-2 opacity-80"></i>בית</a>
-                        <a href="index.html#homepage-categories-section" class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-th-large md:ml-1 lg:ml-2 opacity-80"></i>כל הקטגוריות</a>
-                        <a href="index.html#video-grid-section" class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-play-circle md:ml-1 lg:ml-2 opacity-80"></i>כל הסרטונים</a>
-                        <a href="index.html#featured-channels-section" class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-tv md:ml-1 lg:ml-2 opacity-80"></i>ערוצים</a>
-                        <a href="index.html#forum-inspiration-section" class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-comments md:ml-1 lg:ml-2 opacity-80"></i>שאלות</a>
-                        <a href="index.html#about-section" class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-info-circle md:ml-1 lg:ml-2 opacity-80"></i>אודות</a>
-                        <a href="index.html#contact-section" class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-envelope md:ml-1 lg:ml-2 opacity-80"></i>צור קשר</a>
+                        <a href="./" class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-home md:ml-1 lg:ml-2 opacity-80"></i>בית</a>
+                        <a href="./#homepage-categories-section" class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-th-large md:ml-1 lg:ml-2 opacity-80"></i>כל הקטגוריות</a>
+                        <a href="./#video-grid-section" class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-play-circle md:ml-1 lg:ml-2 opacity-80"></i>כל הסרטונים</a>
+                        <a href="./#featured-channels-section" class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-tv md:ml-1 lg:ml-2 opacity-80"></i>ערוצים</a>
+                        <a href="./#forum-inspiration-section" class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-comments md:ml-1 lg:ml-2 opacity-80"></i>שאלות</a>
+                        <a href="./#about-section" class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-info-circle md:ml-1 lg:ml-2 opacity-80"></i>אודות</a>
+                        <a href="./#contact-section" class="nav-link flex items-center md:px-1.5 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-envelope md:ml-1 lg:ml-2 opacity-80"></i>צור קשר</a>
                     </nav>
                 </div>
                 <div class="flex items-center space-x-2 rtl:space-x-reverse">
@@ -126,7 +126,7 @@
                         <i class="fas fa-moon text-lg"></i>
                         <i class="fas fa-sun text-lg hidden"></i>
                     </button>
-                    <button id="open-menu" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded p-2">
+                    <button id="open-menu-btn" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded p-2">
                         <i class="fas fa-bars text-xl"></i>
                     </button>
                 </div>
@@ -142,7 +142,7 @@
             <nav aria-label="Breadcrumb" class="mt-2 text-sm text-slate-500 dark:text-slate-400">
                 <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                     <li class="inline-flex items-center">
-                        <a href="index.html" class="inline-flex items-center hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
+                        <a href="./" class="inline-flex items-center hover:text-purple-600 dark:hover:text-purple-400 transition-colors">
                             <i class="fas fa-home ml-1.5"></i>
                             דף הבית
                         </a>
@@ -174,18 +174,20 @@
         </section>
 
         <section class="mb-12 md:mb-16 bg-white dark:bg-slate-800/75 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-xl dark:shadow-black/30 border border-slate-200 dark:border-slate-700" aria-labelledby="filter-heading-category">
-            <div class="flex justify-between items-center mb-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start mb-6 gap-4">
                 <h2 id="filter-heading-category" class="text-2xl font-semibold text-slate-900 dark:text-slate-100 flex items-center">
                     <i class="fas fa-filter text-purple-600 dark:text-purple-400 mr-3"></i>
                     סנן תוצאות בקטגוריה
                 </h2>
-                <div id="filter-controls" class="hidden">
-                    <span id="filter-counter" class="text-sm text-slate-500 dark:text-slate-400 mr-3"></span>
-                    <button id="clear-filters-btn" class="text-sm font-semibold text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300">
+                 <div id="filter-summary-container" class="hidden items-center bg-yellow-400/80 text-yellow-900 dark:bg-yellow-500/30 dark:text-yellow-200 rounded-full px-4 py-1.5 text-sm shadow-md transition-all">
+                    <span id="filter-summary-text" class="font-medium ml-3"></span>
+                    <button id="clear-filters-btn" class="font-bold hover:underline focus:outline-none flex items-center gap-1.5 p-1 -m-1 rounded-md focus:ring-2 focus:ring-yellow-600 dark:focus:ring-yellow-400">
                         נקה הכל
+                        <i class="fas fa-times-circle opacity-80"></i>
                     </button>
                 </div>
             </div>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-8 md:items-start"> 
                 <div class="md:col-span-2 flex flex-col space-y-4"> 
                     <div>
@@ -221,141 +223,100 @@
         <section id="video-grid-section" class="mb-12 md:mb-16 bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 sm:p-8" aria-labelledby="videos-in-category-heading">
             <h2 id="videos-in-category-heading" class="sr-only">סרטונים בקטגוריה</h2>
             <div id="video-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
-                 <!-- Skeleton loaders will be injected here by JS -->
+                <p id="loading-videos-placeholder" class="col-span-full text-center text-slate-500 dark:text-slate-400 py-10 text-lg" aria-live="polite" aria-busy="true"></p>
             </div>
             <div id="no-videos-found" class="hidden col-span-full text-center text-slate-500 dark:text-slate-400 py-16" aria-live="polite"></div>
         </section>
 
         <div class="text-center mt-16">
-            <a href="index.html#homepage-categories-section" class="inline-flex items-center justify-center px-6 py-3 border border-slate-300 dark:border-slate-500 text-base font-medium rounded-md text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400 dark:focus:ring-slate-500 dark:focus:ring-offset-slate-900">
+            <a href="./#homepage-categories-section" class="inline-flex items-center justify-center px-6 py-3 border border-slate-300 dark:border-slate-500 text-base font-medium rounded-md text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400 dark:focus:ring-slate-500 dark:focus:ring-offset-slate-900">
                 <i class="fas fa-arrow-left ml-2"></i> חזרה לכל הקטגוריות
             </a>
         </div>
     </main>
-<footer id="site-footer" class="bg-slate-900 text-slate-400 dark:bg-gray-950 dark:text-slate-400 transition-colors duration-300">
-    <div class="max-w-7xl mx-auto py-16 md:py-20 px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12"> 
 
-            <div class="sm:col-span-2 lg:col-span-1">
-                <a href="index.html" class="flex items-center mb-5 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded">
-                    <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב לבן" class="h-10 w-auto ml-2">
-                    <span class="text-xl font-bold text-white dark:text-slate-100">CAR-טיב</span>
-                </a>
-                <p class="text-sm leading-relaxed text-slate-400 dark:text-slate-500">מאגר וידאו ייעודי, כשר ומסונן, לחובבי רכב שומרי התורה והמצוות.</p>
-            </div>
+    <footer id="site-footer" class="bg-slate-900 text-slate-400 dark:bg-gray-950 dark:text-slate-400 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto py-16 md:py-20 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12"> 
+                <div class="sm:col-span-2 lg:col-span-1">
+                    <a href="./" class="flex items-center mb-5 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded" aria-label="CAR-טיב דף הבית">
+                        <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב לבן" class="h-10 w-auto ml-2">
+                        <span class="text-xl font-bold text-white dark:text-slate-100">CAR-טיב</span>
+                    </a>
+                    <p class="text-sm leading-relaxed text-slate-400 dark:text-slate-500">מאגר וידאו ייעודי, כשר ומסונן, לחובבי רכב שומרי התורה והמצוות.</p>
+                </div>
 
-            <div>
-                <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">קטגוריות</h3>
-                <ul class="space-y-3">
-                    <li><a href="category.html?name=review" class="footer-link"><i class="fas fa-search fa-fw ml-2 opacity-70"></i>סקירת רכב</a></li>
-                    <li><a href="category.html?name=maintenance" class="footer-link"><i class="fas fa-oil-can fa-fw ml-2 opacity-70"></i>טיפולים</a></li>
-                    <li><a href="category.html?name=diy" class="footer-link"><i class="fas fa-tools fa-fw ml-2 opacity-70"></i>עשה זאת בעצמך</a></li>
-                    <li><a href="category.html?name=upgrades" class="footer-link"><i class="fas fa-rocket fa-fw ml-2 opacity-70"></i>שיפורים ושדרוגים</a></li>
-                    <li><a href="category.html?name=troubleshooting" class="footer-link"><i class="fas fa-microscope fa-fw ml-2 opacity-70"></i>תיקון תקלות</a></li>
-                    <li><a href="category.html?name=systems" class="footer-link"><i class="fas fa-cogs fa-fw ml-2 opacity-70"></i>מערכות הרכב</a></li>
-                    <li><a href="category.html?name=collectors" class="footer-link"><i class="fas fa-car-side fa-fw ml-2 opacity-70"></i>רכבי אספנות</a></li>
-                </ul>
-            </div>
+                <div>
+                    <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">קטגוריות</h3>
+                    <ul class="space-y-3">
+                        <li><a href="category.html?name=review" class="footer-link"><i class="fas fa-search fa-fw ml-2 opacity-70"></i>סקירת רכב</a></li>
+                        <li><a href="category.html?name=maintenance" class="footer-link"><i class="fas fa-oil-can fa-fw ml-2 opacity-70"></i>טיפולים</a></li>
+                        <li><a href="category.html?name=diy" class="footer-link"><i class="fas fa-tools fa-fw ml-2 opacity-70"></i>עשה זאת בעצמך</a></li>
+                        <li><a href="category.html?name=upgrades" class="footer-link"><i class="fas fa-rocket fa-fw ml-2 opacity-70"></i>שיפורים ושדרוגים</a></li>
+                        <li><a href="category.html?name=troubleshooting" class="footer-link"><i class="fas fa-microscope fa-fw ml-2 opacity-70"></i>תיקון תקלות</a></li>
+                        <li><a href="category.html?name=systems" class="footer-link"><i class="fas fa-cogs fa-fw ml-2 opacity-70"></i>מערכות הרכב</a></li>
+                        <li><a href="category.html?name=collectors" class="footer-link"><i class="fas fa-car-side fa-fw ml-2 opacity-70"></i>רכבי אספנות</a></li>
+                    </ul>
+                </div>
 
-            <div>
-                <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">קישורים</h3>
-                <ul class="space-y-3">
-                    <li><a href="index.html#about-section" class="footer-link"><i class="fas fa-info-circle fa-fw ml-2 opacity-70"></i>אודות</a></li>
-                    <li><a href="https://rechavimzelaze.ovh" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fas fa-users fa-fw ml-2 opacity-70"></i>פורום רכבים זה לזה</a></li>
-                    <li><a href="https://rechavimzelaze.ovh/post/683722" target="_blank" rel="noopener noreferrer" class="footer-link"> <i class="fas fa-book fa-fw ml-2 opacity-70"></i>עוד על האתר</a></li>
-                    <li><a href="https://github.com/mmichaelush/kosher-car-videos.io" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fab fa-github fa-fw ml-2 opacity-70"></i>הפרוייקט ב-GitHub</a></li>
-                    <li><a href="index.html#contact-section" class="footer-link"><i class="fas fa-envelope fa-fw ml-2 opacity-70"></i>צור קשר</a></li>
-                    <li> <a href="#check-yt-id" id="check-yt-id-link" class="footer-link"><i class="fas fa-search-plus fa-fw ml-2 opacity-70"></i> בדוק עם סרטון קיים במאגר</a></li>
-                    <li><a href="https://rechavimzelaze.ovh/post/683722" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fas fa-video fa-fw ml-2 opacity-70"></i>הוספת סרטונים</a></li>
-                </ul>
-            </div>
+                <div>
+                    <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">קישורים</h3>
+                    <ul class="space-y-3">
+                        <li><a href="./#about-section" class="footer-link"><i class="fas fa-info-circle fa-fw ml-2 opacity-70"></i>אודות</a></li>
+                        <li><a href="https://rechavimzelaze.ovh" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fas fa-users fa-fw ml-2 opacity-70"></i>פורום רכבים זה לזה</a></li>
+                        <li><a href="https://rechavimzelaze.ovh/post/683722" target="_blank" rel="noopener noreferrer" class="footer-link"> <i class="fas fa-book fa-fw ml-2 opacity-70"></i>עוד על האתר</a></li>
+                        <li><a href="https://github.com/mmichaelush/kosher-car-videos.io" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fab fa-github fa-fw ml-2 opacity-70"></i>הפרוייקט ב-GitHub</a></li>
+                        <li><a href="./#contact-section" class="footer-link"><i class="fas fa-envelope fa-fw ml-2 opacity-70"></i>צור קשר</a></li>
+                        <li><a href="#check-yt-id" id="check-yt-id-link" class="footer-link"><i class="fas fa-search-plus fa-fw ml-2 opacity-70"></i>בדוק אם סרטון קיים</a></li>
+                        <li><a href="https://rechavimzelaze.ovh/post/683722" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fas fa-video fa-fw ml-2 opacity-70"></i>הוספת סרטונים</a></li>
+                    </ul>
+                </div>
 
-            <div>
-                <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">משפטי</h3>
-                <ul class="space-y-3">
-                    <li><a href="#" class="footer-link"><i class="fas fa-shield-alt fa-fw ml-2 opacity-70"></i>מדיניות פרטיות</a></li>
-                    <li><a href="#" class="footer-link"><i class="fas fa-file-contract fa-fw ml-2 opacity-70"></i>תנאי שימוש</a></li>
-                    <li><a href="index.html#contact-section" class="footer-link"><i class="fas fa-exclamation-triangle fa-fw ml-2 opacity-70"></i>דיווח על תוכן</a></li>
-                </ul>
+                <div>
+                    <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">משפטי</h3>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="footer-link"><i class="fas fa-shield-alt fa-fw ml-2 opacity-70"></i>מדיניות פרטיות</a></li>
+                        <li><a href="#" class="footer-link"><i class="fas fa-file-contract fa-fw ml-2 opacity-70"></i>תנאי שימוש</a></li>
+                        <li><a href="./#contact-section" class="footer-link"><i class="fas fa-exclamation-triangle fa-fw ml-2 opacity-70"></i>דיווח על תוכן</a></li>
+                    </ul>
+                </div>
+            </div> 
+            <div class="mt-16 border-t border-slate-700 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-xs text-center md:text-right text-slate-500 dark:text-slate-600">© <span id="current-year-footer"></span> CAR-טיב. כל הזכויות שמורות.</p>
+                <p class="text-xs text-center md:text-left text-slate-500 dark:text-slate-600">עיצוב ופיתוח: <a href="https://github.com/mmichaelush" target="_blank" rel="noopener noreferrer" class="hover:text-purple-300 dark:hover:text-purple-400 underline"> @מיכאלוש</a> בסיוע AI</p>
             </div>
-        </div> 
-        <div
-            class="mt-16 border-t border-slate-700 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p class="text-xs text-center md:text-right text-slate-500 dark:text-slate-600">© <span
-                    id="current-year-footer"></span> CAR-טיב. כל הזכויות שמורות.</p>
-            <p class="text-xs text-center md:text-left text-slate-500 dark:text-slate-600">עיצוב ופיתוח: <a
-                    href="https://github.com/mmichaelush" target="_blank" rel="noopener noreferrer"
-                    class="hover:text-purple-300 dark:hover:text-purple-400 underline"> @מיכאלוש</a> בסיוע AI</p>
         </div>
-    </div>
-</footer> 
+    </footer> 
     
     <template id="video-card-template">
-        <article
-            class="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-xl dark:shadow-black/40 dark:hover:shadow-purple-500/30 transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-[1.03] border border-slate-200 dark:border-slate-700 hover:border-purple-300 dark:hover:border-purple-500 overflow-hidden">
-            <div
-                class="video-thumbnail-container bg-slate-200 dark:bg-slate-700 relative overflow-hidden border-b border-slate-200 dark:border-slate-700">
-                <img src="" alt=""
-                    class="video-thumbnail-img absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 opacity-90 group-hover:opacity-100"
-                    loading="lazy">
-                <span
-                    class="video-duration absolute bottom-2 right-2 rtl:bottom-2 rtl:left-2 rtl:right-auto bg-black/75 text-white text-xs font-semibold px-2 py-1 rounded-md z-10 backdrop-blur-sm"></span>
-                <button
-                    class="play-video-button absolute inset-0 w-full h-full flex items-center justify-center text-white z-20 transition-all duration-300 group-hover:scale-110 group-hover:opacity-90 focus:outline-none"
-                    aria-label="נגן סרטון">
-                    <i
-                        class="fas fa-play-circle fa-5x sm:fa-6x text-purple-500 dark:text-purple-400 opacity-80 group-hover:opacity-100 drop-shadow-lg"></i>
+        <article class="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-xl dark:shadow-black/40 dark:hover:shadow-purple-500/30 transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-[1.03] border border-slate-200 dark:border-slate-700 hover:border-purple-300 dark:hover:border-purple-500 overflow-hidden">
+            <div class="video-thumbnail-container bg-slate-200 dark:bg-slate-700 relative overflow-hidden border-b border-slate-200 dark:border-slate-700">
+                <img src="" alt="" class="video-thumbnail-img absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 opacity-90 group-hover:opacity-100" loading="lazy">
+                <span class="video-duration absolute bottom-2 right-2 rtl:bottom-2 rtl:left-2 rtl:right-auto bg-black/75 text-white text-xs font-semibold px-2 py-1 rounded-md z-10 backdrop-blur-sm"></span>
+                <button class="play-video-button absolute inset-0 w-full h-full flex items-center justify-center text-white z-20 transition-all duration-300 group-hover:scale-110 group-hover:opacity-90 focus:outline-none" aria-label="נגן סרטון">
+                    <i class="fas fa-play-circle fa-5x sm:fa-6x text-purple-500 dark:text-purple-400 opacity-80 group-hover:opacity-100 drop-shadow-lg"></i>
                 </button>
-                <iframe class="video-iframe hidden absolute inset-0 w-full h-full z-30" loading="lazy" title=""
-                    frameborder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowfullscreen></iframe>
+                <iframe class="video-iframe hidden absolute inset-0 w-full h-full z-30" loading="lazy" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div class="video-details-container bg-slate-50 dark:bg-slate-700 p-4 sm:p-5 flex flex-col flex-grow">
                 <div class="video-channel-info flex items-center text-xs text-slate-500 dark:text-slate-300 mb-2.5">
-                    <img src="" alt=""
-                        class="channel-logo h-7 w-7 rounded-full mr-2.5 object-cover border-2 border-transparent group-hover:border-purple-200 dark:group-hover:border-purple-500 transition-colors shadow-sm hidden"
-                        loading="lazy">
-                    <span
-                        class="channel-name font-medium hover:text-purple-600 dark:hover:text-purple-400 transition-colors"></span>
+                    <img src="" alt="" class="channel-logo h-7 w-7 rounded-full mr-2.5 object-cover border-2 border-transparent group-hover:border-purple-200 dark:group-hover:border-purple-500 transition-colors shadow-sm hidden" loading="lazy">
+                    <span class="channel-name font-medium hover:text-purple-600 dark:hover:text-purple-400 transition-colors"></span>
                 </div>
-                <h3
-                    class="video-title font-semibold text-base md:text-lg text-slate-800 dark:text-slate-100 mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors leading-tight line-clamp-2">
-                    <a href="" target="_blank" rel="noopener noreferrer"
-                        class="video-link hover:underline focus:outline-none focus:ring-1 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-sm"></a>
+                <h3 class="video-title font-semibold text-base md:text-lg text-slate-800 dark:text-slate-100 mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors leading-tight line-clamp-2">
+                    <a href="" target="_blank" rel="noopener noreferrer" class="video-link hover:underline focus:outline-none focus:ring-1 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-sm"></a>
                 </h3>
-                <div class="video-tags flex flex-wrap gap-1.5 mb-auto mt-1 text-xs">
-                </div>
-                <div
-                    class="flex items-center justify-between text-slate-500 dark:text-slate-300 text-xs mt-4 pt-3 border-t border-slate-200 dark:border-slate-500">
-                    <span class="video-category-display flex items-center"><i
-                            class="fas fa-folder-open ml-1.5 opacity-70 text-purple-500 dark:text-purple-400"></i></span>
+                <div class="video-tags flex flex-wrap gap-1.5 mb-auto mt-1 text-xs"></div>
+                <div class="flex items-center justify-between text-slate-500 dark:text-slate-300 text-xs mt-4 pt-3 border-t border-slate-200 dark:border-slate-500">
+                    <span class="video-category-display flex items-center">
+                        <i class="fas fa-folder-open ml-1.5 opacity-70 text-purple-500 dark:text-purple-400"></i>
+                    </span>
                 </div>
             </div>
         </article>
     </template>
-    
-    <template id="video-card-skeleton-template">
-        <div class="skeleton-card rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden animate-pulse">
-            <div class="h-48 bg-slate-300 dark:bg-slate-600"></div>
-            <div class="p-5">
-                <div class="flex items-center mb-3">
-                    <div class="h-7 w-7 rounded-full bg-slate-300 dark:bg-slate-600 mr-2.5"></div>
-                    <div class="h-4 bg-slate-300 dark:bg-slate-600 rounded w-1/3"></div>
-                </div>
-                <div class="h-5 bg-slate-300 dark:bg-slate-600 rounded w-5/6 mb-2"></div>
-                <div class="h-5 bg-slate-300 dark:bg-slate-600 rounded w-3/4 mb-4"></div>
-                <div class="flex flex-wrap gap-1.5">
-                    <div class="h-5 w-16 bg-slate-300 dark:bg-slate-600 rounded-full"></div>
-                    <div class="h-5 w-20 bg-slate-300 dark:bg-slate-600 rounded-full"></div>
-                </div>
-            </div>
-        </div>
-    </template>
 
-
-    <button id="back-to-top-btn" aria-label="חזור לראש העמוד"
-        class="fixed bottom-6 right-6 rtl:left-6 rtl:right-auto z-50 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white rounded-full p-2.5 shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-900 opacity-0 invisible transition-all duration-300 ease-in-out h-10 w-10 flex items-center justify-center">
+    <button id="back-to-top-btn" aria-label="חזור לראש העמוד" class="fixed bottom-6 right-6 rtl:left-6 rtl:right-auto z-50 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white rounded-full p-2.5 shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-900 opacity-0 invisible transition-all duration-300 ease-in-out h-10 w-10 flex items-center justify-center">
         <i class="fas fa-arrow-up text-md"></i>
     </button>
 
