@@ -92,21 +92,20 @@ body {
     -webkit-line-clamp: 2;
 }
 
-/* Footer link styling */
-.footer-link {
-    transition: color 0.2s ease-in-out;
-}
-.dark .footer-link:hover {
-    color: var(--color-purple-300);
-}
-.footer-link:hover {
-    color: var(--color-purple-400);
-}
-
 /* Back to top button visibility and animation */
 #back-to-top-btn {
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-out;
 }
 #back-to-top-btn:hover {
     transform: scale(1.1);
+}
+
+.tag.active-search-tag {
+    background-color: var(--color-purple-600) !important;
+    color: white !important;
+}
+
+.dark .tag.active-search-tag {
+    background-color: var(--color-purple-500) !important;
+    color: white !important;
 }
