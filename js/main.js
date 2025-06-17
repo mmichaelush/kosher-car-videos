@@ -629,19 +629,35 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.backdrop?.addEventListener('click', closeMobileMenu);
         dom.backToTopButton?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         window.addEventListener('scroll', toggleBackToTopButton);
-        document.querySelectorAll('.nav-link').forEach(link => link.addEventListener('click', (e) => {
-            if (link.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
-            if (link.getAttribute('href')?.startsWith('#')) {
+        
+        // This handles all smooth scrolling and replaces the old .nav-link listener's scrolling part
+        const smoothScrollHandler = (e) => {
+            const link = e.target.closest('a');
+            const href = link?.getAttribute('href');
+
+            // On the homepage, handle all anchor links for smooth scrolling
+            if (isHomePage() && href?.startsWith('#')) {
                 e.preventDefault();
-                const targetId = link.getAttribute('href').substring(1);
-                const targetElement = document.getElementById(targetId);
-                if (targetElement) {
-                    const headerOffset = document.querySelector('header.sticky')?.offsetHeight + 20 || 80;
-                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                    window.scrollTo({ top: elementPosition, behavior: "smooth" });
+                if (link.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
+
+                const targetId = href.substring(1);
+                
+                if (targetId === '') { // For href="#"
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        const headerOffset = document.querySelector('header.sticky')?.offsetHeight + 20 || 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                    }
                 }
+            } else if (link?.closest('#mobile-menu')) {
+                // For other links in mobile menu (like to category.html), just close the menu
+                setTimeout(closeMobileMenu, 150);
             }
-        }));
+        };
+        document.addEventListener('click', smoothScrollHandler);
 
         // Filtering
         dom.hebrewFilterToggle?.addEventListener('change', (e) => {
