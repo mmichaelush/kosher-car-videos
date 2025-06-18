@@ -241,14 +241,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function clearAllFilters() {
-        state.currentFilters = {
-            category: state.currentFilters.category,
-            tags: [],
-            searchTerm: '',
-            hebrewOnly: false,
-            sortBy: 'date-desc'
-        };
-        
+        // Clear runtime state
+        state.currentFilters.tags = [];
+        state.currentFilters.searchTerm = '';
+        state.currentFilters.sortBy = 'date-desc';
+        state.currentFilters.hebrewOnly = false;
+
+        // Clear user preference from storage
+        localStorage.removeItem('hebrewOnlyPreference');
+
+        // Update UI elements to reflect cleared state
         Object.values(dom.searchInputs).forEach(input => {
             if (input) input.value = '';
         });
