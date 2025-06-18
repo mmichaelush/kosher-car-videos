@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- Configuration & Constants ---
     const CONSTANTS = {
         MAX_POPULAR_TAGS: 50,
         VIDEOS_TO_SHOW_INITIALLY: 30,
@@ -31,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
     };
 
-    // --- DOM Element Selectors ---
     const dom = {
         body: document.body,
         darkModeToggles: document.querySelectorAll('.dark-mode-toggle-button'),
@@ -68,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- State Management ---
     let state = {
         allVideos: [],
         fuse: null,
@@ -87,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // --- Utility Functions ---
     function escapeHTML(str) {
         if (str === null || typeof str === 'undefined') return '';
         const p = document.createElement('p');
@@ -114,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return tagIcons[tag.toLowerCase()] || "fa-tag";
     }
 
-    // --- Data Handling ---
     async function loadVideos() {
         if (dom.loadingPlaceholder) {
             dom.loadingPlaceholder.classList.remove('hidden');
@@ -171,7 +166,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Filtering Logic ---
     function applyFilters(isLoadMore = false, andScroll = true) {
         if (!isLoadMore) {
             state.currentlyDisplayedVideosCount = 0;
@@ -224,7 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
         applyFilters(false, false);
     }
 
-    // --- UI Rendering & Manipulation ---
     function renderVideoCards(allMatchingVideos, isLoadMore) {
         if (!dom.videoCardsContainer) return;
         if (!isLoadMore) dom.videoCardsContainer.innerHTML = '';
@@ -410,7 +403,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Theme & Navigation UI ---
     function initThemeVisuals() {
         const isDark = document.documentElement.classList.contains('dark');
         dom.darkModeToggles.forEach(toggle => updateThemeToggleVisuals(toggle, isDark));
@@ -456,7 +448,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dom.currentYearFooter) dom.currentYearFooter.textContent = new Date().getFullYear();
     }
     
-    // --- Search Logic ---
     function setupSearchListeners(form, input, suggestionsContainer) {
         if (!form || !input || !suggestionsContainer) return;
         const suggestionsList = suggestionsContainer.querySelector('ul');
@@ -584,7 +575,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return result;
     }
 
-    // --- Special Tools ---
     function extractYouTubeVideoId(url) {
         if (!url) return null;
         const patterns = [
@@ -620,9 +610,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Event Listeners Setup ---
     function setupEventListeners() {
-        // Theme & Navigation
         dom.darkModeToggles.forEach(toggle => toggle.addEventListener('click', toggleTheme));
         dom.openMenuBtn?.addEventListener('click', openMobileMenu);
         dom.closeMenuBtn?.addEventListener('click', closeMobileMenu);
@@ -630,43 +618,37 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.backToTopButton?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         window.addEventListener('scroll', toggleBackToTopButton);
         
-        // This handles all smooth scrolling and replaces the old .nav-link listener's scrolling part
-        const smoothScrollHandler = (e) => {
-            const link = e.target.closest('a');
-            const href = link?.getAttribute('href');
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
 
-            // On the homepage, handle all anchor links for smooth scrolling
-            if (isHomePage() && href?.startsWith('#')) {
-                e.preventDefault();
-                if (link.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
+                if (isHomePage() && href && href.startsWith('#')) {
+                    e.preventDefault();
+                    if (link.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
 
-                const targetId = href.substring(1);
-                
-                if (targetId === '') { // For href="#"
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
-                    const targetElement = document.getElementById(targetId);
-                    if (targetElement) {
-                        const headerOffset = document.querySelector('header.sticky')?.offsetHeight + 20 || 80;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                    if (href === '#home') {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else {
+                        const targetId = href.substring(1);
+                        const targetElement = document.getElementById(targetId);
+                        if (targetElement) {
+                            const headerOffset = document.querySelector('header.sticky')?.offsetHeight + 20 || 80;
+                            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                            window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                        }
                     }
+                } else if (link.closest('#mobile-menu')) {
+                    setTimeout(closeMobileMenu, 150);
                 }
-            } else if (link?.closest('#mobile-menu')) {
-                // For other links in mobile menu (like to category.html), just close the menu
-                setTimeout(closeMobileMenu, 150);
-            }
-        };
-        document.addEventListener('click', smoothScrollHandler);
+            });
+        });
 
-        // Filtering
         dom.hebrewFilterToggle?.addEventListener('change', (e) => {
             state.currentFilters.hebrewOnly = e.target.checked;
             applyFilters(false);
         });
         dom.clearFiltersBtn?.addEventListener('click', () => clearAllFilters());
 
-        // Tag Handling
         dom.customTagForm?.addEventListener('submit', (e) => {
             e.preventDefault();
             const newTagName = dom.tagSearchInput?.value.trim().toLowerCase();
@@ -686,7 +668,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Video Card Interactions
         dom.videoCardsContainer?.addEventListener('click', (e) => {
             const playButton = e.target.closest('.play-video-button');
             if (playButton) {
@@ -710,12 +691,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Search Forms Setup
         setupSearchListeners(dom.searchInputs.desktop?.form, dom.searchInputs.desktop, dom.searchSuggestions.desktop);
         setupSearchListeners(dom.searchInputs.mobile?.form, dom.searchInputs.mobile, dom.searchSuggestions.mobile);
         setupSearchListeners(dom.searchInputs.main?.form, dom.searchInputs.main, dom.searchSuggestions.main);
 
-        // Special Tools
         dom.checkYtIdLink?.addEventListener('click', (e) => {
             e.preventDefault();
             promptAndCheckVideo();
@@ -723,7 +702,6 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('hashchange', handleCheckIdFromHash);
     }
 
-    // --- Initialization ---
     async function initializeApp() {
         initThemeVisuals();
         updateFooterYear();
@@ -744,7 +722,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             renderPopularTags();
-            applyFilters(false, false); // Do not scroll on initial load
+            applyFilters(false, false);
 
         } catch (error) {
             console.error("Critical error initializing page:", error);
