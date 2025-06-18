@@ -621,7 +621,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', (e) => {
                 const href = link.getAttribute('href');
-
                 if (isHomePage() && href && href.startsWith('#')) {
                     e.preventDefault();
                     if (link.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
@@ -710,16 +709,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             await loadVideos();
-            state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
-
+            
             const categoryFromURL = getCategoryFromURL();
+            let videosForFuse = state.allVideos;
+
             if (isHomePage()) {
                 if (dom.homepageCategoriesGrid) renderHomepageCategoryButtons();
                 state.currentFilters.category = 'all';
             } else if (categoryFromURL) {
-                state.currentFilters.category = categoryFromURL.toLowerCase();
+                const currentCategory = categoryFromURL.toLowerCase();
+                state.currentFilters.category = currentCategory;
                 updateCategoryPageUI(state.currentFilters.category);
+                videosForFuse = state.allVideos.filter(video => video.category === currentCategory);
             }
+            
+            state.fuse = new Fuse(videosForFuse, CONSTANTS.FUSE_OPTIONS);
 
             renderPopularTags();
             applyFilters(false, false);
