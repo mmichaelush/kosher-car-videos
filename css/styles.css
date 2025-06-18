@@ -34,7 +34,7 @@
 
 html {
     scroll-behavior: smooth;
-    scroll-padding-top: 80px; /* Offset for sticky header */
+    scroll-padding-top: 80px;
 }
 
 body {
@@ -43,8 +43,6 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
-
-/* --- Gradient and Animation Styles --- */
 
 .hero-gradient {
     background: linear-gradient(135deg, var(--color-purple-700) 0%, var(--color-indigo-600) 100%);
@@ -62,12 +60,10 @@ body {
     50% { transform: translateY(-15px); }
 }
 
-/* --- Component-Specific Styles --- */
-
 .video-thumbnail-container {
   position: relative; 
   width: 100%;
-  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  padding-top: 56.25%;
   height: 0; 
 }
 
@@ -92,7 +88,6 @@ body {
     -webkit-line-clamp: 2;
 }
 
-/* Footer link styling */
 .footer-link {
     transition: color 0.2s ease-in-out;
 }
@@ -103,7 +98,6 @@ body {
     color: var(--color-purple-400);
 }
 
-/* Back to top button visibility and animation */
 #back-to-top-btn {
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-out;
 }
