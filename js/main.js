@@ -245,7 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
             category: state.currentFilters.category,
             tags: [],
             searchTerm: '',
-            hebrewOnly: state.currentFilters.hebrewOnly,
+            hebrewOnly: false,
             sortBy: 'date-desc'
         };
         
@@ -253,6 +253,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (input) input.value = '';
         });
         if(dom.sortSelect) dom.sortSelect.value = 'date-desc';
+        if(dom.hebrewFilterToggle) dom.hebrewFilterToggle.checked = false;
 
         updateActiveTagVisuals();
         renderSelectedTagChips();
