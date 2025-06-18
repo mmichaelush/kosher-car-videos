@@ -245,9 +245,9 @@ document.addEventListener('DOMContentLoaded', () => {
         state.currentFilters.searchTerm = '';
         state.currentFilters.sortBy = 'date-desc';
         state.currentFilters.hebrewOnly = false;
-        
+
         localStorage.removeItem('hebrewOnlyPreference');
-        
+
         Object.values(dom.searchInputs).forEach(input => {
             if (input) input.value = '';
         });
@@ -311,9 +311,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const sanitizedTitle = escapeHTML(video.title);
         const videoLink = `https://www.youtube.com/watch?v=${video.id}`;
         
-        card.article.style.opacity = '0';
-        card.article.classList.add('fade-in');
-        
         card.thumbnailImg.src = video.thumbnail;
         card.thumbnailImg.alt = `תמונה ממוזערת: ${sanitizedTitle}`;
         card.duration.textContent = video.duration || '';
@@ -356,12 +353,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (skeleton) skeleton.style.display = 'none';
         dom.homepageCategoriesGrid.innerHTML = '';
 
-        CONSTANTS.PREDEFINED_CATEGORIES.filter(cat => cat.id !== 'all').forEach((cat, index) => {
+        CONSTANTS.PREDEFINED_CATEGORIES.filter(cat => cat.id !== 'all').forEach(cat => {
             const link = document.createElement('a');
             link.href = `category.html?name=${cat.id}`;
             const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`;
-            link.className = `category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50 fade-in`;
-            link.style.animationDelay = `${index * 50}ms`;
+            link.className = `category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50`;
             link.innerHTML = `<div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]"><i class="fas ${cat.icon || 'fa-folder'} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i><h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 dark:group-hover:text-yellow-200 transition-colors">${escapeHTML(cat.name)}</h3><p class="text-sm opacity-80 mt-1 px-2">${escapeHTML(cat.description)}</p></div>`;
             dom.homepageCategoriesGrid.appendChild(link);
         });
