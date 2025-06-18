@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         filterSummaryContainer: document.getElementById('filter-summary-container'),
         filterSummaryText: document.getElementById('filter-summary-text'),
         clearFiltersBtn: document.getElementById('clear-filters-btn'),
+        sortSelect: document.getElementById('sort-by-select'),
         searchInputs: {
             desktop: document.getElementById('desktop-search-input'),
             mobile: document.getElementById('mobile-search-input'),
@@ -73,7 +74,8 @@ document.addEventListener('DOMContentLoaded', () => {
             category: 'all',
             tags: [],
             searchTerm: '',
-            hebrewOnly: false
+            hebrewOnly: false,
+            sortBy: 'date-desc'
         },
         currentlyDisplayedVideosCount: 0,
         search: {
@@ -102,12 +104,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getCategoryFromURL() {
-        return new URLSearchParams(window.location.search).get('name');
+        const params = new URLSearchParams(window.location.search);
+        return params.get('name') || params.get('category');
     }
     
     function getIconForTag(tag) {
         const tagIcons = { "מנוע": "fa-cogs", "בלמים": "fa-hand-paper", "גיר": "fa-cog", "שמן מנוע": "fa-oil-can", "מצבר": "fa-car-battery", "תחזוקה": "fa-tools", "טיפול": "fa-wrench", "בדיקה לפני קנייה": "fa-search-dollar", "שיפורים": "fa-rocket", "רכב חשמלי": "fa-charging-station", "הכנופיה": "fa-users-cog", "ניקוי מצערת": "fa-spray-can-sparkles", "אספנות": "fa-gem", "נוזל בלמים": "fa-tint", "עשה זאת בעצמך": "fa-hand-sparkles" };
         return tagIcons[tag.toLowerCase()] || "fa-tag";
+    }
+    
+    function parseDurationToSeconds(durationStr) {
+        if (!durationStr || typeof durationStr !== 'string') return 0;
+        const parts = durationStr.split(':').map(Number);
+        let seconds = 0;
+        if (parts.length === 3) { // HH:MM:SS
+            seconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
+        } else if (parts.length === 2) { // MM:SS
+            seconds = parts[0] * 60 + parts[1];
+        } else if (parts.length === 1) { // SS
+            seconds = parts[0];
+        }
+        return seconds;
     }
 
     async function loadVideos() {
@@ -115,7 +132,6 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.loadingPlaceholder.classList.remove('hidden');
             dom.loadingPlaceholder.innerHTML = `<div class="text-center py-10"><i class="fas fa-spinner fa-spin fa-3x mb-3 text-purple-600 dark:text-purple-400"></i><p class="text-lg text-slate-600 dark:text-slate-300">טוען סרטונים...</p></div>`;
         }
-
         try {
             const response = await fetch('data/videos.json');
             if (!response.ok) throw new Error(`HTTP ${response.status} while fetching videos.json`);
@@ -126,23 +142,44 @@ document.addEventListener('DOMContentLoaded', () => {
             state.allVideos = rawVideos.map(video => ({
                 ...video,
                 category: (video.category || '').toLowerCase(),
-                tags: (video.tags || []).map(tag => String(tag).toLowerCase())
+                tags: (video.tags || []).map(tag => String(tag).toLowerCase()),
+                durationInSeconds: parseDurationToSeconds(video.duration),
+                dateAdded: new Date(video.dateAdded)
             }));
-
             if (dom.videoCountHero) {
                 const countSpan = dom.videoCountHero.querySelector('span');
                 if (countSpan) countSpan.textContent = state.allVideos.length;
             }
         } catch (error) {
             state.allVideos = [];
-            if (dom.videoCountHero) {
-                const countSpan = dom.videoCountHero.querySelector('span');
-                if (countSpan) countSpan.textContent = "שגיאה";
-            }
+            if (dom.videoCountHero) dom.videoCountHero.querySelector('span').textContent = "שגיאה";
             throw error;
         } finally {
              if (dom.loadingPlaceholder) dom.loadingPlaceholder.classList.add('hidden');
         }
+    }
+    
+    function getFilteredAndSortedVideos() {
+        let videos = getFilteredVideos();
+        
+        videos.sort((a, b) => {
+            switch (state.currentFilters.sortBy) {
+                case 'date-desc':
+                    return b.dateAdded - a.dateAdded;
+                case 'title-asc':
+                    return a.title.localeCompare(b.title, 'he');
+                case 'title-desc':
+                    return b.title.localeCompare(a.title, 'he');
+                case 'duration-asc':
+                    return a.durationInSeconds - b.durationInSeconds;
+                case 'duration-desc':
+                    return b.durationInSeconds - a.durationInSeconds;
+                default:
+                    return 0;
+            }
+        });
+        
+        return videos;
     }
 
     function getFilteredVideos() {
@@ -170,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isLoadMore) {
             state.currentlyDisplayedVideosCount = 0;
         }
-        const allMatchingVideos = getFilteredVideos();
+        const allMatchingVideos = getFilteredAndSortedVideos();
         renderVideoCards(allMatchingVideos, isLoadMore);
         
         if (andScroll && !isLoadMore) {
@@ -206,13 +243,14 @@ document.addEventListener('DOMContentLoaded', () => {
             category: state.currentFilters.category,
             tags: [],
             searchTerm: '',
-            hebrewOnly: false
+            hebrewOnly: state.currentFilters.hebrewOnly,
+            sortBy: 'date-desc'
         };
         
-        if (dom.hebrewFilterToggle) dom.hebrewFilterToggle.checked = false;
         Object.values(dom.searchInputs).forEach(input => {
             if (input) input.value = '';
         });
+        if(dom.sortSelect) dom.sortSelect.value = 'date-desc';
 
         updateActiveTagVisuals();
         renderSelectedTagChips();
@@ -617,23 +655,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function updateURLWithFilters() {
-        const params = new URLSearchParams();
-        const { searchTerm, tags, hebrewOnly } = state.currentFilters;
+        const params = new URLSearchParams(window.location.search);
+        const { searchTerm, tags, hebrewOnly, sortBy } = state.currentFilters;
+        
+        const pageCategory = getCategoryFromURL();
+        if(pageCategory) {
+            params.set('name', pageCategory);
+        } else {
+            params.delete('name');
+        }
 
-        if (searchTerm) {
-            params.set('search', searchTerm);
-        }
-        if (tags.length > 0) {
-            params.set('tags', tags.join(','));
-        }
-        if (hebrewOnly) {
-            params.set('hebrew', 'true');
-        }
+        if (searchTerm) params.set('search', searchTerm); else params.delete('search');
+        if (tags.length > 0) params.set('tags', tags.join(',')); else params.delete('tags');
+        if (hebrewOnly) params.set('hebrew', 'true'); else params.delete('hebrew');
+        if (sortBy !== 'date-desc') params.set('sort', sortBy); else params.delete('sort');
 
         const queryString = params.toString();
         const newUrl = `${window.location.pathname}${queryString ? `?${queryString}` : ''}`;
         
-        // Use replaceState to avoid cluttering browser history with every filter change
         history.replaceState(state.currentFilters, '', newUrl);
     }
 
@@ -642,6 +681,12 @@ document.addEventListener('DOMContentLoaded', () => {
         state.currentFilters.searchTerm = params.get('search') || '';
         state.currentFilters.tags = params.get('tags')?.split(',').filter(Boolean) || [];
         state.currentFilters.hebrewOnly = params.get('hebrew') === 'true';
+        state.currentFilters.sortBy = params.get('sort') || 'date-desc';
+        
+        // Load hebrewOnly preference from localStorage if not in URL
+        if (!params.has('hebrew')) {
+            state.currentFilters.hebrewOnly = localStorage.getItem('hebrewOnlyPreference') === 'true';
+        }
     }
 
     function syncUIToState() {
@@ -649,6 +694,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(input) input.value = state.currentFilters.searchTerm;
         });
         if(dom.hebrewFilterToggle) dom.hebrewFilterToggle.checked = state.currentFilters.hebrewOnly;
+        if(dom.sortSelect) dom.sortSelect.value = state.currentFilters.sortBy;
         renderSelectedTagChips();
         updateActiveTagVisuals();
     }
@@ -692,8 +738,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         dom.hebrewFilterToggle?.addEventListener('change', (e) => {
             state.currentFilters.hebrewOnly = e.target.checked;
+            localStorage.setItem('hebrewOnlyPreference', e.target.checked);
             applyFilters(false);
         });
+        
+        dom.sortSelect?.addEventListener('change', (e) => {
+            state.currentFilters.sortBy = e.target.value;
+            applyFilters(false, false);
+        });
+        
         dom.clearFiltersBtn?.addEventListener('click', () => clearAllFilters());
 
         dom.customTagForm?.addEventListener('submit', (e) => {
@@ -764,10 +817,10 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             await loadVideos();
             
+            applyFiltersFromURL();
+            
             const categoryFromURL = getCategoryFromURL();
             let videosForFuse = state.allVideos;
-            
-            applyFiltersFromURL();
             
             if (isHomePage()) {
                 if (dom.homepageCategoriesGrid) renderHomepageCategoryButtons();
