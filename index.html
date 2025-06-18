@@ -23,7 +23,6 @@
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
 
     <script>
-        // Set theme on initial load to prevent flashing
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -31,7 +30,6 @@
         }
     </script>
     <style>
-        /* Custom styles for RTL dark mode toggle and search suggestions */
         html[dir="rtl"].dark #mobile-menu .dark-mode-toggle-button .dot {
             transform: translateX(-100%);
         }
@@ -39,10 +37,10 @@
             transform: translateX(0%);
         }
         .search-suggestions-container ul li.active-suggestion {
-            background-color: #ede9fe; /* purple-100 */
+            background-color: #ede9fe;
         }
         .dark .search-suggestions-container ul li.active-suggestion {
-            background-color: #475569; /* slate-600 */
+            background-color: #475569;
         }
         .tag.active-search-tag {
             background-color: #7c3aed !important;
@@ -284,6 +282,16 @@
                     <i class="fas fa-film text-purple-600 dark:text-purple-400 mr-3"></i>
                     כל הסרטונים
                 </h2>
+                <div class="flex items-center gap-2">
+                    <label for="sort-by-select" class="text-sm font-medium text-slate-600 dark:text-slate-400">מיין לפי:</label>
+                    <select id="sort-by-select" class="form-select text-sm rounded-md border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200 focus:ring-purple-500 focus:border-purple-500">
+                        <option value="date-desc">החדש ביותר</option>
+                        <option value="title-asc">כותרת (א-ת)</option>
+                        <option value="title-desc">כותרת (ת-א)</option>
+                        <option value="duration-asc">הקצר ביותר</option>
+                        <option value="duration-desc">הארוך ביותר</option>
+                    </select>
+                </div>
             </div>
             <div id="video-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
                 <p id="loading-videos-placeholder" class="col-span-full text-center text-slate-500 dark:text-slate-400 py-10 text-lg" aria-live="polite" aria-busy="true"></p>
