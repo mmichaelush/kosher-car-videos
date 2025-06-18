@@ -178,6 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         clearSearchSuggestions();
         updateFilterSummary();
+        updateURLWithFilters();
     }
 
     function toggleTagSelection(tagName) {
@@ -238,7 +239,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const hasVideos = allMatchingVideos.length > 0;
         dom.noVideosFoundMessage?.classList.toggle('hidden', hasVideos);
         if (!hasVideos && !isLoadMore) {
-            dom.noVideosFoundMessage.innerHTML = `<div class="col-span-full text-center text-slate-500 dark:text-slate-400 py-16"><i class="fas fa-video-slash fa-4x mb-6 text-purple-400 dark:text-purple-500"></i><p class="text-2xl font-semibold mb-2">לא נמצאו סרטונים</p><p class="text-lg">נסה לשנות את הסינון או מונח החיפוש.</p></div>`;
+            dom.noVideosFoundMessage.innerHTML = `<div class="col-span-full text-center text-slate-500 dark:text-slate-400 py-16">
+                <i class="fas fa-video-slash fa-4x mb-6 text-purple-400 dark:text-purple-500"></i>
+                <p class="text-2xl font-semibold mb-2">לא נמצאו סרטונים</p>
+                <p class="text-lg mb-6">נסה לשנות את הסינון או חפש משהו אחר.</p>
+                <button id="no-results-clear-btn" class="px-5 py-2.5 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-offset-slate-800">נקה את כל הסינונים</button>
+            </div>`;
         }
         
         updateLoadMoreButton(allMatchingVideos.length);
@@ -609,6 +615,44 @@ document.addEventListener('DOMContentLoaded', () => {
             promptAndCheckVideo();
         }
     }
+    
+    function updateURLWithFilters() {
+        const params = new URLSearchParams();
+        const { searchTerm, tags, hebrewOnly } = state.currentFilters;
+
+        if (searchTerm) {
+            params.set('search', searchTerm);
+        }
+        if (tags.length > 0) {
+            params.set('tags', tags.join(','));
+        }
+        if (hebrewOnly) {
+            params.set('hebrew', 'true');
+        }
+
+        const queryString = params.toString();
+        const newUrl = `${window.location.pathname}${queryString ? `?${queryString}` : ''}`;
+        
+        // Use replaceState to avoid cluttering browser history with every filter change
+        history.replaceState(state.currentFilters, '', newUrl);
+    }
+
+    function applyFiltersFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        state.currentFilters.searchTerm = params.get('search') || '';
+        state.currentFilters.tags = params.get('tags')?.split(',').filter(Boolean) || [];
+        state.currentFilters.hebrewOnly = params.get('hebrew') === 'true';
+    }
+
+    function syncUIToState() {
+        Object.values(dom.searchInputs).forEach(input => {
+            if(input) input.value = state.currentFilters.searchTerm;
+        });
+        if(dom.hebrewFilterToggle) dom.hebrewFilterToggle.checked = state.currentFilters.hebrewOnly;
+        renderSelectedTagChips();
+        updateActiveTagVisuals();
+    }
+
 
     function setupEventListeners() {
         dom.darkModeToggles.forEach(toggle => toggle.addEventListener('click', toggleTheme));
@@ -618,12 +662,13 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.backToTopButton?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         window.addEventListener('scroll', toggleBackToTopButton);
         
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
-                const href = link.getAttribute('href');
+        document.addEventListener('click', (e) => {
+            const navLink = e.target.closest('.nav-link');
+            if (navLink) {
+                 const href = navLink.getAttribute('href');
                 if (isHomePage() && href && href.startsWith('#')) {
                     e.preventDefault();
-                    if (link.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
+                    if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
 
                     if (href === '#home') {
                         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -636,10 +681,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                         }
                     }
-                } else if (link.closest('#mobile-menu')) {
+                } else if (navLink.closest('#mobile-menu')) {
                     setTimeout(closeMobileMenu, 150);
                 }
-            });
+            }
+             if (e.target.id === 'no-results-clear-btn') {
+                clearAllFilters();
+            }
         });
 
         dom.hebrewFilterToggle?.addEventListener('change', (e) => {
@@ -699,6 +747,12 @@ document.addEventListener('DOMContentLoaded', () => {
             promptAndCheckVideo();
         });
         window.addEventListener('hashchange', handleCheckIdFromHash);
+        
+        window.addEventListener('popstate', (event) => {
+            applyFiltersFromURL();
+            syncUIToState();
+            applyFilters(false, false);
+        });
     }
 
     async function initializeApp() {
@@ -712,7 +766,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const categoryFromURL = getCategoryFromURL();
             let videosForFuse = state.allVideos;
-
+            
+            applyFiltersFromURL();
+            
             if (isHomePage()) {
                 if (dom.homepageCategoriesGrid) renderHomepageCategoryButtons();
                 state.currentFilters.category = 'all';
@@ -724,7 +780,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             state.fuse = new Fuse(videosForFuse, CONSTANTS.FUSE_OPTIONS);
-
+            
+            syncUIToState();
             renderPopularTags();
             applyFilters(false, false);
 
