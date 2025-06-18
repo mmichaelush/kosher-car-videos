@@ -117,11 +117,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!durationStr || typeof durationStr !== 'string') return 0;
         const parts = durationStr.split(':').map(Number);
         let seconds = 0;
-        if (parts.length === 3) { // HH:MM:SS
+        if (parts.length === 3) {
             seconds = parts[0] * 3600 + parts[1] * 60 + parts[2];
-        } else if (parts.length === 2) { // MM:SS
+        } else if (parts.length === 2) {
             seconds = parts[0] * 60 + parts[1];
-        } else if (parts.length === 1) { // SS
+        } else if (parts.length === 1) {
             seconds = parts[0];
         }
         return seconds;
@@ -166,6 +166,8 @@ document.addEventListener('DOMContentLoaded', () => {
             switch (state.currentFilters.sortBy) {
                 case 'date-desc':
                     return b.dateAdded - a.dateAdded;
+                case 'date-asc':
+                    return a.dateAdded - b.dateAdded;
                 case 'title-asc':
                     return a.title.localeCompare(b.title, 'he');
                 case 'title-desc':
@@ -302,7 +304,8 @@ document.addEventListener('DOMContentLoaded', () => {
             channelName: cardClone.querySelector('.channel-name'),
             channelLogo: cardClone.querySelector('.channel-logo'),
             tagsContainer: cardClone.querySelector('.video-tags'),
-            categoryDisplay: cardClone.querySelector('.video-category-display')
+            categoryDisplay: cardClone.querySelector('.video-category-display'),
+            dateDisplay: cardClone.querySelector('.video-date-display')
         };
 
         const sanitizedTitle = escapeHTML(video.title);
@@ -333,6 +336,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const categoryName = categoryData ? categoryData.name : capitalizeFirstLetter(video.category);
         card.categoryDisplay.querySelector('i').className = `fas ${categoryData?.icon || 'fa-folder-open'} ml-1.5 opacity-70 text-purple-500 dark:text-purple-400`;
         card.categoryDisplay.append(` ${escapeHTML(categoryName)}`);
+        
+        if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
+            card.dateDisplay.append(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' }));
+        } else {
+            card.dateDisplay.style.display = 'none';
+        }
 
         return card.article;
     }
@@ -683,7 +692,6 @@ document.addEventListener('DOMContentLoaded', () => {
         state.currentFilters.hebrewOnly = params.get('hebrew') === 'true';
         state.currentFilters.sortBy = params.get('sort') || 'date-desc';
         
-        // Load hebrewOnly preference from localStorage if not in URL
         if (!params.has('hebrew')) {
             state.currentFilters.hebrewOnly = localStorage.getItem('hebrewOnlyPreference') === 'true';
         }
