@@ -302,7 +302,8 @@ document.addEventListener('DOMContentLoaded', () => {
             channelLogo: cardClone.querySelector('.channel-logo'),
             tagsContainer: cardClone.querySelector('.video-tags'),
             categoryDisplay: cardClone.querySelector('.video-category-display'),
-            dateDisplay: cardClone.querySelector('.video-date-display')
+            dateDisplay: cardClone.querySelector('.video-date-display'),
+            shareButton: cardClone.querySelector('.share-button')
         };
 
         const sanitizedTitle = escapeHTML(video.title);
@@ -331,15 +332,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const categoryData = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === video.category);
         const categoryName = categoryData ? categoryData.name : capitalizeFirstLetter(video.category);
-        const categoryIcon = cardClone.querySelector('.video-category-icon');
-        if (categoryIcon) {
-            categoryIcon.classList.remove('fa-folder-open');
-            categoryIcon.classList.add(`fa-${categoryData?.icon || 'folder-open'}`);
+        const categoryIconEl = card.categoryDisplay.querySelector('.video-category-icon');
+        if (categoryIconEl) {
+            categoryIconEl.className = `video-category-icon fas fa-${categoryData?.icon || 'folder-open'} opacity-70 text-purple-500 dark:text-purple-400 ml-2`;
         }
-        card.categoryDisplay.append(escapeHTML(categoryName));
+        
+        const categoryTextNode = document.createTextNode(escapeHTML(categoryName));
+        card.categoryDisplay.appendChild(categoryTextNode);
         
         if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
-            card.dateDisplay.append(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' }));
+            const dateTextNode = document.createTextNode(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' }));
+            card.dateDisplay.appendChild(dateTextNode);
         } else {
             card.dateDisplay.style.display = 'none';
         }
@@ -480,18 +483,25 @@ document.addEventListener('DOMContentLoaded', () => {
         toggle.querySelector('.fa-sun')?.classList.toggle('hidden', !isDark);
         toggle.setAttribute('aria-checked', String(isDark));
     }
+
     function openMobileMenu() {
         dom.mobileMenu?.classList.remove('translate-x-full');
         dom.backdrop?.classList.remove('invisible', 'opacity-0');
         dom.body.classList.add('overflow-hidden', 'md:overflow-auto');
         dom.openMenuBtn?.setAttribute('aria-expanded', 'true');
+        // Focus Management: Set focus to the close button after the transition
+        setTimeout(() => dom.closeMenuBtn?.focus(), 300);
     }
+
     function closeMobileMenu() {
         dom.mobileMenu?.classList.add('translate-x-full');
         dom.backdrop?.classList.add('invisible', 'opacity-0');
         dom.body.classList.remove('overflow-hidden', 'md:overflow-auto');
         dom.openMenuBtn?.setAttribute('aria-expanded', 'false');
+        // Focus Management: Return focus to the menu button
+        dom.openMenuBtn?.focus();
     }
+
     function toggleBackToTopButton() {
         dom.backToTopButton?.classList.toggle('opacity-0', window.pageYOffset <= 300);
         dom.backToTopButton?.classList.toggle('invisible', window.pageYOffset <= 300);
@@ -754,6 +764,23 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        // Focus Trap for Mobile Menu
+        dom.mobileMenu?.addEventListener('keydown', (e) => {
+            if (e.key !== 'Tab') return;
+            const focusableElements = dom.mobileMenu.querySelectorAll('a[href], button, input, textarea, select');
+            const firstElement = focusableElements[0];
+            const lastElement = focusableElements[focusableElements.length - 1];
+
+            if (!e.shiftKey && document.activeElement === lastElement) {
+                e.preventDefault();
+                firstElement.focus();
+            } else if (e.shiftKey && document.activeElement === firstElement) {
+                e.preventDefault();
+                lastElement.focus();
+            }
+        });
+
+
         dom.hebrewFilterToggle?.addEventListener('change', (e) => {
             state.currentFilters.hebrewOnly = e.target.checked;
             localStorage.setItem('hebrewOnlyPreference', e.target.checked);
@@ -806,6 +833,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     scrollToVideoGridIfNeeded();
                 }
+            }
+            const shareButton = e.target.closest('.share-button');
+            if (shareButton) {
+                const url = window.location.href;
+                navigator.clipboard.writeText(url).then(() => {
+                    const originalIcon = shareButton.innerHTML;
+                    shareButton.innerHTML = `<span class="text-xs text-green-500">הועתק!</span>`;
+                    setTimeout(() => {
+                        shareButton.innerHTML = originalIcon;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy URL: ', err);
+                });
             }
         });
 
