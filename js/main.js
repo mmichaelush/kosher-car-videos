@@ -19,14 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
             ignoreLocation: true
         },
         PREDEFINED_CATEGORIES: [
-            { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "fa-film" },
-            { id: "review", name: "סקירות רכב", description: "מבחנים והשוואות", icon: "fa-magnifying-glass-chart", gradient: "from-purple-500 to-indigo-600", darkGradient: "dark:from-purple-600 dark:to-indigo-700" },
-            { id: "maintenance", name: "טיפולים", description: "תחזוקה שוטפת ומניעתית", icon: "fa-oil-can", gradient: "from-blue-500 to-cyan-600", darkGradient: "dark:from-blue-600 dark:to-cyan-700" },
-            { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה", icon: "fa-tools", gradient: "from-green-500 to-teal-600", darkGradient: "dark:from-green-600 dark:to-teal-700" },
-            { id: "troubleshooting", name: "איתור ותיקון תקלות", description: "אבחון ופתרון בעיות", icon: "fa-microscope", gradient: "from-lime-400 to-yellow-500", darkGradient: "dark:from-lime-500 dark:to-yellow-600" },
-            { id: "upgrades", name: "שיפורים ושדרוגים", description: "שדרוג הרכב והוספת אביזרים", icon: "fa-rocket", gradient: "from-orange-500 to-red-600", darkGradient: "dark:from-orange-600 dark:to-red-700" },
-            { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "fa-cogs", gradient: "from-yellow-500 to-amber-600", darkGradient: "dark:from-yellow-600 dark:to-amber-700" },
-            { id: "collectors", name: "רכבי אספנות", description: "רכבים נוסטלגיים שחזרו לכביש", icon: "fa-car-side", gradient: "from-red-500 to-pink-600", darkGradient: "dark:from-red-600 dark:to-pink-700" }
+            { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "film" },
+            { id: "review", name: "סקירות רכב", description: "מבחנים והשוואות", icon: "magnifying-glass-chart", gradient: "from-purple-500 to-indigo-600", darkGradient: "dark:from-purple-600 dark:to-indigo-700" },
+            { id: "maintenance", name: "טיפולים", description: "תחזוקה שוטפת ומניעתית", icon: "oil-can", gradient: "from-blue-500 to-cyan-600", darkGradient: "dark:from-blue-600 dark:to-cyan-700" },
+            { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה", icon: "tools", gradient: "from-green-500 to-teal-600", darkGradient: "dark:from-green-600 dark:to-teal-700" },
+            { id: "troubleshooting", name: "איתור ותיקון תקלות", description: "אבחון ופתרון בעיות", icon: "microscope", gradient: "from-lime-400 to-yellow-500", darkGradient: "dark:from-lime-500 dark:to-yellow-600" },
+            { id: "upgrades", name: "שיפורים ושדרוגים", description: "שדרוג הרכב והוספת אביזרים", icon: "rocket", gradient: "from-orange-500 to-red-600", darkGradient: "dark:from-orange-600 dark:to-red-700" },
+            { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "cogs", gradient: "from-yellow-500 to-amber-600", darkGradient: "dark:from-yellow-600 dark:to-amber-700" },
+            { id: "collectors", name: "רכבי אספנות", description: "רכבים נוסטלגיים שחזרו לכביש", icon: "car-side", gradient: "from-red-500 to-pink-600", darkGradient: "dark:from-red-600 dark:to-pink-700" }
         ]
     };
 
@@ -331,8 +331,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const categoryData = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === video.category);
         const categoryName = categoryData ? categoryData.name : capitalizeFirstLetter(video.category);
-        card.categoryDisplay.querySelector('i').className = `fas ${categoryData?.icon || 'fa-folder-open'} mr-2 opacity-70 text-purple-500 dark:text-purple-400`;
-        card.categoryDisplay.append(` ${escapeHTML(categoryName)}`);
+        const categoryIcon = cardClone.querySelector('.video-category-icon');
+        if (categoryIcon) {
+            categoryIcon.classList.remove('fa-folder-open');
+            categoryIcon.classList.add(`fa-${categoryData?.icon || 'folder-open'}`);
+        }
+        card.categoryDisplay.append(escapeHTML(categoryName));
         
         if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
             card.dateDisplay.append(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' }));
@@ -355,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
             link.href = `category.html?name=${cat.id}`;
             const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`;
             link.className = `category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50`;
-            link.innerHTML = `<div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]"><i class="fas ${cat.icon || 'fa-folder'} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i><h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 dark:group-hover:text-yellow-200 transition-colors">${escapeHTML(cat.name)}</h3><p class="text-sm opacity-80 mt-1 px-2">${escapeHTML(cat.description)}</p></div>`;
+            link.innerHTML = `<div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]"><i class="fas fa-${cat.icon || 'folder'} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i><h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 dark:group-hover:text-yellow-200 transition-colors">${escapeHTML(cat.name)}</h3><p class="text-sm opacity-80 mt-1 px-2">${escapeHTML(cat.description)}</p></div>`;
             dom.homepageCategoriesGrid.appendChild(link);
         });
     }
@@ -435,13 +439,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateCategoryPageUI(categoryId) {
         const categoryData = CONSTANTS.PREDEFINED_CATEGORIES.find(cat => cat.id === categoryId);
         const name = categoryData ? categoryData.name : capitalizeFirstLetter(categoryId);
-        const icon = categoryData ? categoryData.icon : 'fa-folder-open';
+        const icon = categoryData ? categoryData.icon : 'folder-open';
 
         document.title = `${name} - CAR-טיב`;
         
         const pageTitle = document.getElementById('category-page-title');
         if (pageTitle) {
-            pageTitle.innerHTML = `<i class="fas ${icon} text-purple-600 dark:text-purple-400 mr-4"></i>${escapeHTML(name)}`;
+            pageTitle.innerHTML = `<i class="fas fa-${icon} text-purple-600 dark:text-purple-400 mr-4"></i>${escapeHTML(name)}`;
         }
         
         const breadcrumb = document.getElementById('breadcrumb-category-name');
@@ -449,7 +453,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const videosHeading = document.getElementById('videos-in-category-heading');
         if (videosHeading) {
-            videosHeading.innerHTML = `<i class="fas fa-film text-purple-600 dark:text-purple-400 mr-4"></i> <span>סרטונים בקטגוריה: ${escapeHTML(name)}</span>`;
+            const span = videosHeading.querySelector('span');
+            if(span) span.innerHTML = `סרטונים בקטגוריה: <span class="font-bold text-purple-600 dark:text-purple-400">${escapeHTML(name)}</span>`;
         }
     }
     
