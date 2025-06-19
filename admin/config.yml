@@ -1,0 +1,40 @@
+yaml
+backend:
+  name: github
+  repo: mmichaelush/kosher-car-videos.io # החלף בנתיב המאגר שלך בגיטהאב
+  branch: main # או master, תלוי בענף הראשי שלך
+
+publish_mode: editorial_workflow
+media_folder: "data/assets/images" # נתיב לשמירת תמונות חדשות
+public_folder: "/data/assets/images" # נתיב ציבורי לתמונות
+
+collections:
+  - name: "videos"
+    label: "סרטונים"
+    label_singular: "סרטון"
+    description: "כאן מנהלים את כל הסרטונים באתר."
+    file: "data/videos.json"
+    format: "json"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - { label: "YouTube Video ID", name: "id", widget: "string", hint: "ה-ID של הסרטון מתוך הקישור ביוטיוב (11 תווים). לדוגמה: -AtUg2GPXKs" }
+      - { label: "כותרת הסרטון", name: "title", widget: "string" }
+      - { label: "משך הסרטון", name: "duration", widget: "string", hint: "בפורמט HH:MM:SS או MM:SS" }
+      - { label: "שם הערוץ", name: "channel", widget: "string" }
+      - { label: "קישור לתמונת הערוץ", name: "channelImage", widget: "string", required: false }
+      - { label: "קישור לתמונה ממוזערת", name: "thumbnail", widget: "string", hint: "לדוגמה: https://i.ytimg.com/vi/VIDEO_ID/hqdefault.jpg" }
+      - label: "קטגוריה"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "סקירות רכב", value: "review" }
+          - { label: "טיפולים", value: "maintenance" }
+          - { label: "עשה זאת בעצמך", value: "diy" }
+          - { label: "איתור ותיקון תקלות", value: "troubleshooting" }
+          - { label: "שיפורים ושדרוגים", value: "upgrades" }
+          - { label: "מערכות הרכב", value: "systems" }
+          - { label: "רכבי אספנות", value: "collectors" }
+      - { label: "תגיות", name: "tags", widget: "list", hint: "הוסף תגיות רלוונטיות. לחץ 'הוסף' כדי להוסיף תגית חדשה." }
+      - { label: "תוכן בעברית?", name: "hebrewContent", widget: "boolean", default: true }
+      - { label: "תאריך הוספה", name: "dateAdded", widget: "datetime", format: "YYYY-MM-DD", date_format: "DD.MM.YYYY", time_format: false }
