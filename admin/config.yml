@@ -1,4 +1,3 @@
-yaml
 backend:
   name: github
   repo: mmichaelush/kosher-car-videos.io # החלף בנתיב המאגר שלך בגיטהאב
