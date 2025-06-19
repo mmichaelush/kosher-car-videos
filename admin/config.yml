@@ -1,23 +1,23 @@
 backend:
   name: github
-  repo: mmichaelush/kosher-car-videos.io # ודא שזה שם המשתמש/שם המאגר המדויק
-  branch: main # ודא שזה הענף הראשי שלך
+  repo: mmichaelush/kosher-car-videos.io
+  branch: main
+  auth_type: netlify-identity # <-- השורה החדשה והחשובה
 
 publish_mode: editorial_workflow
-media_folder: "data/assets/images" # נתיב לשמירת תמונות חדשות
-public_folder: "/data/assets/images" # נתיב ציבורי לתמונות
+media_folder: "data/assets/images"
+public_folder: "/data/assets/images"
 
 collections:
-  - name: "videos_collection" # שם פנימי לאוסף, יכול להיות כל דבר
-    label: "סרטונים" # זה מה שיופיע בתפריט הראשי במערכת הניהול
-    # --- השינוי המרכזי כאן ---
-    files: # 'file' (יחיד) הופך ל-'files' (רבים) ומקבל רשימה
-      - name: "videos" # שם פנימי לקובץ
-        label: "מאגר הסרטונים" # שם שיופיע כתת-תפריט
-        file: "data/videos.json" # הנתיב לקובץ הנתונים
+  - name: "videos_collection"
+    label: "סרטונים"
+    files:
+      - name: "videos"
+        label: "מאגר הסרטונים"
+        file: "data/videos.json"
         description: "ניהול כל הסרטונים באתר"
-        create: true # מאפשר יצירת רשומות חדשות
-        fields: # כל השדות שהגדרנו קודם עוברים לכאן
+        create: true
+        fields:
           - { label: "YouTube Video ID", name: "id", widget: "string", hint: "ה-ID של הסרטון מתוך הקישור ביוטיוב (11 תווים). לדוגמה: -AtUg2GPXKs" }
           - { label: "כותרת הסרטון", name: "title", widget: "string" }
           - { label: "משך הסרטון", name: "duration", widget: "string", hint: "בפורמט HH:MM:SS או MM:SS" }
