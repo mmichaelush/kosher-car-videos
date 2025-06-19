@@ -160,7 +160,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function getFilteredAndSortedVideos() {
-        let videos = getFilteredVideos();
+        if (!state.allVideos) return [];
+
+        let filtered = state.allVideos;
+
+        if (state.currentFilters.category !== 'all') {
+            filtered = filtered.filter(v => v.category === state.currentFilters.category);
+        }
+        
+        if (state.currentFilters.searchTerm.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH) {
+            const fuseResults = state.fuse.search(state.currentFilters.searchTerm);
+            const resultIds = new Set(fuseResults.map(r => r.item.id));
+            filtered = filtered.filter(v => resultIds.has(v.id));
+        }
+
+        let videos = filtered.filter(video => {
+            const tagsMatch = state.currentFilters.tags.length === 0 || state.currentFilters.tags.every(filterTag => video.tags.includes(filterTag));
+            const hebrewMatch = !state.currentFilters.hebrewOnly || video.hebrewContent;
+            return tagsMatch && hebrewMatch;
+        });
         
         videos.sort((a, b) => {
             switch (state.currentFilters.sortBy) {
@@ -182,27 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         return videos;
-    }
-
-    function getFilteredVideos() {
-        if (!state.allVideos) return [];
-        let filtered = state.allVideos;
-
-        if (state.currentFilters.category !== 'all') {
-            filtered = filtered.filter(v => v.category === state.currentFilters.category);
-        }
-        
-        if (state.currentFilters.searchTerm.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH) {
-            const fuseResults = state.fuse.search(state.currentFilters.searchTerm);
-            const resultIds = new Set(fuseResults.map(r => r.item.id));
-            filtered = filtered.filter(v => resultIds.has(v.id));
-        }
-
-        return filtered.filter(video => {
-            const tagsMatch = state.currentFilters.tags.length === 0 || state.currentFilters.tags.every(filterTag => video.tags.includes(filterTag));
-            const hebrewMatch = !state.currentFilters.hebrewOnly || video.hebrewContent;
-            return tagsMatch && hebrewMatch;
-        });
     }
 
     function applyFilters(isLoadMore = false, andScroll = true) {
@@ -334,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const categoryData = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === video.category);
         const categoryName = categoryData ? categoryData.name : capitalizeFirstLetter(video.category);
-        card.categoryDisplay.querySelector('i').className = `fas ${categoryData?.icon || 'fa-folder-open'} ml-1.5 opacity-70 text-purple-500 dark:text-purple-400`;
+        card.categoryDisplay.querySelector('i').className = `fas ${categoryData?.icon || 'fa-folder-open'} mr-2 opacity-70 text-purple-500 dark:text-purple-400`;
         card.categoryDisplay.append(` ${escapeHTML(categoryName)}`);
         
         if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
@@ -441,11 +438,19 @@ document.addEventListener('DOMContentLoaded', () => {
         const icon = categoryData ? categoryData.icon : 'fa-folder-open';
 
         document.title = `${name} - CAR-טיב`;
+        
         const pageTitle = document.getElementById('category-page-title');
-        if (pageTitle) pageTitle.innerHTML = `<i class="fas ${icon} text-purple-600 dark:text-purple-400 mr-3"></i>${escapeHTML(name)}`;
+        if (pageTitle) {
+            pageTitle.innerHTML = `<i class="fas ${icon} text-purple-600 dark:text-purple-400 mr-4"></i>${escapeHTML(name)}`;
+        }
         
         const breadcrumb = document.getElementById('breadcrumb-category-name');
         if (breadcrumb) breadcrumb.textContent = escapeHTML(name);
+        
+        const videosHeading = document.getElementById('videos-in-category-heading');
+        if (videosHeading) {
+            videosHeading.innerHTML = `<i class="fas fa-film text-purple-600 dark:text-purple-400 mr-4"></i> <span>סרטונים בקטגוריה: ${escapeHTML(name)}</span>`;
+        }
     }
     
     function displayError(message) {
