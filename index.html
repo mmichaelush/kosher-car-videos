@@ -482,7 +482,6 @@
                 <button class="play-video-button absolute inset-0 w-full h-full flex items-center justify-center text-white z-20 transition-all duration-300 group-hover:scale-110 group-hover:opacity-90 focus:outline-none" aria-label="נגן סרטון">
                     <i class="fas fa-play-circle fa-5x sm:fa-6x text-purple-500 dark:text-purple-400 opacity-80 group-hover:opacity-100 drop-shadow-lg"></i>
                 </button>
-                <iframe class="video-iframe hidden absolute inset-0 w-full h-full z-30" loading="lazy" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
             <div class="video-details-container bg-slate-50 dark:bg-slate-700 p-4 sm:p-5 flex flex-col flex-grow">
                 <div class="video-channel-info flex items-center text-xs text-slate-500 dark:text-slate-300 mb-2.5">
@@ -513,6 +512,20 @@
     <button id="back-to-top-btn" aria-label="חזור לראש העמוד" class="fixed bottom-6 right-6 rtl:left-6 rtl:right-auto z-50 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white rounded-full p-2.5 shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-900 opacity-0 invisible transition-all duration-300 ease-in-out h-10 w-10 flex items-center justify-center">
         <i class="fas fa-arrow-up text-md"></i>
     </button>
+    
+    <!-- Video Modal -->
+    <div id="video-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="video-modal-title">
+        <div id="video-modal-backdrop" class="absolute inset-0 bg-black/80 backdrop-blur-sm"></div>
+        <div class="relative bg-black rounded-lg shadow-2xl w-full max-w-4xl">
+            <div class="aspect-w-16 aspect-h-9">
+                <iframe id="video-modal-iframe" class="w-full h-full" src="" title="נגן וידאו" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <button id="video-modal-close-btn" aria-label="סגירת נגן הוידאו" class="absolute -top-3 -right-3 rtl:-left-3 rtl:-right-auto h-10 w-10 flex items-center justify-center bg-white dark:bg-slate-600 text-slate-800 dark:text-slate-100 rounded-full shadow-lg hover:bg-purple-100 dark:hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+    </div>
+
 
     <script src="js/main.js"></script>
 </body>
