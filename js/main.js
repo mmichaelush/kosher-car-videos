@@ -65,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
             mobile: document.getElementById('mobile-search-suggestions'),
             main: document.getElementById('main-content-search-suggestions')
         },
-        // Modal elements
         videoModal: document.getElementById('video-modal'),
         videoModalIframe: document.getElementById('video-modal-iframe'),
         videoModalCloseBtn: document.getElementById('video-modal-close-btn'),
@@ -89,11 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
             currentSuggestionsContainer: null,
             isSuggestionClicked: false
         },
-        lastFocusedElement: null // For accessibility
+        lastFocusedElement: null
     };
 
     function openVideoModal(videoId) {
-        if (!videoId) return;
+        if (!videoId || !dom.videoModal) return;
         const video = state.allVideos.find(v => v.id === videoId);
         if (!video) return;
 
@@ -103,23 +102,27 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.videoModal.classList.remove('hidden');
         dom.body.classList.add('modal-open');
 
-        // Update URL
         const currentUrl = new URL(window.location);
-        currentUrl.searchParams.set('video', videoId);
-        history.pushState({ videoId }, '', currentUrl);
-
+        if (currentUrl.searchParams.get('video') !== videoId) {
+            currentUrl.searchParams.set('video', videoId);
+            history.pushState({ videoId }, '', currentUrl);
+        }
+        
         dom.videoModalCloseBtn.focus();
     }
 
     function closeVideoModal() {
+        if (!dom.videoModal || dom.videoModal.classList.contains('hidden')) return;
+        
         dom.videoModal.classList.add('hidden');
-        dom.videoModalIframe.src = ''; // Stop video
+        dom.videoModalIframe.src = '';
         dom.body.classList.remove('modal-open');
 
-        // Update URL
         const currentUrl = new URL(window.location);
-        currentUrl.searchParams.delete('video');
-        history.pushState(null, '', currentUrl);
+        if (currentUrl.searchParams.has('video')) {
+            currentUrl.searchParams.delete('video');
+            history.pushState(null, '', currentUrl);
+        }
         
         if (state.lastFocusedElement) {
             state.lastFocusedElement.focus();
@@ -209,7 +212,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function getFilteredAndSortedVideos() {
         if (!state.allVideos) return [];
-
         let filtered = state.allVideos;
 
         if (state.currentFilters.category !== 'all') {
@@ -356,14 +358,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const sanitizedTitle = escapeHTML(video.title);
         const videoLink = `https://www.youtube.com/watch?v=${video.id}`;
         
-        card.thumbnailImg.src = video.thumbnail;
-        card.thumbnailImg.alt = `תמונה ממוזערת: ${sanitizedTitle}`;
-        card.duration.textContent = video.duration || '';
         card.playBtn.dataset.videoId = video.id;
+        card.thumbnailImg.src = video.thumbnail;
+        card.thumbnailImg.alt = sanitizedTitle;
+        card.duration.textContent = video.duration || '';
+        
         card.link.href = videoLink;
         card.link.textContent = sanitizedTitle;
-        card.channelName.textContent = video.channel || '';
         
+        card.channelName.textContent = video.channel || '';
         if (video.channelImage) {
             card.channelLogo.src = video.channelImage;
             card.channelLogo.alt = `לוגו ערוץ ${escapeHTML(video.channel)}`;
@@ -383,12 +386,10 @@ document.addEventListener('DOMContentLoaded', () => {
             categoryIconEl.className = `video-category-icon fas fa-${categoryData?.icon || 'folder-open'} opacity-70 text-purple-500 dark:text-purple-400 ml-2`;
         }
         
-        const categoryTextNode = document.createTextNode(escapeHTML(categoryName));
-        card.categoryDisplay.appendChild(categoryTextNode);
+        card.categoryDisplay.appendChild(document.createTextNode(escapeHTML(categoryName)));
         
         if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
-            const dateTextNode = document.createTextNode(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' }));
-            card.dateDisplay.appendChild(dateTextNode);
+            card.dateDisplay.appendChild(document.createTextNode(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })));
         } else {
             card.dateDisplay.style.display = 'none';
         }
@@ -728,34 +729,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function updateURLWithFilters() {
-        const params = new URLSearchParams(window.location.search);
-        const { searchTerm, tags, hebrewOnly, sortBy } = state.currentFilters;
+        const currentUrl = new URL(window.location.href);
+        const videoId = currentUrl.searchParams.get('video'); // Preserve video ID
         
-        // Preserve video param if it exists
-        const videoId = params.get('video');
-
-        // Clear all params except 'video'
-        Array.from(params.keys()).forEach(key => key !== 'video' && params.delete(key));
+        // Build new search params from scratch
+        const newParams = new URLSearchParams();
+        const { searchTerm, tags, hebrewOnly, sortBy } = state.currentFilters;
 
         const pageCategory = getCategoryFromURL();
-        if(pageCategory) {
-            params.set('name', pageCategory);
-        }
+        if(pageCategory) newParams.set('name', pageCategory);
+        if (searchTerm) newParams.set('search', searchTerm);
+        if (tags.length > 0) newParams.set('tags', tags.join(','));
+        if (hebrewOnly) newParams.set('hebrew', 'true');
+        if (sortBy !== 'date-desc') newParams.set('sort', sortBy);
+        if (videoId) newParams.set('video', videoId); // Add video ID back if it exists
 
-        if (searchTerm) params.set('search', searchTerm);
-        if (tags.length > 0) params.set('tags', tags.join(','));
-        if (hebrewOnly) params.set('hebrew', 'true');
-        if (sortBy !== 'date-desc') params.set('sort', sortBy);
-        
-        // Add back video param if it was there
-        if(videoId) params.set('video', videoId);
-
-        const queryString = params.toString();
-        const newUrl = `${window.location.pathname}${queryString ? `?${queryString}` : ''}`;
-        
-        history.replaceState(state.currentFilters, '', newUrl);
+        const newUrl = `${window.location.pathname}?${newParams.toString()}`;
+        history.replaceState(null, '', newUrl); // Use replaceState for filters
     }
-
 
     function applyFiltersFromURL() {
         const params = new URLSearchParams(window.location.search);
@@ -870,8 +861,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const videoId = playButton.dataset.videoId;
                 openVideoModal(videoId);
             }
+            
             const tagButton = e.target.closest('.video-tag-button');
-            if (tagButton?.dataset.tag) {
+            if (tagButton) {
+                e.preventDefault();
                 const tagName = tagButton.dataset.tag;
                 if (!state.currentFilters.tags.includes(tagName)) {
                     toggleTagSelection(tagName);
@@ -879,8 +872,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     scrollToVideoGridIfNeeded();
                 }
             }
+            
             const shareButton = e.target.closest('.share-button');
             if (shareButton) {
+                e.preventDefault();
                 const url = window.location.href;
                 navigator.clipboard.writeText(url).then(() => {
                     const originalIcon = shareButton.innerHTML;
@@ -894,7 +889,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Modal event listeners
         dom.videoModalCloseBtn?.addEventListener('click', closeVideoModal);
         dom.videoModalBackdrop?.addEventListener('click', closeVideoModal);
         document.addEventListener('keydown', (e) => {
@@ -902,10 +896,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeVideoModal();
             }
         });
+        
         window.addEventListener('popstate', (e) => {
             const params = new URLSearchParams(window.location.search);
             if (!params.has('video') && !dom.videoModal.classList.contains('hidden')) {
                 closeVideoModal();
+            } else {
+                 applyFiltersFromURL();
+                 syncUIToState();
+                 applyFilters(false, false);
             }
         });
 
@@ -918,12 +917,6 @@ document.addEventListener('DOMContentLoaded', () => {
             promptAndCheckVideo();
         });
         window.addEventListener('hashchange', handleCheckIdFromHash);
-        
-        window.addEventListener('popstate', (event) => {
-            applyFiltersFromURL();
-            syncUIToState();
-            applyFilters(false, false);
-        });
     }
 
     async function initializeApp() {
