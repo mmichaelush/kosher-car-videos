@@ -64,11 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
             desktop: document.getElementById('desktop-search-suggestions'),
             mobile: document.getElementById('mobile-search-suggestions'),
             main: document.getElementById('main-content-search-suggestions')
-        },
-        videoModal: document.getElementById('video-modal'),
-        videoModalIframe: document.getElementById('video-modal-iframe'),
-        videoModalCloseBtn: document.getElementById('video-modal-close-btn'),
-        videoModalBackdrop: document.getElementById('video-modal-backdrop')
+        }
     };
 
     let state = {
@@ -87,55 +83,8 @@ document.addEventListener('DOMContentLoaded', () => {
             currentInput: null,
             currentSuggestionsContainer: null,
             isSuggestionClicked: false
-        },
-        lastFocusedElement: null
+        }
     };
-
-    function openVideoModal(videoId) {
-        if (!videoId || !dom.videoModal) return;
-        const video = state.allVideos.find(v => v.id === videoId);
-        if (!video) return;
-
-        state.lastFocusedElement = document.activeElement;
-        
-        dom.videoModalIframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
-        dom.videoModal.classList.remove('hidden');
-        dom.body.classList.add('modal-open');
-
-        const currentUrl = new URL(window.location);
-        if (currentUrl.searchParams.get('video') !== videoId) {
-            currentUrl.searchParams.set('video', videoId);
-            history.pushState({ videoId }, '', currentUrl);
-        }
-        
-        dom.videoModalCloseBtn.focus();
-    }
-
-    function closeVideoModal() {
-        if (!dom.videoModal || dom.videoModal.classList.contains('hidden')) return;
-        
-        dom.videoModal.classList.add('hidden');
-        dom.videoModalIframe.src = '';
-        dom.body.classList.remove('modal-open');
-
-        const currentUrl = new URL(window.location);
-        if (currentUrl.searchParams.has('video')) {
-            currentUrl.searchParams.delete('video');
-            history.pushState(null, '', currentUrl);
-        }
-        
-        if (state.lastFocusedElement) {
-            state.lastFocusedElement.focus();
-        }
-    }
-
-    function handleDeepLinking() {
-        const params = new URLSearchParams(window.location.search);
-        const videoId = params.get('video');
-        if (videoId) {
-            openVideoModal(videoId);
-        }
-    }
 
     function escapeHTML(str) {
         if (str === null || typeof str === 'undefined') return '';
@@ -212,6 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function getFilteredAndSortedVideos() {
         if (!state.allVideos) return [];
+
         let filtered = state.allVideos;
 
         if (state.currentFilters.category !== 'all') {
@@ -346,27 +296,27 @@ document.addEventListener('DOMContentLoaded', () => {
             thumbnailImg: cardClone.querySelector('.video-thumbnail-img'),
             duration: cardClone.querySelector('.video-duration'),
             playBtn: cardClone.querySelector('.play-video-button'),
+            iframe: cardClone.querySelector('.video-iframe'),
             link: cardClone.querySelector('.video-link'),
             channelName: cardClone.querySelector('.channel-name'),
             channelLogo: cardClone.querySelector('.channel-logo'),
             tagsContainer: cardClone.querySelector('.video-tags'),
             categoryDisplay: cardClone.querySelector('.video-category-display'),
-            dateDisplay: cardClone.querySelector('.video-date-display'),
-            shareButton: cardClone.querySelector('.share-button')
+            dateDisplay: cardClone.querySelector('.video-date-display')
         };
 
         const sanitizedTitle = escapeHTML(video.title);
         const videoLink = `https://www.youtube.com/watch?v=${video.id}`;
         
-        card.playBtn.dataset.videoId = video.id;
         card.thumbnailImg.src = video.thumbnail;
-        card.thumbnailImg.alt = sanitizedTitle;
+        card.thumbnailImg.alt = `תמונה ממוזערת: ${sanitizedTitle}`;
         card.duration.textContent = video.duration || '';
-        
+        card.playBtn.dataset.videoId = video.id;
+        card.iframe.title = `נגן וידאו: ${sanitizedTitle}`;
         card.link.href = videoLink;
         card.link.textContent = sanitizedTitle;
-        
         card.channelName.textContent = video.channel || '';
+        
         if (video.channelImage) {
             card.channelLogo.src = video.channelImage;
             card.channelLogo.alt = `לוגו ערוץ ${escapeHTML(video.channel)}`;
@@ -381,15 +331,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const categoryData = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === video.category);
         const categoryName = categoryData ? categoryData.name : capitalizeFirstLetter(video.category);
-        const categoryIconEl = card.categoryDisplay.querySelector('.video-category-icon');
-        if (categoryIconEl) {
-            categoryIconEl.className = `video-category-icon fas fa-${categoryData?.icon || 'folder-open'} opacity-70 text-purple-500 dark:text-purple-400 ml-2`;
+        const categoryIcon = cardClone.querySelector('.video-category-icon');
+        if (categoryIcon) {
+            categoryIcon.classList.remove('fa-folder-open');
+            categoryIcon.classList.add(`fa-${categoryData?.icon || 'folder-open'}`);
         }
-        
-        card.categoryDisplay.appendChild(document.createTextNode(escapeHTML(categoryName)));
+        card.categoryDisplay.append(escapeHTML(categoryName));
         
         if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
-            card.dateDisplay.appendChild(document.createTextNode(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })));
+            card.dateDisplay.append(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' }));
         } else {
             card.dateDisplay.style.display = 'none';
         }
@@ -530,23 +480,18 @@ document.addEventListener('DOMContentLoaded', () => {
         toggle.querySelector('.fa-sun')?.classList.toggle('hidden', !isDark);
         toggle.setAttribute('aria-checked', String(isDark));
     }
-
     function openMobileMenu() {
         dom.mobileMenu?.classList.remove('translate-x-full');
         dom.backdrop?.classList.remove('invisible', 'opacity-0');
         dom.body.classList.add('overflow-hidden', 'md:overflow-auto');
         dom.openMenuBtn?.setAttribute('aria-expanded', 'true');
-        setTimeout(() => dom.closeMenuBtn?.focus(), 300);
     }
-
     function closeMobileMenu() {
         dom.mobileMenu?.classList.add('translate-x-full');
         dom.backdrop?.classList.add('invisible', 'opacity-0');
         dom.body.classList.remove('overflow-hidden', 'md:overflow-auto');
         dom.openMenuBtn?.setAttribute('aria-expanded', 'false');
-        dom.openMenuBtn?.focus();
     }
-
     function toggleBackToTopButton() {
         dom.backToTopButton?.classList.toggle('opacity-0', window.pageYOffset <= 300);
         dom.backToTopButton?.classList.toggle('invisible', window.pageYOffset <= 300);
@@ -729,23 +674,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function updateURLWithFilters() {
-        const currentUrl = new URL(window.location.href);
-        const videoId = currentUrl.searchParams.get('video'); // Preserve video ID
-        
-        // Build new search params from scratch
-        const newParams = new URLSearchParams();
+        const params = new URLSearchParams(window.location.search);
         const { searchTerm, tags, hebrewOnly, sortBy } = state.currentFilters;
-
+        
         const pageCategory = getCategoryFromURL();
-        if(pageCategory) newParams.set('name', pageCategory);
-        if (searchTerm) newParams.set('search', searchTerm);
-        if (tags.length > 0) newParams.set('tags', tags.join(','));
-        if (hebrewOnly) newParams.set('hebrew', 'true');
-        if (sortBy !== 'date-desc') newParams.set('sort', sortBy);
-        if (videoId) newParams.set('video', videoId); // Add video ID back if it exists
+        if(pageCategory) {
+            params.set('name', pageCategory);
+        } else {
+            params.delete('name');
+        }
 
-        const newUrl = `${window.location.pathname}?${newParams.toString()}`;
-        history.replaceState(null, '', newUrl); // Use replaceState for filters
+        if (searchTerm) params.set('search', searchTerm); else params.delete('search');
+        if (tags.length > 0) params.set('tags', tags.join(',')); else params.delete('tags');
+        if (hebrewOnly) params.set('hebrew', 'true'); else params.delete('hebrew');
+        if (sortBy !== 'date-desc') params.set('sort', sortBy); else params.delete('sort');
+
+        const queryString = params.toString();
+        const newUrl = `${window.location.pathname}${queryString ? `?${queryString}` : ''}`;
+        
+        history.replaceState(state.currentFilters, '', newUrl);
     }
 
     function applyFiltersFromURL() {
@@ -807,21 +754,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        dom.mobileMenu?.addEventListener('keydown', (e) => {
-            if (e.key !== 'Tab') return;
-            const focusableElements = dom.mobileMenu.querySelectorAll('a[href], button, input, textarea, select');
-            const firstElement = focusableElements[0];
-            const lastElement = focusableElements[focusableElements.length - 1];
-
-            if (!e.shiftKey && document.activeElement === lastElement) {
-                e.preventDefault();
-                firstElement.focus();
-            } else if (e.shiftKey && document.activeElement === firstElement) {
-                e.preventDefault();
-                lastElement.focus();
-            }
-        });
-
         dom.hebrewFilterToggle?.addEventListener('change', (e) => {
             state.currentFilters.hebrewOnly = e.target.checked;
             localStorage.setItem('hebrewOnlyPreference', e.target.checked);
@@ -857,54 +789,23 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.videoCardsContainer?.addEventListener('click', (e) => {
             const playButton = e.target.closest('.play-video-button');
             if (playButton) {
-                e.preventDefault();
                 const videoId = playButton.dataset.videoId;
-                openVideoModal(videoId);
+                const videoCard = playButton.closest('article');
+                if (videoCard && videoId) {
+                    const iframe = videoCard.querySelector('.video-iframe');
+                    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
+                    iframe.classList.remove('hidden');
+                    playButton.style.display = 'none';
+                }
             }
-            
             const tagButton = e.target.closest('.video-tag-button');
-            if (tagButton) {
-                e.preventDefault();
+            if (tagButton?.dataset.tag) {
                 const tagName = tagButton.dataset.tag;
                 if (!state.currentFilters.tags.includes(tagName)) {
                     toggleTagSelection(tagName);
                 } else {
                     scrollToVideoGridIfNeeded();
                 }
-            }
-            
-            const shareButton = e.target.closest('.share-button');
-            if (shareButton) {
-                e.preventDefault();
-                const url = window.location.href;
-                navigator.clipboard.writeText(url).then(() => {
-                    const originalIcon = shareButton.innerHTML;
-                    shareButton.innerHTML = `<span class="text-xs text-green-500">הועתק!</span>`;
-                    setTimeout(() => {
-                        shareButton.innerHTML = originalIcon;
-                    }, 2000);
-                }).catch(err => {
-                    console.error('Failed to copy URL: ', err);
-                });
-            }
-        });
-
-        dom.videoModalCloseBtn?.addEventListener('click', closeVideoModal);
-        dom.videoModalBackdrop?.addEventListener('click', closeVideoModal);
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !dom.videoModal.classList.contains('hidden')) {
-                closeVideoModal();
-            }
-        });
-        
-        window.addEventListener('popstate', (e) => {
-            const params = new URLSearchParams(window.location.search);
-            if (!params.has('video') && !dom.videoModal.classList.contains('hidden')) {
-                closeVideoModal();
-            } else {
-                 applyFiltersFromURL();
-                 syncUIToState();
-                 applyFilters(false, false);
             }
         });
 
@@ -917,6 +818,12 @@ document.addEventListener('DOMContentLoaded', () => {
             promptAndCheckVideo();
         });
         window.addEventListener('hashchange', handleCheckIdFromHash);
+        
+        window.addEventListener('popstate', (event) => {
+            applyFiltersFromURL();
+            syncUIToState();
+            applyFilters(false, false);
+        });
     }
 
     async function initializeApp() {
@@ -948,8 +855,6 @@ document.addEventListener('DOMContentLoaded', () => {
             syncUIToState();
             renderPopularTags();
             applyFilters(false, false);
-
-            handleDeepLinking();
 
         } catch (error) {
             console.error("Critical error initializing page:", error);
