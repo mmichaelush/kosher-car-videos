@@ -140,10 +140,25 @@
 
     <div id="single-video-view" class="hidden">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-            <div id="single-video-player-container" class="aspect-w-16 aspect-h-9 bg-black rounded-lg shadow-2xl overflow-hidden mb-6">
+            <div id="single-video-player-container" class="aspect-w-16 aspect-h-9 bg-black rounded-lg shadow-2xl overflow-hidden mb-4">
                 <!-- Iframe will be inserted here by JavaScript -->
             </div>
-            <h1 id="single-video-title" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 mb-3"></h1>
+             <div class="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
+                <div>
+                    <h1 id="single-video-title" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 mb-2"></h1>
+                    <div id="single-video-metadata" class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
+                        <span id="single-video-channel" class="flex items-center gap-2"></span>
+                        <span id="single-video-duration" class="flex items-center gap-1.5"><i class="fas fa-clock fa-fw"></i></span>
+                        <span id="single-video-date" class="flex items-center gap-1.5"><i class="fas fa-calendar-alt fa-fw"></i></span>
+                    </div>
+                </div>
+                <div class="flex-shrink-0 w-full sm:w-auto">
+                     <button id="single-video-share-btn" class="w-full sm:w-auto flex items-center justify-center gap-2 bg-purple-100 hover:bg-purple-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-purple-700 dark:text-purple-300 font-semibold px-4 py-2.5 rounded-lg transition-colors">
+                        <i class="fas fa-share-alt"></i>
+                        <span>שתף סרטון</span>
+                    </button>
+                </div>
+            </div>
             <div id="single-video-tags" class="flex flex-wrap gap-2 mb-8">
                 <!-- Tags will be inserted here by JavaScript -->
             </div>
@@ -153,7 +168,7 @@
         </div>
     </div>
     
-    <main id="main-page-content">
+    <main id="main-page-content" style="display: none;">
         <section id="home" class="hero-gradient text-white relative overflow-hidden pt-10 pb-20 md:pt-16 md:pb-28">
             <div class="absolute inset-0 opacity-10 dark:opacity-[0.07]">
                 <img src="data/assets/images/circuit-board.svg" alt="" class="w-full h-full object-cover" aria-hidden="true">
@@ -511,17 +526,19 @@
                 <iframe class="video-iframe hidden absolute inset-0 w-full h-full z-30" loading="lazy" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>
             </div>
             <div class="video-details-container bg-slate-50 dark:bg-slate-700 p-4 sm:p-5 flex flex-col flex-grow">
-                <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 mb-2.5">
+                 <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 mb-2.5">
                     <button class="fullscreen-btn p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" aria-label="מסך מלא" title="מסך מלא">
                         <i class="fas fa-expand fa-fw"></i>
                     </button>
-                    <div class="video-channel-info flex items-center gap-2">
-                        <img src="" alt="" class="channel-logo h-7 w-7 rounded-full object-cover border-2 border-slate-200 dark:border-slate-600" loading="lazy">
-                        <span class="channel-name font-medium"></span>
+                    <div class="flex items-center gap-3">
+                        <button class="share-btn p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" aria-label="שתף סרטון" title="שתף סרטון">
+                            <i class="fas fa-share-alt fa-fw"></i>
+                        </button>
+                        <div class="video-channel-info flex items-center gap-2">
+                            <span class="channel-name font-medium"></span>
+                            <img src="" alt="" class="channel-logo h-7 w-7 rounded-full object-cover border-2 border-slate-200 dark:border-slate-600" loading="lazy">
+                        </div>
                     </div>
-                    <button class="share-btn p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" aria-label="שתף סרטון" title="שתף סרטון">
-                        <i class="fas fa-share-alt fa-fw"></i>
-                    </button>
                 </div>
                 <h3 class="video-title font-semibold text-base md:text-lg text-slate-800 dark:text-slate-100 mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors leading-tight line-clamp-2">
                     <a href="" class="video-link hover:underline focus:outline-none focus:ring-1 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-sm"></a>
