@@ -104,3 +104,14 @@ body {
 #back-to-top-btn:hover {
     transform: scale(1.1);
 }
+
+.nav-link.active-nav-link {
+    background-color: var(--color-purple-100);
+    color: var(--color-purple-600);
+    font-weight: 600;
+}
+
+.dark .nav-link.active-nav-link {
+    background-color: var(--color-slate-700);
+    color: var(--color-purple-300);
+}
