@@ -2,7 +2,7 @@ backend:
   name: github
   repo: mmichaelush/kosher-car-videos.io
   branch: main
-  auth_type: netlify-identity # <-- השורה החדשה והחשובה
+  auth_type: netlify-identity
 
 publish_mode: editorial_workflow
 media_folder: "data/assets/images"
