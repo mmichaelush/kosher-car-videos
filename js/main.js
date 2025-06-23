@@ -65,7 +65,12 @@ document.addEventListener('DOMContentLoaded', () => {
             desktop: document.getElementById('desktop-search-suggestions'),
             mobile: document.getElementById('mobile-search-suggestions'),
             main: document.getElementById('main-content-search-suggestions')
-        }
+        },
+        mainPageContent: document.getElementById('main-page-content'),
+        singleVideoView: document.getElementById('single-video-view'),
+        singleVideoPlayerContainer: document.getElementById('single-video-player-container'),
+        singleVideoTitle: document.getElementById('single-video-title'),
+        singleVideoTags: document.getElementById('single-video-tags')
     };
 
     let state = {
@@ -99,7 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     function handleScrollSpy() {
-        if (!isHomePage()) {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('v') || !isHomePage()) {
             document.querySelectorAll('header nav .nav-link.active-nav-link').forEach(link => {
                 link.classList.remove('active-nav-link');
             });
@@ -109,18 +115,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const header = document.querySelector('header.sticky');
         if (!header) return;
 
-        const navLinks = header.querySelectorAll('nav .nav-link[href*="#"]');
+        const navLinks = document.querySelectorAll('header nav .nav-link[href*="#"]');
         const headerOffset = header.offsetHeight + 24;
         const scrollPosition = window.scrollY;
 
-        let activeSectionId = null;
+        let activeSectionId = '';
 
-        document.querySelectorAll('main > section[id], section#home').forEach(section => {
+        document.querySelectorAll('main section[id], section#home').forEach(section => {
             const sectionTop = section.offsetTop - headerOffset;
             if (scrollPosition >= sectionTop) {
                 activeSectionId = section.id;
             }
         });
+        
+        // Edge case for being at the very top of the page
+        if (scrollPosition < (document.getElementById('home')?.offsetTop || 0)) {
+            activeSectionId = 'home';
+        }
 
         navLinks.forEach(link => {
             const linkHref = link.getAttribute('href');
@@ -354,7 +365,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         const sanitizedTitle = escapeHTML(video.title);
-        const videoLink = `https://www.youtube.com/watch?v=${video.id}`;
+        const videoLink = `./?v=${video.id}`;
         
         card.thumbnailImg.src = video.thumbnail;
         card.thumbnailImg.alt = `תמונה ממוזערת: ${sanitizedTitle}`;
@@ -506,11 +517,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    function displayError(message) {
+    function displayError(message, container = dom.noVideosFoundMessage) {
         if(dom.loadingPlaceholder) dom.loadingPlaceholder.classList.add('hidden');
-        if (dom.noVideosFoundMessage) {
-            dom.noVideosFoundMessage.classList.remove('hidden');
-            dom.noVideosFoundMessage.innerHTML = `<div class="text-center text-red-500 dark:text-red-400 py-10"><i class="fas fa-exclamation-triangle fa-3x mb-4"></i><p class="text-xl font-semibold">${escapeHTML(message)}</p></div>`;
+        if (container) {
+            container.classList.remove('hidden');
+            container.innerHTML = `<div class="text-center text-red-500 dark:text-red-400 py-10"><i class="fas fa-exclamation-triangle fa-3x mb-4"></i><p class="text-xl font-semibold">${escapeHTML(message)}</p></div>`;
         }
     }
 
@@ -725,25 +736,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function updateURLWithFilters() {
-        const params = new URLSearchParams(window.location.search);
+        const url = new URL(window.location);
         const { searchTerm, tags, hebrewOnly, sortBy } = state.currentFilters;
         
         const pageCategory = getCategoryFromURL();
         if(pageCategory) {
-            params.set('name', pageCategory);
+            url.searchParams.set('name', pageCategory);
         } else {
-            params.delete('name');
+            url.searchParams.delete('name');
         }
 
-        if (searchTerm) params.set('search', searchTerm); else params.delete('search');
-        if (tags.length > 0) params.set('tags', tags.join(',')); else params.delete('tags');
-        if (hebrewOnly) params.set('hebrew', 'true'); else params.delete('hebrew');
-        if (sortBy !== 'date-desc') params.set('sort', sortBy); else params.delete('sort');
-
-        const queryString = params.toString();
-        const newUrl = `${window.location.pathname}${queryString ? `?${queryString}` : ''}`;
+        if (searchTerm) url.searchParams.set('search', searchTerm); else url.searchParams.delete('search');
+        if (tags.length > 0) url.searchParams.set('tags', tags.join(',')); else url.searchParams.delete('tags');
+        if (hebrewOnly) url.searchParams.set('hebrew', 'true'); else url.searchParams.delete('hebrew');
+        if (sortBy !== 'date-desc') url.searchParams.set('sort', sortBy); else url.searchParams.delete('sort');
         
-        history.replaceState(state.currentFilters, '', newUrl);
+        url.searchParams.delete('v'); // Ensure video param is not carried over
+        
+        history.replaceState(state.currentFilters, '', url);
     }
 
     function applyFiltersFromURL() {
@@ -775,7 +785,12 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.closeMenuBtn?.addEventListener('click', closeMobileMenu);
         dom.backdrop?.addEventListener('click', closeMobileMenu);
         dom.backToTopButton?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
-        window.addEventListener('scroll', toggleBackToTopButton);
+        window.addEventListener('scroll', () => {
+            throttle(() => {
+                toggleBackToTopButton();
+                handleScrollSpy();
+            }, 100);
+        });
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && dom.mobileMenu && !dom.mobileMenu.classList.contains('translate-x-full')) {
                 closeMobileMenu();
@@ -785,28 +800,40 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             const navLink = e.target.closest('.nav-link');
             if (navLink) {
-                 const href = navLink.getAttribute('href');
-                if (isHomePage() && href && href.startsWith('#')) {
+                const href = navLink.getAttribute('href');
+                if (isHomePage() && href && href.startsWith('./#')) {
                     e.preventDefault();
                     if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
-
-                    if (href === '#home') {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    } else {
-                        const targetId = href.substring(1);
-                        const targetElement = document.getElementById(targetId);
-                        if (targetElement) {
-                            const headerOffset = document.querySelector('header.sticky')?.offsetHeight + 20 || 80;
-                            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                            window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                        }
+                    
+                    const targetId = href.substring(href.indexOf('#') + 1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        const headerOffset = document.querySelector('header.sticky')?.offsetHeight + 20 || 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                     }
                 } else if (navLink.closest('#mobile-menu')) {
                     setTimeout(closeMobileMenu, 150);
                 }
             }
-             if (e.target.id === 'no-results-clear-btn') {
+            if (e.target.id === 'no-results-clear-btn') {
                 clearAllFilters();
+            }
+        });
+        
+        dom.videoCardsContainer?.addEventListener('click', (e) => {
+            const tagButton = e.target.closest('.video-tag-button');
+            if(tagButton?.dataset.tag) {
+                e.preventDefault(); // Prevent navigation if it's a link
+                if (isHomePage()) {
+                     const tagName = tagButton.dataset.tag;
+                    if (!state.currentFilters.tags.includes(tagName)) {
+                        toggleTagSelection(tagName);
+                    }
+                    scrollToVideoGridIfNeeded();
+                } else {
+                    window.location.href = `./?tags=${encodeURIComponent(tagButton.dataset.tag)}#video-grid-section`;
+                }
             }
         });
 
@@ -859,29 +886,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        dom.videoCardsContainer?.addEventListener('click', (e) => {
-            const playButton = e.target.closest('.play-video-button');
-            if (playButton) {
-                const videoId = playButton.dataset.videoId;
-                const videoCard = playButton.closest('article');
-                if (videoCard && videoId) {
-                    const iframe = videoCard.querySelector('.video-iframe');
-                    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
-                    iframe.classList.remove('hidden');
-                    playButton.style.display = 'none';
-                }
-            }
-            const tagButton = e.target.closest('.video-tag-button');
-            if (tagButton?.dataset.tag) {
-                const tagName = tagButton.dataset.tag;
-                if (!state.currentFilters.tags.includes(tagName)) {
-                    toggleTagSelection(tagName);
-                } else {
-                    scrollToVideoGridIfNeeded();
-                }
-            }
-        });
-
         setupSearchListeners(dom.searchInputs.desktop?.form, dom.searchInputs.desktop, dom.searchSuggestions.desktop);
         setupSearchListeners(dom.searchInputs.mobile?.form, dom.searchInputs.mobile, dom.searchSuggestions.mobile);
         setupSearchListeners(dom.searchInputs.main?.form, dom.searchInputs.main, dom.searchSuggestions.main);
@@ -893,12 +897,56 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('hashchange', handleCheckIdFromHash);
         
         window.addEventListener('popstate', (event) => {
-            applyFiltersFromURL();
-            syncUIToState();
-            applyFilters(false, false);
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('v')) {
+                window.location.reload(); // Reload to handle single video view
+            } else {
+                applyFiltersFromURL();
+                syncUIToState();
+                applyFilters(false, false);
+            }
         });
+    }
 
-        window.addEventListener('scroll', () => throttle(handleScrollSpy, 100));
+    function renderSingleVideoPage(videoId) {
+        if (!dom.mainPageContent || !dom.singleVideoView) return;
+
+        dom.mainPageContent.classList.add('hidden');
+        dom.singleVideoView.classList.remove('hidden');
+
+        const video = state.allVideos.find(v => v.id === videoId);
+
+        if (video) {
+            document.title = `${video.title} - CAR-טיב`;
+            if (dom.singleVideoTitle) dom.singleVideoTitle.textContent = video.title;
+            if (dom.singleVideoPlayerContainer) {
+                dom.singleVideoPlayerContainer.innerHTML = `
+                    <iframe class="absolute top-0 left-0 w-full h-full" 
+                            src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" 
+                            title="${escapeHTML(video.title)}" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>`;
+            }
+            if (dom.singleVideoTags) {
+                dom.singleVideoTags.innerHTML = (video.tags || []).map(tag =>
+                    `<span class="bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-sm font-medium px-3 py-1.5 rounded-full">${escapeHTML(capitalizeFirstLetter(tag))}</span>`
+                ).join('');
+            }
+        } else {
+            document.title = 'סרטון לא נמצא - CAR-טיב';
+            if (dom.singleVideoView) {
+                 dom.singleVideoView.innerHTML = `<div class="text-center py-16">
+                    <i class="fas fa-exclamation-triangle fa-4x mb-6 text-red-500"></i>
+                    <h1 class="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-4">הסרטון לא נמצא</h1>
+                    <p class="text-lg text-slate-600 dark:text-slate-400 mb-8">לא מצאנו את הסרטון שחיפשת. ייתכן שהוא הוסר או שהקישור אינו תקין.</p>
+                    <a href="./" class="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700">
+                        <i class="fas fa-arrow-left ml-2"></i> חזור לדף הבית
+                    </a>
+                 </div>`;
+            }
+        }
     }
 
     async function initializeApp() {
@@ -907,34 +955,38 @@ document.addEventListener('DOMContentLoaded', () => {
         setupEventListeners();
         handleCheckIdFromHash();
 
-        try {
-            await loadVideos();
-            
+        await loadVideos();
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoIdFromUrl = urlParams.get('v');
+
+        if (isHomePage() && videoIdFromUrl) {
+            renderSingleVideoPage(videoIdFromUrl);
+        } else if(isHomePage()) {
+            dom.mainPageContent.classList.remove('hidden');
+            dom.singleVideoView.classList.add('hidden');
+            if (dom.homepageCategoriesGrid) renderHomepageCategoryButtons();
+            state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
             applyFiltersFromURL();
-            
-            const categoryFromURL = getCategoryFromURL();
-            let videosForFuse = state.allVideos;
-            
-            if (isHomePage()) {
-                if (dom.homepageCategoriesGrid) renderHomepageCategoryButtons();
-                state.currentFilters.category = 'all';
-            } else if (categoryFromURL) {
-                const currentCategory = categoryFromURL.toLowerCase();
-                state.currentFilters.category = currentCategory;
-                updateCategoryPageUI(state.currentFilters.category);
-                videosForFuse = state.allVideos.filter(video => video.category === currentCategory);
-            }
-            
-            state.fuse = new Fuse(videosForFuse, CONSTANTS.FUSE_OPTIONS);
-            
             syncUIToState();
             renderPopularTags();
             applyFilters(false, false);
             handleScrollSpy();
-
-        } catch (error) {
-            console.error("Critical error initializing page:", error);
-            displayError(`שגיאה קריטית בטעינת האתר: ${error.message}`);
+        } else { // Category page
+            dom.mainPageContent.classList.remove('hidden');
+            dom.singleVideoView.classList.add('hidden');
+            const categoryFromURL = getCategoryFromURL();
+            if (categoryFromURL) {
+                const currentCategory = categoryFromURL.toLowerCase();
+                state.currentFilters.category = currentCategory;
+                updateCategoryPageUI(state.currentFilters.category);
+                const videosForFuse = state.allVideos.filter(video => video.category === currentCategory);
+                state.fuse = new Fuse(videosForFuse, CONSTANTS.FUSE_OPTIONS);
+            }
+            applyFiltersFromURL();
+            syncUIToState();
+            renderPopularTags();
+            applyFilters(false, false);
         }
     }
 
