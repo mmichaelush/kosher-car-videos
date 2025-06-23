@@ -88,6 +88,52 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    let throttleTimer = false;
+    const throttle = (callback, time) => {
+        if (throttleTimer) return;
+        throttleTimer = true;
+        setTimeout(() => {
+            callback();
+            throttleTimer = false;
+        }, time);
+    };
+
+    function handleScrollSpy() {
+        if (!isHomePage()) {
+            document.querySelectorAll('header nav .nav-link.active-nav-link').forEach(link => {
+                link.classList.remove('active-nav-link');
+            });
+            return;
+        }
+
+        const header = document.querySelector('header.sticky');
+        if (!header) return;
+
+        const navLinks = header.querySelectorAll('nav .nav-link[href*="#"]');
+        const headerOffset = header.offsetHeight + 24;
+        const scrollPosition = window.scrollY;
+
+        let activeSectionId = null;
+
+        document.querySelectorAll('main > section[id], section#home').forEach(section => {
+            const sectionTop = section.offsetTop - headerOffset;
+            if (scrollPosition >= sectionTop) {
+                activeSectionId = section.id;
+            }
+        });
+
+        navLinks.forEach(link => {
+            const linkHref = link.getAttribute('href');
+            const linkSectionId = linkHref.substring(linkHref.lastIndexOf('#') + 1);
+
+            if (linkSectionId === activeSectionId) {
+                link.classList.add('active-nav-link');
+            } else {
+                link.classList.remove('active-nav-link');
+            }
+        });
+    }
+
     function escapeHTML(str) {
         if (str === null || typeof str === 'undefined') return '';
         const p = document.createElement('p');
@@ -851,6 +897,8 @@ document.addEventListener('DOMContentLoaded', () => {
             syncUIToState();
             applyFilters(false, false);
         });
+
+        window.addEventListener('scroll', () => throttle(handleScrollSpy, 100));
     }
 
     async function initializeApp() {
@@ -882,6 +930,7 @@ document.addEventListener('DOMContentLoaded', () => {
             syncUIToState();
             renderPopularTags();
             applyFilters(false, false);
+            handleScrollSpy();
 
         } catch (error) {
             console.error("Critical error initializing page:", error);
