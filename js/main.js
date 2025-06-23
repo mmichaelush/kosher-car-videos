@@ -366,6 +366,7 @@ document.addEventListener('DOMContentLoaded', () => {
             shareBtn: cardClone.querySelector('.share-btn'),
             videoPageBtn: cardClone.querySelector('.video-page-btn'),
             newTabBtn: cardClone.querySelector('.new-tab-btn'),
+            fullscreenBtn: cardClone.querySelector('.fullscreen-btn'),
         };
         
         const sanitizedTitle = escapeHTML(video.title);
@@ -384,6 +385,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.shareBtn) card.shareBtn.dataset.videoId = video.id;
         if (card.videoPageBtn) card.videoPageBtn.href = videoPageUrl;
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
+        if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if (video.channelImage) {
             card.channelLogo.src = video.channelImage;
@@ -829,6 +831,31 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Failed to copy: ', err);
                     alert('לא ניתן היה להעתיק את הקישור.');
                 });
+            } else if(target.closest('.video-page-btn')) {
+                 e.preventDefault();
+                 if(videoId) window.location.href = `./?v=${videoId}`;
+            } else if (target.closest('.fullscreen-btn')) {
+                 e.preventDefault();
+                 const iframe = card?.querySelector('.video-iframe');
+                 const playLink = card?.querySelector('.video-play-link');
+                
+                if (iframe && videoId) {
+                    if (iframe.classList.contains('hidden')) {
+                         if(playLink) playLink.style.display = 'none';
+                         iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
+                         iframe.classList.remove('hidden');
+                    }
+                    
+                    setTimeout(() => {
+                         if (iframe.requestFullscreen) {
+                            iframe.requestFullscreen();
+                        } else if (iframe.webkitRequestFullscreen) { /* Safari */
+                            iframe.webkitRequestFullscreen();
+                        } else if (iframe.msRequestFullscreen) { /* IE11 */
+                            iframe.msRequestFullscreen();
+                        }
+                    }, 150);
+                }
             } else if (target.closest('.video-tag-button')) {
                  e.preventDefault(); 
                 const tagName = target.closest('.video-tag-button').dataset.tag;
