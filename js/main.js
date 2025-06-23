@@ -70,7 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
         singleVideoView: document.getElementById('single-video-view'),
         singleVideoPlayerContainer: document.getElementById('single-video-player-container'),
         singleVideoTitle: document.getElementById('single-video-title'),
-        singleVideoTags: document.getElementById('single-video-tags')
+        singleVideoTags: document.getElementById('single-video-tags'),
+        siteFooter: document.getElementById('site-footer')
     };
 
     let state = {
@@ -122,9 +123,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let activeSectionId = '';
 
         document.querySelectorAll('main section[id], section#home').forEach(section => {
-            const sectionTop = section.offsetTop - headerOffset;
-            if (scrollPosition >= sectionTop) {
-                activeSectionId = section.id;
+            if(section.id) {
+                const sectionTop = section.offsetTop - headerOffset;
+                if (scrollPosition >= sectionTop) {
+                    activeSectionId = section.id;
+                }
             }
         });
         
@@ -157,8 +160,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function isHomePage() {
         const path = window.location.pathname;
-        const filename = path.substring(path.lastIndexOf('/') + 1);
-        return filename === '' || filename === 'index.html' || filename.startsWith('?');
+        return path === '/' || path.endsWith('/index.html') || path.endsWith('/');
     }
 
     function getCategoryFromURL() {
@@ -808,6 +810,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const navLink = e.target.closest('.nav-link');
             if (navLink) {
                 const href = navLink.getAttribute('href');
+                if (!href) return;
                 const targetUrl = new URL(href, window.location.href);
                 
                 if (targetUrl.pathname === window.location.pathname && targetUrl.hash) {
@@ -834,7 +837,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.videoCardsContainer?.addEventListener('click', (e) => {
             const tagButton = e.target.closest('.video-tag-button');
             if(tagButton?.dataset.tag) {
-                e.preventDefault();
+                e.preventDefault(); 
                 if (isHomePage()) {
                      const tagName = tagButton.dataset.tag;
                     if (!state.currentFilters.tags.includes(tagName)) {
@@ -844,6 +847,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     window.location.href = `./?tags=${encodeURIComponent(tagButton.dataset.tag)}#video-grid-section`;
                 }
+                return;
             }
             
             const playLink = e.target.closest('.video-play-link');
@@ -852,19 +856,17 @@ document.addEventListener('DOMContentLoaded', () => {
                  const card = playLink.closest('article');
                  const videoId = card?.dataset.videoId;
                  if(card && videoId) {
-                    const iframe = card.querySelector('.video-iframe');
-                    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
-                    iframe.classList.remove('hidden');
-                    playLink.style.display = 'none';
+                    window.location.href = playLink.href;
                  }
+                 return;
             }
             
             const shareBtn = e.target.closest('.share-btn');
             if (shareBtn) {
                 const videoId = shareBtn.dataset.videoId;
                 if (!videoId) return;
-
-                const url = `${window.location.origin}${window.location.pathname}?v=${videoId}`;
+                
+                const url = `${window.location.origin}/?v=${videoId}`;
                 navigator.clipboard.writeText(url).then(() => {
                     const icon = shareBtn.querySelector('i');
                     const originalIconClass = icon.className;
@@ -878,6 +880,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Failed to copy: ', err);
                     alert('לא ניתן היה להעתיק את הקישור.');
                 });
+                return;
             }
 
             const fullscreenBtn = e.target.closest('.fullscreen-btn');
@@ -885,10 +888,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 const card = fullscreenBtn.closest('article');
                 const iframe = card?.querySelector('.video-iframe');
                 const playLink = card?.querySelector('.video-play-link');
+                const videoId = card?.dataset.videoId;
                 
-                if (iframe && playLink) {
+                if (iframe && videoId) {
                     if (iframe.classList.contains('hidden')) {
-                         playLink.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                         if(playLink) playLink.style.display = 'none';
+                         iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
+                         iframe.classList.remove('hidden');
                     }
                     
                     setTimeout(() => {
@@ -964,14 +970,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('hashchange', handleCheckIdFromHash);
         
         window.addEventListener('popstate', (event) => {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('v')) {
-                window.location.reload();
-            } else {
-                applyFiltersFromURL();
-                syncUIToState();
-                applyFilters(false, false);
-            }
+            window.location.reload();
         });
     }
 
@@ -997,11 +996,45 @@ document.addEventListener('DOMContentLoaded', () => {
                             allowfullscreen>
                     </iframe>`;
             }
+            
+            const channelSpan = dom.singleVideoView.querySelector('#single-video-channel');
+            const durationSpan = dom.singleVideoView.querySelector('#single-video-duration');
+            const dateSpan = dom.singleVideoView.querySelector('#single-video-date');
+            
+            if (channelSpan) {
+                channelSpan.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${escapeHTML(video.channel)}</span>`;
+            }
+            if (durationSpan) durationSpan.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${escapeHTML(video.duration)}`;
+            if (dateSpan) dateSpan.innerHTML = `<i class="fas fa-calendar-alt fa-fw"></i> ${video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+
             if (dom.singleVideoTags) {
                 dom.singleVideoTags.innerHTML = (video.tags || []).map(tag =>
                     `<a href="./?tags=${encodeURIComponent(tag)}#video-grid-section" class="bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-sm font-medium px-3 py-1.5 rounded-full hover:bg-purple-200 dark:hover:bg-purple-700 transition-colors">${escapeHTML(capitalizeFirstLetter(tag))}</a>`
                 ).join('');
             }
+            
+            const shareBtn = dom.singleVideoView.querySelector('#single-video-share-btn');
+            if (shareBtn) {
+                shareBtn.addEventListener('click', () => {
+                    navigator.clipboard.writeText(window.location.href).then(() => {
+                        const icon = shareBtn.querySelector('i');
+                        const text = shareBtn.querySelector('span');
+                        const originalText = text.textContent;
+                        icon.className = 'fas fa-check text-green-500';
+                        text.textContent = 'הועתק!';
+                        shareBtn.disabled = true;
+                        setTimeout(() => {
+                            icon.className = 'fas fa-share-alt';
+                            text.textContent = originalText;
+                            shareBtn.disabled = false;
+                        }, 2000);
+                    }).catch(err => {
+                         console.error('Failed to copy: ', err);
+                        alert('לא ניתן היה להעתיק את הקישור.');
+                    });
+                });
+            }
+
         } else {
             document.title = 'סרטון לא נמצא - CAR-טיב';
             if (dom.singleVideoView) {
@@ -1025,8 +1058,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const urlParams = new URLSearchParams(window.location.search);
         const videoIdFromUrl = urlParams.get('v');
+        const isSingleVideoPage = isHomePage() && videoIdFromUrl;
 
-        if (isHomePage() && videoIdFromUrl) {
+        if (isSingleVideoPage) {
             renderSingleVideoPage(videoIdFromUrl);
         } else if(isHomePage()) {
             dom.mainPageContent.style.display = 'block';
