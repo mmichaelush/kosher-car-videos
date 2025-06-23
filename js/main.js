@@ -364,7 +364,6 @@ document.addEventListener('DOMContentLoaded', () => {
             categoryDisplay: cardClone.querySelector('.video-category-display'),
             dateDisplay: cardClone.querySelector('.video-date-display'),
             shareBtn: cardClone.querySelector('.share-btn'),
-            videoPageBtn: cardClone.querySelector('.video-page-btn'),
             newTabBtn: cardClone.querySelector('.new-tab-btn'),
             fullscreenBtn: cardClone.querySelector('.fullscreen-btn'),
         };
@@ -383,7 +382,6 @@ document.addEventListener('DOMContentLoaded', () => {
         card.channelName.textContent = video.channel || '';
 
         if (card.shareBtn) card.shareBtn.dataset.videoId = video.id;
-        if (card.videoPageBtn) card.videoPageBtn.href = videoPageUrl;
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
@@ -586,8 +584,27 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dom.currentYearFooter) dom.currentYearFooter.textContent = new Date().getFullYear();
     }
     
+    function handleSearchSubmit(form, input) {
+        const searchTerm = input.value.trim();
+        if (searchTerm.length < CONSTANTS.MIN_SEARCH_TERM_LENGTH) return;
+        
+        const isSingleVideoPage = new URLSearchParams(window.location.search).has('v');
+        if (isSingleVideoPage || !isHomePage()) {
+            window.location.href = `./?search=${encodeURIComponent(searchTerm)}`;
+        } else {
+            state.currentFilters.searchTerm = searchTerm;
+            applyFilters(false);
+        }
+    }
+    
     function setupSearchListeners(form, input, suggestionsContainer) {
         if (!form || !input || !suggestionsContainer) return;
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            handleSearchSubmit(form, input);
+        });
+
         const suggestionsList = suggestionsContainer.querySelector('ul');
         if (!suggestionsList) return;
 
@@ -596,16 +613,16 @@ document.addEventListener('DOMContentLoaded', () => {
         input.addEventListener('blur', () => {
             setTimeout(() => { if (!state.search.isSuggestionClicked) clearSearchSuggestions(); }, 150);
         });
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            applyFilters(false);
-        });
     }
 
     function handleSearchInput(inputElement, suggestionsContainer) {
         state.search.currentInput = inputElement;
         state.search.currentSuggestionsContainer = suggestionsContainer;
         const searchTerm = inputElement.value.trim();
+
+        const isSingleVideoPage = new URLSearchParams(window.location.search).has('v');
+        if (isSingleVideoPage) return; 
+
         state.currentFilters.searchTerm = searchTerm;
 
         if (searchTerm.length < CONSTANTS.MIN_SEARCH_TERM_LENGTH) {
@@ -673,7 +690,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (state.search.activeSuggestionIndex > -1) {
                     items[state.search.activeSuggestionIndex].dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
                 } else {
-                    applyFilters(false);
+                    handleSearchSubmit(event.target.form, event.target);
                 }
                 clearSearchSuggestions();
                 break;
@@ -831,9 +848,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     console.error('Failed to copy: ', err);
                     alert('לא ניתן היה להעתיק את הקישור.');
                 });
-            } else if(target.closest('.video-page-btn')) {
-                 e.preventDefault();
-                 if(videoId) window.location.href = `./?v=${videoId}`;
             } else if (target.closest('.fullscreen-btn')) {
                  e.preventDefault();
                  const iframe = card?.querySelector('.video-iframe');
@@ -867,6 +881,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     window.location.href = `./?tags=${encodeURIComponent(tagName)}#video-grid-section`;
                 }
+            } else if (target.closest('.video-play-link') || target.closest('.video-link')) {
+                 e.preventDefault();
+                 if(videoId) window.location.href = `./?v=${videoId}`;
             }
         });
 
@@ -1032,7 +1049,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPopularTags();
             applyFilters(false, false);
             handleScrollSpy();
-        } else { // Category page
+        } else { 
             dom.mainPageContent.style.display = 'block';
             if(dom.singleVideoView) dom.singleVideoView.classList.add('hidden');
             const categoryFromURL = getCategoryFromURL();
