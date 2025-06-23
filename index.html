@@ -147,9 +147,9 @@
                 <div>
                     <h1 id="single-video-title" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-slate-100 mb-2"></h1>
                     <div id="single-video-metadata" class="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-slate-500 dark:text-slate-400">
-                        <span id="single-video-channel" class="flex items-center gap-2"></span>
+                        <span id="single-video-channel" class="flex items-center gap-2 font-medium"></span>
                         <span id="single-video-duration" class="flex items-center gap-1.5"><i class="fas fa-clock fa-fw"></i></span>
-                        <span id="single-video-date" class="flex items-center gap-1.5"><i class="fas fa-calendar-alt fa-fw"></i></span>
+                        <span id="single-video-date" class="flex items-center gap-1.5" style="display: none;"><i class="fas fa-calendar-alt fa-fw"></i></span>
                     </div>
                 </div>
                 <div class="flex-shrink-0 w-full sm:w-auto">
@@ -527,17 +527,17 @@
             </div>
             <div class="video-details-container bg-slate-50 dark:bg-slate-700 p-4 sm:p-5 flex flex-col flex-grow">
                  <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 mb-2.5">
-                    <button class="fullscreen-btn p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" aria-label="מסך מלא" title="מסך מלא">
-                        <i class="fas fa-expand fa-fw"></i>
-                    </button>
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center gap-1">
                         <button class="share-btn p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" aria-label="שתף סרטון" title="שתף סרטון">
                             <i class="fas fa-share-alt fa-fw"></i>
                         </button>
-                        <div class="video-channel-info flex items-center gap-2">
-                            <span class="channel-name font-medium"></span>
-                            <img src="" alt="" class="channel-logo h-7 w-7 rounded-full object-cover border-2 border-slate-200 dark:border-slate-600" loading="lazy">
-                        </div>
+                        <button class="video-page-btn p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" aria-label="צפה בדף הסרטון" title="צפה בדף הסרטון">
+                            <i class="fas fa-arrow-up-right-from-square fa-fw"></i>
+                        </button>
+                    </div>
+                    <div class="video-channel-info flex items-center gap-2">
+                        <span class="channel-name font-medium"></span>
+                        <img src="" alt="" class="channel-logo h-7 w-7 rounded-full object-cover border-2 border-slate-200 dark:border-slate-600" loading="lazy">
                     </div>
                 </div>
                 <h3 class="video-title font-semibold text-base md:text-lg text-slate-800 dark:text-slate-100 mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors leading-tight line-clamp-2">
