@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         filterSummaryContainer: document.getElementById('filter-summary-container'),
         filterSummaryText: document.getElementById('filter-summary-text'),
         clearFiltersBtn: document.getElementById('clear-filters-btn'),
+        shareFiltersBtn: document.getElementById('share-filters-btn'),
         sortSelect: document.getElementById('sort-by-select'),
         searchInputs: {
             desktop: document.getElementById('desktop-search-input'),
@@ -78,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
             sortBy: 'date-desc'
         },
         currentlyDisplayedVideosCount: 0,
+        lastFocusedElement: null,
         search: {
             activeSuggestionIndex: -1,
             currentInput: null,
@@ -481,16 +483,19 @@ document.addEventListener('DOMContentLoaded', () => {
         toggle.setAttribute('aria-checked', String(isDark));
     }
     function openMobileMenu() {
+        state.lastFocusedElement = document.activeElement;
         dom.mobileMenu?.classList.remove('translate-x-full');
         dom.backdrop?.classList.remove('invisible', 'opacity-0');
         dom.body.classList.add('overflow-hidden', 'md:overflow-auto');
         dom.openMenuBtn?.setAttribute('aria-expanded', 'true');
+        setTimeout(() => dom.closeMenuBtn?.focus(), 100);
     }
     function closeMobileMenu() {
         dom.mobileMenu?.classList.add('translate-x-full');
         dom.backdrop?.classList.add('invisible', 'opacity-0');
         dom.body.classList.remove('overflow-hidden', 'md:overflow-auto');
         dom.openMenuBtn?.setAttribute('aria-expanded', 'false');
+        state.lastFocusedElement?.focus();
     }
     function toggleBackToTopButton() {
         dom.backToTopButton?.classList.toggle('opacity-0', window.pageYOffset <= 300);
@@ -725,6 +730,11 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.backdrop?.addEventListener('click', closeMobileMenu);
         dom.backToTopButton?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         window.addEventListener('scroll', toggleBackToTopButton);
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && dom.mobileMenu && !dom.mobileMenu.classList.contains('translate-x-full')) {
+                closeMobileMenu();
+            }
+        });
         
         document.addEventListener('click', (e) => {
             const navLink = e.target.closest('.nav-link');
@@ -766,6 +776,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         dom.clearFiltersBtn?.addEventListener('click', () => clearAllFilters());
+
+        dom.shareFiltersBtn?.addEventListener('click', async () => {
+            const url = window.location.href;
+            try {
+                await navigator.clipboard.writeText(url);
+                const originalContent = dom.shareFiltersBtn.innerHTML;
+                dom.shareFiltersBtn.innerHTML = '<i class="fas fa-check"></i> הועתק!';
+                dom.shareFiltersBtn.disabled = true;
+                setTimeout(() => {
+                    dom.shareFiltersBtn.innerHTML = originalContent;
+                    dom.shareFiltersBtn.disabled = false;
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy filters URL: ', err);
+                alert('שגיאה בהעתקת הקישור.');
+            }
+        });
 
         dom.customTagForm?.addEventListener('submit', (e) => {
             e.preventDefault();
