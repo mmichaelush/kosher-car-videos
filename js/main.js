@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 category: (video.category || '').toLowerCase(),
                 tags: (video.tags || []).map(tag => String(tag).toLowerCase()),
                 durationInSeconds: parseDurationToSeconds(video.duration),
-                dateAdded: new Date(video.dateAdded)
+                dateAdded: video.dateAdded ? new Date(video.dateAdded) : null
             }));
             if (dom.videoCountHero) {
                 const countSpan = dom.videoCountHero.querySelector('span');
@@ -243,9 +243,9 @@ document.addEventListener('DOMContentLoaded', () => {
         videos.sort((a, b) => {
             switch (state.currentFilters.sortBy) {
                 case 'date-desc':
-                    return b.dateAdded - a.dateAdded;
+                    return (b.dateAdded || 0) - (a.dateAdded || 0);
                 case 'date-asc':
-                    return a.dateAdded - b.dateAdded;
+                    return (a.dateAdded || 0) - (b.dateAdded || 0);
                 case 'title-asc':
                     return a.title.localeCompare(b.title, 'he');
                 case 'title-desc':
@@ -364,7 +364,7 @@ document.addEventListener('DOMContentLoaded', () => {
             categoryDisplay: cardClone.querySelector('.video-category-display'),
             dateDisplay: cardClone.querySelector('.video-date-display'),
             shareBtn: cardClone.querySelector('.share-btn'),
-            fullscreenBtn: cardClone.querySelector('.fullscreen-btn')
+            videoPageBtn: cardClone.querySelector('.video-page-btn')
         };
         
         const sanitizedTitle = escapeHTML(video.title);
@@ -381,7 +381,7 @@ document.addEventListener('DOMContentLoaded', () => {
         card.channelName.textContent = video.channel || '';
 
         if (card.shareBtn) card.shareBtn.dataset.videoId = video.id;
-        if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
+        if (card.videoPageBtn) card.videoPageBtn.dataset.videoId = video.id;
         
         if (video.channelImage) {
             card.channelLogo.src = video.channelImage;
@@ -708,41 +708,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (lastIndex < text.length) result += escapeHTML(text.substring(lastIndex));
         return result;
     }
-
-    function extractYouTubeVideoId(url) {
-        if (!url) return null;
-        const patterns = [
-            /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|live\/|attribution_link\?a=.*&u=\%2Fwatch\%3Fv\%3D)([\w-]{11})/,
-            /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([\w-]{11})/
-        ];
-        for (const pattern of patterns) {
-            const match = url.match(pattern);
-            if (match && match[1]) return match[1];
-        }
-        return null;
-    }
-    
-    async function checkVideoId(videoIdToCheck) {
-        if (!videoIdToCheck) return { exists: false, message: "לא סופק ID לבדיקה." };
-        const foundVideo = state.allVideos.find(video => video.id === videoIdToCheck);
-        return foundVideo
-            ? { exists: true, message: `הסרטון "${foundVideo.title}" כבר קיים במאגר.` }
-            : { exists: false, message: `הסרטון עם ID: ${videoIdToCheck} עדיין לא קיים במאגר. אפשר להוסיף!` };
-    }
-
-    async function promptAndCheckVideo() {
-        const userInput = prompt("הכנס קישור לסרטון יוטיוב לבדיקה:");
-        if (!userInput) return;
-        const videoId = extractYouTubeVideoId(userInput);
-        const resultMessage = videoId ? (await checkVideoId(videoId)).message : "לא זוהה ID תקין של סרטון יוטיוב מהקישור שהוכנס.";
-        alert(resultMessage);
-    }
-    
-    function handleCheckIdFromHash() {
-        if (window.location.hash === '#check-yt-id') {
-            promptAndCheckVideo();
-        }
-    }
     
     function updateURLWithFilters() {
         const url = new URL(window.location);
@@ -811,15 +776,15 @@ document.addEventListener('DOMContentLoaded', () => {
             if (navLink) {
                 const href = navLink.getAttribute('href');
                 if (!href) return;
-                const targetUrl = new URL(href, window.location.href);
                 
-                if (targetUrl.pathname === window.location.pathname && targetUrl.hash) {
+                const targetUrl = new URL(href, window.location.href);
+                const isSingleVideoPage = new URLSearchParams(window.location.search).has('v');
+        
+                if (targetUrl.pathname === window.location.pathname && targetUrl.hash && !isSingleVideoPage) {
                     e.preventDefault();
                     if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
-                    
                     const targetId = targetUrl.hash.substring(1);
                     const targetElement = document.getElementById(targetId);
-                    
                     if (targetElement) {
                         const headerOffset = document.querySelector('header.sticky')?.offsetHeight + 20 || 80;
                         const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
@@ -835,34 +800,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         dom.videoCardsContainer?.addEventListener('click', (e) => {
-            const tagButton = e.target.closest('.video-tag-button');
-            if(tagButton?.dataset.tag) {
-                e.preventDefault(); 
-                if (isHomePage()) {
-                     const tagName = tagButton.dataset.tag;
-                    if (!state.currentFilters.tags.includes(tagName)) {
-                        toggleTagSelection(tagName);
-                    }
-                    scrollToVideoGridIfNeeded();
-                } else {
-                    window.location.href = `./?tags=${encodeURIComponent(tagButton.dataset.tag)}#video-grid-section`;
-                }
-                return;
-            }
+            let target = e.target;
             
-            const playLink = e.target.closest('.video-play-link');
-            if (playLink) {
-                 e.preventDefault();
-                 const card = playLink.closest('article');
-                 const videoId = card?.dataset.videoId;
-                 if(card && videoId) {
-                    window.location.href = playLink.href;
-                 }
-                 return;
-            }
-            
-            const shareBtn = e.target.closest('.share-btn');
+            const shareBtn = target.closest('.share-btn');
             if (shareBtn) {
+                 e.preventDefault();
                 const videoId = shareBtn.dataset.videoId;
                 if (!videoId) return;
                 
@@ -883,30 +825,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const fullscreenBtn = e.target.closest('.fullscreen-btn');
-            if (fullscreenBtn) {
-                const card = fullscreenBtn.closest('article');
-                const iframe = card?.querySelector('.video-iframe');
-                const playLink = card?.querySelector('.video-play-link');
-                const videoId = card?.dataset.videoId;
-                
-                if (iframe && videoId) {
-                    if (iframe.classList.contains('hidden')) {
-                         if(playLink) playLink.style.display = 'none';
-                         iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
-                         iframe.classList.remove('hidden');
+            const videoPageBtn = target.closest('.video-page-btn');
+            if(videoPageBtn) {
+                 e.preventDefault();
+                 const videoId = videoPageBtn.dataset.videoId;
+                 if(videoId) window.location.href = `./?v=${videoId}`;
+                 return;
+            }
+
+            const tagButton = target.closest('.video-tag-button');
+            if(tagButton?.dataset.tag) {
+                e.preventDefault(); 
+                if (isHomePage()) {
+                     const tagName = tagButton.dataset.tag;
+                    if (!state.currentFilters.tags.includes(tagName)) {
+                        toggleTagSelection(tagName);
                     }
-                    
-                    setTimeout(() => {
-                         if (iframe.requestFullscreen) {
-                            iframe.requestFullscreen();
-                        } else if (iframe.webkitRequestFullscreen) { /* Safari */
-                            iframe.webkitRequestFullscreen();
-                        } else if (iframe.msRequestFullscreen) { /* IE11 */
-                            iframe.msRequestFullscreen();
-                        }
-                    }, 150);
+                    scrollToVideoGridIfNeeded();
+                } else {
+                    window.location.href = `./?tags=${encodeURIComponent(tagButton.dataset.tag)}#video-grid-section`;
                 }
+                return;
             }
         });
 
@@ -962,12 +901,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setupSearchListeners(dom.searchInputs.desktop?.form, dom.searchInputs.desktop, dom.searchSuggestions.desktop);
         setupSearchListeners(dom.searchInputs.mobile?.form, dom.searchInputs.mobile, dom.searchSuggestions.mobile);
         setupSearchListeners(dom.searchInputs.main?.form, dom.searchInputs.main, dom.searchSuggestions.main);
-
-        dom.checkYtIdLink?.addEventListener('click', (e) => {
-            e.preventDefault();
-            promptAndCheckVideo();
-        });
-        window.addEventListener('hashchange', handleCheckIdFromHash);
         
         window.addEventListener('popstate', (event) => {
             window.location.reload();
@@ -1005,7 +938,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 channelSpan.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${escapeHTML(video.channel)}</span>`;
             }
             if (durationSpan) durationSpan.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${escapeHTML(video.duration)}`;
-            if (dateSpan) dateSpan.innerHTML = `<i class="fas fa-calendar-alt fa-fw"></i> ${video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+            
+            if (dateSpan && video.dateAdded && !isNaN(video.dateAdded.getTime())) {
+                dateSpan.style.display = 'flex';
+                dateSpan.innerHTML = `<i class="fas fa-calendar-alt fa-fw"></i> ${video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })}`;
+            } else if(dateSpan) {
+                dateSpan.style.display = 'none';
+            }
 
             if (dom.singleVideoTags) {
                 dom.singleVideoTags.innerHTML = (video.tags || []).map(tag =>
@@ -1058,13 +997,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const urlParams = new URLSearchParams(window.location.search);
         const videoIdFromUrl = urlParams.get('v');
-        const isSingleVideoPage = isHomePage() && videoIdFromUrl;
+        const isSingleVideoPage = videoIdFromUrl && isHomePage();
 
         if (isSingleVideoPage) {
             renderSingleVideoPage(videoIdFromUrl);
         } else if(isHomePage()) {
             dom.mainPageContent.style.display = 'block';
-            dom.singleVideoView.classList.add('hidden');
+            if (dom.singleVideoView) dom.singleVideoView.classList.add('hidden');
             if (dom.homepageCategoriesGrid) renderHomepageCategoryButtons();
             state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
             applyFiltersFromURL();
@@ -1072,7 +1011,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPopularTags();
             applyFilters(false, false);
             handleScrollSpy();
-        } else { // Category page
+        } else { 
             dom.mainPageContent.style.display = 'block';
             if(dom.singleVideoView) dom.singleVideoView.classList.add('hidden');
             const categoryFromURL = getCategoryFromURL();
