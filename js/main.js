@@ -128,7 +128,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         
-        // Edge case for being at the very top of the page
         if (scrollPosition < (document.getElementById('home')?.offsetTop || 0)) {
             activeSectionId = 'home';
         }
@@ -159,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function isHomePage() {
         const path = window.location.pathname;
         const filename = path.substring(path.lastIndexOf('/') + 1);
-        return filename === '' || filename === 'index.html';
+        return filename === '' || filename === 'index.html' || filename.startsWith('?');
     }
 
     function getCategoryFromURL() {
@@ -187,7 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function loadVideos() {
-        if (dom.loadingPlaceholder) {
+        if (dom.loadingPlaceholder && !dom.loadingPlaceholder.closest('#single-video-view')) {
             dom.loadingPlaceholder.classList.remove('hidden');
             dom.loadingPlaceholder.innerHTML = `<div class="text-center py-10"><i class="fas fa-spinner fa-spin fa-3x mb-3 text-purple-600 dark:text-purple-400"></i><p class="text-lg text-slate-600 dark:text-slate-300">טוען סרטונים...</p></div>`;
         }
@@ -354,32 +353,40 @@ document.addEventListener('DOMContentLoaded', () => {
             article: cardClone.querySelector('article'),
             thumbnailImg: cardClone.querySelector('.video-thumbnail-img'),
             duration: cardClone.querySelector('.video-duration'),
-            playBtn: cardClone.querySelector('.play-video-button'),
+            playLink: cardClone.querySelector('.video-play-link'),
             iframe: cardClone.querySelector('.video-iframe'),
-            link: cardClone.querySelector('.video-link'),
+            titleLink: cardClone.querySelector('.video-link'),
             channelName: cardClone.querySelector('.channel-name'),
             channelLogo: cardClone.querySelector('.channel-logo'),
             tagsContainer: cardClone.querySelector('.video-tags'),
             categoryDisplay: cardClone.querySelector('.video-category-display'),
-            dateDisplay: cardClone.querySelector('.video-date-display')
+            dateDisplay: cardClone.querySelector('.video-date-display'),
+            shareBtn: cardClone.querySelector('.share-btn'),
+            fullscreenBtn: cardClone.querySelector('.fullscreen-btn')
         };
-
-        const sanitizedTitle = escapeHTML(video.title);
-        const videoLink = `./?v=${video.id}`;
         
+        const sanitizedTitle = escapeHTML(video.title);
+        const videoPageUrl = `./?v=${video.id}`;
+        
+        card.article.dataset.videoId = video.id;
         card.thumbnailImg.src = video.thumbnail;
         card.thumbnailImg.alt = `תמונה ממוזערת: ${sanitizedTitle}`;
         card.duration.textContent = video.duration || '';
-        card.playBtn.dataset.videoId = video.id;
+        card.playLink.href = videoPageUrl;
         card.iframe.title = `נגן וידאו: ${sanitizedTitle}`;
-        card.link.href = videoLink;
-        card.link.textContent = sanitizedTitle;
+        card.titleLink.href = videoPageUrl;
+        card.titleLink.textContent = sanitizedTitle;
         card.channelName.textContent = video.channel || '';
+
+        if (card.shareBtn) card.shareBtn.dataset.videoId = video.id;
+        if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if (video.channelImage) {
             card.channelLogo.src = video.channelImage;
             card.channelLogo.alt = `לוגו ערוץ ${escapeHTML(video.channel)}`;
             card.channelLogo.classList.remove('hidden');
+        } else {
+             card.channelLogo.classList.add('hidden');
         }
 
         if (video.tags?.length > 0) {
@@ -751,7 +758,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (hebrewOnly) url.searchParams.set('hebrew', 'true'); else url.searchParams.delete('hebrew');
         if (sortBy !== 'date-desc') url.searchParams.set('sort', sortBy); else url.searchParams.delete('sort');
         
-        url.searchParams.delete('v'); // Ensure video param is not carried over
+        url.searchParams.delete('v');
         
         history.replaceState(state.currentFilters, '', url);
     }
@@ -801,12 +808,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const navLink = e.target.closest('.nav-link');
             if (navLink) {
                 const href = navLink.getAttribute('href');
-                if (isHomePage() && href && href.startsWith('./#')) {
+                const targetUrl = new URL(href, window.location.href);
+                
+                if (targetUrl.pathname === window.location.pathname && targetUrl.hash) {
                     e.preventDefault();
                     if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
                     
-                    const targetId = href.substring(href.indexOf('#') + 1);
+                    const targetId = targetUrl.hash.substring(1);
                     const targetElement = document.getElementById(targetId);
+                    
                     if (targetElement) {
                         const headerOffset = document.querySelector('header.sticky')?.offsetHeight + 20 || 80;
                         const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
@@ -824,7 +834,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.videoCardsContainer?.addEventListener('click', (e) => {
             const tagButton = e.target.closest('.video-tag-button');
             if(tagButton?.dataset.tag) {
-                e.preventDefault(); // Prevent navigation if it's a link
+                e.preventDefault();
                 if (isHomePage()) {
                      const tagName = tagButton.dataset.tag;
                     if (!state.currentFilters.tags.includes(tagName)) {
@@ -833,6 +843,63 @@ document.addEventListener('DOMContentLoaded', () => {
                     scrollToVideoGridIfNeeded();
                 } else {
                     window.location.href = `./?tags=${encodeURIComponent(tagButton.dataset.tag)}#video-grid-section`;
+                }
+            }
+            
+            const playLink = e.target.closest('.video-play-link');
+            if (playLink) {
+                 e.preventDefault();
+                 const card = playLink.closest('article');
+                 const videoId = card?.dataset.videoId;
+                 if(card && videoId) {
+                    const iframe = card.querySelector('.video-iframe');
+                    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
+                    iframe.classList.remove('hidden');
+                    playLink.style.display = 'none';
+                 }
+            }
+            
+            const shareBtn = e.target.closest('.share-btn');
+            if (shareBtn) {
+                const videoId = shareBtn.dataset.videoId;
+                if (!videoId) return;
+
+                const url = `${window.location.origin}${window.location.pathname}?v=${videoId}`;
+                navigator.clipboard.writeText(url).then(() => {
+                    const icon = shareBtn.querySelector('i');
+                    const originalIconClass = icon.className;
+                    icon.className = 'fas fa-check text-green-500';
+                    shareBtn.disabled = true;
+                    setTimeout(() => {
+                        icon.className = originalIconClass;
+                        shareBtn.disabled = false;
+                    }, 2000);
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                    alert('לא ניתן היה להעתיק את הקישור.');
+                });
+            }
+
+            const fullscreenBtn = e.target.closest('.fullscreen-btn');
+            if (fullscreenBtn) {
+                const card = fullscreenBtn.closest('article');
+                const iframe = card?.querySelector('.video-iframe');
+                const playLink = card?.querySelector('.video-play-link');
+                
+                if (iframe && playLink) {
+                    if (iframe.classList.contains('hidden')) {
+                         playLink.dispatchEvent(new MouseEvent('click', { bubbles: true }));
+                    }
+                    
+                    setTimeout(() => {
+                         if (iframe.requestFullscreen) {
+                            iframe.requestFullscreen();
+                        } else if (iframe.webkitRequestFullscreen) { /* Safari */
+                            iframe.webkitRequestFullscreen();
+                        } else if (iframe.msRequestFullscreen) { /* IE11 */
+                            iframe.msRequestFullscreen();
+                        }
+                    }, 150);
                 }
             }
         });
@@ -899,7 +966,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('popstate', (event) => {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('v')) {
-                window.location.reload(); // Reload to handle single video view
+                window.location.reload();
             } else {
                 applyFiltersFromURL();
                 syncUIToState();
@@ -911,8 +978,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderSingleVideoPage(videoId) {
         if (!dom.mainPageContent || !dom.singleVideoView) return;
 
-        dom.mainPageContent.classList.add('hidden');
+        dom.mainPageContent.style.display = 'none';
         dom.singleVideoView.classList.remove('hidden');
+        if(dom.siteFooter) dom.siteFooter.classList.add('hidden');
 
         const video = state.allVideos.find(v => v.id === videoId);
 
@@ -925,13 +993,13 @@ document.addEventListener('DOMContentLoaded', () => {
                             src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" 
                             title="${escapeHTML(video.title)}" 
                             frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" 
                             allowfullscreen>
                     </iframe>`;
             }
             if (dom.singleVideoTags) {
                 dom.singleVideoTags.innerHTML = (video.tags || []).map(tag =>
-                    `<span class="bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-sm font-medium px-3 py-1.5 rounded-full">${escapeHTML(capitalizeFirstLetter(tag))}</span>`
+                    `<a href="./?tags=${encodeURIComponent(tag)}#video-grid-section" class="bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-sm font-medium px-3 py-1.5 rounded-full hover:bg-purple-200 dark:hover:bg-purple-700 transition-colors">${escapeHTML(capitalizeFirstLetter(tag))}</a>`
                 ).join('');
             }
         } else {
@@ -940,7 +1008,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  dom.singleVideoView.innerHTML = `<div class="text-center py-16">
                     <i class="fas fa-exclamation-triangle fa-4x mb-6 text-red-500"></i>
                     <h1 class="text-3xl font-bold text-slate-800 dark:text-slate-100 mb-4">הסרטון לא נמצא</h1>
-                    <p class="text-lg text-slate-600 dark:text-slate-400 mb-8">לא מצאנו את הסרטון שחיפשת. ייתכן שהוא הוסר או שהקישור אינו תקין.</p>
+                    <p class="text-lg text-slate-600 dark:text-slate-400 mb-8">לא מצאנו את הסרטון שחיפשת. ייתכן שהוסר או שהקישור אינו תקין.</p>
                     <a href="./" class="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700">
                         <i class="fas fa-arrow-left ml-2"></i> חזור לדף הבית
                     </a>
@@ -952,9 +1020,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function initializeApp() {
         initThemeVisuals();
         updateFooterYear();
-        setupEventListeners();
-        handleCheckIdFromHash();
-
+        
         await loadVideos();
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -963,7 +1029,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (isHomePage() && videoIdFromUrl) {
             renderSingleVideoPage(videoIdFromUrl);
         } else if(isHomePage()) {
-            dom.mainPageContent.classList.remove('hidden');
+            dom.mainPageContent.style.display = 'block';
             dom.singleVideoView.classList.add('hidden');
             if (dom.homepageCategoriesGrid) renderHomepageCategoryButtons();
             state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
@@ -973,8 +1039,8 @@ document.addEventListener('DOMContentLoaded', () => {
             applyFilters(false, false);
             handleScrollSpy();
         } else { // Category page
-            dom.mainPageContent.classList.remove('hidden');
-            dom.singleVideoView.classList.add('hidden');
+            dom.mainPageContent.style.display = 'block';
+            if(dom.singleVideoView) dom.singleVideoView.classList.add('hidden');
             const categoryFromURL = getCategoryFromURL();
             if (categoryFromURL) {
                 const currentCategory = categoryFromURL.toLowerCase();
@@ -988,6 +1054,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPopularTags();
             applyFilters(false, false);
         }
+        setupEventListeners();
     }
 
     initializeApp();
