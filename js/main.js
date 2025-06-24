@@ -5,7 +5,7 @@
  * Refactored for clarity, maintainability, and performance.
  *
  * @author Michael Ush <michaelush613@gmail.com> (with AI assistance)
- * @version 2.0.5
+ * @version 2.0.6
  */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Application state
         state: {
             allVideos: [],
-            // FIX 4: Use full CDN URLs for category images to resolve 404 errors.
             categories: {
                 "review": { "name": "סקירות רכב", "icon": "fa-car-on", "image": "https://cdn.jsdelivr.net/gh/mmichaelush/kosher-car-videos.io@main/data/assets/images/category-review.jpg" },
                 "maintenance": { "name": "טיפולים", "icon": "fa-oil-can", "image": "https://cdn.jsdelivr.net/gh/mmichaelush/kosher-car-videos.io@main/data/assets/images/category-maintenance.jpg" },
@@ -31,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 hebrewOnly: false,
                 searchQuery: '',
                 category: null,
+                videoId: null
             },
             currentSort: 'date-desc',
             activeSuggestionIndex: -1,
@@ -234,11 +234,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const videosData = await videosResponse.json();
             
-            // FIX: Filter out any videos that are missing essential data to prevent crashes.
+            // FIX: The data uses `id` for the YouTube ID. The validation now checks for `id`.
+            // Any video without an `id` is considered invalid and skipped.
             const cleanVideosData = videosData.filter(video => {
-                const isValid = video && video.id && video.yt_id;
+                const isValid = video && video.id;
                 if (!isValid) {
-                    console.warn('Skipping invalid video data:', video);
+                    console.warn('Skipping invalid video data (missing ID):', video);
                 }
                 return isValid;
             });
@@ -246,6 +247,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Pre-process videos: Add category details and parse date
             this.state.allVideos = cleanVideosData.map(video => ({
                 ...video,
+                // The `yt_id` field is no longer needed as we use `id` directly.
                 categoryName: this.state.categories[video.category]?.name || 'ללא קטגוריה',
                 categoryIcon: this.state.categories[video.category]?.icon || 'fa-folder',
                 dateObj: new Date(video.dateAdded),
@@ -330,8 +332,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             document.title = `${video.title} - CAR-טיב`;
             this.elements.singleVideoTitle.textContent = video.title;
-            // FIX: Removed redundant `allowfullscreen` attribute.
-            this.elements.singleVideoPlayerContainer.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${video.yt_id}?autoplay=1&rel=0" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`;
+            // FIX: Use `video.id` for the YouTube embed URL. Removed redundant `allowfullscreen`.
+            this.elements.singleVideoPlayerContainer.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${video.id}?autoplay=1&rel=0" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`;
             
             this.elements.singleVideoChannel.innerHTML = `<img src="${video.channelLogo}" alt="${video.channelName}" class="h-7 w-7 rounded-full object-cover border-2 border-slate-200 dark:border-slate-600"/><span>${video.channelName}</span>`;
             this.elements.singleVideoDuration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${this.formatDuration(video.duration)}`;
@@ -425,7 +427,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const videoLink = `index.html?video=${video.id}`;
             const videoTitleEl = card.querySelector('.video-title a');
             
-            card.querySelector('.video-thumbnail-img').src = `https://i.ytimg.com/vi/${video.yt_id}/mqdefault.jpg`;
+            // FIX: Use `video.id` for thumbnail URL.
+            card.querySelector('.video-thumbnail-img').src = `https://i.ytimg.com/vi/${video.id}/mqdefault.jpg`;
             card.querySelector('.video-thumbnail-img').alt = video.title;
             card.querySelector('.video-duration').textContent = this.formatDuration(video.duration);
             
@@ -439,7 +442,8 @@ document.addEventListener('DOMContentLoaded', () => {
             card.querySelector('.channel-logo').alt = video.channelName;
             card.querySelector('.channel-name').textContent = video.channelName;
             
-            card.querySelector('.new-tab-btn').href = `https://www.youtube.com/watch?v=${video.yt_id}`;
+            // FIX: Use `video.id` for the new tab link.
+            card.querySelector('.new-tab-btn').href = `https://www.youtube.com/watch?v=${video.id}`;
             
             card.querySelector('.video-category-display').innerHTML += `<span>${video.categoryName}</span>`;
             card.querySelector('.video-category-icon').classList.add(video.categoryIcon);
@@ -447,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
             card.querySelector('.video-date-display').innerHTML += `<span>${this.formatDate(video.dateObj)}</span>`;
             
             const tagsContainer = card.querySelector('.video-tags');
-            tagsContainer.innerHTML = video.tags.slice(0, 3).map(tag =>
+            tagsContainer.innerHTML = (video.tags || []).slice(0, 3).map(tag =>
                 `<span class="tag bg-slate-200 text-slate-600 dark:bg-slate-600 dark:text-slate-300 px-2 py-0.5 rounded">${tag}</span>`
             ).join('');
 
@@ -505,7 +509,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 : this.state.allVideos;
             
             const tagCounts = sourceVideos
-                .flatMap(video => video.tags)
+                .flatMap(video => video.tags || [])
                 .reduce((acc, tag) => {
                     const lowerTag = tag.toLowerCase();
                     acc[lowerTag] = (acc[lowerTag] || 0) + 1;
@@ -916,15 +920,15 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         
         formatDuration(seconds) {
+            if (typeof seconds !== 'number' || isNaN(seconds)) return '0:00';
             const h = Math.floor(seconds / 3600);
             const m = Math.floor((seconds % 3600) / 60);
-            const s = seconds % 60;
+            const s = Math.floor(seconds % 60);
             const pad = (num) => String(num).padStart(2, '0');
             return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
         },
         
         formatDate(date) {
-            // FIX: Add a guard clause to prevent crashing on invalid dates.
             if (!date || isNaN(date.getTime())) {
                 return ''; // Return an empty string for invalid dates
             }
@@ -936,8 +940,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         
         playInFullscreen(container, video) {
-            // FIX: Removed redundant `allowfullscreen` attribute.
-            container.innerHTML = `<iframe class="video-iframe absolute inset-0 w-full h-full z-30" src="https://www.youtube.com/embed/${video.yt_id}?autoplay=1&rel=0" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"></iframe>`;
+            // FIX: Use `video.id` for the YouTube embed URL.
+            container.innerHTML = `<iframe class="video-iframe absolute inset-0 w-full h-full z-30" src="https://www.youtube.com/embed/${video.id}?autoplay=1&rel=0" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"></iframe>`;
         },
         
         async shareVideo(video) {
@@ -983,7 +987,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const ytIdMatch = videoIdOrUrl.match(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
             const videoId = ytIdMatch ? ytIdMatch[1] : videoIdOrUrl.trim();
             
-            const foundVideo = this.state.allVideos.find(v => v.yt_id === videoId);
+            // FIX: Check against `video.id` as that is the YouTube ID.
+            const foundVideo = this.state.allVideos.find(v => v.id === videoId);
 
             if (foundVideo) {
                 const confirmation = confirm(`מצאנו! הסרטון "${foundVideo.title}" כבר קיים במאגר.\nהאם תרצה לעבור אליו?`);
