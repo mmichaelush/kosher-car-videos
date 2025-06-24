@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
             state.ui.throttleTimer = false;
         }, time);
     };
-
+    
     const isHomePage = () => {
         const path = window.location.pathname;
         return path === '/' || path.endsWith('/index.html');
@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,data:image/gif;base64,R0lGODlhAQABAPcAAAAAAAAAMwAAZgAAmQAAzAAA/wArAAArMwArZgArmQArzAAr/wBVAABVMwBVZgBVmQBVzABV/wCAAACAMwCAZgCAmQCAzACA/wCqAACqMwCqZgCqmQCqzACq/wDVAADVMwDVZgDVmQDVzADV/wD/AAD/MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMrADMrMzMrZjMrmTMrzDMr/zNVADNVMzNVZjNVmTNVzDNV/zOAADOAMzOAZjOAmTOAzDOA/zOqADOqMzOqZjOqmTOqzDOq/zPVADPVMzPVZjPVmTPVzDPV/zP/ADP/MzP/ZjP/mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YrAGYrM2YrZmYrmWYrzGYr/2ZVAGZVM2ZVZmZVmWZVzGZV/2aAAGaAM2aAZmaAmWaAzGaA/2aqAGaqM2aqZmaqmWaqzGaq/2bVAGbVM2bVZmbVmWbVzGbV/2b/AGb/M2b/Zmb/mWb/zGb//5kAAJkAM5kAZpkAmZkAzJkA/5krAJkrM5krZpkrmZkrzJkr/5lVAJlVM5lVZplVmZlVzJlV/5mAAJmAM5mAZpmAmZmAzJmA/5mqAJmqM5mqZpmqmZmqzJmq/5nVAJnVM5nVZpnVmZnVzJnV/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwAM8wAZswAmcwAzMwA/8wrAMwrM8wrZswrmcwrzMwr/8xVAMxVM8xVZsxVmcxVzMxV/8yAAMyAM8yAZsyAmcyAzMyA/8yqAMyqM8yqZsyqmcyqzMyq/8zVAMzVM8zVZszVmczVzMzV/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8Amf8AzP8A//8rAP8rM/8rZv8rmf8rzP8r//9VAP9VM/9VZv9Vmf9VzP9V//+AAP+AM/+AZv+Amf+AzP+A//+qAP+qM/+qZv+qmf+qzP+q///VAP/VM//VZv/Vmf/VzP/V////AP//M///Zv//mf//zP///wAAAAAAAAAAAAAAACH5BAEAAPwALAAAAAABAAEAAAgEAAEEBAA7AAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -532,23 +532,37 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    function handleCheckYtId() {
-        const videoIdInput = prompt("הכנס את מזהה הסרטון של YouTube לבדיקה (לדוגמה: dQw4w9WgXcQ):");
-        if (!videoIdInput || videoIdInput.trim() === '') {
-            return; // User cancelled or entered nothing
+    async function handleCheckYtId(e) {
+        if (e) e.preventDefault();
+        
+        function extractYouTubeVideoId(url) {
+            if (!url) return null;
+            const patterns = [
+                /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|live\/|attribution_link\?a=.*&u=\%2Fwatch\%3Fv\%3D)([\w-]{11})/,
+                /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([\w-]{11})/,
+                /^([\w-]{11})$/
+            ];
+            for (const pattern of patterns) {
+                const match = url.match(pattern);
+                if (match && match[1]) return match[1];
+            }
+            return null;
         }
-    
-        const cleanVideoId = videoIdInput.includes('v=') 
-            ? new URLSearchParams(videoIdInput.substring(videoIdInput.indexOf('?'))).get('v')
-            : videoIdInput.trim();
-    
-        const foundVideo = state.allVideos.find(video => video.id === cleanVideoId);
-    
-        if (foundVideo) {
-            alert(`הסרטון נמצא במערכת!\n\nשם הסרטון: ${foundVideo.title}`);
-        } else {
-            alert(`הסרטון עם המזהה "${cleanVideoId}" אינו קיים במערכת.`);
+
+        async function checkVideoId(videoIdToCheck) {
+            if (!videoIdToCheck) return { exists: false, message: "לא סופק ID לבדיקה." };
+            const foundVideo = state.allVideos.find(video => video.id === videoIdToCheck);
+            return foundVideo
+                ? { exists: true, message: `הסרטון "${foundVideo.title}" כבר קיים במאגר.` }
+                : { exists: false, message: `הסרטון עם ID: ${videoIdToCheck} עדיין לא קיים במאגר. אפשר להוסיף!` };
         }
+
+        const userInput = prompt("הכנס קישור לסרטון יוטיוב או מזהה (ID) לבדיקה:");
+        if (!userInput) return;
+        
+        const videoId = extractYouTubeVideoId(userInput);
+        const result = videoId ? await checkVideoId(videoId) : { message: "לא זוהה ID תקין של סרטון יוטיוב מהקישור שהוכנס." };
+        alert(result.message);
     }
 
     function handleThemeToggle() {
@@ -885,7 +899,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const { target } = e;
             const navLink = target.closest('.nav-link');
 
-            if (navLink && (navLink.getAttribute('href').startsWith('./#') || navLink.getAttribute('href').startsWith('#'))) {
+            if (navLink && (navLink.getAttribute('href').includes('#'))) {
                 e.preventDefault();
                 if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
                 const href = navLink.getAttribute('href');
@@ -900,10 +914,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                     }
                 } else {
-                    window.location.href = `/${targetId}`;
+                    window.location.href = `./${targetId}`;
                 }
             }
-
+            
             const checkIdLink = target.closest('#check-yt-id-link');
             if (checkIdLink) {
                 e.preventDefault();
@@ -935,9 +949,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     playVideoInline(card);
                 } else if (target.closest('.fullscreen-btn')) {
                     e.preventDefault();
-                    playVideoInline(card);
+                    playVideoInline(card); 
                     const iframe = card.querySelector('.video-iframe');
-                    if(iframe && iframe.requestFullscreen) {
+                    if(iframe && typeof iframe.requestFullscreen === 'function') {
                         setTimeout(() => iframe.requestFullscreen(), 150);
                     }
                 } else if (target.closest('.share-btn')) {
@@ -970,18 +984,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
 
-        await loadVideos();
-        state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
+        const currentPage = window.location.pathname.split('/').pop();
 
-        const urlParams = new URLSearchParams(window.location.search);
-        const videoIdFromUrl = urlParams.get('v');
-        
-        if (videoIdFromUrl && isHomePage()) {
-            renderSingleVideoPage(videoIdFromUrl);
-        } else if (isHomePage()) {
-            setupHomePageView();
+        if(currentPage !== 'add-video.html') {
+            await loadVideos();
+            state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoIdFromUrl = urlParams.get('v');
+            
+            if (videoIdFromUrl && isHomePage()) {
+                renderSingleVideoPage(videoIdFromUrl);
+            } else if (isHomePage()) {
+                setupHomePageView();
+            } else if (currentPage === 'category.html') {
+                setupCategoryPageView();
+            }
         } else {
-            setupCategoryPageView();
+             // For add-video.html, we still need basic functionality like theme toggling
+            state.allVideos = [];
         }
         
         setupEventListeners();
