@@ -114,7 +114,7 @@ document.addEventListener('DOMContentLoaded', () => {
             state.ui.throttleTimer = false;
         }, time);
     };
-    
+
     const isHomePage = () => {
         const path = window.location.pathname;
         return path === '/' || path.endsWith('/index.html');
@@ -277,10 +277,10 @@ document.addEventListener('DOMContentLoaded', () => {
         card.thumbnailImg.src = video.thumbnail;
         card.thumbnailImg.alt = video.title;
         card.duration.textContent = video.duration || '';
-        card.playLink.href = '#'; // Prevent navigation
+        card.playLink.href = videoPageUrl;
         card.iframe.title = `נגן וידאו: ${video.title}`;
         card.titleLink.href = videoPageUrl;
-        card.titleLink.innerHTML = video.title; // Use innerHTML to render entities
+        card.titleLink.innerHTML = video.title;
         card.channelName.textContent = video.channel || '';
     
         if (card.shareBtn) card.shareBtn.dataset.videoId = video.id;
@@ -301,19 +301,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const categoryName = categoryData ? categoryData.name : (video.category || '').charAt(0).toUpperCase() + (video.category || '').slice(1);
         const categoryIconEl = cardClone.querySelector('.video-category-icon');
         if (categoryIconEl) {
-            categoryIconEl.className = `video-category-icon fas fa-${categoryData ? categoryData.icon : 'folder-open'} opacity-70 text-purple-500 dark:text-purple-400 ml-2`;
+            const icon = categoryData ? categoryData.icon : 'folder-open';
+            categoryIconEl.className = `video-category-icon fas fa-${icon} opacity-70 text-purple-500 dark:text-purple-400 ml-2`;
         }
-        card.categoryDisplay.append(categoryName);
+        card.categoryDisplay.appendChild(document.createTextNode(categoryName));
         
         if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
-            card.dateDisplay.append(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' }));
+            card.dateDisplay.appendChild(document.createTextNode(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })));
         } else if (card.dateDisplay) {
             card.dateDisplay.style.display = 'none';
         }
     
         return card.article;
     }
-
+    
     function renderHomepageCategoryButtons() {
         if (!dom.homepageCategoriesGrid) return;
         const skeleton = document.getElementById('loading-homepage-categories-skeleton');
@@ -487,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (video && dom.singleVideoView.container) {
             document.title = `${video.title} - CAR-טיב`;
-            if (dom.singleVideoView.title) dom.singleVideoView.title.innerHTML = video.title; // Use innerHTML
+            if (dom.singleVideoView.title) dom.singleVideoView.title.innerHTML = video.title;
             if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
             if (dom.singleVideoView.channel) dom.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
             if (dom.singleVideoView.duration) dom.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${video.duration}`;
@@ -531,6 +532,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    function handleCheckYtId() {
+        const videoIdInput = prompt("הכנס את מזהה הסרטון של YouTube לבדיקה (לדוגמה: dQw4w9WgXcQ):");
+        if (!videoIdInput || videoIdInput.trim() === '') {
+            return; // User cancelled or entered nothing
+        }
+    
+        const cleanVideoId = videoIdInput.includes('v=') 
+            ? new URLSearchParams(videoIdInput.substring(videoIdInput.indexOf('?'))).get('v')
+            : videoIdInput.trim();
+    
+        const foundVideo = state.allVideos.find(video => video.id === cleanVideoId);
+    
+        if (foundVideo) {
+            alert(`הסרטון נמצא במערכת!\n\nשם הסרטון: ${foundVideo.title}`);
+        } else {
+            alert(`הסרטון עם המזהה "${cleanVideoId}" אינו קיים במערכת.`);
+        }
+    }
+
     function handleThemeToggle() {
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -645,7 +665,9 @@ document.addEventListener('DOMContentLoaded', () => {
             suggestionsList.appendChild(li);
         });
         
-        state.search.currentSuggestionsContainer.classList.remove('hidden');
+        if (state.search.currentSuggestionsContainer) {
+            state.search.currentSuggestionsContainer.classList.remove('hidden');
+        }
         state.search.activeSuggestionIndex = -1;
     }
     
@@ -861,28 +883,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.addEventListener('click', (e) => {
             const { target } = e;
-            const navLink = target.closest('.nav-link[href*="#"]');
-            if (navLink) {
+            const navLink = target.closest('.nav-link');
+
+            if (navLink && (navLink.getAttribute('href').startsWith('./#') || navLink.getAttribute('href').startsWith('#'))) {
+                e.preventDefault();
+                if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
                 const href = navLink.getAttribute('href');
-                if(href.startsWith('./#') || href.startsWith('#')) {
-                    e.preventDefault();
-                    if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
-                    
-                    if (isHomePage() && new URLSearchParams(window.location.search).has('v')) {
-                         window.location.href = href;
-                    } else if (isHomePage()) {
-                         const targetId = href.substring(href.indexOf('#') + 1);
-                         const targetElement = document.getElementById(targetId);
-                         if(targetElement) {
-                            const header = document.querySelector('header.sticky');
-                            const headerOffset = header ? header.offsetHeight + 20 : 80;
-                            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                            window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                         }
-                    } else if (!isHomePage() && href.startsWith('./#')) {
-                        window.location.href = href; // Navigate to home page section
+                const targetId = href.substring(href.indexOf('#'));
+                
+                if (isHomePage() && !new URLSearchParams(window.location.search).has('v')) {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        const header = document.querySelector('header.sticky');
+                        const headerOffset = header ? header.offsetHeight + 20 : 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                     }
+                } else {
+                    window.location.href = `/${targetId}`;
                 }
+            }
+
+            const checkIdLink = target.closest('#check-yt-id-link');
+            if (checkIdLink) {
+                e.preventDefault();
+                handleCheckYtId();
             }
 
             const tagButton = target.closest('button.tag[data-tag-value]');
@@ -910,13 +935,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     playVideoInline(card);
                 } else if (target.closest('.fullscreen-btn')) {
                     e.preventDefault();
-                    playVideoInline(card); 
+                    playVideoInline(card);
                     const iframe = card.querySelector('.video-iframe');
-                    setTimeout(() => {
-                        if (iframe && typeof iframe.requestFullscreen === 'function') {
-                            iframe.requestFullscreen();
-                        }
-                    }, 150);
+                    if(iframe && iframe.requestFullscreen) {
+                        setTimeout(() => iframe.requestFullscreen(), 150);
+                    }
                 } else if (target.closest('.share-btn')) {
                     e.preventDefault();
                     const videoId = card.dataset.videoId;
