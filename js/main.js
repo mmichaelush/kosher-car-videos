@@ -586,11 +586,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function handleSearchSubmit(form, input) {
         const searchTerm = input.value.trim();
-        if (searchTerm.length < CONSTANTS.MIN_SEARCH_TERM_LENGTH) return;
-        
         const isSingleVideoPage = new URLSearchParams(window.location.search).has('v');
+
         if (isSingleVideoPage || !isHomePage()) {
-            window.location.href = `./?search=${encodeURIComponent(searchTerm)}`;
+            const targetUrl = new URL(window.location.origin);
+            if (searchTerm) {
+                targetUrl.searchParams.set('search', searchTerm);
+            }
+            window.location.href = targetUrl.toString();
         } else {
             state.currentFilters.searchTerm = searchTerm;
             applyFilters(false);
@@ -619,15 +622,17 @@ document.addEventListener('DOMContentLoaded', () => {
         state.search.currentInput = inputElement;
         state.search.currentSuggestionsContainer = suggestionsContainer;
         const searchTerm = inputElement.value.trim();
-
         const isSingleVideoPage = new URLSearchParams(window.location.search).has('v');
-        if (isSingleVideoPage) return; 
 
-        state.currentFilters.searchTerm = searchTerm;
+        if (!isSingleVideoPage) {
+            state.currentFilters.searchTerm = searchTerm;
+        }
 
         if (searchTerm.length < CONSTANTS.MIN_SEARCH_TERM_LENGTH) {
             clearSearchSuggestions();
-            if (searchTerm === '') applyFilters(false, false);
+            if (searchTerm === '' && !isSingleVideoPage) {
+                applyFilters(false, false);
+            }
             return;
         }
         displaySearchSuggestions(searchTerm);
@@ -656,9 +661,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             li.addEventListener('mousedown', () => {
                 state.search.isSuggestionClicked = true;
-                state.search.currentInput.value = result.item.title;
-                state.currentFilters.searchTerm = result.item.title.trim();
-                applyFilters(false);
+                const inputElement = state.search.currentInput;
+                inputElement.value = result.item.title;
+                handleSearchSubmit(inputElement.form, inputElement);
             });
             li.addEventListener('mouseup', () => {
                 setTimeout(() => { state.search.isSuggestionClicked = false; }, 50); 
@@ -881,9 +886,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     window.location.href = `./?tags=${encodeURIComponent(tagName)}#video-grid-section`;
                 }
-            } else if (target.closest('.video-play-link') || target.closest('.video-link')) {
-                 e.preventDefault();
-                 if(videoId) window.location.href = `./?v=${videoId}`;
+            } else if (target.closest('.video-play-link') || target.closest('.video-link') || target.closest('.new-tab-btn')) {
+                // Let the default browser action (navigation) happen
             }
         });
 
@@ -1032,6 +1036,8 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFooterYear();
         
         await loadVideos();
+        // Initialize fuse with all videos for search suggestions on any page
+        state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
 
         const urlParams = new URLSearchParams(window.location.search);
         const videoIdFromUrl = urlParams.get('v');
@@ -1043,13 +1049,12 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.mainPageContent.style.display = 'block';
             if (dom.singleVideoView) dom.singleVideoView.classList.add('hidden');
             if (dom.homepageCategoriesGrid) renderHomepageCategoryButtons();
-            state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
             applyFiltersFromURL();
             syncUIToState();
             renderPopularTags();
             applyFilters(false, false);
             handleScrollSpy();
-        } else { 
+        } else { // Category page
             dom.mainPageContent.style.display = 'block';
             if(dom.singleVideoView) dom.singleVideoView.classList.add('hidden');
             const categoryFromURL = getCategoryFromURL();
@@ -1058,6 +1063,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.currentFilters.category = currentCategory;
                 updateCategoryPageUI(state.currentFilters.category);
                 const videosForFuse = state.allVideos.filter(video => video.category === currentCategory);
+                // Update fuse instance for category-specific filtering logic (if needed elsewhere)
                 state.fuse = new Fuse(videosForFuse, CONSTANTS.FUSE_OPTIONS);
             }
             applyFiltersFromURL();
