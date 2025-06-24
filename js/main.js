@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
         card.thumbnailImg.src = video.thumbnail;
         card.thumbnailImg.alt = `תמונה ממוזערת: ${sanitizedTitle}`;
         card.duration.textContent = video.duration || '';
-        card.playLink.href = videoPageUrl;
+        card.playLink.href = videoPageUrl; // This href is for fallback and SEO, click is prevented by JS
         card.iframe.title = `נגן וידאו: ${sanitizedTitle}`;
         card.titleLink.href = videoPageUrl;
         card.titleLink.textContent = sanitizedTitle;
@@ -301,7 +301,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,data:image/gif;base64,R0lGODlhAQABAPcAAAAAAAAAMwAAZgAAmQAAzAAA/wArAAArMwArZgArmQArzAAr/wBVAABVMwBVZgBVmQBVzABV/wCAAACAMwCAZgCAmQCAzACA/wCqAACqMwCqZgCqmQCqzACq/wDVAADVMwDVZgDVmQDVzADV/wD/AAD/MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMrADMrMzMrZjMrmTMrzDMr/zNVADNVMzNVZjNVmTNVzDNV/zOAADOAMzOAZjOAmTOAzDOA/zOqADOqMzOqZjOqmTOqzDOq/zPVADPVMzPVZjPVmTPVzDPV/zP/ADP/MzP/ZjP/mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YrAGYrM2YrZmYrmWYrzGYr/2ZVAGZVM2ZVZmZVmWZVzGZV/2aAAGaAM2aAZmaAmWaAzGaA/2aqAGaqM2aqZmaqmWaqzGaq/2bVAGbVM2bVZmbVmWbVzGbV/2b/AGb/M2b/Zmb/mWb/zGb//5kAAJkAM5kAZpkAmZkAzJkA/5krAJkrM5krZpkrmZkrzJkr/5lVAJlVM5lVZplVmZlVzJlV/5mAAJmAM5mAZpmAmZmAzJmA/5mqAJmqM5mqZpmqmZmqzJmq/5nVAJnVM5nVZpnVmZnVzJnV/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwAM8wAZswAmcwAzMwA/8wrAMwrM8wrZswrmcwrzMwr/8xVAMxVM8xVZsxVmcxVzMxV/8yAAMyAM8yAZsyAmcyAzMyA/8yqAMyqM8yqZsyqmcyqzMyq/8zVAMzVM8zVZszVmczVzMzV/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8Amf8AzP8A//8rAP8rM/8rZv8rmf8rzP8r//9VAP9VM/9VZv9Vmf9VzP9V//+AAP+AM/+AZv+Amf+AzP+A//+qAP+qM/+qZv+qmf+qzP+q///VAP/VM//VZv/Vmf/VzP/V////AP//M///Zv//mf//zP///wAAAAAAAAAAAAAAACH5BAEAAPwALAAAAAABAAEAAAgEAAEEBAA7AAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,data:image/gif;base64,R0lGODlhAQABAPcAAAAAAAAAMwAAZgAAmQAAzAAA/wArAAArMwArZgArmQArzAAr/wBVAABVMwBVZgBVmQBVzABV/wCAAACAMwCAZgCAmQCAzACA/wCqAACqMwCqZgCqmQCqzACq/wDVAADVMwDVZgDVmQDVzADV/wD/AAD/MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMrADMrMzMrZjMrmTMrzDMr/zNVADNVMzNVZjNVmTNVzDNV/zOAADOAMzOAZjOAmTOAzDOA/zOqADOqMzOqZjOqmTOqzDOq/zPVADPVMzPVZjPVmTPVzDPV/zP/ADP/MzP/ZjP/mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YrAGYrM2YrZmYrmWYrzGYr/2ZVAGZVM2ZVZmZVmWZVzGZV/2aAAGaAM2aAZmaAmWaAzGaA/2aqAGaqM2aqZmaqmWaqzGaq/2bVAGbVM2bVZmbVmWbVzGbV/2b/AGb/M2b/Zmb/mWb/zGb//5kAAJkAM5kAZpkAmZkAzJkA/5krAJkrM5krZpkrmZkrzJkr/5lVAJlVM5lVZplVmZlVzJlV/5mAAJmAM5mAZpmAmZmAzJmA/5mqAJmqM5mqZpmqmZmqzJmq/5nVAJnVM5nVZpnVmZnVzJnV/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwAM8wAZswAmcwAzMwA/8wrAMwrM8wrZswrmcwrzMwr/8xVAMxVM8xVZsxVmcxVzMxV/8yAAMyAM8yAZsyAmcyAzMyA/8yqAMyqM8yqZsyqmcyqzMyq/8zVAMzVM8zVZszVmczVzMzV/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8Amf8AzP8A//8rAP8rM/8rZv8rmf8rzP8r//9VAP9VM/9VZv9Vmf9VzP9V//+AAP+AM/+AZv+Amf+AzP+A//+qAP+qM/+qZv+qmf+qzP+q///VAP/VM//VZv/Vmf/VzP/V////AP//M///Zv//mf//zP///wAAAAAAAAAAAAAAACH5BAEAAPwALAAAAAABAAEAAAgEAAEEBAA7AQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${escapeHTML(video.channel)}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
 
@@ -531,6 +531,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     // --- EVENT HANDLERS & LISTENERS ---
+    
+    function playVideoInline(cardElement) {
+        if (!cardElement) return;
+        const videoId = cardElement.dataset.videoId;
+        const iframe = cardElement.querySelector('.video-iframe');
+        const playLink = cardElement.querySelector('.video-play-link');
+    
+        if (videoId && iframe && playLink && iframe.classList.contains('hidden')) {
+            playLink.style.display = 'none';
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
+            iframe.classList.remove('hidden');
+        }
+    }
+    
     function handleThemeToggle() {
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -894,29 +908,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = `./?tags=${encodeURIComponent(tagName)}#video-grid-section`;
                 }
             }
-
+            
             const card = target.closest('article[data-video-id]');
             if(card) {
-                const videoId = card.dataset.videoId;
-                if (target.closest('.share-btn')) {
+                if (target.closest('.video-play-link')) {
                     e.preventDefault();
-                    shareContent(`${window.location.origin}/?v=${videoId}`, target.closest('.share-btn'), '');
+                    playVideoInline(card);
                 } else if (target.closest('.fullscreen-btn')) {
-                     e.preventDefault();
-                     const iframe = card.querySelector('.video-iframe');
-                     if (iframe && videoId) {
-                         if (iframe.classList.contains('hidden')) {
-                            const playLink = card.querySelector('.video-play-link');
-                            if(playLink) playLink.style.display = 'none';
-                             iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
-                             iframe.classList.remove('hidden');
-                         }
-                         setTimeout(() => {
-                            if (typeof iframe.requestFullscreen === 'function') {
-                                iframe.requestFullscreen();
-                            }
-                         }, 150);
-                     }
+                    e.preventDefault();
+                    playVideoInline(card); 
+                    const iframe = card.querySelector('.video-iframe');
+                    setTimeout(() => {
+                        if (iframe && typeof iframe.requestFullscreen === 'function') {
+                            iframe.requestFullscreen();
+                        }
+                    }, 150);
+                } else if (target.closest('.share-btn')) {
+                    e.preventDefault();
+                    const videoId = card.dataset.videoId;
+                    shareContent(`${window.location.origin}/?v=${videoId}`, target.closest('.share-btn'), '');
                 }
             }
             
