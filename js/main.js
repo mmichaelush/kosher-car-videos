@@ -114,19 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
             state.ui.throttleTimer = false;
         }, time);
     };
-
-    const escapeHTML = (str) => {
-        if (str === null || typeof str === 'undefined') return '';
-        return str.toString().replace(/[&<>"']/g, match => ({
-            '&': '&amp;',
-            '<': '&lt;',
-            '>': '&gt;',
-            '"': '&quot;',
-            "'": '&#39;'
-        }[match]));
-    };
-    
-    const capitalizeFirstLetter = (string) => !string ? '' : string.charAt(0).toUpperCase() + string.slice(1);
     
     const isHomePage = () => {
         const path = window.location.pathname;
@@ -196,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let videos = filtered.filter(video => {
-            const tagsMatch = state.currentFilters.tags.length === 0 || state.currentFilters.tags.every(filterTag => video.tags.includes(filterTag));
+            const tagsMatch = state.currentFilters.tags.length === 0 || state.currentFilters.tags.every(filterTag => (video.tags || []).includes(filterTag));
             const hebrewMatch = !state.currentFilters.hebrewOnly || video.hebrewContent;
             return tagsMatch && hebrewMatch;
         });
@@ -265,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function createVideoCardElement(video) {
         if (!dom.videoCardTemplate || !dom.videoCardTemplate.content) return null;
-
+    
         const cardClone = dom.videoCardTemplate.content.cloneNode(true);
         const card = {
             article: cardClone.querySelector('article'),
@@ -284,47 +271,46 @@ document.addEventListener('DOMContentLoaded', () => {
             fullscreenBtn: cardClone.querySelector('.fullscreen-btn'),
         };
         
-        const sanitizedTitle = escapeHTML(video.title);
         const videoPageUrl = `./?v=${video.id}`;
         
         card.article.dataset.videoId = video.id;
         card.thumbnailImg.src = video.thumbnail;
-        card.thumbnailImg.alt = `תמונה ממוזערת: ${sanitizedTitle}`;
+        card.thumbnailImg.alt = video.title;
         card.duration.textContent = video.duration || '';
-        card.playLink.href = videoPageUrl; // This href is for fallback and SEO, click is prevented by JS
-        card.iframe.title = `נגן וידאו: ${sanitizedTitle}`;
+        card.playLink.href = '#'; // Prevent navigation
+        card.iframe.title = `נגן וידאו: ${video.title}`;
         card.titleLink.href = videoPageUrl;
-        card.titleLink.textContent = sanitizedTitle;
+        card.titleLink.innerHTML = video.title; // Use innerHTML to render entities
         card.channelName.textContent = video.channel || '';
-
+    
         if (card.shareBtn) card.shareBtn.dataset.videoId = video.id;
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,data:image/gif;base64,R0lGODlhAQABAPcAAAAAAAAAMwAAZgAAmQAAzAAA/wArAAArMwArZgArmQArzAAr/wBVAABVMwBVZgBVmQBVzABV/wCAAACAMwCAZgCAmQCAzACA/wCqAACqMwCqZgCqmQCqzACq/wDVAADVMwDVZgDVmQDVzADV/wD/AAD/MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMrADMrMzMrZjMrmTMrzDMr/zNVADNVMzNVZjNVmTNVzDNV/zOAADOAMzOAZjOAmTOAzDOA/zOqADOqMzOqZjOqmTOqzDOq/zPVADPVMzPVZjPVmTPVzDPV/zP/ADP/MzP/ZjP/mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YrAGYrM2YrZmYrmWYrzGYr/2ZVAGZVM2ZVZmZVmWZVzGZV/2aAAGaAM2aAZmaAmWaAzGaA/2aqAGaqM2aqZmaqmWaqzGaq/2bVAGbVM2bVZmbVmWbVzGbV/2b/AGb/M2b/Zmb/mWb/zGb//5kAAJkAM5kAZpkAmZkAzJkA/5krAJkrM5krZpkrmZkrzJkr/5lVAJlVM5lVZplVmZlVzJlV/5mAAJmAM5mAZpmAmZmAzJmA/5mqAJmqM5mqZpmqmZmqzJmq/5nVAJnVM5nVZpnVmZnVzJnV/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwAM8wAZswAmcwAzMwA/8wrAMwrM8wrZswrmcwrzMwr/8xVAMxVM8xVZsxVmcxVzMxV/8yAAMyAM8yAZsyAmcyAzMyA/8yqAMyqM8yqZsyqmcyqzMyq/8zVAMzVM8zVZszVmczVzMzV/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8Amf8AzP8A//8rAP8rM/8rZv8rmf8rzP8r//9VAP9VM/9VZv9Vmf9VzP9V//+AAP+AM/+AZv+Amf+AzP+A//+qAP+qM/+qZv+qmf+qzP+q///VAP/VM//VZv/Vmf/VzP/V////AP//M///Zv//mf//zP///wAAAAAAAAAAAAAAACH5BAEAAPwALAAAAAABAAEAAAgEAAEEBAA7AQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-        card.channelLogo.alt = `לוגו ערוץ ${escapeHTML(video.channel)}`;
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
-
+    
         if (video.tags && video.tags.length > 0) {
             card.tagsContainer.innerHTML = video.tags.map(tag =>
-                `<button data-tag="${escapeHTML(tag)}" class="video-tag-button bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 px-2 py-0.5 rounded-md hover:bg-purple-200 dark:hover:bg-purple-700 transition-colors">${escapeHTML(capitalizeFirstLetter(tag))}</button>`
+                `<button data-tag="${tag}" class="video-tag-button bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 px-2 py-0.5 rounded-md hover:bg-purple-200 dark:hover:bg-purple-700 transition-colors">${tag.charAt(0).toUpperCase() + tag.slice(1)}</button>`
             ).join('');
         }
-
+    
         const categoryData = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === video.category);
-        const categoryName = categoryData ? categoryData.name : capitalizeFirstLetter(video.category);
+        const categoryName = categoryData ? categoryData.name : (video.category || '').charAt(0).toUpperCase() + (video.category || '').slice(1);
         const categoryIconEl = cardClone.querySelector('.video-category-icon');
         if (categoryIconEl) {
             categoryIconEl.className = `video-category-icon fas fa-${categoryData ? categoryData.icon : 'folder-open'} opacity-70 text-purple-500 dark:text-purple-400 ml-2`;
         }
-        card.categoryDisplay.append(escapeHTML(categoryName));
+        card.categoryDisplay.append(categoryName);
         
         if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
             card.dateDisplay.append(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' }));
         } else if (card.dateDisplay) {
             card.dateDisplay.style.display = 'none';
         }
-
+    
         return card.article;
     }
 
@@ -341,8 +327,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <a href="category.html?name=${cat.id}" class="category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
                         <div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]">
                             <i class="fas fa-${cat.icon || 'folder'} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i>
-                            <h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 dark:group-hover:text-yellow-200 transition-colors">${escapeHTML(cat.name)}</h3>
-                            <p class="text-sm opacity-80 mt-1 px-2">${escapeHTML(cat.description)}</p>
+                            <h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 dark:group-hover:text-yellow-200 transition-colors">${cat.name}</h3>
+                            <p class="text-sm opacity-80 mt-1 px-2">${cat.description}</p>
                         </div>
                     </a>`;
             }).join('');
@@ -368,7 +354,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         dom.popularTagsContainer.innerHTML = sortedTags.map(tag => {
             const iconClass = getIconForTag(tag);
-            return `<button class="tag bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-800 dark:text-purple-200 dark:hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-1 dark:focus:ring-offset-slate-800 transition-colors text-sm font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5" data-tag-value="${escapeHTML(tag)}"><i class="fas ${iconClass} opacity-80 text-xs"></i> ${escapeHTML(capitalizeFirstLetter(tag))}</button>`;
+            return `<button class="tag bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-800 dark:text-purple-200 dark:hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-1 dark:focus:ring-offset-slate-800 transition-colors text-sm font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5" data-tag-value="${tag}"><i class="fas ${iconClass} opacity-80 text-xs"></i> ${tag.charAt(0).toUpperCase() + tag.slice(1)}</button>`;
         }).join('');
         updateActiveTagVisuals();
     }
@@ -386,8 +372,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!dom.selectedTagsContainer) return;
         dom.selectedTagsContainer.innerHTML = state.currentFilters.tags.map(tagName => `
             <span class="flex items-center gap-1.5 bg-purple-600 text-white dark:bg-purple-500 text-sm font-medium ps-3 pe-2 py-1.5 rounded-full">
-                ${escapeHTML(capitalizeFirstLetter(tagName))}
-                <button type="button" class="remove-tag-btn text-xs opacity-75 hover:opacity-100 focus:opacity-100 focus:outline-none" data-tag-to-remove="${escapeHTML(tagName)}" aria-label="הסר תגית ${escapeHTML(tagName)}">
+                ${tagName.charAt(0).toUpperCase() + tagName.slice(1)}
+                <button type="button" class="remove-tag-btn text-xs opacity-75 hover:opacity-100 focus:opacity-100 focus:outline-none" data-tag-to-remove="${tagName}" aria-label="הסר תגית ${tagName}">
                     <i class="fas fa-times"></i>
                 </button>
             </span>
@@ -428,21 +414,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function updateCategoryPageUI(categoryId) {
         const categoryData = CONSTANTS.PREDEFINED_CATEGORIES.find(cat => cat.id === categoryId);
-        const name = categoryData ? categoryData.name : capitalizeFirstLetter(categoryId || 'קטגוריה');
+        const name = categoryData ? categoryData.name : (categoryId || 'קטגוריה').charAt(0).toUpperCase() + (categoryId || 'קטגוריה').slice(1);
         const icon = categoryData ? categoryData.icon : 'folder-open';
 
         document.title = `${name} - CAR-טיב`;
         
         const pageTitle = document.getElementById('category-page-title');
-        if (pageTitle) pageTitle.innerHTML = `<i class="fas fa-${icon} text-purple-600 dark:text-purple-400 mr-4"></i>${escapeHTML(name)}`;
+        if (pageTitle) pageTitle.innerHTML = `<i class="fas fa-${icon} text-purple-600 dark:text-purple-400 mr-4"></i>${name}`;
         
         const breadcrumb = document.getElementById('breadcrumb-category-name');
-        if (breadcrumb) breadcrumb.textContent = escapeHTML(name);
+        if (breadcrumb) breadcrumb.textContent = name;
         
         const videosHeading = document.getElementById('videos-in-category-heading');
         if(videosHeading) {
             const span = videosHeading.querySelector('span');
-            if(span) span.innerHTML = `סרטונים ב: <span class="font-bold text-purple-600 dark:text-purple-400">${escapeHTML(name)}</span>`;
+            if(span) span.innerHTML = `סרטונים בקטגוריה: <span class="font-bold text-purple-600 dark:text-purple-400">${name}</span>`;
         }
     }
     
@@ -450,7 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(dom.loadingPlaceholder) dom.loadingPlaceholder.classList.add('hidden');
         if (container) {
             container.classList.remove('hidden');
-            container.innerHTML = `<div class="text-center text-red-500 dark:text-red-400 py-10"><i class="fas fa-exclamation-triangle fa-3x mb-4"></i><p class="text-xl font-semibold">${escapeHTML(message)}</p></div>`;
+            container.innerHTML = `<div class="text-center text-red-500 dark:text-red-400 py-10"><i class="fas fa-exclamation-triangle fa-3x mb-4"></i><p class="text-xl font-semibold">${message}</p></div>`;
         }
     }
 
@@ -501,10 +487,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (video && dom.singleVideoView.container) {
             document.title = `${video.title} - CAR-טיב`;
-            if (dom.singleVideoView.title) dom.singleVideoView.title.textContent = video.title;
-            if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${escapeHTML(video.title)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
-            if (dom.singleVideoView.channel) dom.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${escapeHTML(video.channel)}</span>`;
-            if (dom.singleVideoView.duration) dom.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${escapeHTML(video.duration)}`;
+            if (dom.singleVideoView.title) dom.singleVideoView.title.innerHTML = video.title; // Use innerHTML
+            if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+            if (dom.singleVideoView.channel) dom.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
+            if (dom.singleVideoView.duration) dom.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${video.duration}`;
             
             if (dom.singleVideoView.date && video.dateAdded && !isNaN(video.dateAdded.getTime())) {
                 dom.singleVideoView.date.style.display = 'flex';
@@ -514,7 +500,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (dom.singleVideoView.tags) dom.singleVideoView.tags.innerHTML = (video.tags || []).map(tag =>
-                `<a href="./?tags=${encodeURIComponent(tag)}#video-grid-section" class="bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-sm font-medium px-3 py-1.5 rounded-full hover:bg-purple-200 dark:hover:bg-purple-700 transition-colors">${escapeHTML(capitalizeFirstLetter(tag))}</a>`
+                `<a href="./?tags=${encodeURIComponent(tag)}#video-grid-section" class="bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-sm font-medium px-3 py-1.5 rounded-full hover:bg-purple-200 dark:hover:bg-purple-700 transition-colors">${tag.charAt(0).toUpperCase() + tag.slice(1)}</a>`
             ).join('');
             
         } else if (dom.singleVideoView.container) {
@@ -565,6 +551,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(dom.openMenuBtn) dom.openMenuBtn.setAttribute('aria-expanded', 'true');
         if(dom.closeMenuBtn) setTimeout(() => dom.closeMenuBtn.focus(), 100);
     }
+
     function closeMobileMenu() {
         if(dom.mobileMenu) dom.mobileMenu.classList.add('translate-x-full');
         if(dom.backdrop) dom.backdrop.classList.add('invisible', 'opacity-0');
@@ -646,7 +633,7 @@ document.addEventListener('DOMContentLoaded', () => {
             li.dataset.index = index;
             
             const titleMatch = result.matches && result.matches.find(m => m.key === 'title');
-            li.innerHTML = titleMatch ? generateHighlightedText(result.item.title, titleMatch.indices) : escapeHTML(result.item.title);
+            li.innerHTML = titleMatch ? generateHighlightedText(result.item.title, titleMatch.indices) : result.item.title;
             
             li.addEventListener('mousedown', () => {
                 state.search.isSuggestionClicked = true;
@@ -715,11 +702,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let result = '';
         let lastIndex = 0;
         indices.sort((a, b) => a[0] - b[0]).forEach(([start, end]) => {
-            if (start > lastIndex) result += escapeHTML(text.substring(lastIndex, start));
-            result += `<strong class="font-semibold text-purple-600 dark:text-purple-300">${escapeHTML(text.substring(start, end + 1))}</strong>`;
+            if (start > lastIndex) result += text.substring(lastIndex, start);
+            result += `<strong class="font-semibold text-purple-600 dark:text-purple-300">${text.substring(start, end + 1)}</strong>`;
             lastIndex = end + 1;
         });
-        if (lastIndex < text.length) result += escapeHTML(text.substring(lastIndex));
+        if (lastIndex < text.length) result += text.substring(lastIndex);
         return result;
     }
     
@@ -766,7 +753,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleScrollSpy() {
         if (new URLSearchParams(window.location.search).has('v') || !isHomePage()) {
-            document.querySelectorAll('header nav .nav-link.active-nav-link').forEach(link => link.classList.remove('active-nav-link'));
+            if (document.querySelectorAll) {
+                document.querySelectorAll('header nav .nav-link.active-nav-link').forEach(link => link.classList.remove('active-nav-link'));
+            }
             return;
         }
         const header = document.querySelector('header.sticky');
@@ -874,19 +863,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const { target } = e;
             const navLink = target.closest('.nav-link[href*="#"]');
             if (navLink) {
-                e.preventDefault();
-                if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
                 const href = navLink.getAttribute('href');
-                if (new URLSearchParams(window.location.search).has('v')) {
-                    window.location.href = href;
-                } else {
-                    const targetId = href.substring(href.indexOf('#') + 1);
-                    const targetElement = document.getElementById(targetId);
-                    if(targetElement) {
-                        const header = document.querySelector('header.sticky');
-                        const headerOffset = header ? header.offsetHeight + 20 : 80;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                if(href.startsWith('./#') || href.startsWith('#')) {
+                    e.preventDefault();
+                    if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
+                    
+                    if (isHomePage() && new URLSearchParams(window.location.search).has('v')) {
+                         window.location.href = href;
+                    } else if (isHomePage()) {
+                         const targetId = href.substring(href.indexOf('#') + 1);
+                         const targetElement = document.getElementById(targetId);
+                         if(targetElement) {
+                            const header = document.querySelector('header.sticky');
+                            const headerOffset = header ? header.offsetHeight + 20 : 80;
+                            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                            window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                         }
+                    } else if (!isHomePage() && href.startsWith('./#')) {
+                        window.location.href = href; // Navigate to home page section
                     }
                 }
             }
