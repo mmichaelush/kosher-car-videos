@@ -69,7 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         mainPageContent: document.getElementById('main-page-content'),
         siteFooter: document.getElementById('site-footer'),
-        // Single Video View elements are retrieved safely
         singleVideoView: {
             container: document.getElementById('single-video-view'),
             player: document.getElementById('single-video-player-container'),
@@ -188,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
             filtered = filtered.filter(v => v.category === state.currentFilters.category);
         }
         
-        if (state.currentFilters.searchTerm.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH) {
+        if (state.currentFilters.searchTerm.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
             const fuseResults = state.fuse.search(state.currentFilters.searchTerm);
             const resultIds = new Set(fuseResults.map(r => r.item.id));
             filtered = filtered.filter(v => resultIds.has(v.id));
@@ -300,7 +299,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,data:image/gif;base64,R0lGODlhAQABAPcAAAAAAAAAMwAAZgAAmQAAzAAA/wArAAArMwArZgArmQArzAAr/wBVAABVMwBVZgBVmQBVzABV/wCAAACAMwCAZgCAmQCAzACA/wCqAACqMwCqZgCqmQCqzACq/wDVAADVMwDVZgDVmQDVzADV/wD/AAD/MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMrADMrMzMrZjMrmTMrzDMr/zNVADNVMzNVZjNVmTNVzDNV/zOAADOAMzOAZjOAmTOAzDOA/zOqADOqMzOqZjOqmTOqzDOq/zPVADPVMzPVZjPVmTPVzDPV/zP/ADP/MzP/ZjP/mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YrAGYrM2YrZmYrmWYrzGYr/2ZVAGZVM2ZVZmZVmWZVzGZV/2aAAGaAM2aAZmaAmWaAzGaA/2aqAGaqM2aqZmaqmWaqzGaq/2bVAGbVM2bVZmbVmWbVzGbV/2b/AGb/M2b/Zmb/mWb/zGb//5kAAJkAM5kAZpkAmZkAzJkA/5krAJkrM5krZpkrmZkrzJkr/5lVAJlVM5lVZplVmZlVzJlV/5mAAJmAM5mAZpmAmZmAzJmA/5mqAJmqM5mqZpmqmZmqzJmq/5nVAJnVM5nVZpnVmZnVzJnV/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwAM8wAZswAmcwAzMwA/8wrAMwrM8wrZswrmcwrzMwr/8xVAMxVM8xVZsxVmcxVzMxV/8yAAMyAM8yAZsyAmcyAzMyA/8yqAMyqM8yqZsyqmcyqzMyq/8zVAMzVM8zVZszVmczVzMzV/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8Amf8AzP8A//8rAP8rM/8rZv8rmf8rzP8r//9VAP9VM/9VZv9Vmf9VzP9V//+AAP+AM/+AZv+Amf+AzP+A//+qAP+qM/+qZv+qmf+qzP+q///VAP/VM//VZv/Vmf/VzP/V////AP//M///Zv//mf//zP///wAAAAAAAAAAAAAAACH5BAEAAPwALAAAAAABAAEAAAgEAAEEBAA7lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+        // ** THE FIX IS HERE **
+        card.channelLogo.src = video.channelImage || 'about:blankIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Valid 1x1 transparent GIF
         card.channelLogo.alt = `לוגו ערוץ ${escapeHTML(video.channel)}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
 
@@ -492,19 +492,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (video && dom.singleVideoView.container) {
             document.title = `${video.title} - CAR-טיב`;
-            dom.singleVideoView.title.textContent = video.title;
-            dom.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${escapeHTML(video.title)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
-            dom.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${escapeHTML(video.channel)}</span>`;
-            dom.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${escapeHTML(video.duration)}`;
+            if (dom.singleVideoView.title) dom.singleVideoView.title.textContent = video.title;
+            if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${escapeHTML(video.title)}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+            if (dom.singleVideoView.channel) dom.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${escapeHTML(video.channel)}</span>`;
+            if (dom.singleVideoView.duration) dom.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${escapeHTML(video.duration)}`;
             
-            if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
+            if (dom.singleVideoView.date && video.dateAdded && !isNaN(video.dateAdded.getTime())) {
                 dom.singleVideoView.date.style.display = 'flex';
                 dom.singleVideoView.date.innerHTML = `<i class="fas fa-calendar-alt fa-fw"></i> ${video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })}`;
-            } else {
+            } else if (dom.singleVideoView.date) {
                 dom.singleVideoView.date.style.display = 'none';
             }
 
-            dom.singleVideoView.tags.innerHTML = (video.tags || []).map(tag =>
+            if (dom.singleVideoView.tags) dom.singleVideoView.tags.innerHTML = (video.tags || []).map(tag =>
                 `<a href="./?tags=${encodeURIComponent(tag)}#video-grid-section" class="bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-sm font-medium px-3 py-1.5 rounded-full hover:bg-purple-200 dark:hover:bg-purple-700 transition-colors">${escapeHTML(capitalizeFirstLetter(tag))}</a>`
             ).join('');
             
@@ -699,6 +699,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function updateURLWithFilters() {
+        if (!history.replaceState) return;
         const url = new URL(window.location);
         const { searchTerm, tags, hebrewOnly, sortBy } = state.currentFilters;
         
@@ -910,7 +911,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- INITIALIZATION ---
     async function initializeApp() {
         if (dom.currentYearFooter) dom.currentYearFooter.textContent = new Date().getFullYear();
-        handleThemeToggle(); handleThemeToggle(); // Set initial visual state without changing theme
+        const isDark = document.documentElement.classList.contains('dark');
+        dom.darkModeToggles.forEach(toggle => {
+            toggle.querySelector('.fa-moon')?.classList.toggle('hidden', isDark);
+            toggle.querySelector('.fa-sun')?.classList.toggle('hidden', !isDark);
+            toggle.setAttribute('aria-checked', String(isDark));
+        });
 
         if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
 
