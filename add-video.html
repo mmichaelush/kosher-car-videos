@@ -20,7 +20,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
     <script>
         // FOUC Prevention: Apply dark mode immediately
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -51,7 +50,7 @@
         <nav class="flex flex-col space-y-1">
             <a href="./" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-home w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>בית</a>
             <a href="./#homepage-categories-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-th-large w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>קטגוריות</a>
-            <a href="./#video-grid-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-play-circle w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>כל הסרטונים</a>
+            <a href="./#video-grid-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-play-circle w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>סרטונים</a>
             <a href="./#featured-channels-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-tv w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>ערוצים</a>
             <a href="./#forum-inspiration-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-comments w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>שאלות</a>
             <a href="./#about-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-info-circle w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>אודות</a>
@@ -73,7 +72,7 @@
     </aside>
 
     <!-- Main Header -->
-    <header id="main-header" class="bg-slate-50/80 dark:bg-slate-900/80 shadow-md sticky top-0 z-30 transition-colors duration-300 backdrop-blur-md">
+    <header class="bg-slate-50/80 dark:bg-slate-900/80 shadow-md sticky top-0 z-30 transition-colors duration-300 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <div class="flex items-center">
@@ -82,14 +81,14 @@
                         <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 md:h-12 hidden dark:block">
                         <span class="text-2xl font-bold text-slate-900 dark:text-slate-100 hidden sm:block">CAR-טיב</span>
                     </a>
-                      <nav class="hidden md:mr-4 lg:mr-6 md:flex items-center md:space-x-0.5 lg:space-x-1" aria-label="ניווט ראשי"> 
-                        <a href="./" class="nav-link flex items-center md:px-2 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-home md:ml-1 lg:ml-2 opacity-80"></i>בית</a>
-                        <a href="./#homepage-categories-section" class="nav-link flex items-center md:px-2 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-th-large md:ml-1 lg:ml-2 opacity-80"></i>קטגוריות</a>
-                        <a href="./#video-grid-section" class="nav-link flex items-center md:px-2 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-play-circle md:ml-1 lg:ml-2 opacity-80"></i>סרטונים</a>
-                        <a href="./#featured-channels-section" class="nav-link flex items-center md:px-2 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-tv md:ml-1 lg:ml-2 opacity-80"></i>ערוצים</a>
-                        <a href="./#forum-inspiration-section" class="nav-link flex items-center md:px-2 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-comments md:ml-1 lg:ml-2 opacity-80"></i>שאלות</a>
-                        <a href="./#about-section" class="nav-link flex items-center md:px-2 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-info-circle md:ml-1 lg:ml-2 opacity-80"></i>אודות</a>
-                        <a href="./#contact-section" class="nav-link flex items-center md:px-2 lg:px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-envelope md:ml-1 lg:ml-2 opacity-80"></i>צור קשר</a>
+                    <nav class="hidden md:mr-4 lg:mr-6 md:flex items-center md:space-x-0.5 lg:space-x-1" aria-label="ניווט ראשי"> 
+                        <a href="./#home" class="nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-home md:ml-1 lg:ml-2 opacity-80"></i>בית</a>
+                        <a href="./#homepage-categories-section" class="nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-th-large md:ml-1 lg:ml-2 opacity-80"></i>קטגוריות</a>
+                        <a href="./#video-grid-section" class="nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-play-circle md:ml-1 lg:ml-2 opacity-80"></i>סרטונים</a>
+                        <a href="./#featured-channels-section" class="nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-tv md:ml-1 lg:ml-2 opacity-80"></i>ערוצים</a>
+                        <a href="./#forum-inspiration-section" class="nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-comments md:ml-1 lg:ml-2 opacity-80"></i>שאלות</a>
+                        <a href="./#about-section" class="nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-info-circle md:ml-1 lg:ml-2 opacity-80"></i>אודות</a>
+                        <a href="./#contact-section" class="nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-envelope md:ml-1 lg:ml-2 opacity-80"></i>צור קשר</a>
                     </nav>
                 </div>
 
@@ -126,14 +125,12 @@
                     <i class="fas fa-video text-purple-600 dark:text-purple-400 mr-4"></i>
                     הוספת סרטון למאגר
                 </h1>
-                <div class="mt-4 text-lg text-slate-600 dark:text-slate-400 space-y-2">
-                    <p>יש לך סרטון מתאים שמומלץ להוסיף לאתר?</p>
-                    <p>מלא את הטופס עם פרטי הסרטון ונשתדל בעז"ה להוסיפו למאגר.</p>
+                <p class="mt-4 text-lg text-slate-600 dark:text-slate-400">יש לך סרטון מתאים שמומלץ להוסיף לאתר? <br> מלא את הטופס עם פרטי הסרטון ונשתדל בעז"ה להוסיפו למאגר.</p>
+                <div class="mt-6">
+                    <button id="check-yt-id-button" class="inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 dark:focus:ring-offset-slate-900">
+                        <i class="fas fa-search ml-2"></i> בדיקה אם הסרטון כבר קיים במאגר
+                    </button>
                 </div>
-                <button id="check-yt-id-link-add-page" class="mt-6 inline-flex items-center justify-center px-5 py-2.5 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 dark:bg-indigo-500 dark:hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 dark:focus:ring-offset-slate-900">
-                    <i class="fas fa-search ml-2"></i>
-                    בדיקה אם הסרטון כבר מופיע במאגר
-                </button>
             </div>
 
             <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-2 sm:p-4">
@@ -163,13 +160,13 @@
                 <div>
                     <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">קטגוריות</h3>
                     <ul class="space-y-3">
-                        <li><a href="category.html?name=review" class="footer-link"><i class="fas fa-car-on fa-fw ml-2 opacity-70"></i>סקירות רכב</a></li>
-                        <li><a href="category.html?name=maintenance" class="footer-link"><i class="fas fa-oil-can fa-fw ml-2 opacity-70"></i>טיפולים</a></li>
-                        <li><a href="category.html?name=diy" class="footer-link"><i class="fas fa-tools fa-fw ml-2 opacity-70"></i>עשה זאת בעצמך</a></li>
-                        <li><a href="category.html?name=upgrades" class="footer-link"><i class="fas fa-rocket fa-fw ml-2 opacity-70"></i>שיפורים ושדרוגים</a></li>
-                        <li><a href="category.html?name=troubleshooting" class="footer-link"><i class="fas fa-microscope fa-fw ml-2 opacity-70"></i>איתור ותיקון תקלות</a></li>
-                        <li><a href="category.html?name=systems" class="footer-link"><i class="fas fa-cogs fa-fw ml-2 opacity-70"></i>מערכות הרכב</a></li>
-                        <li><a href="category.html?name=collectors" class="footer-link"><i class="fas fa-car-side fa-fw ml-2 opacity-70"></i>רכבי אספנות</a></li>
+                        <li><a href="category?name=review" class="footer-link"><i class="fas fa-car-on fa-fw ml-2 opacity-70"></i>סקירות רכב</a></li>
+                        <li><a href="category?name=maintenance" class="footer-link"><i class="fas fa-oil-can fa-fw ml-2 opacity-70"></i>טיפולים</a></li>
+                        <li><a href="category?name=diy" class="footer-link"><i class="fas fa-tools fa-fw ml-2 opacity-70"></i>עשה זאת בעצמך</a></li>
+                        <li><a href="category?name=upgrades" class="footer-link"><i class="fas fa-rocket fa-fw ml-2 opacity-70"></i>שיפורים ושדרוגים</a></li>
+                        <li><a href="category?name=troubleshooting" class="footer-link"><i class="fas fa-microscope fa-fw ml-2 opacity-70"></i>איתור ותיקון תקלות</a></li>
+                        <li><a href="category?name=systems" class="footer-link"><i class="fas fa-cogs fa-fw ml-2 opacity-70"></i>מערכות הרכב</a></li>
+                        <li><a href="category?name=collectors" class="footer-link"><i class="fas fa-car-side fa-fw ml-2 opacity-70"></i>רכבי אספנות</a></li>
                     </ul>
                 </div>
 
@@ -181,7 +178,7 @@
                         <li><a href="https://rechavimzelaze.ovh/post/683722" target="_blank" rel="noopener noreferrer" class="footer-link"> <i class="fas fa-book fa-fw ml-2 opacity-70"></i>עוד על האתר</a></li>
                         <li><a href="https://github.com/mmichaelush/kosher-car-videos.io" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fab fa-github fa-fw ml-2 opacity-70"></i>הפרוייקט ב-GitHub</a></li>
                         <li><a href="./#contact-section" class="footer-link nav-link"><i class="fas fa-envelope fa-fw ml-2 opacity-70"></i>צור קשר</a></li>
-                        <li><a href="#" id="check-yt-id-link" class="footer-link"><i class="fas fa-search fa-fw ml-2 opacity-70"></i>בדוק אם סרטון קיים</a></li>
+                        <li><a href="./#check-yt-id" id="check-yt-id-link" class="footer-link"><i class="fas fa-search fa-fw ml-2 opacity-70"></i>בדוק אם סרטון קיים</a></li>
                         <li><a href="add-video.html" class="footer-link"><i class="fas fa-video fa-fw ml-2 opacity-70"></i>הוספת סרטונים</a></li>
                     </ul>
                 </div>
