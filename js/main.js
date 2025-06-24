@@ -5,7 +5,7 @@
  * Refactored for clarity, maintainability, and performance.
  *
  * @author Michael Ush <michaelush613@gmail.com> (with AI assistance)
- * @version 2.0.4
+ * @version 2.0.5
  */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -13,14 +13,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // Application state
         state: {
             allVideos: [],
+            // FIX 4: Use full CDN URLs for category images to resolve 404 errors.
             categories: {
-                "review": { "name": "סקירות רכב", "icon": "fa-car-on", "image": "data/assets/images/category-review.jpg" },
-                "maintenance": { "name": "טיפולים", "icon": "fa-oil-can", "image": "data/assets/images/category-maintenance.jpg" },
-                "diy": { "name": "עשה זאת בעצמך", "icon": "fa-tools", "image": "data/assets/images/category-diy.jpg" },
-                "upgrades": { "name": "שיפורים ושדרוגים", "icon": "fa-rocket", "image": "data/assets/images/category-upgrades.jpg" },
-                "troubleshooting": { "name": "איתור ותיקון תקלות", "icon": "fa-microscope", "image": "data/assets/images/category-troubleshooting.jpg" },
-                "systems": { "name": "מערכות הרכב", "icon": "fa-cogs", "image": "data/assets/images/category-systems.jpg" },
-                "collectors": { "name": "רכבי אספנות", "icon": "fa-car-side", "image": "data/assets/images/category-collectors.jpg" }
+                "review": { "name": "סקירות רכב", "icon": "fa-car-on", "image": "https://cdn.jsdelivr.net/gh/mmichaelush/kosher-car-videos.io@main/data/assets/images/category-review.jpg" },
+                "maintenance": { "name": "טיפולים", "icon": "fa-oil-can", "image": "https://cdn.jsdelivr.net/gh/mmichaelush/kosher-car-videos.io@main/data/assets/images/category-maintenance.jpg" },
+                "diy": { "name": "עשה זאת בעצמך", "icon": "fa-tools", "image": "https://cdn.jsdelivr.net/gh/mmichaelush/kosher-car-videos.io@main/data/assets/images/category-diy.jpg" },
+                "upgrades": { "name": "שיפורים ושדרוגים", "icon": "fa-rocket", "image": "https://cdn.jsdelivr.net/gh/mmichaelush/kosher-car-videos.io@main/data/assets/images/category-upgrades.jpg" },
+                "troubleshooting": { "name": "איתור ותיקון תקלות", "icon": "fa-microscope", "image": "https://cdn.jsdelivr.net/gh/mmichaelush/kosher-car-videos.io@main/data/assets/images/category-troubleshooting.jpg" },
+                "systems": { "name": "מערכות הרכב", "icon": "fa-cogs", "image": "https://cdn.jsdelivr.net/gh/mmichaelush/kosher-car-videos.io@main/data/assets/images/category-systems.jpg" },
+                "collectors": { "name": "רכבי אספנות", "icon": "fa-car-side", "image": "https://cdn.jsdelivr.net/gh/mmichaelush/kosher-car-videos.io@main/data/assets/images/category-collectors.jpg" }
             },
             tags: {},
             fuse: null,
@@ -160,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
             this.elements.closeMenuBtn?.addEventListener('click', () => this.closeMobileMenu());
             this.elements.mobileMenuBackdrop?.addEventListener('click', () => this.closeMobileMenu());
             
-            // BUG FIX: Simplified mobile nav link handling. The CSS `scroll-behavior: smooth` handles the scrolling.
             this.elements.mobileMenu?.querySelectorAll('.nav-link').forEach(link => {
                 link.addEventListener('click', () => this.closeMobileMenu());
             });
@@ -234,8 +234,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const videosData = await videosResponse.json();
             
+            // FIX: Filter out any videos that are missing essential data to prevent crashes.
+            const cleanVideosData = videosData.filter(video => {
+                const isValid = video && video.id && video.yt_id;
+                if (!isValid) {
+                    console.warn('Skipping invalid video data:', video);
+                }
+                return isValid;
+            });
+            
             // Pre-process videos: Add category details and parse date
-            this.state.allVideos = videosData.map(video => ({
+            this.state.allVideos = cleanVideosData.map(video => ({
                 ...video,
                 categoryName: this.state.categories[video.category]?.name || 'ללא קטגוריה',
                 categoryIcon: this.state.categories[video.category]?.icon || 'fa-folder',
@@ -321,7 +330,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             document.title = `${video.title} - CAR-טיב`;
             this.elements.singleVideoTitle.textContent = video.title;
-            this.elements.singleVideoPlayerContainer.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${video.yt_id}?autoplay=1&rel=0" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+            // FIX: Removed redundant `allowfullscreen` attribute.
+            this.elements.singleVideoPlayerContainer.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${video.yt_id}?autoplay=1&rel=0" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>`;
             
             this.elements.singleVideoChannel.innerHTML = `<img src="${video.channelLogo}" alt="${video.channelName}" class="h-7 w-7 rounded-full object-cover border-2 border-slate-200 dark:border-slate-600"/><span>${video.channelName}</span>`;
             this.elements.singleVideoDuration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${this.formatDuration(video.duration)}`;
@@ -926,7 +936,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         
         playInFullscreen(container, video) {
-            container.innerHTML = `<iframe class="video-iframe absolute inset-0 w-full h-full z-30" src="https://www.youtube.com/embed/${video.yt_id}?autoplay=1&rel=0" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+            // FIX: Removed redundant `allowfullscreen` attribute.
+            container.innerHTML = `<iframe class="video-iframe absolute inset-0 w-full h-full z-30" src="https://www.youtube.com/embed/${video.yt_id}?autoplay=1&rel=0" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"></iframe>`;
         },
         
         async shareVideo(video) {
