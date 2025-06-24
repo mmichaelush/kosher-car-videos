@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,data:image/gif;base64,R0lGODlhAQABAPcAAAAAAAAAMwAAZgAAmQAAzAAA/wArAAArMwArZgArmQArzAAr/wBVAABVMwBVZgBVmQBVzABV/wCAAACAMwCAZgCAmQCAzACA/wCqAACqMwCqZgCqmQCqzACq/wDVAADVMwDVZgDVmQDVzADV/wD/AAD/MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMrADMrMzMrZjMrmTMrzDMr/zNVADNVMzNVZjNVmTNVzDNV/zOAADOAMzOAZjOAmTOAzDOA/zOqADOqMzOqZjOqmTOqzDOq/zPVADPVMzPVZjPVmTPVzDPV/zP/ADP/MzP/ZjP/mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YrAGYrM2YrZmYrmWYrzGYr/2ZVAGZVM2ZVZmZVmWZVzGZV/2aAAGaAM2aAZmaAmWaAzGaA/2aqAGaqM2aqZmaqmWaqzGaq/2bVAGbVM2bVZmbVmWbVzGbV/2b/AGb/M2b/Zmb/mWb/zGb//5kAAJkAM5kAZpkAmZkAzJkA/5krAJkrM5krZpkrmZkrzJkr/5lVAJlVM5lVZplVmZlVzJlV/5mAAJmAM5mAZpmAmZmAzJmA/5mqAJmqM5mqZpmqmZmqzJmq/5nVAJnVM5nVZpnVmZnVzJnV/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwAM8wAZswAmcwAzMwA/8wrAMwrM8wrZswrmcwrzMwr/8xVAMxVM8xVZsxVmcxVzMxV/8yAAMyAM8yAZsyAmcyAzMyA/8yqAMyqM8yqZsyqmcyqzMyq/8zVAMzVM8zVZszVmczVzMzV/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8Amf8AzP8A//8rAP8rM/8rZv8rmf8rzP8r//9VAP9VM/9VZv9Vmf9VzP9V//+AAP+AM/+AZv+Amf+AzP+A//+qAP+qM/+qZv+qmf+qzP+q///VAP/VM//VZv/Vmf/VzP/V////AP//M///Zv//mf//zP///wAAAAAAAAAAAAAAACH5BAEAAPwALAAAAAABAAEAAAgEAAEEBAA7AAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,data:image/gif;base64,R0lGODlhAQABAPcAAAAAAAAAMwAAZgAAmQAAzAAA/wArAAArMwArZgArmQArzAAr/wBVAABVMwBVZgBVmQBVzABV/wCAAACAMwCAZgCAmQCAzACA/wCqAACqMwCqZgCqmQCqzACq/wDVAADVMwDVZgDVmQDVzADV/wD/AAD/MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMrADMrMzMrZjMrmTMrzDMr/zNVADNVMzNVZjNVmTNVzDNV/zOAADOAMzOAZjOAmTOAzDOA/zOqADOqMzOqZjOqmTOqzDOq/zPVADPVMzPVZjPVmTPVzDPV/zP/ADP/MzP/ZjP/mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YrAGYrM2YrZmYrmWYrzGYr/2ZVAGZVM2ZVZmZVmWZVzGZV/2aAAGaAM2aAZmaAmWaAzGaA/2aqAGaqM2aqZmaqmWaqzGaq/2bVAGbVM2bVZmbVmWbVzGbV/2b/AGb/M2b/Zmb/mWb/zGb//5kAAJkAM5kAZpkAmZkAzJkA/5krAJkrM5krZpkrmZkrzJkr/5lVAJlVM5lVZplVmZlVzJlV/5mAAJmAM5mAZpmAmZmAzJmA/5mqAJmqM5mqZpmqmZmqzJmq/5nVAJnVM5nVZpnVmZnVzJnV/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwAM8wAZswAmcwAzMwA/8wrAMwrM8wrZswrmcwrzMwr/8xVAMxVM8xVZsxVmcxVzMxV/8yAAMyAM8yAZsyAmcyAzMyA/8yqAMyqM8yqZsyqmcyqzMyq/8zVAMzVM8zVZszVmczVzMzV/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8Amf8AzP8A//8rAP8rM/8rZv8rmf8rzP8r//9VAP9VM/9VZv9Vmf9VzP9V//+AAP+AM/+AZv+Amf+AzP+A//+qAP+qM/+qZv+qmf+qzP+q///VAP/VM//VZv/Vmf/VzP/V////AP//M///Zv//mf//zP///wAAAAAAAAAAAAAAACH5BAEAAPwALAAAAAABAAEAAAgEAAEEBAA7lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -538,7 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
         function extractYouTubeVideoId(url) {
             if (!url) return null;
             const patterns = [
-                /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|live\/|attribution_link\?a=.*&u=\%2Fwatch\%3Fv\%3D)([\w-]{11})/,
+                /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|live\/|attribution_link\?a=.*&u=%2Fwatch%3Fv%3D)([\w-]{11})/,
                 /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([\w-]{11})/,
                 /^([\w-]{11})$/
             ];
@@ -817,7 +817,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  const header = document.querySelector('header.sticky');
                  const headerOffset = header ? header.offsetHeight + 20 : 80;
                  const elementPosition = rect.top + window.pageYOffset - headerOffset;
-                 window.scrollTo({ top: elementPosition, behavior: "smooth" });
+                 window.scrollTo({ top: elementPosition, behavior: 'smooth' });
             }
         }
     }
@@ -899,7 +899,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const { target } = e;
             const navLink = target.closest('.nav-link');
 
-            if (navLink && (navLink.getAttribute('href').includes('#'))) {
+            if (navLink && navLink.getAttribute('href').includes('#')) {
                 e.preventDefault();
                 if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
                 const href = navLink.getAttribute('href');
@@ -952,7 +952,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     playVideoInline(card); 
                     const iframe = card.querySelector('.video-iframe');
                     if(iframe && typeof iframe.requestFullscreen === 'function') {
-                        setTimeout(() => iframe.requestFullscreen(), 150);
+                        setTimeout(() => { iframe.requestFullscreen(); }, 150);
                     }
                 } else if (target.closest('.share-btn')) {
                     e.preventDefault();
@@ -986,22 +986,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const currentPage = window.location.pathname.split('/').pop();
 
-        if(currentPage !== 'add-video.html') {
+        if(currentPage.includes('add-video.html')) {
             await loadVideos();
-            state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
+        } else if(currentPage.includes('category.html')) {
+            await loadVideos();
+            setupCategoryPageView();
+        } else {
+            await loadVideos();
             const urlParams = new URLSearchParams(window.location.search);
             const videoIdFromUrl = urlParams.get('v');
-            
-            if (videoIdFromUrl && isHomePage()) {
+            if (videoIdFromUrl) {
                 renderSingleVideoPage(videoIdFromUrl);
-            } else if (isHomePage()) {
+            } else {
                 setupHomePageView();
-            } else if (currentPage === 'category.html') {
-                setupCategoryPageView();
             }
-        } else {
-             // For add-video.html, we still need basic functionality like theme toggling
-            state.allVideos = [];
         }
         
         setupEventListeners();
