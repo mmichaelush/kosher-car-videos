@@ -463,6 +463,9 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPopularTags();
         applyFilters(false, false);
         handleScrollSpy();
+        if (window.location.hash === '#check-yt-id') {
+            handleCheckYtId();
+        }
     }
     
     function setupCategoryPageView() {
@@ -817,7 +820,7 @@ document.addEventListener('DOMContentLoaded', () => {
                  const header = document.querySelector('header.sticky');
                  const headerOffset = header ? header.offsetHeight + 20 : 80;
                  const elementPosition = rect.top + window.pageYOffset - headerOffset;
-                 window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                 window.scrollTo({ top: elementPosition, behavior: "smooth" });
             }
         }
     }
