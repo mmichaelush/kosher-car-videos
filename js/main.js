@@ -5,7 +5,7 @@
  * Refactored for clarity, maintainability, and performance.
  *
  * @author Michael Ush <michaelush613@gmail.com> (with AI assistance)
- * @version 2.0.1
+ * @version 2.0.2
  */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -32,9 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Configuration
         config: {
-            // FIX: Changed to relative paths for robustness on Netlify deployment.
-            videosUrl: 'data/videos.json',
-            categoriesUrl: 'data/categories.json',
+            // FIX 2: Use jsDelivr CDN to fetch directly from GitHub repo, bypassing Netlify build issues.
+            videosUrl: 'https://cdn.jsdelivr.net/gh/mmichaelush/kosher-car-videos.io@main/data/videos.json',
+            categoriesUrl: 'https://cdn.jsdelivr.net/gh/mmichaelush/kosher-car-videos.io@main/data/categories.json',
             fuseOptions: {
                 keys: ['title', 'tags', 'channelName'],
                 includeScore: true,
