@@ -5,7 +5,7 @@
  * Refactored for clarity, maintainability, and performance.
  *
  * @author Michael Ush <michaelush613@gmail.com> (with AI assistance)
- * @version 2.0.3
+ * @version 2.0.4
  */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -13,8 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Application state
         state: {
             allVideos: [],
-            // FIX 3: Hardcode category data directly into the script to eliminate the failing network request.
-            // This makes the app more robust and aligns with the user's request for simplicity.
             categories: {
                 "review": { "name": "סקירות רכב", "icon": "fa-car-on", "image": "data/assets/images/category-review.jpg" },
                 "maintenance": { "name": "טיפולים", "icon": "fa-oil-can", "image": "data/assets/images/category-maintenance.jpg" },
@@ -43,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
         // Configuration
         config: {
             videosUrl: 'https://cdn.jsdelivr.net/gh/mmichaelush/kosher-car-videos.io@main/data/videos.json',
-            // categoriesUrl has been removed as it's now hardcoded.
             fuseOptions: {
                 keys: ['title', 'tags', 'channelName'],
                 includeScore: true,
@@ -878,15 +875,32 @@ document.addEventListener('DOMContentLoaded', () => {
         
         sortVideos(videos, sortBy) {
             return videos.sort((a, b) => {
+                const handleInvalidDates = (sortOrder) => {
+                    const aValid = a.dateObj && !isNaN(a.dateObj.getTime());
+                    const bValid = b.dateObj && !isNaN(b.dateObj.getTime());
+
+                    if (aValid && !bValid) return -1 * sortOrder;
+                    if (!aValid && bValid) return 1 * sortOrder;
+                    if (!aValid && !bValid) return 0;
+                    return null; // Both are valid, continue to normal comparison
+                };
+
                 switch (sortBy) {
-                    case 'date-asc': return a.dateObj - b.dateObj;
+                    case 'date-asc': {
+                        const invalidResult = handleInvalidDates(1);
+                        if (invalidResult !== null) return invalidResult;
+                        return a.dateObj - b.dateObj;
+                    }
                     case 'title-asc': return a.title.localeCompare(b.title, 'he');
                     case 'title-desc': return b.title.localeCompare(a.title, 'he');
                     case 'duration-asc': return a.duration - b.duration;
                     case 'duration-desc': return b.duration - a.duration;
                     case 'date-desc':
-                    default:
+                    default: {
+                         const invalidResult = handleInvalidDates(-1);
+                        if (invalidResult !== null) return invalidResult;
                         return b.dateObj - a.dateObj;
+                    }
                 }
             });
         },
@@ -900,6 +914,10 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         
         formatDate(date) {
+            // FIX: Add a guard clause to prevent crashing on invalid dates.
+            if (!date || isNaN(date.getTime())) {
+                return ''; // Return an empty string for invalid dates
+            }
             return new Intl.DateTimeFormat('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
         },
         
