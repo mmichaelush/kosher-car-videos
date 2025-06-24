@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const isHomePage = () => {
         const path = window.location.pathname;
-        return path === '/' || path.endsWith('/index.html') || path.endsWith('kosher-car-videos.io/');
+        return path === '/' || path.endsWith('/index.html');
     };
 
     const getCategoryFromURL = () => new URLSearchParams(window.location.search).get('name');
@@ -172,7 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             console.error("Error loading videos:", error);
             state.allVideos = [];
-            if (dom.videoCountHero?.querySelector('span')) dom.videoCountHero.querySelector('span').textContent = "0";
+            if (dom.videoCountHero && dom.videoCountHero.querySelector('span')) {
+                dom.videoCountHero.querySelector('span').textContent = "0";
+            }
             displayError('שגיאה בטעינת המידע. ייתכן והאתר בתחזוקה, נסה לרענן את הדף מאוחר יותר.');
         } finally {
              if (dom.loadingPlaceholder) dom.loadingPlaceholder.classList.add('hidden');
@@ -262,7 +264,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function createVideoCardElement(video) {
-        if (!dom.videoCardTemplate?.content) return null;
+        if (!dom.videoCardTemplate || !dom.videoCardTemplate.content) return null;
 
         const cardClone = dom.videoCardTemplate.content.cloneNode(true);
         const card = {
@@ -299,11 +301,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,data:image/gif;base64,R0lGODlhAQABAPcAAAAAAAAAMwAAZgAAmQAAzAAA/wArAAArMwArZgArmQArzAAr/wBVAABVMwBVZgBVmQBVzABV/wCAAACAMwCAZgCAmQCAzACA/wCqAACqMwCqZgCqmQCqzACq/wDVAADVMwDVZgDVmQDVzADV/wD/AAD/MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMrADMrMzMrZjMrmTMrzDMr/zNVADNVMzNVZjNVmTNVzDNV/zOAADOAMzOAZjOAmTOAzDOA/zOqADOqMzOqZjOqmTOqzDOq/zPVADPVMzPVZjPVmTPVzDPV/zP/ADP/MzP/ZjP/mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YrAGYrM2YrZmYrmWYrzGYr/2ZVAGZVM2ZVZmZVmWZVzGZV/2aAAGaAM2aAZmaAmWaAzGaA/2aqAGaqM2aqZmaqmWaqzGaq/2bVAGbVM2bVZmbVmWbVzGbV/2b/AGb/M2b/Zmb/mWb/zGb//5kAAJkAM5kAZpkAmZkAzJkA/5krAJkrM5krZpkrmZkrzJkr/5lVAJlVM5lVZplVmZlVzJlV/5mAAJmAM5mAZpmAmZmAzJmA/5mqAJmqM5mqZpmqmZmqzJmq/5nVAJnVM5nVZpnVmZnVzJnV/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwAM8wAZswAmcwAzMwA/8wrAMwrM8wrZswrmcwrzMwr/8xVAMxVM8xVZsxVmcxVzMxV/8yAAMyAM8yAZsyAmcyAzMyA/8yqAMyqM8yqZsyqmcyqzMyq/8zVAMzVM8zVZszVmczVzMzV/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8Amf8AzP8A//8rAP8rM/8rZv8rmf8rzP8r//9VAP9VM/9VZv9Vmf9VzP9V//+AAP+AM/+AZv+Amf+AzP+A//+qAP+qM/+qZv+qmf+qzP+q///VAP/VM//VZv/Vmf/VzP/V////AP//M///Zv//mf//zP///wAAAAAAAAAAAAAAACH5BAEAAPwALAAAAAABAAEAAAgEAAEEBAA7AAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${escapeHTML(video.channel)}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
 
-        if (video.tags?.length > 0) {
+        if (video.tags && video.tags.length > 0) {
             card.tagsContainer.innerHTML = video.tags.map(tag =>
                 `<button data-tag="${escapeHTML(tag)}" class="video-tag-button bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 px-2 py-0.5 rounded-md hover:bg-purple-200 dark:hover:bg-purple-700 transition-colors">${escapeHTML(capitalizeFirstLetter(tag))}</button>`
             ).join('');
@@ -313,7 +315,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const categoryName = categoryData ? categoryData.name : capitalizeFirstLetter(video.category);
         const categoryIconEl = cardClone.querySelector('.video-category-icon');
         if (categoryIconEl) {
-            categoryIconEl.className = `video-category-icon fas fa-${categoryData?.icon || 'folder-open'} opacity-70 text-purple-500 dark:text-purple-400 ml-2`;
+            categoryIconEl.className = `video-category-icon fas fa-${categoryData ? categoryData.icon : 'folder-open'} opacity-70 text-purple-500 dark:text-purple-400 ml-2`;
         }
         card.categoryDisplay.append(escapeHTML(categoryName));
         
@@ -413,12 +415,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadMoreBtn.id = 'load-more-videos-btn';
                 loadMoreBtn.className = 'mt-8 mb-4 mx-auto block px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 dark:focus:ring-offset-slate-900 transition-transform hover:scale-105';
                 loadMoreBtn.addEventListener('click', () => applyFilters(true));
-                dom.videoCardsContainer?.parentNode.insertBefore(loadMoreBtn, dom.videoCardsContainer.nextSibling);
+                if (dom.videoCardsContainer && dom.videoCardsContainer.parentNode) {
+                    dom.videoCardsContainer.parentNode.insertBefore(loadMoreBtn, dom.videoCardsContainer.nextSibling);
+                }
             }
             loadMoreBtn.textContent = `טען עוד (${totalMatchingVideos - state.ui.currentlyDisplayedVideosCount} נותרו)`;
             loadMoreBtn.classList.remove('hidden');
-        } else {
-            loadMoreBtn?.remove();
+        } else if (loadMoreBtn) {
+            loadMoreBtn.remove();
         }
     }
     
@@ -435,8 +439,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const breadcrumb = document.getElementById('breadcrumb-category-name');
         if (breadcrumb) breadcrumb.textContent = escapeHTML(name);
         
-        const videosHeading = document.getElementById('videos-in-category-heading')?.querySelector('span');
-        if (videosHeading) videosHeading.innerHTML = `סרטונים ב: <span class="font-bold text-purple-600 dark:text-purple-400">${escapeHTML(name)}</span>`;
+        const videosHeading = document.getElementById('videos-in-category-heading');
+        if(videosHeading) {
+            const span = videosHeading.querySelector('span');
+            if(span) span.innerHTML = `סרטונים ב: <span class="font-bold text-purple-600 dark:text-purple-400">${escapeHTML(name)}</span>`;
+        }
     }
     
     function displayError(message, container = dom.noVideosFoundMessage) {
@@ -450,7 +457,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function syncUIToState() {
         const { searchTerm, hebrewOnly, sortBy } = state.currentFilters;
         Object.values(dom.searchForms).forEach(form => {
-            if(form) form.querySelector('input[type="search"]')?.value = searchTerm;
+            if(form) {
+                const input = form.querySelector('input[type="search"]');
+                if (input) input.value = searchTerm;
+            }
         });
         if(dom.hebrewFilterToggle) dom.hebrewFilterToggle.checked = hebrewOnly;
         if(dom.sortSelect) dom.sortSelect.value = sortBy;
@@ -525,25 +535,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
         dom.darkModeToggles.forEach(toggle => {
-            toggle.querySelector('.fa-moon')?.classList.toggle('hidden', isDark);
-            toggle.querySelector('.fa-sun')?.classList.toggle('hidden', !isDark);
+            const moonIcon = toggle.querySelector('.fa-moon');
+            const sunIcon = toggle.querySelector('.fa-sun');
+            if(moonIcon) moonIcon.classList.toggle('hidden', isDark);
+            if(sunIcon) sunIcon.classList.toggle('hidden', !isDark);
             toggle.setAttribute('aria-checked', String(isDark));
         });
     }
 
     function openMobileMenu() {
         state.ui.lastFocusedElement = document.activeElement;
-        dom.mobileMenu?.classList.remove('translate-x-full');
-        dom.backdrop?.classList.remove('invisible', 'opacity-0');
+        if(dom.mobileMenu) dom.mobileMenu.classList.remove('translate-x-full');
+        if(dom.backdrop) dom.backdrop.classList.remove('invisible', 'opacity-0');
         dom.body.classList.add('overflow-hidden', 'md:overflow-auto');
-        dom.openMenuBtn?.setAttribute('aria-expanded', 'true');
-        setTimeout(() => dom.closeMenuBtn?.focus(), 100);
+        if(dom.openMenuBtn) dom.openMenuBtn.setAttribute('aria-expanded', 'true');
+        if(dom.closeMenuBtn) setTimeout(() => dom.closeMenuBtn.focus(), 100);
     }
     function closeMobileMenu() {
-        dom.mobileMenu?.classList.add('translate-x-full');
-        dom.backdrop?.classList.add('invisible', 'opacity-0');
+        if(dom.mobileMenu) dom.mobileMenu.classList.add('translate-x-full');
+        if(dom.backdrop) dom.backdrop.classList.add('invisible', 'opacity-0');
         dom.body.classList.remove('overflow-hidden', 'md:overflow-auto');
-        dom.openMenuBtn?.setAttribute('aria-expanded', 'false');
+        if(dom.openMenuBtn) dom.openMenuBtn.setAttribute('aria-expanded', 'false');
         if (state.ui.lastFocusedElement) state.ui.lastFocusedElement.focus();
     }
 
@@ -619,7 +631,7 @@ document.addEventListener('DOMContentLoaded', () => {
             li.className = 'px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-700 cursor-pointer transition-colors';
             li.dataset.index = index;
             
-            const titleMatch = result.matches?.find(m => m.key === 'title');
+            const titleMatch = result.matches && result.matches.find(m => m.key === 'title');
             li.innerHTML = titleMatch ? generateHighlightedText(result.item.title, titleMatch.indices) : escapeHTML(result.item.title);
             
             li.addEventListener('mousedown', () => {
@@ -719,7 +731,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function applyFiltersFromURL() {
         const params = new URLSearchParams(window.location.search);
         state.currentFilters.searchTerm = params.get('search') || '';
-        state.currentFilters.tags = params.get('tags')?.split(',').filter(Boolean) || [];
+        state.currentFilters.tags = params.get('tags') ? params.get('tags').split(',').filter(Boolean) : [];
         state.currentFilters.sortBy = params.get('sort') || 'date-desc';
         
         if (params.has('hebrew')) {
@@ -743,7 +755,8 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('header nav .nav-link.active-nav-link').forEach(link => link.classList.remove('active-nav-link'));
             return;
         }
-        const headerOffset = document.querySelector('header.sticky')?.offsetHeight + 24 || 104;
+        const header = document.querySelector('header.sticky');
+        const headerOffset = header ? header.offsetHeight + 24 : 104;
         const scrollPosition = window.scrollY;
         let activeSectionId = '';
         document.querySelectorAll('main section[id], section#home').forEach(section => {
@@ -762,7 +775,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (gridSection) {
             const rect = gridSection.getBoundingClientRect();
             if (rect.top < 0 || rect.bottom > window.innerHeight) {
-                 const headerOffset = document.querySelector('header.sticky')?.offsetHeight + 20 || 80;
+                 const header = document.querySelector('header.sticky');
+                 const headerOffset = header ? header.offsetHeight + 20 : 80;
                  const elementPosition = rect.top + window.pageYOffset - headerOffset;
                  window.scrollTo({ top: elementPosition, behavior: "smooth" });
             }
@@ -796,14 +810,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- MAIN EVENT LISTENER SETUP ---
     function setupEventListeners() {
         dom.darkModeToggles.forEach(toggle => toggle.addEventListener('click', handleThemeToggle));
-        dom.openMenuBtn?.addEventListener('click', openMobileMenu);
-        dom.closeMenuBtn?.addEventListener('click', closeMobileMenu);
-        dom.backdrop?.addEventListener('click', closeMobileMenu);
+        if(dom.openMenuBtn) dom.openMenuBtn.addEventListener('click', openMobileMenu);
+        if(dom.closeMenuBtn) dom.closeMenuBtn.addEventListener('click', closeMobileMenu);
+        if(dom.backdrop) dom.backdrop.addEventListener('click', closeMobileMenu);
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && dom.mobileMenu && !dom.mobileMenu.classList.contains('translate-x-full')) closeMobileMenu();
         });
 
-        dom.backToTopButton?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+        if(dom.backToTopButton) dom.backToTopButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         window.addEventListener('scroll', () => throttle(handleScroll, 100));
 
         Object.values(dom.searchForms).forEach(form => {
@@ -817,26 +831,28 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        dom.hebrewFilterToggle?.addEventListener('change', (e) => {
+        if(dom.hebrewFilterToggle) dom.hebrewFilterToggle.addEventListener('change', (e) => {
             state.currentFilters.hebrewOnly = e.target.checked;
             localStorage.setItem('hebrewOnlyPreference', String(e.target.checked));
             applyFilters(false);
         });
         
-        dom.sortSelect?.addEventListener('change', (e) => {
+        if(dom.sortSelect) dom.sortSelect.addEventListener('change', (e) => {
             state.currentFilters.sortBy = e.target.value;
             applyFilters(false, false);
         });
         
-        dom.clearFiltersBtn?.addEventListener('click', clearAllFilters);
-        dom.shareFiltersBtn?.addEventListener('click', (e) => shareContent(window.location.href, e.currentTarget, 'הועתק!'));
+        if(dom.clearFiltersBtn) dom.clearFiltersBtn.addEventListener('click', clearAllFilters);
+        if(dom.shareFiltersBtn) dom.shareFiltersBtn.addEventListener('click', (e) => shareContent(window.location.href, e.currentTarget, 'הועתק!'));
 
-        dom.customTagForm?.addEventListener('submit', (e) => {
+        if(dom.customTagForm) dom.customTagForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const newTagName = dom.tagSearchInput?.value.trim().toLowerCase();
-            if (newTagName) {
-                toggleTagSelection(newTagName);
-                dom.tagSearchInput.value = '';
+            if(dom.tagSearchInput) {
+                const newTagName = dom.tagSearchInput.value.trim().toLowerCase();
+                if (newTagName) {
+                    toggleTagSelection(newTagName);
+                    dom.tagSearchInput.value = '';
+                }
             }
         });
 
@@ -853,7 +869,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     const targetId = href.substring(href.indexOf('#') + 1);
                     const targetElement = document.getElementById(targetId);
                     if(targetElement) {
-                        const headerOffset = document.querySelector('header.sticky')?.offsetHeight + 20 || 80;
+                        const header = document.querySelector('header.sticky');
+                        const headerOffset = header ? header.offsetHeight + 20 : 80;
                         const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                         window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                     }
@@ -889,11 +906,16 @@ document.addEventListener('DOMContentLoaded', () => {
                      const iframe = card.querySelector('.video-iframe');
                      if (iframe && videoId) {
                          if (iframe.classList.contains('hidden')) {
-                             card.querySelector('.video-play-link').style.display = 'none';
+                            const playLink = card.querySelector('.video-play-link');
+                            if(playLink) playLink.style.display = 'none';
                              iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
                              iframe.classList.remove('hidden');
                          }
-                         setTimeout(() => iframe.requestFullscreen?.(), 150);
+                         setTimeout(() => {
+                            if (typeof iframe.requestFullscreen === 'function') {
+                                iframe.requestFullscreen();
+                            }
+                         }, 150);
                      }
                 }
             }
@@ -912,8 +934,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dom.currentYearFooter) dom.currentYearFooter.textContent = new Date().getFullYear();
         const isDark = document.documentElement.classList.contains('dark');
         dom.darkModeToggles.forEach(toggle => {
-            toggle.querySelector('.fa-moon')?.classList.toggle('hidden', isDark);
-            toggle.querySelector('.fa-sun')?.classList.toggle('hidden', !isDark);
+            const moonIcon = toggle.querySelector('.fa-moon');
+            const sunIcon = toggle.querySelector('.fa-sun');
+            if(moonIcon) moonIcon.classList.toggle('hidden', isDark);
+            if(sunIcon) sunIcon.classList.toggle('hidden', !isDark);
             toggle.setAttribute('aria-checked', String(isDark));
         });
 
