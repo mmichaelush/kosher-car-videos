@@ -130,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const isHomePage = () => {
         const path = window.location.pathname;
-        return path === '/' || path.endsWith('/index.html');
+        return path === '/' || path.endsWith('/index.html') || path.endsWith('kosher-car-videos.io/');
     };
 
     const getCategoryFromURL = () => new URLSearchParams(window.location.search).get('name');
@@ -299,8 +299,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        // ** THE FIX IS HERE **
-        card.channelLogo.src = video.channelImage || 'about:blankIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Valid 1x1 transparent GIF
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${escapeHTML(video.channel)}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
 
@@ -545,7 +544,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.backdrop?.classList.add('invisible', 'opacity-0');
         dom.body.classList.remove('overflow-hidden', 'md:overflow-auto');
         dom.openMenuBtn?.setAttribute('aria-expanded', 'false');
-        state.ui.lastFocusedElement?.focus();
+        if (state.ui.lastFocusedElement) state.ui.lastFocusedElement.focus();
     }
 
     function toggleTagSelection(tagName) {
@@ -780,7 +779,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const originalText = textSpan ? textSpan.textContent : '';
 
             if (icon) icon.className = 'fas fa-check text-green-500';
-            if (textSpan) textSpan.textContent = successMessage;
+            if (textSpan && successMessage) textSpan.textContent = successMessage;
             buttonElement.disabled = true;
 
             setTimeout(() => {
