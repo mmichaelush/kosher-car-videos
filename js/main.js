@@ -5,7 +5,7 @@
  * Refactored for clarity, maintainability, and performance.
  *
  * @author Michael Ush <michaelush613@gmail.com> (with AI assistance)
- * @version 2.0.2
+ * @version 2.0.3
  */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -13,7 +13,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // Application state
         state: {
             allVideos: [],
-            categories: {},
+            // FIX 3: Hardcode category data directly into the script to eliminate the failing network request.
+            // This makes the app more robust and aligns with the user's request for simplicity.
+            categories: {
+                "review": { "name": "סקירות רכב", "icon": "fa-car-on", "image": "data/assets/images/category-review.jpg" },
+                "maintenance": { "name": "טיפולים", "icon": "fa-oil-can", "image": "data/assets/images/category-maintenance.jpg" },
+                "diy": { "name": "עשה זאת בעצמך", "icon": "fa-tools", "image": "data/assets/images/category-diy.jpg" },
+                "upgrades": { "name": "שיפורים ושדרוגים", "icon": "fa-rocket", "image": "data/assets/images/category-upgrades.jpg" },
+                "troubleshooting": { "name": "איתור ותיקון תקלות", "icon": "fa-microscope", "image": "data/assets/images/category-troubleshooting.jpg" },
+                "systems": { "name": "מערכות הרכב", "icon": "fa-cogs", "image": "data/assets/images/category-systems.jpg" },
+                "collectors": { "name": "רכבי אספנות", "icon": "fa-car-side", "image": "data/assets/images/category-collectors.jpg" }
+            },
             tags: {},
             fuse: null,
             currentPage: 'home', // 'home', 'category', 'add-video', 'single-video'
@@ -32,9 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Configuration
         config: {
-            // FIX 2: Use jsDelivr CDN to fetch directly from GitHub repo, bypassing Netlify build issues.
             videosUrl: 'https://cdn.jsdelivr.net/gh/mmichaelush/kosher-car-videos.io@main/data/videos.json',
-            categoriesUrl: 'https://cdn.jsdelivr.net/gh/mmichaelush/kosher-car-videos.io@main/data/categories.json',
+            // categoriesUrl has been removed as it's now hardcoded.
             fuseOptions: {
                 keys: ['title', 'tags', 'channelName'],
                 includeScore: true,
@@ -217,20 +226,16 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         
         /**
-         * Fetches video and category data from JSON files.
+         * Fetches video data from the JSON file. Category data is now local.
          */
         async fetchData() {
-            const [videosResponse, categoriesResponse] = await Promise.all([
-                fetch(this.config.videosUrl),
-                fetch(this.config.categoriesUrl),
-            ]);
+            const videosResponse = await fetch(this.config.videosUrl);
 
-            if (!videosResponse.ok || !categoriesResponse.ok) {
-                throw new Error("Network response was not ok.");
+            if (!videosResponse.ok) {
+                throw new Error("Network response for videos.json was not ok.");
             }
 
             const videosData = await videosResponse.json();
-            this.state.categories = await categoriesResponse.json();
             
             // Pre-process videos: Add category details and parse date
             this.state.allVideos = videosData.map(video => ({
