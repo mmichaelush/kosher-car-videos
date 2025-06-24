@@ -5,7 +5,7 @@
  * Refactored for clarity, maintainability, and performance.
  *
  * @author Michael Ush <michaelush613@gmail.com> (with AI assistance)
- * @version 2.0.0
+ * @version 2.0.1
  */
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -32,8 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Configuration
         config: {
-            videosUrl: 'https://raw.githubusercontent.com/mmichaelush/kosher-car-videos.io/main/data/videos.json',
-            categoriesUrl: 'https://raw.githubusercontent.com/mmichaelush/kosher-car-videos.io/main/data/categories.json',
+            // FIX: Changed to relative paths for robustness on Netlify deployment.
+            videosUrl: 'data/videos.json',
+            categoriesUrl: 'data/categories.json',
             fuseOptions: {
                 keys: ['title', 'tags', 'channelName'],
                 includeScore: true,
@@ -561,7 +562,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.elements.selectedTagsContainer.innerHTML = [...this.state.currentFilters.tags].map(tag =>
                 `<span class="selected-tag capitalize inline-flex items-center gap-2 bg-purple-600 text-white text-sm font-medium px-3 py-1.5 rounded-lg">
                     ${tag}
-                    <button class="remove-tag-btn text-purple-200 hover:text-white" data-tag="${tag}">&times;</button>
+                    <button class="remove-tag-btn text-purple-200 hover:text-white" data-tag="${tag}">×</button>
                 </span>`
             ).join('');
 
