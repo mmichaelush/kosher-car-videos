@@ -887,7 +887,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = `./?tags=${encodeURIComponent(tagName)}#video-grid-section`;
                 }
             } else if (target.closest('.video-play-link') || target.closest('.video-link') || target.closest('.new-tab-btn')) {
-                // Let the default browser action (navigation) happen
             }
         });
 
@@ -1036,7 +1035,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFooterYear();
         
         await loadVideos();
-        // Initialize fuse with all videos for search suggestions on any page
         state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -1054,7 +1052,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPopularTags();
             applyFilters(false, false);
             handleScrollSpy();
-        } else { // Category page
+        } else { 
             dom.mainPageContent.style.display = 'block';
             if(dom.singleVideoView) dom.singleVideoView.classList.add('hidden');
             const categoryFromURL = getCategoryFromURL();
@@ -1063,7 +1061,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.currentFilters.category = currentCategory;
                 updateCategoryPageUI(state.currentFilters.category);
                 const videosForFuse = state.allVideos.filter(video => video.category === currentCategory);
-                // Update fuse instance for category-specific filtering logic (if needed elsewhere)
                 state.fuse = new Fuse(videosForFuse, CONSTANTS.FUSE_OPTIONS);
             }
             applyFiltersFromURL();
