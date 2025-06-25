@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'about:blank///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,data:image/gif;base64,R0lGODlhAQABAPcAAAAAAAAAMwAAZgAAmQAAzAAA/wArAAArMwArZgArmQArzAAr/wBVAABVMwBVZgBVmQBVzABV/wCAAACAMwCAZgCAmQCAzACA/wCqAACqMwCqZgCqmQCqzACq/wDVAADVMwDVZgDVmQDVzADV/wD/AAD/MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMrADMrMzMrZjMrmTMrzDMr/zNVADNVMzNVZjNVmTNVzDNV/zOAADOAMzOAZjOAmTOAzDOA/zOqADOqMzOqZjOqmTOqzDOq/zPVADPVMzPVZjPVmTPVzDPV/zP/ADP/MzP/ZjP/mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YrAGYrM2YrZmYrmWYrzGYr/2ZVAGZVM2ZVZmZVmWZVzGZV/2aAAGaAM2aAZmaAmWaAzGaA/2aqAGaqM2aqZmaqmWaqzGaq/2bVAGbVM2bVZmbVmWbVzGbV/2b/AGb/M2b/Zmb/mWb/zGb//5kAAJkAM5kAZpkAmZkAzJkA/5krAJkrM5krZpkrmZkrzJkr/5lVAJlVM5lVZplVmZlVzJlV/5mAAJmAM5mAZpmAmZmAzJmA/5mqAJmqM5mqZpmqmZmqzJmq/5nVAJnVM5nVZpnVmZnVzJnV/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwAM8wAZswAmcwAzMwA/8wrAMwrM8wrZswrmcwrzMwr/8xVAMxVM8xVZsxVmcxVzMxV/8yAAMyAM8yAZsyAmcyAzMyA/8yqAMyqM8yqZsyqmcyqzMyq/8zVAMzVM8zVZszVmczVzMzV/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8Amf8AzP8A//8rAP8rM/8rZv8rmf8rzP8r//9VAP9VM/9VZv9Vmf9VzP9V//+AAP+AM/+AZv+Amf+AzP+A//+qAP+qM/+qZv+qmf+qzP+q///VAP/VM//VZv/Vmf/VzP/V////AP//M///Zv//mf//zP///wAAAAAAAAAAAAAAACH5BAEAAPwALAAAAAABAAEAAAgEAAEEBAA7lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -553,12 +553,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         async function checkVideoId(videoIdToCheck) {
-            if (!videoIdToCheck) return { exists: false, message: "לא סופק ID לבדיקה." };
+            if (!videoIdToCheck) return { message: "לא סופק ID לבדיקה." };
             if(state.allVideos.length === 0) await loadVideos();
             const foundVideo = state.allVideos.find(video => video.id === videoIdToCheck);
             return foundVideo
-                ? { exists: true, message: `הסרטון "${foundVideo.title}" כבר קיים במאגר.` }
-                : { exists: false, message: `הסרטון עם ID: ${videoIdToCheck} עדיין לא קיים במאגר. אפשר להוסיף!` };
+                ? { message: `הסרטון "${foundVideo.title}" כבר קיים במאגר.` }
+                : { message: `הסרטון עם ID: ${videoIdToCheck} עדיין לא קיים במאגר. אפשר להוסיף!` };
         }
 
         const userInput = prompt("הכנס קישור לסרטון יוטיוב או מזהה (ID) לבדיקה:");
@@ -994,24 +994,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
 
-        const currentPagePath = window.location.pathname.split('/').pop();
-        const isAddVideoPage = currentPagePath.includes('add-video');
-        const isCategoryPage = currentPagePath.includes('category');
+        const currentPagePath = window.location.pathname.split('/').pop().replace('.html', '');
+        
+        await loadVideos();
+        if (state.allVideos.length > 0) {
+            state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
+        }
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const videoIdFromUrl = urlParams.get('v');
 
-        if(isAddVideoPage) {
-            await loadVideos();
-        } else if(isCategoryPage) {
-            await loadVideos();
+        if (currentPage.startsWith('add-video')) {
+            // Handled by generic listeners
+        } else if (currentPage.startsWith('category')) {
             setupCategoryPageView();
+        } else if (videoIdFromUrl) {
+            renderSingleVideoPage(videoIdFromUrl);
         } else {
-            await loadVideos();
-            const urlParams = new URLSearchParams(window.location.search);
-            const videoIdFromUrl = urlParams.get('v');
-            if (videoIdFromUrl) {
-                renderSingleVideoPage(videoIdFromUrl);
-            } else {
-                setupHomePageView();
-            }
+            setupHomePageView();
         }
         
         setupEventListeners();
