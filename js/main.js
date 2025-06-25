@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'about:blank0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -532,9 +532,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    async function handleCheckYtId(e) {
-        if (e) e.preventDefault();
-        
+    async function handleCheckYtId() {
         function extractYouTubeVideoId(url) {
             if (!url) return null;
             const patterns = [
@@ -899,21 +897,23 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             const { target } = e;
             const navLink = target.closest('.nav-link');
-
-            if (navLink && navLink.getAttribute('href').startsWith('#')) {
-                e.preventDefault();
-                if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
+            if (navLink) {
                 const href = navLink.getAttribute('href');
-                const targetId = href.substring(href.indexOf('#'));
-                const targetElement = document.querySelector(targetId);
-
-                if (targetElement) {
-                    const header = document.querySelector('header.sticky');
-                    const headerOffset = header ? header.offsetHeight + 20 : 80;
-                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                    window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                } else if (!isHomePage()) {
-                    window.location.href = `./${targetId}`;
+                if (href && href.startsWith('#')) {
+                    e.preventDefault();
+                    if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
+                    
+                    const targetId = href.substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        const header = document.querySelector('header.sticky');
+                        const headerOffset = header ? header.offsetHeight + 20 : 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                    }
+                } else if (navLink.getAttribute('href').startsWith('./#')) {
+                    e.preventDefault();
+                     window.location.href = navLink.getAttribute('href');
                 }
             }
             
@@ -989,26 +989,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
 
-        const currentPagePath = window.location.pathname.split('/').pop();
-        const isAddVideoPage = currentPagePath.includes('add-video');
-        const isCategoryPage = currentPagePath.includes('category');
+        const currentPage = window.location.pathname.split('/').pop();
         
         await loadVideos();
+
         if (state.allVideos.length > 0) {
             state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
         }
         
-        const urlParams = new URLSearchParams(window.location.search);
-        const videoIdFromUrl = urlParams.get('v');
-        
-        if (isAddVideoPage) {
-             // Handled by generic listeners, no specific page setup needed
-        } else if (isCategoryPage) {
+        if (currentPage.includes('add-video')) {
+            // Handled by generic listeners
+        } else if (currentPage.includes('category')) {
             setupCategoryPageView();
-        } else if (videoIdFromUrl) {
-            renderSingleVideoPage(videoIdFromUrl);
         } else {
-            setupHomePageView();
+            const urlParams = new URLSearchParams(window.location.search);
+            const videoIdFromUrl = urlParams.get('v');
+            if (videoIdFromUrl) {
+                renderSingleVideoPage(videoIdFromUrl);
+            } else {
+                setupHomePageView();
+            }
         }
         
         setupEventListeners();
