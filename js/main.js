@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,data:image/gif;base64,R0lGODlhAQABAPcAAAAAAAAAMwAAZgAAmQAAzAAA/wArAAArMwArZgArmQArzAAr/wBVAABVMwBVZgBVmQBVzABV/wCAAACAMwCAZgCAmQCAzACA/wCqAACqMwCqZgCqmQCqzACq/wDVAADVMwDVZgDVmQDVzADV/wD/AAD/MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMrADMrMzMrZjMrmTMrzDMr/zNVADNVMzNVZjNVmTNVzDNV/zOAADOAMzOAZjOAmTOAzDOA/zOqADOqMzOqZjOqmTOqzDOq/zPVADPVMzPVZjPVmTPVzDPV/zP/ADP/MzP/ZjP/mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YrAGYrM2YrZmYrmWYrzGYr/2ZVAGZVM2ZVZmZVmWZVzGZV/2aAAGaAM2aAZmaAmWaAzGaA/2aqAGaqM2aqZmaqmWaqzGaq/2bVAGbVM2bVZmbVmWbVzGbV/2b/AGb/M2b/Zmb/mWb/zGb//5kAAJkAM5kAZpkAmZkAzJkA/5krAJkrM5krZpkrmZkrzJkr/5lVAJlVM5lVZplVmZlVzJlV/5mAAJmAM5mAZpmAmZmAzJmA/5mqAJmqM5mqZpmqmZmqzJmq/5nVAJnVM5nVZpnVmZnVzJnV/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwAM8wAZswAmcwAzMwA/8wrAMwrM8wrZswrmcwrzMwr/8xVAMxVM8xVZsxVmcxVzMxV/8yAAMyAM8yAZsyAmcyAzMyA/8yqAMyqM8yqZsyqmcyqzMyq/8zVAMzVM8zVZszVmczVzMzV/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8Amf8AzP8A//8rAP8rM/8rZv8rmf8rzP8r//9VAP9VM/9VZv9Vmf9VzP9V//+AAP+AM/+AZv+Amf+AzP+A//+qAP+qM/+qZv+qmf+qzP+q///VAP/VM//VZv/Vmf/VzP/V////AP//M///Zv//mf//zP///wAAAAAAAAAAAAAAACH5BAEAAPwALAAAAAABAAEAAAgEAAEEBAA7lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -463,9 +463,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPopularTags();
         applyFilters(false, false);
         handleScrollSpy();
-        if (window.location.hash === '#check-yt-id') {
-            handleCheckYtId();
-        }
     }
     
     function setupCategoryPageView() {
@@ -903,21 +900,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const { target } = e;
             const navLink = target.closest('.nav-link');
 
-            if (navLink && navLink.getAttribute('href').includes('#')) {
+            if (navLink && navLink.getAttribute('href').startsWith('#')) {
                 e.preventDefault();
                 if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
                 const href = navLink.getAttribute('href');
                 const targetId = href.substring(href.indexOf('#'));
-                
-                if (isHomePage() && !new URLSearchParams(window.location.search).has('v')) {
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        const header = document.querySelector('header.sticky');
-                        const headerOffset = header ? header.offsetHeight + 20 : 80;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                    }
-                } else {
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    const header = document.querySelector('header.sticky');
+                    const headerOffset = header ? header.offsetHeight + 20 : 80;
+                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                    window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                } else if (!isHomePage()) {
                     window.location.href = `./${targetId}`;
                 }
             }
@@ -994,7 +989,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
 
-        const currentPagePath = window.location.pathname.split('/').pop().replace('.html', '');
+        const currentPagePath = window.location.pathname.split('/').pop();
+        const isAddVideoPage = currentPagePath.includes('add-video');
+        const isCategoryPage = currentPagePath.includes('category');
         
         await loadVideos();
         if (state.allVideos.length > 0) {
@@ -1003,10 +1000,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const urlParams = new URLSearchParams(window.location.search);
         const videoIdFromUrl = urlParams.get('v');
-
-        if (currentPage.startsWith('add-video')) {
-            // Handled by generic listeners
-        } else if (currentPage.startsWith('category')) {
+        
+        if (isAddVideoPage) {
+             // Handled by generic listeners, no specific page setup needed
+        } else if (isCategoryPage) {
             setupCategoryPageView();
         } else if (videoIdFromUrl) {
             renderSingleVideoPage(videoIdFromUrl);
