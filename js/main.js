@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'about:blank0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -463,6 +463,9 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPopularTags();
         applyFilters(false, false);
         handleScrollSpy();
+        if (window.location.hash === '#check-yt-id') {
+            handleCheckYtId();
+        }
     }
     
     function setupCategoryPageView() {
@@ -584,7 +587,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(dom.backdrop) dom.backdrop.classList.remove('invisible', 'opacity-0');
         dom.body.classList.add('overflow-hidden', 'md:overflow-auto');
         if(dom.openMenuBtn) dom.openMenuBtn.setAttribute('aria-expanded', 'true');
-        if(dom.closeMenuBtn) setTimeout(() => dom.closeMenuBtn.focus(), 100);
+        if(dom.closeMenuBtn) setTimeout(() => { if (dom.closeMenuBtn) dom.closeMenuBtn.focus(); }, 100);
     }
 
     function closeMobileMenu() {
@@ -647,7 +650,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ? state.allVideos.filter(v => v.category === state.currentFilters.category)
             : state.allVideos;
         
-        displaySearchSuggestions(searchTerm, new Fuse(fuseSource, CONSTANTS.FUSE_OPTIONS));
+        const localFuse = new Fuse(fuseSource, CONSTANTS.FUSE_OPTIONS);
+        displaySearchSuggestions(searchTerm, localFuse);
     }
     
     function displaySearchSuggestions(searchTerm, fuseInstance) {
@@ -900,32 +904,31 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             const { target } = e;
             const navLink = target.closest('.nav-link');
-            if (navLink) {
-                const href = navLink.getAttribute('href');
-                if (href && href.startsWith('#')) {
-                    e.preventDefault();
-                    const targetId = href.substring(1);
-                    const targetElement = document.getElementById(targetId);
-                    if (targetElement) {
-                        if (navLink.closest('#mobile-menu')) {
-                            closeMobileMenu();
-                            setTimeout(() => {
-                                const header = document.querySelector('header.sticky');
-                                const headerOffset = header ? header.offsetHeight + 20 : 80;
-                                const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                                window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                            }, 300);
-                        } else {
+
+            if (navLink && navLink.getAttribute('href').startsWith('#')) {
+                e.preventDefault();
+                const targetId = navLink.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+
+                if (navLink.closest('#mobile-menu')) {
+                    closeMobileMenu();
+                    // Wait for menu animation to finish before scrolling
+                    setTimeout(() => {
+                        if (targetElement) {
                             const header = document.querySelector('header.sticky');
                             const headerOffset = header ? header.offsetHeight + 20 : 80;
                             const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                             window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                         }
-                    }
-                } else if (href && href.includes('./#')) {
-                    e.preventDefault();
-                    window.location.href = href;
+                    }, 300);
+                } else if (targetElement) {
+                     const header = document.querySelector('header.sticky');
+                     const headerOffset = header ? header.offsetHeight + 20 : 80;
+                     const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                     window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                 }
+            } else if (navLink && navLink.getAttribute('href').includes('./#')) {
+                 window.location.href = navLink.getAttribute('href');
             }
             
             const checkIdLink = target.closest('#check-yt-id-link');
@@ -1001,14 +1004,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
 
         const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+        
+        await loadVideos();
+        if (state.allVideos.length > 0) {
+            state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
+        }
+        
+        if (window.location.hash === '#check-yt-id') {
+            handleCheckYtId();
+        }
 
         if(currentPage.includes('add-video')) {
-            await loadVideos();
+            // Handled by generic listeners
         } else if(currentPage.includes('category')) {
-            await loadVideos();
             setupCategoryPageView();
         } else {
-            await loadVideos();
             const urlParams = new URLSearchParams(window.location.search);
             const videoIdFromUrl = urlParams.get('v');
             if (videoIdFromUrl) {
