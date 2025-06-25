@@ -532,7 +532,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    async function handleCheckYtId() {
+    async function handleCheckYtId(e) {
+        if (e) e.preventDefault();
+        
         function extractYouTubeVideoId(url) {
             if (!url) return null;
             const patterns = [
@@ -594,6 +596,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function toggleTagSelection(tagName) {
+        if (!state.currentFilters.tags) return;
         const { tags } = state.currentFilters;
         const index = tags.indexOf(tagName);
         if (index > -1) tags.splice(index, 1);
@@ -901,19 +904,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 const href = navLink.getAttribute('href');
                 if (href && href.startsWith('#')) {
                     e.preventDefault();
-                    if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
-                    
                     const targetId = href.substring(1);
                     const targetElement = document.getElementById(targetId);
                     if (targetElement) {
-                        const header = document.querySelector('header.sticky');
-                        const headerOffset = header ? header.offsetHeight + 20 : 80;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                        if (navLink.closest('#mobile-menu')) {
+                            closeMobileMenu();
+                            setTimeout(() => {
+                                const header = document.querySelector('header.sticky');
+                                const headerOffset = header ? header.offsetHeight + 20 : 80;
+                                const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                                window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                            }, 300);
+                        } else {
+                            const header = document.querySelector('header.sticky');
+                            const headerOffset = header ? header.offsetHeight + 20 : 80;
+                            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                            window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                        }
                     }
-                } else if (navLink.getAttribute('href').startsWith('./#')) {
+                } else if (href && href.includes('./#')) {
                     e.preventDefault();
-                     window.location.href = navLink.getAttribute('href');
+                    window.location.href = href;
                 }
             }
             
@@ -989,19 +1000,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
 
-        const currentPage = window.location.pathname.split('/').pop();
-        
-        await loadVideos();
+        const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
 
-        if (state.allVideos.length > 0) {
-            state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
-        }
-        
-        if (currentPage.includes('add-video')) {
-            // Handled by generic listeners
-        } else if (currentPage.includes('category')) {
+        if(currentPage.includes('add-video')) {
+            await loadVideos();
+        } else if(currentPage.includes('category')) {
+            await loadVideos();
             setupCategoryPageView();
         } else {
+            await loadVideos();
             const urlParams = new URLSearchParams(window.location.search);
             const videoIdFromUrl = urlParams.get('v');
             if (videoIdFromUrl) {
