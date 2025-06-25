@@ -133,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- DATA FETCHING & PROCESSING ---
     async function loadVideos() {
+        if (state.allVideos.length > 0) return; // Don't load if already loaded
         if (dom.loadingPlaceholder) {
             dom.loadingPlaceholder.classList.remove('hidden');
             dom.loadingPlaceholder.innerHTML = `<div class="text-center py-10"><i class="fas fa-spinner fa-spin fa-3x mb-3 text-purple-600 dark:text-purple-400"></i><p class="text-lg text-slate-600 dark:text-slate-300">טוען סרטונים...</p></div>`;
@@ -287,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'about:blankIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -904,31 +905,31 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             const { target } = e;
             const navLink = target.closest('.nav-link');
+            if (navLink) {
+                const href = navLink.getAttribute('href');
+                if (href && href.startsWith('#')) {
+                    e.preventDefault();
+                    const targetId = href.substring(1);
+                    const targetElement = document.getElementById(targetId);
 
-            if (navLink && navLink.getAttribute('href').startsWith('#')) {
-                e.preventDefault();
-                const targetId = navLink.getAttribute('href').substring(1);
-                const targetElement = document.getElementById(targetId);
-
-                if (navLink.closest('#mobile-menu')) {
-                    closeMobileMenu();
-                    // Wait for menu animation to finish before scrolling
-                    setTimeout(() => {
-                        if (targetElement) {
-                            const header = document.querySelector('header.sticky');
-                            const headerOffset = header ? header.offsetHeight + 20 : 80;
-                            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                    if (targetElement) {
+                        const header = document.querySelector('header.sticky');
+                        const headerOffset = header ? header.offsetHeight + 20 : 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                        
+                        if (dom.mobileMenu && !dom.mobileMenu.classList.contains('translate-x-full')) {
+                            closeMobileMenu();
+                            setTimeout(() => {
+                                window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                            }, 300);
+                        } else {
                             window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                         }
-                    }, 300);
-                } else if (targetElement) {
-                     const header = document.querySelector('header.sticky');
-                     const headerOffset = header ? header.offsetHeight + 20 : 80;
-                     const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                     window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                    } else {
+                        // If element not found on current page, redirect to home.
+                        window.location.href = `./${href}`;
+                    }
                 }
-            } else if (navLink && navLink.getAttribute('href').includes('./#')) {
-                 window.location.href = navLink.getAttribute('href');
             }
             
             const checkIdLink = target.closest('#check-yt-id-link');
