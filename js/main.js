@@ -908,22 +908,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (navLink.closest('#mobile-menu')) setTimeout(closeMobileMenu, 150);
                 const href = navLink.getAttribute('href');
                 const targetId = href.substring(href.indexOf('#'));
-
-                if (isHomePage()) {
-                     const targetElement = document.querySelector(targetId);
-                     if (targetElement) {
-                         const header = document.querySelector('header.sticky');
-                         const headerOffset = header ? header.offsetHeight + 20 : 80;
-                         const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                         window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                     }
+                
+                if (isHomePage() && !new URLSearchParams(window.location.search).has('v')) {
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        const header = document.querySelector('header.sticky');
+                        const headerOffset = header ? header.offsetHeight + 20 : 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                    }
                 } else {
-                     window.location.href = `./${targetId}`;
+                    window.location.href = `./${targetId}`;
                 }
             }
             
             const checkIdLink = target.closest('#check-yt-id-link');
             if (checkIdLink) {
+                e.preventDefault();
+                handleCheckYtId();
+            }
+
+            const checkIdButton = target.closest('#check-yt-id-button');
+            if(checkIdButton) {
                 e.preventDefault();
                 handleCheckYtId();
             }
@@ -989,11 +995,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
 
         const currentPagePath = window.location.pathname.split('/').pop();
-        const currentPage = currentPagePath === '' ? 'index.html' : currentPagePath;
+        const isAddVideoPage = currentPagePath.includes('add-video');
+        const isCategoryPage = currentPagePath.includes('category');
 
-        if (currentPage.startsWith('add-video')) {
+        if(isAddVideoPage) {
             await loadVideos();
-        } else if (currentPage.startsWith('category')) {
+        } else if(isCategoryPage) {
             await loadVideos();
             setupCategoryPageView();
         } else {
