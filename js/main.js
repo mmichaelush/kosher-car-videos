@@ -141,11 +141,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('data/videos.json');
             if (!response.ok) throw new Error(`HTTP ${response.status} - failed to fetch videos.json`);
             
-            const rawVideos = await response.json();
+            const jsonData = await response.json();
             
-            if (!Array.isArray(rawVideos)) {
-                throw new Error("Video data is not a valid array. Please ensure videos.json is a simple list of video objects.");
+            // This now correctly expects the { "videos": [...] } structure
+            if (!jsonData || !Array.isArray(jsonData.videos)) {
+                throw new Error("Video data is not a valid object with a 'videos' array.");
             }
+            
+            const rawVideos = jsonData.videos;
             
             state.allVideos = rawVideos.map(video => ({
                 ...video,
@@ -290,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'about:blankGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
