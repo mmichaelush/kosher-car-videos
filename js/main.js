@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const isHomePage = () => {
         const path = window.location.pathname;
-        return path === '/' || path.endsWith('/index.html');
+        return path === '/' || path.endsWith('/index.html') || path.endsWith('/');
     };
 
     const getCategoryFromURL = () => new URLSearchParams(window.location.search).get('name');
@@ -141,8 +141,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('data/videos.json');
             if (!response.ok) throw new Error(`HTTP ${response.status} - failed to fetch videos.json`);
             
-            const rawVideos = await response.json();
-            if (!Array.isArray(rawVideos)) throw new Error("Video data is not a valid array.");
+            // **MODIFICATION**: Expecting JSON in the format {"videos": [...] } for Decap CMS compatibility
+            const jsonData = await response.json();
+            if (typeof jsonData !== 'object' || !Array.isArray(jsonData.videos)) {
+                 throw new Error("Video data is not a valid object with a 'videos' array.");
+            }
+            
+            const rawVideos = jsonData.videos;
             
             state.allVideos = rawVideos.map(video => ({
                 ...video,
@@ -151,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 durationInSeconds: parseDurationToSeconds(video.duration),
                 dateAdded: video.dateAdded ? new Date(video.dateAdded) : null
             }));
-
+            
             if (dom.videoCountHero) {
                 const countSpan = dom.videoCountHero.querySelector('span');
                 if (countSpan) countSpan.textContent = state.allVideos.length;
@@ -287,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'about:blank0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'about:blankIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -325,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .map(cat => {
                 const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`;
                 return `
-                    <a href="category?name=${cat.id}" class="category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
+                    <a href="category.html?name=${cat.id}" class="category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
                         <div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]">
                             <i class="fas fa-${cat.icon || 'folder'} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i>
                             <h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 dark:group-hover:text-yellow-200 transition-colors">${cat.name}</h3>
@@ -458,6 +463,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- PAGE VIEW MANAGEMENT ---
     function setupHomePageView() {
         if(dom.homepageCategoriesGrid) renderHomepageCategoryButtons();
+        state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
         applyFiltersFromURL();
         syncUIToState();
         renderPopularTags();
@@ -470,6 +476,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (categoryFromURL) {
             const currentCategory = categoryFromURL.toLowerCase();
             state.currentFilters.category = currentCategory;
+            const categoryVideos = state.allVideos.filter(v => v.category === currentCategory);
+            state.fuse = new Fuse(categoryVideos, CONSTANTS.FUSE_OPTIONS);
             updateCategoryPageUI(currentCategory);
         }
         applyFiltersFromURL();
@@ -480,6 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderSingleVideoPage(videoId) {
         if (dom.mainPageContent) dom.mainPageContent.style.display = 'none';
+        if (dom.siteFooter) dom.siteFooter.style.display = 'none';
         if (dom.singleVideoView.container) dom.singleVideoView.container.classList.remove('hidden');
         
         window.scrollTo(0, 0);
@@ -764,13 +773,17 @@ document.addEventListener('DOMContentLoaded', () => {
         
         url.searchParams.delete('v');
         
-        history.replaceState(state.currentFilters, '', url);
+        if(window.location.hash) {
+            url.hash = window.location.hash;
+        }
+
+        history.replaceState(state.currentFilters, '', url.toString());
     }
 
     function applyFiltersFromURL() {
         const params = new URLSearchParams(window.location.search);
         state.currentFilters.searchTerm = params.get('search') || '';
-        state.currentFilters.tags = params.get('tags') ? params.get('tags').split(',').filter(Boolean) : [];
+        state.currentFilters.tags = params.get('tags') ? params.get('tags').split(',').map(tag => tag.trim()).filter(Boolean) : [];
         state.currentFilters.sortBy = params.get('sort') || 'date-desc';
         
         if (params.has('hebrew')) {
@@ -806,7 +819,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
         document.querySelectorAll('header nav .nav-link[href*="#"]').forEach(link => {
-            const linkSectionId = link.getAttribute('href').substring(link.getAttribute('href').lastIndexOf('#') + 1);
+            const linkHref = link.getAttribute('href');
+            const linkSectionId = linkHref.substring(linkHref.lastIndexOf('#') + 1);
             link.classList.toggle('active-nav-link', linkSectionId === activeSectionId);
         });
     }
@@ -846,6 +860,38 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Failed to copy:', err);
             alert('לא ניתן היה להעתיק את הקישור.');
         }
+    }
+    
+    function handleNavLinkClick(e) {
+        const navLink = e.target.closest('.nav-link[href*="#"]');
+        if (!navLink) return;
+
+        const href = navLink.getAttribute('href');
+        const url = new URL(href, window.location.origin + window.location.pathname);
+        const targetId = url.hash.substring(1);
+        const isCurrentPageLink = url.pathname === window.location.pathname || (url.pathname.endsWith('/') && isHomePage());
+        
+        if (isCurrentPageLink) {
+            e.preventDefault();
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                const performScroll = () => {
+                    const header = document.querySelector('header.sticky');
+                    const headerOffset = header ? header.offsetHeight + 20 : 80;
+                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                    window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                };
+
+                if (navLink.closest('#mobile-menu')) {
+                    closeMobileMenu();
+                    setTimeout(performScroll, 300);
+                } else {
+                    performScroll();
+                }
+            }
+        }
+        // For cross-page links, we let the default behavior happen.
+        // The logic in `initializeApp` will handle the scroll and URL cleaning on the destination page.
     }
     
     // --- MAIN EVENT LISTENER SETUP ---
@@ -890,7 +936,7 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             if(dom.tagSearchInput) {
                 const newTagName = dom.tagSearchInput.value.trim().toLowerCase();
-                if (newTagName) {
+                if (newTagName && !state.currentFilters.tags.includes(newTagName)) {
                     toggleTagSelection(newTagName);
                     dom.tagSearchInput.value = '';
                 }
@@ -899,46 +945,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.addEventListener('click', (e) => {
             const { target } = e;
-            const navLink = target.closest('.nav-link');
-            if (navLink) {
-                const href = navLink.getAttribute('href');
-                if (href && href.startsWith('#')) {
-                    e.preventDefault();
-                    const targetId = href.substring(1);
-                    const targetElement = document.getElementById(targetId);
-                    if (targetElement) {
-                        if (navLink.closest('#mobile-menu')) {
-                            closeMobileMenu();
-                            setTimeout(() => {
-                                const header = document.querySelector('header.sticky');
-                                const headerOffset = header ? header.offsetHeight + 20 : 80;
-                                const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                                window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                            }, 300);
-                        } else {
-                            const header = document.querySelector('header.sticky');
-                            const headerOffset = header ? header.offsetHeight + 20 : 80;
-                            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                            window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                        }
-                    }
-                } else if (href && href.includes('./#')) {
-                    e.preventDefault();
-                    window.location.href = href;
-                }
-            }
-            
-            const checkIdLink = target.closest('#check-yt-id-link');
-            if (checkIdLink) {
-                e.preventDefault();
-                handleCheckYtId();
-            }
 
+            handleNavLinkClick(e);
+
+            const checkIdLink = target.closest('#check-yt-id-link');
+            if (checkIdLink) handleCheckYtId(e);
+            
             const checkIdButton = target.closest('#check-yt-id-button');
-            if(checkIdButton) {
-                e.preventDefault();
-                handleCheckYtId();
-            }
+            if(checkIdButton) handleCheckYtId(e);
 
             const tagButton = target.closest('button.tag[data-tag-value]');
             if (tagButton) toggleTagSelection(tagButton.dataset.tagValue);
@@ -960,7 +974,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const card = target.closest('article[data-video-id]');
             if(card) {
-                if (target.closest('.video-play-link')) {
+                if (target.closest('.video-play-link') && !target.closest('.video-link')) {
                     e.preventDefault();
                     playVideoInline(card);
                 } else if (target.closest('.fullscreen-btn')) {
@@ -974,6 +988,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     e.preventDefault();
                     const videoId = card.dataset.videoId;
                     shareContent(`${window.location.origin}/?v=${videoId}`, target.closest('.share-btn'), '');
+                } else if(target.closest('.video-link') || target.closest('.video-play-link')) {
+                    e.preventDefault();
+                    window.location.href = target.closest('a').href;
                 }
             }
             
@@ -986,6 +1003,28 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('popstate', () => { window.location.reload(); });
     }
     
+    function handleInitialHash() {
+        const hash = window.location.hash;
+        if (hash) {
+            const targetId = hash.substring(1);
+            const targetElement = document.getElementById(targetId);
+            if (targetElement) {
+                setTimeout(() => {
+                    const header = document.querySelector('header.sticky');
+                    const headerOffset = header ? header.offsetHeight + 20 : 80;
+                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                    window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                    
+                    if (history.replaceState) {
+                        const url = new URL(window.location);
+                        url.hash = '';
+                        history.replaceState(null, '', url.toString());
+                    }
+                }, 150);
+            }
+        }
+    }
+
     // --- INITIALIZATION ---
     async function initializeApp() {
         if (dom.currentYearFooter) dom.currentYearFooter.textContent = new Date().getFullYear();
@@ -1000,21 +1039,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
 
-        const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
+        const currentPagePath = window.location.pathname.split('/').pop();
+        
+        await loadVideos();
 
-        if(currentPage.includes('add-video')) {
-            await loadVideos();
-        } else if(currentPage.includes('category')) {
-            await loadVideos();
+        if (currentPagePath.includes('add-video')) {
+            // No specific logic needed other than loading videos for the checker
+        } else if (currentPagePath.includes('category')) {
             setupCategoryPageView();
-        } else {
-            await loadVideos();
+        } else { // Homepage
             const urlParams = new URLSearchParams(window.location.search);
             const videoIdFromUrl = urlParams.get('v');
             if (videoIdFromUrl) {
                 renderSingleVideoPage(videoIdFromUrl);
             } else {
                 setupHomePageView();
+                handleInitialHash(); // Handle hash scrolling on homepage
             }
         }
         
