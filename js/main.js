@@ -133,7 +133,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- DATA FETCHING & PROCESSING ---
     async function loadVideos() {
-        if (state.allVideos.length > 0) return; // Don't load if already loaded
         if (dom.loadingPlaceholder) {
             dom.loadingPlaceholder.classList.remove('hidden');
             dom.loadingPlaceholder.innerHTML = `<div class="text-center py-10"><i class="fas fa-spinner fa-spin fa-3x mb-3 text-purple-600 dark:text-purple-400"></i><p class="text-lg text-slate-600 dark:text-slate-300">טוען סרטונים...</p></div>`;
@@ -288,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'about:blankIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'about:blank0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -464,9 +463,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPopularTags();
         applyFilters(false, false);
         handleScrollSpy();
-        if (window.location.hash === '#check-yt-id') {
-            handleCheckYtId();
-        }
     }
     
     function setupCategoryPageView() {
@@ -588,7 +584,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if(dom.backdrop) dom.backdrop.classList.remove('invisible', 'opacity-0');
         dom.body.classList.add('overflow-hidden', 'md:overflow-auto');
         if(dom.openMenuBtn) dom.openMenuBtn.setAttribute('aria-expanded', 'true');
-        if(dom.closeMenuBtn) setTimeout(() => { if (dom.closeMenuBtn) dom.closeMenuBtn.focus(); }, 100);
+        if(dom.closeMenuBtn) setTimeout(() => dom.closeMenuBtn.focus(), 100);
     }
 
     function closeMobileMenu() {
@@ -651,8 +647,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ? state.allVideos.filter(v => v.category === state.currentFilters.category)
             : state.allVideos;
         
-        const localFuse = new Fuse(fuseSource, CONSTANTS.FUSE_OPTIONS);
-        displaySearchSuggestions(searchTerm, localFuse);
+        displaySearchSuggestions(searchTerm, new Fuse(fuseSource, CONSTANTS.FUSE_OPTIONS));
     }
     
     function displaySearchSuggestions(searchTerm, fuseInstance) {
@@ -911,24 +906,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     e.preventDefault();
                     const targetId = href.substring(1);
                     const targetElement = document.getElementById(targetId);
-
                     if (targetElement) {
-                        const header = document.querySelector('header.sticky');
-                        const headerOffset = header ? header.offsetHeight + 20 : 80;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                        
-                        if (dom.mobileMenu && !dom.mobileMenu.classList.contains('translate-x-full')) {
+                        if (navLink.closest('#mobile-menu')) {
                             closeMobileMenu();
                             setTimeout(() => {
+                                const header = document.querySelector('header.sticky');
+                                const headerOffset = header ? header.offsetHeight + 20 : 80;
+                                const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                                 window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                             }, 300);
                         } else {
+                            const header = document.querySelector('header.sticky');
+                            const headerOffset = header ? header.offsetHeight + 20 : 80;
+                            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                             window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                         }
-                    } else {
-                        // If element not found on current page, redirect to home.
-                        window.location.href = `./${href}`;
                     }
+                } else if (href && href.includes('./#')) {
+                    e.preventDefault();
+                    window.location.href = href;
                 }
             }
             
@@ -1005,21 +1001,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
 
         const currentPage = window.location.pathname.split('/').pop().replace('.html', '');
-        
-        await loadVideos();
-        if (state.allVideos.length > 0) {
-            state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
-        }
-        
-        if (window.location.hash === '#check-yt-id') {
-            handleCheckYtId();
-        }
 
         if(currentPage.includes('add-video')) {
-            // Handled by generic listeners
+            await loadVideos();
         } else if(currentPage.includes('category')) {
+            await loadVideos();
             setupCategoryPageView();
         } else {
+            await loadVideos();
             const urlParams = new URLSearchParams(window.location.search);
             const videoIdFromUrl = urlParams.get('v');
             if (videoIdFromUrl) {
