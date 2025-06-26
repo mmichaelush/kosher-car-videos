@@ -141,13 +141,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('data/videos.json');
             if (!response.ok) throw new Error(`HTTP ${response.status} - failed to fetch videos.json`);
             
-            // **MODIFICATION**: Expecting JSON in the format {"videos": [...] } for Decap CMS compatibility
             const jsonData = await response.json();
-            if (typeof jsonData !== 'object' || !Array.isArray(jsonData.videos)) {
-                 throw new Error("Video data is not a valid object with a 'videos' array.");
+            let rawVideos;
+
+            // **THE FIX IS HERE**: Handle both the old array format and the new object format from the CMS.
+            if (Array.isArray(jsonData)) {
+                // This handles the current format: [...]
+                rawVideos = jsonData;
+            } else if (jsonData && Array.isArray(jsonData.videos)) {
+                // This handles the new format from the CMS: { "videos": [...] }
+                rawVideos = jsonData.videos;
+            } else {
+                throw new Error("Video data is in an unrecognized format. Expected an array or an object with a 'videos' array.");
             }
-            
-            const rawVideos = jsonData.videos;
             
             state.allVideos = rawVideos.map(video => ({
                 ...video,
@@ -292,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'about:blankIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -341,7 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function getIconForTag(tag) {
-        const tagIcons = { "מנוע": "fa-cogs", "בלמים": "fa-hand-paper", "גיר": "fa-cog", "שמן מנוע": "fa-oil-can", "מצבר": "fa-car-battery", "תחזוקה": "fa-tools", "טיפול": "fa-wrench", "בדיקה לפני קנייה": "fa-search-dollar", "שיפורים": "fa-rocket", "רכב חשמלי": "fa-charging-station", "הכנופיה": "fa-users-cog", "ניקוי מצערת": "fa-spray-can-sparkles", "אספנות": "fa-gem", "נוזל בלמים": "fa-tint", "עשה זאת בעצמך": "fa-hand-sparkles" };
+        const tagIcons = { "מנוע": "fa-cogs", "בלמים": "fa-hand-paper", "גיר": "fa-cog", "שמן מנוע": "fa-oil-can", "מצבר": "fa-car-battery", "תחזוקה": "fa-tools", "טיפול": "fa-wrench", "בדיקה לפני קנייה": "fa-search-dollar", "שיפורים": "fa-rocket", "רכב חשמלי": "fa-charging-station", "הכנופיה": "fa-users-cog", "ניקוי מצערת": "fa-spray-can-sparkles", "אספנות": "fa-gem", "נוזל בלמים": "fa-tint", "עשה זאת בעצמ-ך": "fa-hand-sparkles" };
         return tagIcons[tag.toLowerCase()] || "fa-tag";
     }
 
@@ -880,6 +886,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     const headerOffset = header ? header.offsetHeight + 20 : 80;
                     const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                     window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                    // Clean the URL hash after scrolling
+                    if (history.pushState) {
+                        history.pushState(null, null, ' ');
+                    }
                 };
 
                 if (navLink.closest('#mobile-menu')) {
