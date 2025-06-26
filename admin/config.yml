@@ -23,12 +23,12 @@ collections:
             add_to_top: true
             summary: "{{fields.title}} (ID: {{fields.id}})"
             fields:
-              - { label: "YouTube Video ID", name: "id", widget: "string", hint: "ה-ID של הסרטון מתוך הקישור ביוטיוב (11 תווים). לדוגמה: -AtUg2GPXKs", pattern: ['^[\\w-]{11}$', "חייב להיות מזהה יוטיוב תקין בן 11 תווים"] }
+              - { label: "מזהה הסרטון ביוטיוב", name: "id", widget: "string", hint: "ה-ID של הסרטון מתוך הקישור ביוטיוב (11 תווים). לדוגמה: -AtUg2GPXKs", pattern: ['^[\\w-]{11}$', "חייב להיות מזהה יוטיוב תקין בן 11 תווים"] }
               - { label: "כותרת הסרטון", name: "title", widget: "string" }
               - { label: "אורך הסרטון", name: "duration", widget: "string", hint: "בפורמט HH:MM:SS או MM:SS" }
               - { label: "שם הערוץ", name: "channel", widget: "string" }
               - { label: "תמונת הערוץ", name: "channelImage", widget: "image", required: false }
-              - { label: "תמונה ממוזערת (Thumbnail)", name: "thumbnail", widget: "string", hint: "לדוגמה: https://i.ytimg.com/vi/VIDEO_ID/hqdefault.jpg. אם משאירים ריק, המערכת תנסה למלא אוטומטית." }
+              - { label: "תמונה ממוזערת (לא חובה)", name: "thumbnail", widget: "string", hint: "לדוגמה: https://i.ytimg.com/vi/VIDEO_ID/hqdefault.jpg. אם משאירים ריק, המערכת תנסה למלא אוטומטית." }
               - label: "קטגוריה"
                 name: "category"
                 widget: "select"
