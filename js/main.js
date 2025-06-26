@@ -67,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
             mobile: document.getElementById('mobile-search-suggestions'),
             main: document.getElementById('main-content-search-suggestions')
         },
+        contactForm: document.getElementById('contact-form'),
         mainPageContent: document.getElementById('main-page-content'),
         siteFooter: document.getElementById('site-footer'),
         singleVideoView: {
@@ -143,9 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const jsonData = await response.json();
             
-            // This now correctly expects the { "videos": [...] } structure
             if (!jsonData || !Array.isArray(jsonData.videos)) {
-                throw new Error("Video data is not a valid object with a 'videos' array.");
+                 throw new Error("Video data is not a valid object with a 'videos' array.");
             }
             
             const rawVideos = jsonData.videos;
@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'about:blankyH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -650,6 +650,49 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    function handleContactFormSubmit(event) {
+        event.preventDefault();
+        const form = event.target;
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalButtonHtml = submitButton.innerHTML;
+
+        submitButton.disabled = true;
+        submitButton.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> שולח...`;
+
+        const formData = new FormData(form);
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            mode: 'no-cors', // Important for Google Scripts to prevent CORS errors on the client side
+        })
+        .then(() => {
+            form.reset();
+            submitButton.innerHTML = `<i class="fas fa-check-circle mr-2"></i> נשלח בהצלחה!`;
+            submitButton.classList.replace('bg-purple-600', 'bg-green-500');
+            submitButton.classList.replace('dark:bg-purple-500', 'dark:bg-green-600');
+            
+            setTimeout(() => {
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalButtonHtml;
+                submitButton.classList.replace('bg-green-500', 'bg-purple-600');
+                submitButton.classList.replace('dark:bg-green-600', 'dark:bg-purple-500');
+            }, 4000);
+        })
+        .catch((error) => {
+            console.error('Error submitting form:', error);
+            submitButton.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i> אירעה שגיאה`;
+            submitButton.classList.replace('bg-purple-600', 'bg-red-500');
+            submitButton.classList.replace('dark:bg-purple-500', 'dark:bg-red-600');
+            setTimeout(() => {
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalButtonHtml;
+                submitButton.classList.replace('bg-red-500', 'bg-purple-600');
+                submitButton.classList.replace('dark:bg-red-600', 'dark:bg-purple-500');
+            }, 5000);
+        });
+    }
+
     function handleSearchInput(inputElement) {
         const suggestionsContainer = document.getElementById(`${inputElement.id.replace('-input', '')}-suggestions`);
         state.search.currentInput = inputElement;
@@ -934,6 +977,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.addEventListener('blur', () => setTimeout(() => { if (!state.search.isSuggestionClicked) clearSearchSuggestions(); }, 150));
             }
         });
+
+        if(dom.contactForm) dom.contactForm.addEventListener('submit', handleContactFormSubmit);
 
         if(dom.hebrewFilterToggle) dom.hebrewFilterToggle.addEventListener('change', (e) => {
             state.currentFilters.hebrewOnly = e.target.checked;
