@@ -144,15 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
             const jsonData = await response.json();
             let rawVideos;
 
-            // **THE FIX IS HERE**: Handle both the old array format and the new object format from the CMS.
             if (Array.isArray(jsonData)) {
-                // This handles the current format: [...]
                 rawVideos = jsonData;
             } else if (jsonData && Array.isArray(jsonData.videos)) {
-                // This handles the new format from the CMS: { "videos": [...] }
                 rawVideos = jsonData.videos;
             } else {
-                throw new Error("Video data is in an unrecognized format. Expected an array or an object with a 'videos' array.");
+                throw new Error("Video data is in an unrecognized format.");
             }
             
             state.allVideos = rawVideos.map(video => ({
@@ -298,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'about:blankIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -334,20 +331,22 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.homepageCategoriesGrid.innerHTML = CONSTANTS.PREDEFINED_CATEGORIES
             .filter(cat => cat.id !== 'all')
             .map(cat => {
+                const count = state.allVideos.filter(v => v.category === cat.id).length;
                 const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`;
                 return `
-                    <a href="category.html?name=${cat.id}" class="category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
+                    <a href="category.html?name=${cat.id}" class="relative category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
                         <div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]">
                             <i class="fas fa-${cat.icon || 'folder'} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i>
                             <h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 dark:group-hover:text-yellow-200 transition-colors">${cat.name}</h3>
                             <p class="text-sm opacity-80 mt-1 px-2">${cat.description}</p>
                         </div>
+                        <span class="absolute top-4 right-4 bg-black/30 text-white text-xs font-bold py-1 px-2.5 rounded-full">${count}</span>
                     </a>`;
             }).join('');
     }
     
     function getIconForTag(tag) {
-        const tagIcons = { "מנוע": "fa-cogs", "בלמים": "fa-hand-paper", "גיר": "fa-cog", "שמן מנוע": "fa-oil-can", "מצבר": "fa-car-battery", "תחזוקה": "fa-tools", "טיפול": "fa-wrench", "בדיקה לפני קנייה": "fa-search-dollar", "שיפורים": "fa-rocket", "רכב חשמלי": "fa-charging-station", "הכנופיה": "fa-users-cog", "ניקוי מצערת": "fa-spray-can-sparkles", "אספנות": "fa-gem", "נוזל בלמים": "fa-tint", "עשה זאת בעצמ-ך": "fa-hand-sparkles" };
+        const tagIcons = { "מנוע": "fa-cogs", "בלמים": "fa-hand-paper", "גיר": "fa-cog", "שמן מנוע": "fa-oil-can", "מצבר": "fa-car-battery", "תחזוקה": "fa-tools", "טיפול": "fa-wrench", "בדיקה לפני קנייה": "fa-search-dollar", "שיפורים": "fa-rocket", "רכב חשמלי": "fa-charging-station", "הכנופיה": "fa-users-cog", "ניקוי מצערת": "fa-spray-can-sparkles", "אספנות": "fa-gem", "נוזל בלמים": "fa-tint", "עשה זאת בעצמך": "fa-hand-sparkles" };
         return tagIcons[tag.toLowerCase()] || "fa-tag";
     }
 
@@ -441,6 +440,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if(videosHeading) {
             const span = videosHeading.querySelector('span');
             if(span) span.innerHTML = `סרטונים בקטגוריה: <span class="font-bold text-purple-600 dark:text-purple-400">${name}</span>`;
+        }
+
+        const countSummaryEl = document.getElementById('category-video-count-summary');
+        if(countSummaryEl) {
+            const categoryVideos = state.allVideos.filter(v => v.category === categoryId);
+            const count = categoryVideos.length;
+            if (count === 1) {
+                countSummaryEl.innerHTML = `נמצא <strong class="text-purple-600 dark:text-purple-400">סרטון אחד</strong> בקטגוריה זו.`
+            } else {
+                countSummaryEl.innerHTML = `בקטגוריה זו קיימים <strong class="text-purple-600 dark:text-purple-400">${count}</strong> סרטונים.`
+            }
         }
     }
     
@@ -633,10 +643,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const input = form.querySelector('input[type="search"]');
         if (!input) return;
         const searchTerm = input.value.trim();
-        const onSingleVideoPage = new URLSearchParams(window.location.search).has('v');
-
-        if (onSingleVideoPage || !isHomePage()) {
-            window.location.href = `./?search=${encodeURIComponent(searchTerm)}`;
+        
+        const currentPath = window.location.pathname.split('/').pop();
+        const isSearchFromOtherPage = currentPath === 'add-video.html' || currentPath === 'category.html';
+        
+        if (isSearchFromOtherPage) {
+            window.location.href = `./?search=${encodeURIComponent(searchTerm)}#video-grid-section`;
         } else {
             state.currentFilters.searchTerm = searchTerm;
             applyFilters(false);
@@ -764,13 +776,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function updateURLWithFilters() {
-        if (!history.replaceState) return;
+        if (!history.replaceState || new URLSearchParams(window.location.search).has('v')) return;
+
         const url = new URL(window.location);
         const { searchTerm, tags, hebrewOnly, sortBy } = state.currentFilters;
         
         const pageCategory = getCategoryFromURL();
-        if(pageCategory) url.searchParams.set('name', pageCategory);
-        else url.searchParams.delete('name');
+        if(pageCategory) {
+            url.searchParams.set('name', pageCategory);
+        } else {
+            url.searchParams.delete('name');
+        }
 
         if (searchTerm) url.searchParams.set('search', searchTerm); else url.searchParams.delete('search');
         if (tags.length > 0) url.searchParams.set('tags', tags.join(',')); else url.searchParams.delete('tags');
@@ -778,11 +794,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sortBy !== 'date-desc') url.searchParams.set('sort', sortBy); else url.searchParams.delete('sort');
         
         url.searchParams.delete('v');
+        url.hash = ''; // Always clear hash unless it's a direct navigation
         
-        if(window.location.hash) {
-            url.hash = window.location.hash;
-        }
-
         history.replaceState(state.currentFilters, '', url.toString());
     }
 
@@ -877,7 +890,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const targetId = url.hash.substring(1);
         const isCurrentPageLink = url.pathname === window.location.pathname || (url.pathname.endsWith('/') && isHomePage());
         
-        if (isCurrentPageLink) {
+        if (isCurrentPageLink && targetId) {
             e.preventDefault();
             const targetElement = document.getElementById(targetId);
             if (targetElement) {
@@ -887,8 +900,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                     window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                     // Clean the URL hash after scrolling
-                    if (history.pushState) {
-                        history.pushState(null, null, ' ');
+                    if (history.replaceState) {
+                       const cleanUrl = window.location.href.split('#')[0];
+                       history.replaceState(null, '', cleanUrl);
                     }
                 };
 
@@ -900,8 +914,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         }
-        // For cross-page links, we let the default behavior happen.
-        // The logic in `initializeApp` will handle the scroll and URL cleaning on the destination page.
     }
     
     // --- MAIN EVENT LISTENER SETUP ---
@@ -1052,9 +1064,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const currentPagePath = window.location.pathname.split('/').pop();
         
         await loadVideos();
+        state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
 
         if (currentPagePath.includes('add-video')) {
-            // No specific logic needed other than loading videos for the checker
+            // Logic for add-video page (Fuse is already initialized)
         } else if (currentPagePath.includes('category')) {
             setupCategoryPageView();
         } else { // Homepage
@@ -1064,7 +1077,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderSingleVideoPage(videoIdFromUrl);
             } else {
                 setupHomePageView();
-                handleInitialHash(); // Handle hash scrolling on homepage
+                handleInitialHash();
             }
         }
         
