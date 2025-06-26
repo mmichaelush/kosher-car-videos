@@ -141,15 +141,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('data/videos.json');
             if (!response.ok) throw new Error(`HTTP ${response.status} - failed to fetch videos.json`);
             
-            const jsonData = await response.json();
-            let rawVideos;
-
-            if (Array.isArray(jsonData)) {
-                rawVideos = jsonData;
-            } else if (jsonData && Array.isArray(jsonData.videos)) {
-                rawVideos = jsonData.videos;
-            } else {
-                throw new Error("Video data is in an unrecognized format.");
+            const rawVideos = await response.json();
+            
+            if (!Array.isArray(rawVideos)) {
+                throw new Error("Video data is not a valid array. Please ensure videos.json is a simple list of video objects.");
             }
             
             state.allVideos = rawVideos.map(video => ({
@@ -170,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (dom.videoCountHero && dom.videoCountHero.querySelector('span')) {
                 dom.videoCountHero.querySelector('span').textContent = "0";
             }
-            displayError('שגיאה בטעינת המידע. ייתכן והאתר בתחזוקה, נסה לרענן את הדף מאוחר יותר.');
+            displayError('שגיאה בטעינת המידע. ייתכן והקובץ videos.json אינו במבנה תקין.');
         } finally {
              if (dom.loadingPlaceholder) dom.loadingPlaceholder.classList.add('hidden');
         }
@@ -295,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'about:blankIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -1067,7 +1062,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
 
         if (currentPagePath.includes('add-video')) {
-            // Logic for add-video page (Fuse is already initialized)
+            // No specific logic needed other than initializing Fuse for search
         } else if (currentPagePath.includes('category')) {
             setupCategoryPageView();
         } else { // Homepage
