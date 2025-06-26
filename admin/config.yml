@@ -1,23 +1,12 @@
-# backend:
-#   name: github
-#   repo: mmichaelush/kosher-car-videos.io # הוחלף ב-git-gateway שהוא הדרך המומלצת
-#   branch: main
-#   auth_type: netlify-identity
-
-# הדרך המומלצת לעבודה עם Netlify Identity היא דרך Git Gateway.
-# זה מאפשר ל-Netlify לנהל את הגישה ל-GitHub במקומך בצורה בטוחה יותר.
-# יש לוודא שהפעלת את Git Gateway בהגדרות האתר שלך ב-Netlify.
 backend:
   name: git-gateway
-  repo: mmichaelush/kosher-car-videos # שם המאגר הנכון
+  repo: mmichaelush/kosher-car-videos
   branch: main
 
 publish_mode: editorial_workflow
 media_folder: "data/assets/images"
 public_folder: "/data/assets/images"
 
-# מבנה הקולקציה תוקן כדי לערוך קובץ JSON יחיד המכיל רשימה (array) של סרטונים.
-# קובץ ה-JSON יהיה במבנה: { "videos": [ {..video1..}, {..video2..} ] }
 collections:
   - name: "videos"
     label: "סרטונים"
@@ -27,12 +16,12 @@ collections:
         file: "data/videos.json"
         description: "ניהול כל הסרטונים באתר. כל פריט ברשימה הוא סרטון."
         fields:
-          - name: videos # זהו המפתח הראשי בקובץ ה-JSON שיחזיק את רשימת הסרטונים
+          - name: videos
             label: "רשימת סרטונים"
             label_singular: "סרטון"
             widget: list
-            add_to_top: true # סרטונים חדשים יופיעו בראש הרשימה, לנוחות עריכה
-            summary: "{{fields.title}} (ID: {{fields.id}})" # תצוגה מקדימה נוחה יותר ברשימה
+            add_to_top: true
+            summary: "{{fields.title}} (ID: {{fields.id}})"
             fields:
               - { label: "YouTube Video ID", name: "id", widget: "string", hint: "ה-ID של הסרטון מתוך הקישור ביוטיוב (11 תווים). לדוגמה: -AtUg2GPXKs", pattern: ['^[\\w-]{11}$', "חייב להיות מזהה יוטיוב תקין בן 11 תווים"] }
               - { label: "כותרת הסרטון", name: "title", widget: "string" }
