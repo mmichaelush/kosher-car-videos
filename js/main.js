@@ -649,47 +649,46 @@ document.addEventListener('DOMContentLoaded', () => {
             applyFilters(false);
         }
     }
-    
+
     function handleContactFormSubmit(event) {
         event.preventDefault();
         const form = event.target;
         const submitButton = form.querySelector('button[type="submit"]');
+        const formStatus = document.getElementById('form-status');
         const originalButtonHtml = submitButton.innerHTML;
-
+    
         submitButton.disabled = true;
         submitButton.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> שולח...`;
-
-        const formData = new FormData(form);
-        
+        if (formStatus) formStatus.innerHTML = '';
+    
         fetch(form.action, {
             method: 'POST',
-            body: formData,
-            mode: 'no-cors', // Important for Google Scripts to prevent CORS errors on the client side
+            body: new FormData(form),
         })
-        .then(() => {
-            form.reset();
-            submitButton.innerHTML = `<i class="fas fa-check-circle mr-2"></i> נשלח בהצלחה!`;
-            submitButton.classList.replace('bg-purple-600', 'bg-green-500');
-            submitButton.classList.replace('dark:bg-purple-500', 'dark:bg-green-600');
-            
-            setTimeout(() => {
-                submitButton.disabled = false;
-                submitButton.innerHTML = originalButtonHtml;
-                submitButton.classList.replace('bg-green-500', 'bg-purple-600');
-                submitButton.classList.replace('dark:bg-green-600', 'dark:bg-purple-500');
-            }, 4000);
+        .then(response => {
+            if (response.ok || (response.type === 'opaque' && response.status === 0)) {
+                // For "no-cors" submissions, we can't read the response, so we assume success.
+                // For Google Scripts, it often redirects, which can be caught here.
+                 if (formStatus) {
+                    formStatus.innerHTML = "<p class='text-green-600 dark:text-green-500'>תודה! ההודעה נשלחה בהצלחה.</p>";
+                }
+                form.reset();
+            } else {
+                // If we can read the response and it's not OK.
+                throw new Error(`שגיאת רשת: ${response.statusText}`);
+            }
         })
-        .catch((error) => {
-            console.error('Error submitting form:', error);
-            submitButton.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i> אירעה שגיאה`;
-            submitButton.classList.replace('bg-purple-600', 'bg-red-500');
-            submitButton.classList.replace('dark:bg-purple-500', 'dark:bg-red-600');
+        .catch(error => {
+            if (formStatus) {
+                formStatus.innerHTML = "<p class='text-red-600 dark:text-red-500'>אופס, משהו השתבש. אנא נסו שנית מאוחר יותר.</p>";
+            }
+            console.error('Error:', error);
+        })
+        .finally(() => {
             setTimeout(() => {
-                submitButton.disabled = false;
-                submitButton.innerHTML = originalButtonHtml;
-                submitButton.classList.replace('bg-red-500', 'bg-purple-600');
-                submitButton.classList.replace('dark:bg-red-600', 'dark:bg-purple-500');
-            }, 5000);
+                 submitButton.disabled = false;
+                 submitButton.innerHTML = originalButtonHtml;
+            }, 3000);
         });
     }
 
