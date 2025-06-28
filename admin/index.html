@@ -6,6 +6,7 @@
   <title>ניהול תוכן - CAR-טיב</title>
   <link rel="icon" href="../data/assets/images/favicon.ico" type="image/x-icon">
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- הוספת עיצוב מודרני לממשק הניהול -->
   <style>
     :root {
       --primary-color: #6D28D9; /* purple-600 */
@@ -19,20 +20,20 @@
       --border-radius: 8px;
       --font-family: 'Rubik', sans-serif;
     }
+    /* ניתן להוסיף כאן עוד כללי CSS גלובליים לממשק הניהול אם תרצה */
   </style>
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   
   <script>
+    // YouTube Preview Widget - **FIXED VERSION**
     var YouTubePreview = createClass({
-      shouldComponentUpdate: function (nextProps) {
-        return this.props.value !== nextProps.value || this.props.metadata.toJS().id !== nextProps.metadata.toJS().id;
-      },
-
       render: function() {
+        // גישה ישירה לערך של שדה ה-ID דרך this.props.entry
         var videoId = this.props.entry.getIn(['data', 'id']);
 
+        // אם אין ID, הצג הודעה למשתמש
         if (!videoId) {
           return h('div', {
             style: { 
@@ -46,6 +47,7 @@
           }, 'הזן מזהה סרטון (ID) בשדה המתאים כדי לראות תצוגה מקדימה.');
         }
 
+        // אם יש ID, הצג את נגן היוטיוב המוטמע
         var videoSrc = "https://www.youtube.com/embed/" + videoId;
         return h('div', { 
             style: { 
@@ -55,7 +57,7 @@
               overflow: 'hidden',
               maxWidth: '100%',
               background: '#000',
-              borderRadius: '8px' 
+              borderRadius: '8px' // פינות מעוגלות לנגן
             }
           }, 
           h('iframe', {
@@ -75,9 +77,11 @@
       }
     });
 
+    // רשום את הווידג'ט החדש במערכת הניהול
     CMS.registerWidget('youtube', YouTubePreview);
     
-    CMS.registerPreviewStyle("/admin-styles.css");
+    // הגדרת עיצוב מודרני
+    CMS.registerPreviewStyle("/admin/admin-styles.css");
 
 
     if (window.netlifyIdentity) {
