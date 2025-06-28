@@ -6,50 +6,54 @@
   <title>ניהול תוכן - CAR-טיב</title>
   <link rel="icon" href="../data/assets/images/favicon.ico" type="image/x-icon">
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <!-- הוספת עיצוב מודרני לממשק הניהול -->
+  <style>
+    :root {
+      --primary-color: #6D28D9; /* purple-600 */
+      --primary-color-light: #8B5CF6; /* purple-500 */
+      --primary-color-dark: #4C1D95; /* purple-800 */
+      --background-color: #f8fafc; /* slate-50 */
+      --foreground-color: #ffffff;
+      --text-color: #334155; /* slate-700 */
+      --text-color-light: #64748b; /* slate-500 */
+      --border-color: #e2e8f0; /* slate-200 */
+      --border-radius: 8px;
+      --font-family: 'Rubik', sans-serif;
+    }
+    /* ניתן להוסיף כאן עוד כללי CSS גלובליים לממשק הניהול אם תרצה */
+  </style>
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   
   <script>
-    // YouTube Preview Widget
+    // YouTube Preview Widget - **FIXED VERSION**
     var YouTubePreview = createClass({
-      getInitialState: function() {
-        return {};
-      },
-      
-      // הפונקציה הזו מופעלת בכל פעם ששדה אחר בעמוד משתנה
-      componentDidUpdate: function(prevProps) {
-        // אם השדה הוא לא השדה שאנחנו רוצים להשפיע עליו, צא
-        if (this.props.metadata === prevProps.metadata) {
-            return;
-        }
-        
-        // מצא את שדה ה-ID בעמוד העריכה
-        const idField = this.props.metadata.toJS().id;
-        if (!idField) return;
-
-        // עדכן את המצב הפנימי של הווידג'ט עם ה-ID החדש
-        this.setState({id: idField});
+      // מאזין לשינויים בערכים של כלל השדות בטופס
+      shouldComponentUpdate: function (nextProps) {
+        return this.props.value !== nextProps.value || this.props.metadata.toJS().id !== nextProps.metadata.toJS().id;
       },
 
       render: function() {
-        var id = this.state.id;
-        
+        // קבל את ה-ID מהשדה המקושר (id_field) שהוגדר ב-config.yml
+        var videoId = this.props.entry.getIn(['data', 'id']);
+
         // אם אין ID, הצג הודעה למשתמש
-        if (!id) {
+        if (!videoId) {
           return h('div', {
             style: { 
-              padding: '15px', 
-              backgroundColor: '#f5f5f5', 
-              borderRadius: '5px', 
+              padding: '20px', 
+              backgroundColor: '#f1f5f9', 
+              borderRadius: '8px', 
               textAlign: 'center',
-              color: '#888'
+              color: '#64748b',
+              border: '1px dashed #cbd5e1'
             }
-          }, 'הזן מזהה סרטון (ID) כדי לראות תצוגה מקדימה.');
+          }, 'הזן מזהה סרטון (ID) בשדה המתאים כדי לראות תצוגה מקדימה.');
         }
 
         // אם יש ID, הצג את נגן היוטיוב המוטמע
-        var videoSrc = "https://www.youtube.com/embed/" + id;
+        var videoSrc = "https://www.youtube.com/embed/" + videoId;
         return h('div', { 
             style: { 
               position: 'relative', 
@@ -57,7 +61,8 @@
               height: 0,
               overflow: 'hidden',
               maxWidth: '100%',
-              background: '#000'
+              background: '#000',
+              borderRadius: '8px' // פינות מעוגלות לנגן
             }
           }, 
           h('iframe', {
@@ -79,6 +84,10 @@
 
     // רשום את הווידג'ט החדש במערכת הניהול
     CMS.registerWidget('youtube', YouTubePreview);
+    
+    // הגדרת עיצוב מודרני
+    CMS.registerPreviewStyle("/admin-styles.css");
+
 
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
