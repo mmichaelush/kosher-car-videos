@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
+
+body, button, input, textarea, select {
+    font-family: 'Rubik', sans-serif !important;
+}
+
+[class*="ControlContainer-sc"], [class*="WidgetContainer-sc"] {
+    border-radius: 8px !important;
+    border: 1px solid #e2e8f0 !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+[class*="ControlContainer-sc"]:focus-within, [class*="WidgetContainer-sc"]:focus-within {
+    border-color: #8B5CF6 !important;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2) !important;
+}
+
+[class*="Button-sc-"] {
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+[class*="Button-sc-"][class*="Button-primary-"] {
+    background-color: #6D28D9 !important;
+}
+[class*="Button-sc-"][class*="Button-primary-"]:hover {
+    background-color: #5B21B6 !important;
+}
+
+[class*="CollectionTop-sc-"] {
+    border-bottom: 1px solid #e2e8f0 !important;
+    padding-bottom: 1rem !important;
+}
+
+[class*="StyledListItem-sc-"] {
+    border-radius: 8px !important;
+    margin-bottom: 0.5rem !important;
+}
+
+[class*="Card-sc-"] {
+     border-radius: 8px !important;
+     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+     border: none !important;
+}
