@@ -5,15 +5,81 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ניהול תוכן - CAR-טיב</title>
   <link rel="icon" href="../data/assets/images/favicon.ico" type="image/x-icon">
- 
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <!-- Scripts moved from head to the end of body for faster perceived page load -->
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   
-  <!-- "Glue" script to connect Netlify Identity to Decap CMS -->
   <script>
+    // YouTube Preview Widget
+    var YouTubePreview = createClass({
+      getInitialState: function() {
+        return {};
+      },
+      
+      // הפונקציה הזו מופעלת בכל פעם ששדה אחר בעמוד משתנה
+      componentDidUpdate: function(prevProps) {
+        // אם השדה הוא לא השדה שאנחנו רוצים להשפיע עליו, צא
+        if (this.props.metadata === prevProps.metadata) {
+            return;
+        }
+        
+        // מצא את שדה ה-ID בעמוד העריכה
+        const idField = this.props.metadata.toJS().id;
+        if (!idField) return;
+
+        // עדכן את המצב הפנימי של הווידג'ט עם ה-ID החדש
+        this.setState({id: idField});
+      },
+
+      render: function() {
+        var id = this.state.id;
+        
+        // אם אין ID, הצג הודעה למשתמש
+        if (!id) {
+          return h('div', {
+            style: { 
+              padding: '15px', 
+              backgroundColor: '#f5f5f5', 
+              borderRadius: '5px', 
+              textAlign: 'center',
+              color: '#888'
+            }
+          }, 'הזן מזהה סרטון (ID) כדי לראות תצוגה מקדימה.');
+        }
+
+        // אם יש ID, הצג את נגן היוטיוב המוטמע
+        var videoSrc = "https://www.youtube.com/embed/" + id;
+        return h('div', { 
+            style: { 
+              position: 'relative', 
+              paddingBottom: '56.25%', // 16:9 Aspect Ratio
+              height: 0,
+              overflow: 'hidden',
+              maxWidth: '100%',
+              background: '#000'
+            }
+          }, 
+          h('iframe', {
+            src: videoSrc,
+            frameBorder: '0',
+            allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+            allowFullScreen: true,
+            style: {
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%'
+            }
+          })
+        );
+      }
+    });
+
+    // רשום את הווידג'ט החדש במערכת הניהול
+    CMS.registerWidget('youtube', YouTubePreview);
+
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
         if (!user) {
