@@ -5,35 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ניהול תוכן - CAR-טיב</title>
   <link rel="icon" href="../data/assets/images/favicon.ico" type="image/x-icon">
+  
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  <!-- הוספת עיצוב מודרני לממשק הניהול -->
-  <style>
-    :root {
-      --primary-color: #6D28D9; /* purple-600 */
-      --primary-color-light: #8B5CF6; /* purple-500 */
-      --primary-color-dark: #4C1D95; /* purple-800 */
-      --background-color: #f8fafc; /* slate-50 */
-      --foreground-color: #ffffff;
-      --text-color: #334155; /* slate-700 */
-      --text-color-light: #64748b; /* slate-500 */
-      --border-color: #e2e8f0; /* slate-200 */
-      --border-radius: 8px;
-      --font-family: 'Rubik', sans-serif;
-    }
-    /* ניתן להוסיף כאן עוד כללי CSS גלובליים לממשק הניהול אם תרצה */
-  </style>
-</head>
-<body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   
+  <link rel="stylesheet" href="admin-styles.css">
+</head>
+<body>
+  
   <script>
-    // YouTube Preview Widget - **FIXED VERSION**
+    window.CMS_MANUAL_INIT = true;
+
+    // YouTube Preview Widget
     var YouTubePreview = createClass({
       render: function() {
-        // גישה ישירה לערך של שדה ה-ID דרך this.props.entry
         var videoId = this.props.entry.getIn(['data', 'id']);
 
-        // אם אין ID, הצג הודעה למשתמש
         if (!videoId) {
           return h('div', {
             style: { 
@@ -47,17 +34,16 @@
           }, 'הזן מזהה סרטון (ID) בשדה המתאים כדי לראות תצוגה מקדימה.');
         }
 
-        // אם יש ID, הצג את נגן היוטיוב המוטמע
         var videoSrc = "https://www.youtube.com/embed/" + videoId;
         return h('div', { 
             style: { 
               position: 'relative', 
-              paddingBottom: '56.25%', // 16:9 Aspect Ratio
+              paddingBottom: '56.25%',
               height: 0,
               overflow: 'hidden',
               maxWidth: '100%',
               background: '#000',
-              borderRadius: '8px' // פינות מעוגלות לנגן
+              borderRadius: '8px'
             }
           }, 
           h('iframe', {
@@ -77,12 +63,10 @@
       }
     });
 
-    // רשום את הווידג'ט החדש במערכת הניהול
-    CMS.registerWidget('youtube', YouTubePreview);
-    
-    // הגדרת עיצוב מודרני
-    CMS.registerPreviewStyle("/admin/admin-styles.css");
-
+    window.addEventListener('decap-cms-init', () => {
+        CMS.registerWidget('youtube', YouTubePreview);
+        CMS.init();
+    });
 
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
