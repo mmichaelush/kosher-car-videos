@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'about:blankyH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -512,7 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (video && dom.singleVideoView.container) {
             document.title = `${video.title} - CAR-טיב`;
             if (dom.singleVideoView.title) dom.singleVideoView.title.innerHTML = video.title;
-            if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"></iframe>`;
+            if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
             if (dom.singleVideoView.channel) dom.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
             if (dom.singleVideoView.duration) dom.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${video.duration}`;
             
@@ -666,29 +666,33 @@ document.addEventListener('DOMContentLoaded', () => {
             body: new FormData(form),
         })
         .then(response => {
-            if (response.ok || (response.type === 'opaque' && response.status === 0)) {
-                // For "no-cors" submissions, we can't read the response, so we assume success.
-                // For Google Scripts, it often redirects, which can be caught here.
+            // For cross-origin posts to Google Scripts, we can't read the response due to CORS.
+            // The browser will make the request, but block our script from seeing the result.
+            // A response.type of 'opaque' means the request was sent, but the response is inaccessible.
+            // Since you've confirmed the form works, we can treat this 'opaque' response as a success.
+            if (response.ok || response.type === 'opaque') {
                  if (formStatus) {
-                    formStatus.innerHTML = "<p class='text-green-600 dark:text-green-500'>תודה! ההודעה נשלחה בהצלחה.</p>";
+                    formStatus.innerHTML = "<p class='text-green-600 dark:text-green-500 font-semibold'>תודה! הודעתך נשלחה בהצלחה.</p>";
                 }
                 form.reset();
             } else {
-                // If we can read the response and it's not OK.
+                // This will catch genuine network errors if we CAN read the response and it's not OK.
                 throw new Error(`שגיאת רשת: ${response.statusText}`);
             }
         })
         .catch(error => {
+            // This catch block will now only fire for genuine errors, not the false CORS alarm.
             if (formStatus) {
-                formStatus.innerHTML = "<p class='text-red-600 dark:text-red-500'>אופס, משהו השתבש. אנא נסו שנית מאוחר יותר.</p>";
+                formStatus.innerHTML = "<p class='text-red-600 dark:text-red-500 font-semibold'>אופס, משהו השתבש. אנא נסה שנית מאוחר יותר או שלח אימייל ישירות.</p>";
             }
-            console.error('Error:', error);
+            console.error('Error submitting contact form:', error);
         })
         .finally(() => {
             setTimeout(() => {
                  submitButton.disabled = false;
                  submitButton.innerHTML = originalButtonHtml;
-            }, 3000);
+                 if (formStatus) formStatus.innerHTML = ''; // Clear status after a while
+            }, 5000);
         });
     }
 
