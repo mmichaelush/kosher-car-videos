@@ -6,18 +6,61 @@
   <title>ניהול תוכן - CAR-טיב</title>
   <link rel="icon" href="../data/assets/images/favicon.ico" type="image/x-icon">
   
-  <!-- This line is crucial for applying your custom styles -->
+  <!-- Custom styles for the admin interface -->
   <link rel="stylesheet" href="admin-styles.css">
   
   <!-- Netlify Identity Widget for authentication -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <!-- React scripts are required for custom previews -->
+  <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
 </head>
 <body>
-  <!-- Decap CMS will be mounted in the body -->
+  <!-- Decap CMS main script -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   
-  <!-- Identity login flow -->
   <script>
+    // This script runs after all libraries are loaded
+
+    // 1. YouTube Preview Widget Definition
+    var h = React.createElement;
+    var YouTubePreviewControl = createClass({
+      render: function() {
+        var videoId = this.props.entry.getIn(['data', 'id']);
+        var isValidId = typeof videoId === 'string' && videoId.match(/^[\\w-]{11}$/);
+
+        if (!isValidId) {
+          return h('div', {
+            style: { 
+              padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '5px', 
+              textAlign: 'center', color: '#6c757d', border: '1px dashed #dee2e6', marginTop: '10px'
+            }
+          }, 'הזן מזהה סרטון תקין כדי לראות תצוגה מקדימה.');
+        }
+
+        var videoSrc = "https://www.youtube.com/embed/" + videoId;
+        return h('div', { 
+            style: { 
+              position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden',
+              maxWidth: '100%', background: '#000', borderRadius: '8px', border: '1px solid #ccc', marginTop: '15px'
+            }
+          }, 
+          h('iframe', {
+            src: videoSrc,
+            frameBorder: '0',
+            allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+            allowFullScreen: true,
+            style: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }
+          })
+        );
+      }
+    });
+
+    // 2. Register the custom widget with Decap CMS
+    CMS.registerWidget('youtube', YouTubePreviewControl);
+
+    // 3. Initialize Netlify Identity
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
         if (!user) {
