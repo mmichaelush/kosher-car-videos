@@ -4,26 +4,18 @@ backend:
   repo: mmichaelush/kosher-car-videos
   branch: main
 
-# These settings are moved to the UI section for better control
-# They help in making the admin interface feel more integrated
-ui:
-  direction: rtl
+# Explicitly define the media library to prevent connection issues
+media_library:
+  name: git-gateway
+  branch: main
 
 # Media and public folder settings
 media_folder: "data/assets/images"
 public_folder: "/data/assets/images"
 
-# Register a custom preview for the YouTube video player
-custom_widgets:
-  - name: "youtube"
-    label: "נגן YouTube"
-    pattern: ".*" # A generic pattern, as it's a display-only widget
-    from_preview: "youtube" # Required for Decap CMS
-    to_preview: "youtube" # Required for Decap CMS
-
 # Collection definition
 collections:
-  - name: "videos_collection" # This MUST be a unique name
+  - name: "videos_collection"
     label: "מאגר סרטונים"
     files:
       - name: "videos"
@@ -39,7 +31,6 @@ collections:
             summary: "{{fields.title}} (ID: {{fields.id}})"
             fields:
               - { label: "מזהה הסרטון ביוטיוב", name: "id", widget: "string", hint: "ה-ID של הסרטון מתוך הקישור ביוטיוב (11 תווים). לדוגמה: -AtUg2GPXKs", pattern: ['^[\\w-]{11}$', "חייב להיות מזהה יוטיוב תקין בן 11 תווים"] }
-              - { label: "תצוגה מקדימה", name: "youtube_preview", widget: "youtube", required: false }
               - { label: "כותרת הסרטון", name: "title", widget: "string" }
               - { label: "אורך הסרטון", name: "duration", widget: "string", hint: "בפורמט HH:MM:SS או MM:SS" }
               - { label: "שם הערוץ", name: "channel", widget: "string" }
