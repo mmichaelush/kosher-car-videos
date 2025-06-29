@@ -6,6 +6,8 @@
   <title>ניהול תוכן - CAR-טיב</title>
   <link rel="icon" href="../data/assets/images/favicon.ico" type="image/x-icon">
   
+  <!-- We do not link the stylesheet here. JavaScript will inject it. -->
+  
   <!-- Netlify Identity Widget for authentication -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
@@ -13,8 +15,27 @@
   <!-- Decap CMS main script -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   
-  <!-- Identity login flow -->
   <script>
+    // --- The "Brute Force" Solution ---
+    // This script waits for 500 milliseconds to ensure the CMS has loaded,
+    // and then forcefully injects your stylesheet into the document's head.
+    // This guarantees it is loaded LAST and its styles (with !important) will win.
+    
+    setTimeout(function() {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      
+      // Add a unique timestamp to bypass any browser or server cache
+      link.href = '/admin/admin-styles.css?v=' + new Date().getTime();
+      
+      // Append the link to the head of the document
+      document.head.appendChild(link);
+      
+      console.log('Custom stylesheet forcefully injected: ' + link.href);
+    }, 500); // Wait 500ms before applying styles
+
+    // --- Netlify Identity Login Flow ---
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
         if (!user) {
