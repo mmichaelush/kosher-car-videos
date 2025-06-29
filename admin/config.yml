@@ -25,7 +25,11 @@ collections:
             add_to_top: true
             summary: "{{fields.title}} (ID: {{fields.id}})"
             fields:
-              - { label: "מזהה הסרטון ביוטיוב", name: "id", widget: "string", hint: "ה-ID של הסרטון מתוך הקישור ביוטיוב (11 תווים). לדוגמה: -AtUg2GPXKs", pattern: ['^[\\w-]{11}$', "חייב להיות מזהה יוטיוב תקין בן 11 תווים"] }
+              - label: "מזהה הסרטון ביוטיוב"
+                name: "id"
+                widget: "string"
+                hint: "ה-ID של הסרטון מתוך הקישור ביוטיוב (11 תווים). לדוגמה: -AtUg2GPXKs"
+                pattern: ['^[a-zA-Z0-9_-]{11}$', "חייב להיות מזהה יוטיוב תקין בן 11 תווים"]
               - { label: "כותרת הסרטון", name: "title", widget: "string" }
               - { label: "אורך הסרטון", name: "duration", widget: "string", hint: "בפורמט HH:MM:SS או MM:SS" }
               - { label: "שם הערוץ", name: "channel", widget: "string" }
