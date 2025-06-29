@@ -8,10 +8,6 @@ backend:
 media_folder: "data/assets/images"
 public_folder: "/data/assets/images"
 
-# THE OFFICIAL WAY TO REGISTER A STYLESHEET
-# This tells the CMS to load your custom styles after its own styles.
-register_stylesheet: /admin/admin-styles.css
-
 # Collection definition
 collections:
   - name: "videos_collection"
