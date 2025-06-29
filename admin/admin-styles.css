@@ -1,0 +1,76 @@
+/*
+  ====================================================================
+  CAR-טיב Admin CSS - The "Surgical Strike" Method
+  ====================================================================
+  קובץ זה משתמש בגישה אחרת. במקום לנחש שמות של קלאסים,
+  אנחנו נמצא את השמות *המדויקים* שמערכת ה-CMS מייצרת.
+
+  הוראות שימוש:
+  1. פתח את דף הניהול בדפדפן.
+  2. לחץ קליק ימני על רכיב שברצונך לעצב (למשל, כפתור ה-"Save" הסגול).
+  3. בחר "בדוק" או "Inspect".
+  4. כלי המפתחים ייפתחו ויציגו את קוד ה-HTML של אותו רכיב.
+  5. מצא את התכונה `class="..."`. היא תיראה בערך כך: class="sc-somerandomtext-0 gJkLMn"
+  6. העתק את החלק הראשון של שם הקלאס (לדוגמה: "sc-somerandomtext-0").
+  7. החלף את הטקסט הזמני בקובץ זה (למשל, `REPLACE_WITH_PRIMARY_BUTTON_CLASS`) בקלאס שהעתקת.
+  8. שמור, העלה את הקבצים, ובצע ריענון קשיח (Ctrl+Shift+R).
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
+
+/* כוח על הפונט בכל ממשק הניהול */
+html, body, button, input, textarea, select, div, span, p, h1, h2, h3, h4 {
+    font-family: 'Rubik', sans-serif !important;
+}
+
+/* 
+  עיצוב הרקע הראשי של האפליקציה.
+  הוראות: בצע "בדוק" על הרקע האפור הראשי של דף הניהול.
+*/
+.REPLACE_WITH_APP_BACKGROUND_CLASS {
+    background-color: #f8fafc !important;
+}
+
+/*
+  עיצוב כפתורי הפעולה הראשיים (למשל, "Save", "Publish").
+  הוראות: בצע "בדוק" על כפתור ה-"Save" הראשי.
+*/
+.REPLACE_WITH_PRIMARY_BUTTON_CLASS {
+    background-color: #6D28D9 !important;
+    color: white !important;
+    border-radius: 8px !important;
+    font-weight: 500 !important;
+    border: none !important;
+    text-transform: none !important;
+}
+.REPLACE_WITH_PRIMARY_BUTTON_CLASS:hover {
+    background-color: #5B21B6 !important;
+}
+
+
+/*
+  עיצוב שדות הקלט הכלליים.
+  הוראות: בצע "בדוק" על כל שדה טקסט (למשל, "כותרת הסרטון").
+*/
+.REPLACE_WITH_INPUT_FIELD_CONTAINER_CLASS {
+    border-radius: 8px !important;
+    border: 1px solid #e2e8f0 !important;
+    transition: all 0.2s ease-in-out !important;
+}
+.REPLACE_WITH_INPUT_FIELD_CONTAINER_CLASS:focus-within {
+    border-color: #8B5CF6 !important;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25) !important;
+}
+
+
+/*
+  עיצוב הכרטיס הלבן הראשי שמכיל את כל שדות העריכה.
+  הוראות: בצע "בדוק" על האזור הלבן הגדול שמכיל את כל השדות.
+*/
+.REPLACE_WITH_EDITOR_CARD_CLASS {
+     border-radius: 12px !important;
+     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1) !important;
+     border: none !important;
+     padding: 2rem !important;
+     background-color: #ffffff !important;
+}
