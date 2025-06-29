@@ -293,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+        card.channelLogo.src = video.channelImage || 'about:blanklhAQABAAD/ACwAAAAAAQABAAACADs=';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -664,26 +664,20 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch(form.action, {
             method: 'POST',
             body: new FormData(form),
+            mode: 'no-cors', // This prevents the browser from throwing a CORS error
         })
-        .then(response => {
-            // For cross-origin posts to Google Scripts, we can't read the response due to CORS.
-            // The browser will make the request, but block our script from seeing the result.
-            // A response.type of 'opaque' means the request was sent, but the response is inaccessible.
-            // Since you've confirmed the form works, we can treat this 'opaque' response as a success.
-            if (response.ok || response.type === 'opaque') {
-                 if (formStatus) {
-                    formStatus.innerHTML = "<p class='text-green-600 dark:text-green-500 font-semibold'>תודה! הודעתך נשלחה בהצלחה.</p>";
-                }
-                form.reset();
-            } else {
-                // This will catch genuine network errors if we CAN read the response and it's not OK.
-                throw new Error(`שגיאת רשת: ${response.statusText}`);
+        .then(() => {
+            // Because of 'no-cors', we can't read the response.
+            // We assume the submission was successful as the request was sent.
+            if (formStatus) {
+                formStatus.innerHTML = "<p class='text-green-600 dark:text-green-500 font-semibold'>תודה! הודעתך נשלחה בהצלחה.</p>";
             }
+            form.reset();
         })
         .catch(error => {
-            // This catch block will now only fire for genuine errors, not the false CORS alarm.
+            // This will now only catch actual network errors (e.g., no internet)
             if (formStatus) {
-                formStatus.innerHTML = "<p class='text-red-600 dark:text-red-500 font-semibold'>אופס, משהו השתבש. אנא נסה שנית מאוחר יותר או שלח אימייל ישירות.</p>";
+                formStatus.innerHTML = "<p class='text-red-600 dark:text-red-500 font-semibold'>אופס, אירעה שגיאת רשת. אנא נסה שנית מאוחר יותר.</p>";
             }
             console.error('Error submitting contact form:', error);
         })
