@@ -6,17 +6,17 @@
   <title>ניהול תוכן - CAR-טיב</title>
   <link rel="icon" href="../data/assets/images/favicon.ico" type="image/x-icon">
   
-  <!-- Styles for the admin interface -->
+  <!-- This line is crucial for applying your custom styles -->
   <link rel="stylesheet" href="admin-styles.css">
   
   <!-- Netlify Identity Widget for authentication -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-  
-  <!-- Decap CMS main script -->
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 </head>
 <body>
-  <!-- Netlify Identity login flow script -->
+  <!-- Decap CMS will be mounted in the body -->
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  
+  <!-- Identity login flow -->
   <script>
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
