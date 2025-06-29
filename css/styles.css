@@ -1,9 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap');
 
-/* --- General & Typography --- */
 html {
     scroll-behavior: smooth;
-    scroll-padding-top: 80px; /* Offset for sticky header */
+    scroll-padding-top: 100px;
 }
 
 body {
@@ -13,7 +12,6 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* --- Hero Section --- */
 .hero-gradient {
     background: linear-gradient(135deg, #6d28d9 0%, #4f46e5 100%);
 }
@@ -30,7 +28,6 @@ body {
     50% { transform: translateY(-15px); }
 }
 
-/* --- Video Card --- */
 .video-thumbnail-container {
   position: relative; 
   width: 100%;
@@ -40,7 +37,7 @@ body {
 
 .video-thumbnail-container > img,
 .video-thumbnail-container > iframe,
-.video-thumbnail-container > a { /* Ensure play link covers the area */
+.video-thumbnail-container > a {
   position: absolute;
   top: 0;
   left: 0;
@@ -59,7 +56,6 @@ body {
     -webkit-line-clamp: 2;
 }
 
-/* --- Footer --- */
 .footer-link {
     transition: color 0.2s ease-in-out;
 }
@@ -70,7 +66,6 @@ body {
     color: #c4b5fd; /* purple-300 */
 }
 
-/* --- Back to Top Button --- */
 #back-to-top-btn {
     transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-out;
 }
@@ -78,7 +73,6 @@ body {
     transform: scale(1.1);
 }
 
-/* --- Active Navigation Link --- */
 .nav-link.active-nav-link {
     background-color: #ede9fe; /* purple-100 */
     color: #7c3aed; /* purple-600 */
@@ -89,7 +83,6 @@ body {
     color: #c4b5fd; /* purple-300 */
 }
 
-/* --- Mobile Menu Dark Mode Toggle --- */
 html[dir="rtl"].dark #mobile-menu .dark-mode-toggle-button .dot {
     transform: translateX(-100%);
 }
@@ -97,7 +90,6 @@ html[dir="rtl"] #mobile-menu .dark-mode-toggle-button .dot {
     transform: translateX(0%);
 }
 
-/* --- Search Suggestions --- */
 .search-suggestions-container ul li.active-suggestion {
     background-color: #ede9fe; /* purple-100 */
 }
@@ -105,7 +97,6 @@ html[dir="rtl"] #mobile-menu .dark-mode-toggle-button .dot {
     background-color: #475569; /* slate-600 */
 }
 
-/* --- Active Filter Tags --- */
 .tag.active-search-tag {
     background-color: #7c3aed !important; /* purple-600 */
     color: #ffffff !important;
