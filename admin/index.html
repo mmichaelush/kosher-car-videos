@@ -6,31 +6,26 @@
   <title>ניהול תוכן - CAR-טיב</title>
   <link rel="icon" href="../data/assets/images/favicon.ico" type="image/x-icon">
   
-  <!-- We are removing the static link to the stylesheet from here -->
+  <!-- We DO NOT link the stylesheet here. We let the CMS script do it for us. -->
   
   <!-- Netlify Identity Widget for authentication -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <!-- This is where the CMS application will be rendered -->
-  <div id="nc-root"></div>
-
   <!-- Decap CMS main script -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   
   <script>
-    // --- DYNAMIC CACHE BUSTING FOR STYLESHEET ---
-    // This script creates the link to your stylesheet dynamically,
-    // adding a unique timestamp to the URL. This forces the browser
-    // to download a fresh copy every time, bypassing the cache.
-    (function() {
-      var link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.type = 'text/css';
-      // The key part: `new Date().getTime()` generates a unique number on every page load.
-      link.href = 'admin-styles.css?v=' + new Date().getTime();
-      document.head.appendChild(link);
-    })();
+    // --- The Official Decap CMS Method to Register a Custom Stylesheet ---
+    // This is the guaranteed way to apply custom styles correctly,
+    // as it ensures your stylesheet is loaded in the right order.
+    
+    // 1. Create the stylesheet URL with a dynamic cache-busting parameter.
+    //    This forces the browser to always download the latest version of your CSS.
+    var customStyleUrl = 'admin-styles.css?v=' + new Date().getTime();
+    
+    // 2. Register the stylesheet with the CMS using the official function.
+    CMS.registerCustomStyle(customStyleUrl);
     
     // --- Netlify Identity Login Flow ---
     if (window.netlifyIdentity) {
