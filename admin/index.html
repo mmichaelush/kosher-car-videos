@@ -5,82 +5,78 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ניהול תוכן - CAR-טיב</title>
   <link rel="icon" href="../data/assets/images/favicon.ico" type="image/x-icon">
-  <!-- הטמעת קובץ העיצוב הכללי לממשק הניהול -->
-  <link rel="stylesheet" href="admin-styles.css">
+  
+  <!-- Fonts and Styles -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin-styles.css">
+
+  <!-- Netlify Identity Widget -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+
+  <!-- Decap CMS and dependencies for custom previews -->
+  <script src="https://unpkg.com/decap-cms@^3.1.2/dist/decap-cms.js"></script>
+  <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
 </head>
 <body>
-  <!-- טעינת ה-CMS -->
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  <!-- טעינת React, נדרש עבור הווידג'ט המותאם אישית -->
-  <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
-  
   <script>
-    // הגדרת משתנים גלובליים עבור הווידג'ט
-    var h = React.createElement;
-    var CMS = window.CMS;
+    // Modern way to create and register a custom preview template for the collection
+    (function(CMS, React) {
+      const h = React.createElement;
 
-    // YouTube Preview Widget - **FIXED VERSION**
-    var YouTubePreview = CMS.createClass({
-      render: function() {
-        // קבלת מזהה הסרטון מהשדה 'id' בטופס
-        var videoId = this.props.entry.getIn(['data', 'id']);
-
-        // בדיקה אם קיים מזהה סרטון תקין
-        var isValidId = typeof videoId === 'string' && videoId.match(/^[\w-]{11}$/);
-
-        if (!isValidId) {
-          return h('div', {
-            style: { 
-              padding: '20px', 
-              backgroundColor: '#f1f5f9', 
-              borderRadius: '8px', 
-              textAlign: 'center',
-              color: '#64748b',
-              border: '1px dashed #cbd5e1'
-            }
-          }, 'הזן מזהה סרטון (ID) תקין בן 11 תווים בשדה "מזהה הסרטון ביוטיוב" כדי לראות תצוגה מקדימה.');
+      // This is the custom preview component for the entire file being edited
+      const VideosCollectionPreview = function(props) {
+        const entry = props.entry;
+        const videos = entry.getIn(['data', 'videos']); // Get the list of videos
+        
+        if (!videos || videos.size === 0) {
+            return h('div', {style: {padding: '20px'}}, 'אין סרטונים להצגה.');
         }
 
-        var videoSrc = "https://www.youtube.com/embed/" + videoId;
-        
-        // יצירת הנגן בתוך עטיפה רספונסיבית
-        return h('div', { 
-            style: { 
-              position: 'relative', 
-              paddingBottom: '56.25%', /* 16:9 Aspect Ratio */
-              height: 0,
-              overflow: 'hidden',
-              maxWidth: '100%',
-              background: '#000',
-              borderRadius: '8px',
-              border: '1px solid #ccc'
-            }
-          }, 
-          h('iframe', {
-            src: videoSrc,
-            frameBorder: '0',
-            allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
-            allowFullScreen: true,
-            style: {
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%'
-            }
-          })
-        );
-      }
-    });
+        // Create a preview for each video in the list
+        const videoPreviews = videos.map(function(video, index) {
+            const videoId = video.get('id');
+            const title = video.get('title') || 'סרטון ללא כותרת';
+            const isValidId = typeof videoId === 'string' && videoId.match(/^[\\w-]{11}$/);
 
-    // רישום הווידג'ט במערכת ה-CMS
-    CMS.registerWidget('youtube', YouTubePreview);
+            const videoPlayer = isValidId
+                ? h('div', {
+                    style: {
+                        position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden',
+                        maxWidth: '100%', background: '#000', borderRadius: '8px', border: '1px solid #ddd'
+                    }},
+                    h('iframe', {
+                        src: 'https://www.youtube.com/embed/' + videoId,
+                        frameBorder: '0',
+                        allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+                        allowFullScreen: true,
+                        style: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }
+                    })
+                )
+                : h('div', {
+                    style: { padding: '20px', backgroundColor: '#f1f5f9', borderRadius: '8px', textAlign: 'center',
+                             color: '#64748b', border: '1px dashed #cbd5e1'}},
+                    'ID לא תקין. לא ניתן להציג תצוגה מקדימה.'
+                );
 
-    // טיפול בהתחברות משתמש
+            return h('div', { key: index, style: { marginBottom: '30px', paddingBottom: '20px', borderBottom: '1px solid #eee'}},
+                h('h2', { style: { fontSize: '20px', fontWeight: '500', marginBottom: '12px' }}, title),
+                videoPlayer
+            );
+        }).toJS(); // Convert Immutable.js List to plain JS array
+
+        return h('div', { style: { padding: '20px', fontFamily: 'Rubik, sans-serif' }}, videoPreviews);
+      };
+      
+      // Register the preview template for the 'videos_collection'
+      // This name MUST match the collection name in config.yml
+      CMS.registerPreviewTemplate('videos_collection', VideosCollectionPreview);
+
+    })(window.CMS, window.React);
+
+    // Identity widget login flow
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
         if (!user) {
