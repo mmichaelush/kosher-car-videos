@@ -16,23 +16,21 @@
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   
   <script>
-    // --- The "Brute Force" Solution ---
-    // This script waits for 500 milliseconds to ensure the CMS has loaded,
-    // and then forcefully injects your stylesheet into the document's head.
-    // This guarantees it is loaded LAST and its styles (with !important) will win.
+    // --- The "Brute Force" Solution with the CORRECT PATH ---
     
     setTimeout(function() {
       var link = document.createElement('link');
       link.rel = 'stylesheet';
       link.type = 'text/css';
       
-      // Add a unique timestamp to bypass any browser or server cache
-      link.href = '/admin/admin-styles.css?v=' + new Date().getTime();
+      // THE FIX: Use a relative path. No leading slash.
+      // This tells the browser to look for the file in the SAME directory.
+      link.href = 'admin-styles.css?v=' + new Date().getTime();
       
       // Append the link to the head of the document
       document.head.appendChild(link);
       
-      console.log('Custom stylesheet forcefully injected: ' + link.href);
+      console.log('Custom stylesheet forcefully injected from relative path: ' + link.href);
     }, 500); // Wait 500ms before applying styles
 
     // --- Netlify Identity Login Flow ---
