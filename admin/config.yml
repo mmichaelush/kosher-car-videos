@@ -4,11 +4,6 @@ backend:
   repo: mmichaelush/kosher-car-videos
   branch: main
 
-# Explicitly define the media library to prevent connection issues
-media_library:
-  name: git-gateway
-  branch: main
-
 # Media and public folder settings
 media_folder: "data/assets/images"
 public_folder: "/data/assets/images"
