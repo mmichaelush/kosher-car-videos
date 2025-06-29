@@ -6,29 +6,21 @@
   <title>ניהול תוכן - CAR-טיב</title>
   <link rel="icon" href="../data/assets/images/favicon.ico" type="image/x-icon">
   
-  <!-- Fonts and Global Styles for the Admin Interface -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="admin-styles.css">
 
-  <!-- Netlify Identity Widget for authentication -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <!-- This is where the CMS will be mounted. Leave the body empty. -->
 
-  <!-- Scripts are placed at the end of the body to ensure the DOM is ready -->
-  <!-- Decap CMS main script -->
   <script src="https://unpkg.com/decap-cms@^3.1.2/dist/decap-cms.js"></script>
-  <!-- React scripts, required for custom previews -->
   <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
   
   <script>
-    // This custom script now runs after all other scripts have loaded.
     (function(CMS, React) {
-      // Ensure CMS and React objects are available before using them
       if (!CMS || !React) {
         console.error("Decap CMS or React not loaded, cannot register custom preview.");
         return;
@@ -36,7 +28,6 @@
 
       const h = React.createElement;
 
-      // Custom preview component for the 'videos' list inside the main file
       const VideoItemPreview = function(props) {
         const { item } = props; // 'item' is an Immutable.js Map
         const videoId = item.get('id');
@@ -69,8 +60,6 @@
         );
       };
 
-      // This is the preview for the entire JSON file.
-      // It iterates over the "videos" array and renders a preview for each item.
       const VideosCollectionPreview = function(props) {
         const entry = props.entry;
         const videos = entry.getIn(['data', 'videos']); // Get the list of videos
@@ -86,12 +75,10 @@
         );
       };
       
-      // Register the master preview template for the collection defined in config.yml
       CMS.registerPreviewTemplate('videos_collection', VideosCollectionPreview);
 
     })(window.CMS, window.React);
 
-    // Initialize Netlify Identity login flow
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
         if (!user) {
