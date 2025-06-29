@@ -272,23 +272,23 @@ document.addEventListener('DOMContentLoaded', () => {
             fullscreenBtn: cardClone.querySelector('.fullscreen-btn'),
         };
         
-        const videoPageUrl = `?v=${video.id}`;
+        const videoPageUrl = `./?v=${video.id}`;
         
         card.article.dataset.videoId = video.id;
         card.thumbnailImg.src = video.thumbnail;
         card.thumbnailImg.alt = video.title;
         card.duration.textContent = video.duration || '';
-        card.playLink.href = videoPageUrl;
+        card.playLink.href = "#";
         card.iframe.title = `נגן וידאו: ${video.title}`;
         card.titleLink.href = videoPageUrl;
         card.titleLink.innerHTML = video.title;
         card.channelName.textContent = video.channel || '';
     
         if (card.shareBtn) card.shareBtn.dataset.videoId = video.id;
-        if (card.newTabBtn) card.newTabBtn.href = `https://www.youtube.com/watch?v=${video.id}`;
+        if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'about:blanklhAQABAAD/ACwAAAAAAQABAAACADs=';
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -338,11 +338,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }).join('');
     }
     
-    function getIconForTag(tag) {
-        const tagIcons = { "מנוע": "fa-cogs", "בלמים": "fa-hand-paper", "גיר": "fa-cog", "שמן מנוע": "fa-oil-can", "מצבר": "fa-car-battery", "תחזוקה": "fa-tools", "טיפול": "fa-wrench", "בדיקה לפני קנייה": "fa-search-dollar", "שיפורים": "fa-rocket", "רכב חשמלי": "fa-charging-station", "הכנופיה": "fa-users-cog", "ניקוי מצערת": "fa-spray-can-sparkles", "אספנות": "fa-gem", "נוזל בלמים": "fa-tint", "עשה זאת בעצמך": "fa-hand-sparkles" };
-        return tagIcons[tag.toLowerCase()] || "fa-tag";
-    }
-
     function renderPopularTags() {
         if (!dom.popularTagsContainer) return;
         const { category } = state.currentFilters;
@@ -357,8 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sortedTags = Object.entries(tagCounts).sort(([, a], [, b]) => b - a).slice(0, CONSTANTS.MAX_POPULAR_TAGS).map(([tag]) => tag);
 
         dom.popularTagsContainer.innerHTML = sortedTags.map(tag => {
-            const iconClass = getIconForTag(tag);
-            return `<button class="tag bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-800 dark:text-purple-200 dark:hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-1 dark:focus:ring-offset-slate-800 transition-colors text-sm font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5" data-tag-value="${tag}"><i class="fas ${iconClass} opacity-80 text-xs"></i> ${tag.charAt(0).toUpperCase() + tag.slice(1)}</button>`;
+            return `<button class="tag bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-800 dark:text-purple-200 dark:hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-1 dark:focus:ring-offset-slate-800 transition-colors text-sm font-medium px-3 py-1.5 rounded-full flex items-center gap-1.5" data-tag-value="${tag}">${tag.charAt(0).toUpperCase() + tag.slice(1)}</button>`;
         }).join('');
         updateActiveTagVisuals();
     }
@@ -376,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!dom.selectedTagsContainer) return;
         dom.selectedTagsContainer.innerHTML = state.currentFilters.tags.map(tagName => `
             <span class="flex items-center gap-1.5 bg-purple-600 text-white dark:bg-purple-500 text-sm font-medium ps-3 pe-2 py-1.5 rounded-full">
-                ${tagName.charAt(0).toUpperCase() + tag.slice(1)}
+                ${tagName.charAt(0).toUpperCase() + tagName.slice(1)}
                 <button type="button" class="remove-tag-btn text-xs opacity-75 hover:opacity-100 focus:opacity-100 focus:outline-none" data-tag-to-remove="${tagName}" aria-label="הסר תגית ${tagName}">
                     <i class="fas fa-times"></i>
                 </button>
@@ -405,7 +399,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadMoreBtn.id = 'load-more-videos-btn';
                 loadMoreBtn.className = 'mt-8 mb-4 mx-auto block px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 dark:focus:ring-offset-slate-900 transition-transform hover:scale-105';
                 loadMoreBtn.addEventListener('click', () => applyFilters(true));
-                if (dom.videoCardsContainer && dom.videoCardsContainer.parentNode) {
+                if (dom.videoCardsContainer && dom.noVideosFoundMessage) {
                     dom.videoCardsContainer.parentNode.insertBefore(loadMoreBtn, dom.noVideosFoundMessage.nextSibling);
                 }
             }
@@ -773,28 +767,29 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateURLWithFilters(videoId = null) {
         if (!history.pushState) return;
         const url = new URL(window.location);
+        const currentParams = url.search;
         
-        url.search = '';
-        url.hash = '';
+        const newParams = new URLSearchParams();
 
         if (videoId) {
-            url.searchParams.set('v', videoId);
-            history.pushState({ videoId }, '', url.toString());
-            return;
+            newParams.set('v', videoId);
+        } else {
+            const { searchTerm, tags, hebrewOnly, sortBy } = state.currentFilters;
+            const pageCategory = getCategoryFromURL();
+            if (pageCategory) {
+                newParams.set('name', pageCategory);
+            }
+            if (searchTerm) newParams.set('search', searchTerm);
+            if (tags.length > 0) newParams.set('tags', tags.join(','));
+            if (hebrewOnly) newParams.set('hebrew', 'true');
+            if (sortBy !== 'date-desc') newParams.set('sort', sortBy);
         }
 
-        const { searchTerm, tags, hebrewOnly, sortBy } = state.currentFilters;
-        const pageCategory = getCategoryFromURL();
-        if(pageCategory) {
-            url.searchParams.set('name', pageCategory);
+        const newSearchString = newParams.toString();
+        if (url.search.substring(1) !== newSearchString) {
+            url.search = newSearchString;
+            history.pushState({ videoId, filters: state.currentFilters }, '', url.toString());
         }
-
-        if (searchTerm) url.searchParams.set('search', searchTerm);
-        if (tags.length > 0) url.searchParams.set('tags', tags.join(','));
-        if (hebrewOnly) url.searchParams.set('hebrew', 'true');
-        if (sortBy !== 'date-desc') url.searchParams.set('sort', sortBy);
-        
-        history.pushState(state.currentFilters, '', url.toString());
     }
 
     function applyFiltersFromURL() {
@@ -979,6 +974,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.addEventListener('click', (e) => {
             const { target } = e;
+            const card = target.closest('article[data-video-id]');
 
             handleNavLinkClick(e);
 
@@ -998,26 +994,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
             
-            const card = target.closest('article[data-video-id]');
             if(card) {
                 const videoId = card.dataset.videoId;
                 const video = state.allVideos.find(v => v.id === videoId);
 
-                if (target.closest('.video-play-link') && !target.closest('a.video-link, a.new-tab-btn')) {
+                if (target.closest('.video-play-link')) {
                     e.preventDefault();
-                    if(isHomePage()) {
-                        updateURLWithFilters(videoId);
-                        showSingleVideoView(videoId);
-                    } else {
-                        playVideoInline(card);
-                    }
+                    playVideoInline(card);
                 } else if (target.closest('a.video-link')) {
                     e.preventDefault();
                     if(isHomePage()) {
                         updateURLWithFilters(videoId);
                         showSingleVideoView(videoId);
                     } else {
-                        window.location.href = `./?v=${videoId}`;
+                         window.location.href = `./?v=${videoId}`;
                     }
                 } else if (target.closest('.fullscreen-btn')) {
                     e.preventDefault();
@@ -1046,13 +1036,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const videoId = params.get('v');
 
-            if (isHomePage() && videoId) {
-                showSingleVideoView(videoId);
+            if (isHomePage()) {
+                if (videoId) {
+                    showSingleVideoView(videoId);
+                } else {
+                    hideSingleVideoView();
+                    applyFiltersFromURL();
+                    syncUIToState();
+                    applyFilters(false, false);
+                }
             } else {
-                hideSingleVideoView();
-                applyFiltersFromURL();
-                syncUIToState();
-                applyFilters(false, false);
+                 window.location.reload();
             }
         });
     }
@@ -1107,7 +1101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             syncUIToState();
             renderPopularTags();
             applyFilters(false, false);
-        } else { 
+        } else { // Homepage
             const urlParams = new URLSearchParams(window.location.search);
             const videoIdFromUrl = urlParams.get('v');
             if (videoIdFromUrl) {
