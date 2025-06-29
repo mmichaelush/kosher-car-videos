@@ -12,7 +12,7 @@
   <!-- Netlify Identity Widget for authentication -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
-  <!-- React scripts are required for custom previews -->
+  <!-- React scripts are required for custom previews/widgets -->
   <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
   <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
 </head>
@@ -22,54 +22,63 @@
   
   <script>
     // This script runs after all libraries are loaded
-
-    // 1. YouTube Preview Widget Definition
-    var h = React.createElement;
-    var YouTubePreviewControl = createClass({
-      render: function() {
-        var videoId = this.props.entry.getIn(['data', 'id']);
-        var isValidId = typeof videoId === 'string' && videoId.match(/^[\\w-]{11}$/);
-
-        if (!isValidId) {
-          return h('div', {
-            style: { 
-              padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '5px', 
-              textAlign: 'center', color: '#6c757d', border: '1px dashed #dee2e6', marginTop: '10px'
-            }
-          }, 'הזן מזהה סרטון תקין כדי לראות תצוגה מקדימה.');
-        }
-
-        var videoSrc = "https://www.youtube.com/embed/" + videoId;
-        return h('div', { 
-            style: { 
-              position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden',
-              maxWidth: '100%', background: '#000', borderRadius: '8px', border: '1px solid #ccc', marginTop: '15px'
-            }
-          }, 
-          h('iframe', {
-            src: videoSrc,
-            frameBorder: '0',
-            allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
-            allowFullScreen: true,
-            style: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }
-          })
-        );
+    (function(CMS, React) {
+      if (!CMS || !React) {
+        console.error("Decap CMS or React not loaded. Cannot register custom widget.");
+        return;
       }
-    });
 
-    // 2. Register the custom widget with Decap CMS
-    CMS.registerWidget('youtube', YouTubePreviewControl);
+      // 1. YouTube Preview Widget Definition using a modern ES6 Class
+      // This replaces the deprecated `createClass` method.
+      class YouTubePreviewControl extends React.Component {
+        render() {
+          const { entry } = this.props;
+          const h = React.createElement;
+          
+          const videoId = entry.getIn(['data', 'id']);
+          const isValidId = typeof videoId === 'string' && videoId.match(/^[\\w-]{11}$/);
 
-    // 3. Initialize Netlify Identity
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
-          });
+          if (!isValidId) {
+            return h('div', {
+              style: { 
+                padding: '10px', backgroundColor: '#f8f9fa', borderRadius: '5px', 
+                textAlign: 'center', color: '#6c757d', border: '1px dashed #dee2e6', marginTop: '10px'
+              }
+            }, 'הזן מזהה סרטון תקין (11 תווים) כדי לראות תצוגה מקדימה.');
+          }
+
+          const videoSrc = "https://www.youtube.com/embed/" + videoId;
+          return h('div', { 
+              style: { 
+                position: 'relative', paddingBottom: '56.25%', height: 0, overflow: 'hidden',
+                maxWidth: '100%', background: '#000', borderRadius: '8px', border: '1px solid #ccc', marginTop: '15px'
+              }
+            }, 
+            h('iframe', {
+              src: videoSrc,
+              frameBorder: '0',
+              allow: 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture',
+              allowFullScreen: true,
+              style: { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }
+            })
+          );
         }
-      });
-    }
+      }
+
+      // 2. Register the custom widget with Decap CMS
+      CMS.registerWidget('youtube', YouTubePreviewControl);
+
+      // 3. Initialize Netlify Identity
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.on("init", user => {
+          if (!user) {
+            window.netlifyIdentity.on("login", () => {
+              document.location.href = "/admin/";
+            });
+          }
+        });
+      }
+    })(window.CMS, window.React);
   </script>
 </body>
 </html>
