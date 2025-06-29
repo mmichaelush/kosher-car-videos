@@ -6,7 +6,7 @@
   <title>ניהול תוכן - CAR-טיב</title>
   <link rel="icon" href="../data/assets/images/favicon.ico" type="image/x-icon">
   
-  <!-- We DO NOT link the stylesheet here. We let the CMS script do it for us. -->
+  <!-- We DO NOT link the stylesheet here. We will do it via JavaScript. -->
   
   <!-- Netlify Identity Widget for authentication -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
@@ -16,17 +16,18 @@
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   
   <script>
-    // --- The Official Decap CMS Method to Register a Custom Stylesheet ---
-    // This is the guaranteed way to apply custom styles correctly,
-    // as it ensures your stylesheet is loaded in the right order.
-    
-    // 1. Create the stylesheet URL with a dynamic cache-busting parameter.
-    //    This forces the browser to always download the latest version of your CSS.
-    var customStyleUrl = 'admin-styles.css?v=' + new Date().getTime();
-    
-    // 2. Register the stylesheet with the CMS using the official function.
-    CMS.registerCustomStyle(customStyleUrl);
-    
+    // --- The Official & Guaranteed Method to Apply Custom Styles ---
+
+    // We wait for the CMS to be fully initialized before we do anything.
+    window.CMS.on('init', function() {
+      // Create the stylesheet URL with a dynamic cache-busting parameter.
+      var customStyleUrl = '/admin/admin-styles.css?v=' + new Date().getTime();
+      
+      // Use the official, correct function to register the stylesheet.
+      // This ensures it's loaded *after* the default CMS styles.
+      window.CMS.registerStyle(customStyleUrl);
+    });
+
     // --- Netlify Identity Login Flow ---
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
