@@ -6,18 +6,33 @@
   <title>ניהול תוכן - CAR-טיב</title>
   <link rel="icon" href="../data/assets/images/favicon.ico" type="image/x-icon">
   
-  <!-- The link to your custom styles with a cache-busting query string -->
-  <link rel="stylesheet" href="admin-styles.css?v=1.0">
+  <!-- We are removing the static link to the stylesheet from here -->
   
   <!-- Netlify Identity Widget for authentication -->
   <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
+  <!-- This is where the CMS application will be rendered -->
+  <div id="nc-root"></div>
+
   <!-- Decap CMS main script -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   
-  <!-- Identity login flow -->
   <script>
+    // --- DYNAMIC CACHE BUSTING FOR STYLESHEET ---
+    // This script creates the link to your stylesheet dynamically,
+    // adding a unique timestamp to the URL. This forces the browser
+    // to download a fresh copy every time, bypassing the cache.
+    (function() {
+      var link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.type = 'text/css';
+      // The key part: `new Date().getTime()` generates a unique number on every page load.
+      link.href = 'admin-styles.css?v=' + new Date().getTime();
+      document.head.appendChild(link);
+    })();
+    
+    // --- Netlify Identity Login Flow ---
     if (window.netlifyIdentity) {
       window.netlifyIdentity.on("init", user => {
         if (!user) {
