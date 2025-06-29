@@ -44,4 +44,4 @@ collections:
                   - { label: "רכבי אספנות", value: "collectors" }
               - { label: "תגיות", name: "tags", widget: "list", hint: "הוסף תגיות רלוונטיות. לחץ 'הוסף' כדי להוסיף תגית חדשה." }
               - { label: "תוכן בעברית?", name: "hebrewContent", widget: "boolean", default: true }
-              - { label: "תאריך הוספה", name: "dateAdded", widget: "datetime", format: "YYYY-MM-DD", date_format: "DD.MM.YYYY", time_format: false, required: false }
+              - { label: "תאריך יצירת הסרטון", name: "dateAdded", widget: "datetime", format: "YYYY-MM-DD", date_format: "DD.MM.YYYY", time_format: false, required: false }
