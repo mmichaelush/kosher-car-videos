@@ -116,8 +116,11 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const isHomePage = () => {
         const path = window.location.pathname;
-        return path === '/' || path.endsWith('/index.html') || path.endsWith('/');
+        const pageName = path.split('/').pop();
+        return pageName === '' || pageName === 'index.html';
     };
+
+    const getPageName = () => window.location.pathname.split('/').pop() || 'index.html';
 
     const getCategoryFromURL = () => new URLSearchParams(window.location.search).get('name');
     
@@ -288,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'about:blankGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,data:image/gif;base64,R0lGODlhAQABAPcAAAAAAAAAMwAAZgAAmQAAzAAA/wArAAArMwArZgArmQArzAAr/wBVAABVMwBVZgBVmQBVzABV/wCAAACAMwCAZgCAmQCAzACA/wCqAACqMwCqZgCqmQCqzACq/wDVAADVMwDVZgDVmQDVzADV/wD/AAD/MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMrADMrMzMrZjMrmTMrzDMr/zNVADNVMzNVZjNVmTNVzDNV/zOAADOAMzOAZjOAmTOAzDOA/zOqADOqMzOqZjOqmTOqzDOq/zPVADPVMzPVZjPVmTPVzDPV/zP/ADP/MzP/ZjP/mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YrAGYrM2YrZmYrmWYrzGYr/2ZVAGZVM2ZVZmZVmWZVzGZV/2aAAGaAM2aAZmaAmWaAzGaA/2aqAGaqM2aqZmaqmWaqzGaq/2bVAGbVM2bVZmbVmWbVzGbV/2b/AGb/M2b/Zmb/mWb/zGb//5kAAJkAM5kAZpkAmZkAzJkA/5krAJkrM5krZpkrmZkrzJkr/5lVAJlVM5lVZplVmZlVzJlV/5mAAJmAM5mAZpmAmZmAzJmA/5mqAJmqM5mqZpmqmZmqzJmq/5nVAJnVM5nVZpnVmZnVzJnV/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwAM8wAZswAmcwAzMwA/8wrAMwrM8wrZswrmcwrzMwr/8xVAMxVM8xVZsxVmcxVzMxV/8yAAMyAM8yAZsyAmcyAzMyA/8yqAMyqM8yqZsyqmcyqzMyq/8zVAMzVM8zVZszVmczVzMzV/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8Amf8AzP8A//8rAP8rM/8rZv8rmf8rzP8r//9VAP9VM/9VZv9Vmf9VzP9V//+AAP+AM/+AZv+Amf+AzP+A//+qAP+qM/+qZv+qmf+qzP+q///VAP/VM//VZv/Vmf/VzP/V////AP//M///Zv//mf//zP///wAAAAAAAAAAAAAAACH5BAEAAPwALAAAAAABAAEAAAgEAAEEBAA7AAAAAAQABAAACADs=';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -599,12 +602,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const input = form.querySelector('input[type="search"]');
         if (!input) return;
         const searchTerm = input.value.trim();
+        const pageName = getPageName();
         
-        if (!isHomePage()) {
-            window.location.href = `./?search=${encodeURIComponent(searchTerm)}#video-grid-section`;
-        } else {
+        if (pageName === 'category.html') {
             state.currentFilters.searchTerm = searchTerm;
             applyFilters(false);
+        } else {
+            window.location.href = `./?search=${encodeURIComponent(searchTerm)}#video-grid-section`;
         }
     }
 
@@ -660,7 +664,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         
-        const fuseSource = state.currentFilters.category !== 'all' 
+        const pageName = getPageName();
+        const fuseSource = pageName === 'category.html'
             ? state.allVideos.filter(v => v.category === state.currentFilters.category)
             : state.allVideos;
         
@@ -774,8 +779,12 @@ document.addEventListener('DOMContentLoaded', () => {
             newParams.set('v', videoId);
         } else {
             const { searchTerm, tags, hebrewOnly, sortBy } = state.currentFilters;
-            const pageCategory = getCategoryFromURL();
-            if (pageCategory) newParams.set('name', pageCategory);
+            const pageName = getPageName();
+            if (pageName === 'category.html') {
+                 const pageCategory = getCategoryFromURL();
+                 if (pageCategory) newParams.set('name', pageCategory);
+            }
+            
             if (searchTerm) newParams.set('search', searchTerm);
             if (tags.length > 0) newParams.set('tags', tags.join(','));
             if (hebrewOnly) newParams.set('hebrew', 'true');
@@ -810,10 +819,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleScrollSpy() {
-        if (new URLSearchParams(window.location.search).has('v') || !isHomePage()) {
-            if (document.querySelectorAll) {
-                document.querySelectorAll('header nav .nav-link.active-nav-link').forEach(link => link.classList.remove('active-nav-link'));
-            }
+        if (!isHomePage() || new URLSearchParams(window.location.search).has('v')) {
+            document.querySelectorAll('header nav .nav-link.active-nav-link').forEach(link => link.classList.remove('active-nav-link'));
             return;
         }
         const header = document.querySelector('header.sticky');
@@ -893,7 +900,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const href = navLink.getAttribute('href');
         const url = new URL(href, window.location.origin + window.location.pathname);
         const targetId = url.hash.substring(1);
-        const isCurrentPageLink = (url.pathname === window.location.pathname || (url.pathname.endsWith('/') && isHomePage()));
+        const isCurrentPageLink = (getPageName() === 'index.html');
         
         if (isCurrentPageLink && targetId) {
             e.preventDefault();
@@ -1106,15 +1113,15 @@ document.addEventListener('DOMContentLoaded', () => {
             toggle.setAttribute('aria-checked', String(isDark));
         });
 
-        const currentPagePath = window.location.pathname.split('/').pop() || 'index.html';
+        const currentPage = getPageName();
         
         await loadVideos();
         initVideoObserver();
-        state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
-
-        if (currentPagePath.includes('add-video')) {
+        
+        if (currentPage.includes('add-video')) {
+            state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
             if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
-        } else if (currentPagePath.includes('category')) {
+        } else if (currentPage.includes('category')) {
             if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
             const categoryFromURL = getCategoryFromURL();
             if (categoryFromURL) {
@@ -1128,6 +1135,7 @@ document.addEventListener('DOMContentLoaded', () => {
             renderPopularTags();
             applyFilters(false, false);
         } else { 
+            state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
             const urlParams = new URLSearchParams(window.location.search);
             const videoIdFromUrl = urlParams.get('v');
             if (videoIdFromUrl) {
