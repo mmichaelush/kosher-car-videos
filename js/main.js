@@ -114,7 +114,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }, time);
     };
     
-    const getPageName = () => window.location.pathname.split('/').pop() || 'index.html';
+    const getPageName = () => {
+        const path = window.location.pathname;
+        if (path.includes('category')) return 'category.html';
+        if (path.includes('add-video')) return 'add-video.html';
+        return 'index.html';
+    };
 
     const getCategoryFromURL = () => new URLSearchParams(window.location.search).get('name');
     
@@ -285,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+        card.channelLogo.src = video.channelImage || 'about:blankwAAAAAAQABAAACADs=';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -359,8 +364,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const tagName = tagElement.dataset.tagValue;
             const isActive = state.currentFilters.tags.includes(tagName);
             tagElement.classList.toggle('active-search-tag', isActive);
-            tagElement.classList.toggle('bg-purple-100', !isActive);
-            tagElement.classList.toggle('dark:bg-purple-800', !isActive);
         });
     }
 
@@ -975,34 +978,33 @@ document.addEventListener('DOMContentLoaded', () => {
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
 
-            if (link && link.href.includes('#')) {
-                 const url = new URL(link.href);
-                 const targetId = url.hash.substring(1);
-                 const targetPage = (url.pathname.split('/').pop() || 'index.html').replace('.html', '');
-                 const currentPage = getPageName().replace('.html', '');
+            if (link && link.hash) {
+                const url = new URL(link.href);
+                const targetId = url.hash.substring(1);
+                const targetPage = url.pathname.split('/').pop() || 'index.html';
 
-                 if ((targetPage === '' || targetPage === 'index') && (currentPage === '' || currentPage === 'index') && document.getElementById(targetId)) {
-                    e.preventDefault();
-                    const targetElement = document.getElementById(targetId);
-                     const performScroll = () => {
-                        const header = document.querySelector('header.sticky');
-                        const headerOffset = header ? header.offsetHeight + 20 : 80;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                        if (history.replaceState) {
-                           const cleanUrl = new URL(window.location);
-                           cleanUrl.hash = '';
-                           history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search);
-                        }
-                    };
-                    if (link.closest('#mobile-menu')) {
-                        closeMobileMenu();
-                        setTimeout(performScroll, 300);
-                    } else {
-                        performScroll();
-                    }
-                 }
-            }
+                if (targetPage === getPageName() && document.getElementById(targetId)) {
+                   e.preventDefault();
+                   const targetElement = document.getElementById(targetId);
+                    const performScroll = () => {
+                       const header = document.querySelector('header.sticky');
+                       const headerOffset = header ? header.offsetHeight + 20 : 80;
+                       const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                       window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                       if (history.replaceState && getPageName() === 'index.html') {
+                          const cleanUrl = new URL(window.location);
+                          cleanUrl.hash = '';
+                          history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search);
+                       }
+                   };
+                   if (link.closest('#mobile-menu')) {
+                       closeMobileMenu();
+                       setTimeout(performScroll, 300);
+                   } else {
+                       performScroll();
+                   }
+                }
+           }
 
             if (target.closest('#check-yt-id-link') || target.closest('#check-yt-id-button')) handleCheckYtId(e);
             if (target.closest('button.tag[data-tag-value]')) toggleTagSelection(target.closest('button.tag').dataset.tagValue);
@@ -1111,10 +1113,10 @@ document.addEventListener('DOMContentLoaded', () => {
         await loadVideos();
         initVideoObserver();
         
-        if (currentPage.includes('add-video')) {
+        if (currentPage === 'add-video.html') {
             state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
             if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
-        } else if (currentPage.includes('category')) {
+        } else if (currentPage === 'category.html') {
             if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
             const categoryFromURL = getCategoryFromURL();
             if (categoryFromURL) {
