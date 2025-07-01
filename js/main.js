@@ -118,6 +118,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const path = window.location.pathname;
         if (path.includes('category')) return 'category.html';
         if (path.includes('add-video')) return 'add-video.html';
+        if (path.includes('privacy')) return 'privacy.html';
+        if (path.includes('terms')) return 'terms.html';
         return 'index.html';
     };
 
@@ -290,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'about:blankwAAAAAAQABAAACADs=';
+        card.channelLogo.src = video.channelImage || 'data:image/gif;base64,data:image/gif;base64,R0lGODlhAQABAPcAAAAAAAAAMwAAZgAAmQAAzAAA/wArAAArMwArZgArmQArzAAr/wBVAABVMwBVZgBVmQBVzABV/wCAAACAMwCAZgCAmQCAzACA/wCqAACqMwCqZgCqmQCqzACq/wDVAADVMwDVZgDVmQDVzADV/wD/AAD/MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMrADMrMzMrZjMrmTMrzDMr/zNVADNVMzNVZjNVmTNVzDNV/zOAADOAMzOAZjOAmTOAzDOA/zOqADOqMzOqZjOqmTOqzDOq/zPVADPVMzPVZjPVmTPVzDPV/zP/ADP/MzP/ZjP/mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YrAGYrM2YrZmYrmWYrzGYr/2ZVAGZVM2ZVZmZVmWZVzGZV/2aAAGaAM2aAZmaAmWaAzGaA/2aqAGaqM2aqZmaqmWaqzGaq/2bVAGbVM2bVZmbVmWbVzGbV/2b/AGb/M2b/Zmb/mWb/zGb//5kAAJkAM5kAZpkAmZkAzJkA/5krAJkrM5krZpkrmZkrzJkr/5lVAJlVM5lVZplVmZlVzJlV/5mAAJmAM5mAZpmAmZmAzJmA/5mqAJmqM5mqZpmqmZmqzJmq/5nVAJnVM5nVZpnVmZnVzJnV/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwAM8wAZswAmcwAzMwA/8wrAMwrM8wrZswrmcwrzMwr/8xVAMxVM8xVZsxVmcxVzMxV/8yAAMyAM8yAZsyAmcyAzMyA/8yqAMyqM8yqZsyqmcyqzMyq/8zVAMzVM8zVZszVmczVzMzV/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8Amf8AzP8A//8rAP8rM/8rZv8rmf8rzP8r//9VAP9VM/9VZv9Vmf9VzP9V//+AAP+AM/+AZv+Amf+AzP+A//+qAP+qM/+qZv+qmf+qzP+q///VAP/VM//VZv/Vmf/VzP/V////AP//M///Zv//mf//zP///wAAAAAAAAAAAAAAACH5BAEAAPwALAAAAAABAAEAAAgEAAEEBAA7AAACADs=';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -892,6 +894,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function handleInitialHash() {
         if (getPageName() !== 'index.html') return;
+        
         const hash = window.location.hash;
         if (hash) {
             const targetId = hash.substring(1);
@@ -941,7 +944,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if(dom.contactForm) dom.contactForm.addEventListener('submit', handleContactFormSubmit);
         if(dom.singleVideoView.backBtn) dom.singleVideoView.backBtn.addEventListener('click', () => {
-            if (history.length > 1) {
+            if (history.length > 1 && document.referrer) {
                 history.back();
             } else {
                 window.location.href = './';
@@ -979,32 +982,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = target.closest('article[data-video-id]');
 
             if (link && link.hash) {
-                const url = new URL(link.href);
-                const targetId = url.hash.substring(1);
-                const targetPage = url.pathname.split('/').pop() || 'index.html';
-
-                if (targetPage === getPageName() && document.getElementById(targetId)) {
-                   e.preventDefault();
-                   const targetElement = document.getElementById(targetId);
-                    const performScroll = () => {
-                       const header = document.querySelector('header.sticky');
-                       const headerOffset = header ? header.offsetHeight + 20 : 80;
-                       const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                       window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                       if (history.replaceState && getPageName() === 'index.html') {
-                          const cleanUrl = new URL(window.location);
-                          cleanUrl.hash = '';
-                          history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search);
-                       }
-                   };
-                   if (link.closest('#mobile-menu')) {
-                       closeMobileMenu();
-                       setTimeout(performScroll, 300);
-                   } else {
-                       performScroll();
-                   }
-                }
-           }
+                 const url = new URL(link.href);
+                 const targetId = url.hash.substring(1);
+                 const targetPage = url.pathname.split('/').pop() || 'index.html';
+                 
+                 if ((targetPage === getPageName()) && document.getElementById(targetId)) {
+                    e.preventDefault();
+                    const targetElement = document.getElementById(targetId);
+                     const performScroll = () => {
+                        const header = document.querySelector('header.sticky');
+                        const headerOffset = header ? header.offsetHeight + 20 : 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                        if (history.replaceState && getPageName() === 'index.html') {
+                           const cleanUrl = new URL(window.location);
+                           cleanUrl.hash = '';
+                           history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search);
+                        }
+                    };
+                    if (link.closest('#mobile-menu')) {
+                        closeMobileMenu();
+                        setTimeout(performScroll, 300);
+                    } else {
+                        performScroll();
+                    }
+                 }
+            }
 
             if (target.closest('#check-yt-id-link') || target.closest('#check-yt-id-button')) handleCheckYtId(e);
             if (target.closest('button.tag[data-tag-value]')) toggleTagSelection(target.closest('button.tag').dataset.tagValue);
@@ -1113,7 +1116,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await loadVideos();
         initVideoObserver();
         
-        if (currentPage === 'add-video.html') {
+        if (currentPage === 'add-video.html' || currentPage === 'privacy.html' || currentPage === 'terms.html') {
             state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
             if (dom.mainPageContent) dom.mainPageContent.style.display = 'block';
         } else if (currentPage === 'category.html') {
@@ -1129,7 +1132,7 @@ document.addEventListener('DOMContentLoaded', () => {
             syncUIToState();
             renderPopularTags();
             applyFilters(false, false);
-        } else { // Homepage
+        } else { 
             state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
             const urlParams = new URLSearchParams(window.location.search);
             const videoIdFromUrl = urlParams.get('v');
@@ -1143,6 +1146,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderPopularTags();
                 applyFilters(false, false);
                 handleScrollSpy();
+                handleInitialHash();
             }
         }
         
