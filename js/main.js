@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'about:blank64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=';
+        card.channelLogo.src = video.channelImage || 'about:blankAD/ACwAAAAAAQABAAACADs=';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -487,9 +487,11 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.singleVideoView.date.style.display = 'none';
         }
 
-        if (dom.singleVideoView.tags) dom.singleVideoView.tags.innerHTML = (video.tags || []).map(tag =>
-            `<a href="./?tags=${encodeURIComponent(tag)}#video-grid-section" data-tag-link="true" class="bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-sm font-medium px-3 py-1.5 rounded-full hover:bg-purple-200 dark:hover:bg-purple-700 transition-colors">${tag.charAt(0).toUpperCase() + tag.slice(1)}</a>`
-        ).join('');
+        if (dom.singleVideoView.tags) {
+            dom.singleVideoView.tags.innerHTML = (video.tags || []).map(tag =>
+                `<a href="./?tags=${encodeURIComponent(tag)}#video-grid-section" data-tag-link="true" class="bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-sm font-medium px-3 py-1.5 rounded-full hover:bg-purple-200 dark:hover:bg-purple-700 transition-colors">${tag.charAt(0).toUpperCase() + tag.slice(1)}</a>`
+            ).join('');
+        }
     }
 
     function hideSingleVideoView() {
@@ -893,9 +895,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function handleInitialHash() {
-        const page = getPageName();
-        if (page !== 'index.html') return;
-
+        if (getPageName() !== 'index.html') return;
+        
         const hash = window.location.hash;
         if (hash) {
             const targetId = hash.substring(1);
@@ -981,31 +982,33 @@ document.addEventListener('DOMContentLoaded', () => {
             const { target } = e;
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
-
+            
             if (link && link.hash && getPageName() === (link.pathname.split('/').pop() || 'index.html')) {
                 const targetId = link.hash.substring(1);
                 if (document.getElementById(targetId)) {
-                    e.preventDefault();
-                    const targetElement = document.getElementById(targetId);
+                   e.preventDefault();
+                   const targetElement = document.getElementById(targetId);
                     const performScroll = () => {
-                        const header = document.querySelector('header.sticky');
-                        const headerOffset = header ? header.offsetHeight + 20 : 80;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                        if (history.replaceState && getPageName() === 'index.html') {
-                           const cleanUrl = new URL(window.location);
-                           cleanUrl.hash = '';
-                           history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search);
-                        }
-                    };
-                    if (link.closest('#mobile-menu')) {
-                        closeMobileMenu();
-                        setTimeout(performScroll, 300);
-                    } else {
-                        performScroll();
-                    }
+                       const header = document.querySelector('header.sticky');
+                       const headerOffset = header ? header.offsetHeight + 20 : 80;
+                       const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                       window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                       if (history.replaceState && getPageName() === 'index.html') {
+                          const cleanUrl = new URL(window.location);
+                          cleanUrl.hash = '';
+                          history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search);
+                       }
+                   };
+                   if (link.closest('#mobile-menu')) {
+                       closeMobileMenu();
+                       setTimeout(performScroll, 300);
+                   } else {
+                       performScroll();
+                   }
                 }
-            } else if (link && link.dataset.tagLink) {
+            }
+
+            if (link && link.dataset.tagLink) {
                  e.preventDefault();
                  window.location.href = link.href;
             }
