@@ -927,33 +927,34 @@ document.addEventListener('DOMContentLoaded', () => {
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
             
-            // Handle all links with hashes for smooth scrolling
-            if (link && link.hash && (getPageName() === (link.pathname.split('/').pop() || 'index.html'))) {
-                 const targetId = link.hash.substring(1);
-                 if (document.getElementById(targetId)) {
-                    e.preventDefault();
-                    const targetElement = document.getElementById(targetId);
-                     const performScroll = () => {
-                        const header = document.querySelector('header.sticky');
-                        const headerOffset = header ? header.offsetHeight + 20 : 80;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                        if (history.replaceState && getPageName() === 'index.html') {
-                           const cleanUrl = new URL(window.location);
-                           cleanUrl.hash = '';
-                           history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search);
-                        }
-                    };
-                    if (link.closest('#mobile-menu')) {
-                        closeMobileMenu();
-                        setTimeout(performScroll, 300);
-                    } else {
-                        performScroll();
-                    }
-                 }
+            if (link && link.hash) {
+                const url = new URL(link.href, window.location.origin);
+                const targetId = url.hash.substring(1);
+                const targetPage = url.pathname.split('/').pop() || 'index.html';
+                 
+                if ((targetPage === 'index.html' || targetPage === '') && getPageName() === 'index.html' && document.getElementById(targetId)) {
+                   e.preventDefault();
+                   const targetElement = document.getElementById(targetId);
+                    const performScroll = () => {
+                       const header = document.querySelector('header.sticky');
+                       const headerOffset = header ? header.offsetHeight + 20 : 80;
+                       const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                       window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                       if (history.replaceState) {
+                          const cleanUrl = new URL(window.location);
+                          cleanUrl.hash = '';
+                          history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search);
+                       }
+                   };
+                   if (link.closest('#mobile-menu')) {
+                       closeMobileMenu();
+                       setTimeout(performScroll, 300);
+                   } else {
+                       performScroll();
+                   }
+                }
             }
 
-            // Handle tag links from single video page
             if (link && link.dataset.tagLink) {
                  e.preventDefault();
                  window.location.href = link.href;
@@ -967,7 +968,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if(videoTagButton) {
                 e.preventDefault();
                 const tagName = videoTagButton.dataset.tag;
-                if (getPageName() === 'category.html') {
+                if (getPageName() === 'index.html') {
+                    if (!state.currentFilters.tags.includes(tagName)) toggleTagSelection(tagName);
+                    scrollToVideoGridIfNeeded();
+                } else if (getPageName() === 'category.html') {
                     if (!state.currentFilters.tags.includes(tagName)) {
                         toggleTagSelection(tagName);
                     }
@@ -1139,7 +1143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             syncUIToState();
             renderPopularTags();
             applyFilters(false, false);
-        } else { 
+        } else { // Homepage
             state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
             const urlParams = new URLSearchParams(window.location.search);
             const videoIdFromUrl = urlParams.get('v');
