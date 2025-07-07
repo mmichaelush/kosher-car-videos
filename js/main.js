@@ -292,7 +292,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'about:blankAD/ACwAAAAAAQABAAACADs=';
+        card.channelLogo.src = video.channelImage || 'about:blank';
         card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
         card.channelLogo.classList.toggle('hidden', !video.channelImage);
     
@@ -1006,9 +1006,7 @@ document.addEventListener('DOMContentLoaded', () => {
                        performScroll();
                    }
                 }
-            }
-
-            if (link && link.dataset.tagLink) {
+            } else if (link && link.dataset.tagLink) {
                  e.preventDefault();
                  window.location.href = link.href;
             }
@@ -1024,6 +1022,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (getPageName() === 'index.html') {
                     if (!state.currentFilters.tags.includes(tagName)) toggleTagSelection(tagName);
                     scrollToVideoGridIfNeeded();
+                } else if (getPageName() === 'category.html') {
+                    if (!state.currentFilters.tags.includes(tagName)) {
+                        toggleTagSelection(tagName);
+                    }
                 } else {
                     window.location.href = `./?tags=${encodeURIComponent(tagName)}#video-grid-section`;
                 }
