@@ -922,6 +922,98 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     function setupEventListeners() {
+        document.body.addEventListener('click', (e) => {
+            const { target } = e;
+            const link = target.closest('a');
+            const card = target.closest('article[data-video-id]');
+            
+            // Handle all links with hashes for smooth scrolling
+            if (link && link.hash && (getPageName() === (link.pathname.split('/').pop() || 'index.html'))) {
+                 const targetId = link.hash.substring(1);
+                 if (document.getElementById(targetId)) {
+                    e.preventDefault();
+                    const targetElement = document.getElementById(targetId);
+                     const performScroll = () => {
+                        const header = document.querySelector('header.sticky');
+                        const headerOffset = header ? header.offsetHeight + 20 : 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                        if (history.replaceState && getPageName() === 'index.html') {
+                           const cleanUrl = new URL(window.location);
+                           cleanUrl.hash = '';
+                           history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search);
+                        }
+                    };
+                    if (link.closest('#mobile-menu')) {
+                        closeMobileMenu();
+                        setTimeout(performScroll, 300);
+                    } else {
+                        performScroll();
+                    }
+                 }
+            }
+
+            // Handle tag links from single video page
+            if (link && link.dataset.tagLink) {
+                 e.preventDefault();
+                 window.location.href = link.href;
+            }
+
+            if (target.closest('#check-yt-id-link') || target.closest('#check-yt-id-button')) handleCheckYtId(e);
+            if (target.closest('button.tag[data-tag-value]')) toggleTagSelection(target.closest('button.tag').dataset.tagValue);
+            if (target.closest('.remove-tag-btn')) toggleTagSelection(target.closest('.remove-tag-btn').dataset.tagToRemove);
+            
+            const videoTagButton = target.closest('.video-tag-button[data-tag]');
+            if(videoTagButton) {
+                e.preventDefault();
+                const tagName = videoTagButton.dataset.tag;
+                if (getPageName() === 'category.html') {
+                    if (!state.currentFilters.tags.includes(tagName)) {
+                        toggleTagSelection(tagName);
+                    }
+                } else {
+                    window.location.href = `./?tags=${encodeURIComponent(tagName)}#video-grid-section`;
+                }
+            }
+            
+            if(card) {
+                const videoId = card.dataset.videoId;
+                const video = state.allVideos.find(v => v.id === videoId);
+
+                if (target.closest('.video-play-link')) {
+                    e.preventDefault();
+                    playVideoInline(card);
+                } else if (target.closest('a.video-link')) {
+                    e.preventDefault();
+                    if(getPageName() === 'index.html') {
+                        updateURLWithFilters(videoId);
+                        showSingleVideoView(videoId);
+                    } else {
+                         window.location.href = `./?v=${videoId}`;
+                    }
+                } else if (target.closest('.fullscreen-btn')) {
+                    e.preventDefault();
+                    playVideoInline(card); 
+                    const iframe = card.querySelector('.video-iframe');
+                    if(iframe && typeof iframe.requestFullscreen === 'function') {
+                        setTimeout(() => { iframe.requestFullscreen(); }, 150);
+                    }
+                } else if (target.closest('.share-btn')) {
+                    e.preventDefault();
+                    const url = `${window.location.origin}${window.location.pathname}?v=${videoId}`;
+                    shareContent(url, target.closest('.share-btn'), 'הועתק!', video?.title || 'סרטון');
+                }
+            }
+            
+            if (target.closest('#single-video-share-btn')) {
+                const videoId = new URLSearchParams(window.location.search).get('v');
+                const video = state.allVideos.find(v => v.id === videoId);
+                shareContent(window.location.href, target.closest('button'), 'הועתק!', video?.title || 'סרטון');
+            }
+            
+            if (target.id === 'no-results-clear-btn') clearAllFilters();
+        });
+
         dom.darkModeToggles.forEach(toggle => toggle.addEventListener('click', handleThemeToggle));
         if(dom.openMenuBtn) dom.openMenuBtn.addEventListener('click', openMobileMenu);
         if(dom.closeMenuBtn) dom.closeMenuBtn.addEventListener('click', closeMobileMenu);
@@ -977,98 +1069,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
-
-        document.addEventListener('click', (e) => {
-            const { target } = e;
-            const link = target.closest('a');
-            const card = target.closest('article[data-video-id]');
-            
-            if (link && link.hash && getPageName() === 'index.html') {
-                const url = new URL(link.href, window.location.origin);
-                const targetId = url.hash.substring(1);
-                const targetPage = url.pathname.split('/').pop() || 'index.html';
-                
-                if (targetPage === getPageName() && document.getElementById(targetId)) {
-                   e.preventDefault();
-                   const targetElement = document.getElementById(targetId);
-                    const performScroll = () => {
-                       const header = document.querySelector('header.sticky');
-                       const headerOffset = header ? header.offsetHeight + 20 : 80;
-                       const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                       window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                       if (history.replaceState) {
-                          const cleanUrl = new URL(window.location);
-                          cleanUrl.hash = '';
-                          history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search);
-                       }
-                   };
-                   if (link.closest('#mobile-menu')) {
-                       closeMobileMenu();
-                       setTimeout(performScroll, 300);
-                   } else {
-                       performScroll();
-                   }
-                }
-            } else if (link && link.dataset.tagLink) {
-                 e.preventDefault();
-                 window.location.href = link.href;
-            }
-
-            if (target.closest('#check-yt-id-link') || target.closest('#check-yt-id-button')) handleCheckYtId(e);
-            if (target.closest('button.tag[data-tag-value]')) toggleTagSelection(target.closest('button.tag').dataset.tagValue);
-            if (target.closest('.remove-tag-btn')) toggleTagSelection(target.closest('.remove-tag-btn').dataset.tagToRemove);
-            
-            const videoTagButton = target.closest('.video-tag-button[data-tag]');
-            if(videoTagButton) {
-                e.preventDefault();
-                const tagName = videoTagButton.dataset.tag;
-                if (getPageName() !== 'index.html') {
-                    if (!state.currentFilters.tags.includes(tagName)) {
-                        toggleTagSelection(tagName);
-                    }
-                } else {
-                    window.location.href = `./?tags=${encodeURIComponent(tagName)}#video-grid-section`;
-                }
-            }
-            
-            if(card) {
-                const videoId = card.dataset.videoId;
-                const video = state.allVideos.find(v => v.id === videoId);
-
-                if (target.closest('.video-play-link')) {
-                    e.preventDefault();
-                    playVideoInline(card);
-                } else if (target.closest('a.video-link')) {
-                    e.preventDefault();
-                    if(getPageName() === 'index.html') {
-                        updateURLWithFilters(videoId);
-                        showSingleVideoView(videoId);
-                    } else {
-                         window.location.href = `./?v=${videoId}`;
-                    }
-                } else if (target.closest('.fullscreen-btn')) {
-                    e.preventDefault();
-                    playVideoInline(card); 
-                    const iframe = card.querySelector('.video-iframe');
-                    if(iframe && typeof iframe.requestFullscreen === 'function') {
-                        setTimeout(() => { iframe.requestFullscreen(); }, 150);
-                    }
-                } else if (target.closest('.share-btn')) {
-                    e.preventDefault();
-                    const url = `${window.location.origin}${window.location.pathname}?v=${videoId}`;
-                    shareContent(url, target.closest('.share-btn'), 'הועתק!', video?.title || 'סרטון');
-                }
-            }
-            
-            if (target.closest('#single-video-share-btn')) {
-                const videoId = new URLSearchParams(window.location.search).get('v');
-                const video = state.allVideos.find(v => v.id === videoId);
-                shareContent(window.location.href, target.closest('button'), 'הועתק!', video?.title || 'סרטון');
-            }
-            
-            if (target.id === 'no-results-clear-btn') clearAllFilters();
-        });
-
+        
         window.addEventListener('popstate', (event) => {
             const params = new URLSearchParams(window.location.search);
             const videoId = params.get('v');
@@ -1138,7 +1139,7 @@ document.addEventListener('DOMContentLoaded', () => {
             syncUIToState();
             renderPopularTags();
             applyFilters(false, false);
-        } else { // Homepage
+        } else { 
             state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
             const urlParams = new URLSearchParams(window.location.search);
             const videoIdFromUrl = urlParams.get('v');
