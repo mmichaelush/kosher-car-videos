@@ -1138,7 +1138,7 @@ document.addEventListener('DOMContentLoaded', () => {
             syncUIToState();
             renderPopularTags();
             applyFilters(false, false);
-        } else { 
+        } else { // Homepage
             state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
             const urlParams = new URLSearchParams(window.location.search);
             const videoIdFromUrl = urlParams.get('v');
