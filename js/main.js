@@ -468,7 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const video = state.allVideos.find(v => v.id === videoId);
         if (!video) return;
 
-        dom.body.classList.add('overflow-hidden');
+        dom.body.classList.add('video-view-active');
         if (dom.singleVideoView.container) {
             dom.singleVideoView.container.classList.remove('hidden');
             dom.singleVideoView.container.scrollTop = 0;
@@ -499,7 +499,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function hideSingleVideoView() {
         if (!dom.singleVideoView.container || dom.singleVideoView.container.classList.contains('hidden')) return;
 
-        dom.body.classList.remove('overflow-hidden');
+        dom.body.classList.remove('video-view-active');
         if (dom.singleVideoView.container) dom.singleVideoView.container.classList.add('hidden');
         if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = '';
         document.title = 'CAR-טיב - סרטוני רכבים כשרים';
@@ -928,30 +928,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
             
-            if (link && link.hash && (link.pathname.split('/').pop() || 'index.html') === getPageName()) {
-                 const targetId = link.hash.substring(1);
-                 if (document.getElementById(targetId)) {
-                    e.preventDefault();
-                    const targetElement = document.getElementById(targetId);
-                     const performScroll = () => {
-                        const header = document.querySelector('header.sticky');
-                        const headerOffset = header ? header.offsetHeight + 20 : 80;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                        if (history.replaceState && getPageName() === 'index.html') {
-                           const cleanUrl = new URL(window.location);
-                           cleanUrl.hash = '';
-                           history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search);
-                        }
-                    };
-                    if (link.closest('#mobile-menu')) {
-                        closeMobileMenu();
-                        setTimeout(performScroll, 300);
-                    } else {
-                        performScroll();
-                    }
-                 }
-            } else if (link && link.dataset.tagLink) {
+            if (link && link.hash && (link.pathname.split('/').pop() || 'index.html').endsWith('index.html')) {
+                const targetId = link.hash.substring(1);
+                if (document.getElementById(targetId)) {
+                   e.preventDefault();
+                   const targetElement = document.getElementById(targetId);
+                    const performScroll = () => {
+                       const header = document.querySelector('header.sticky');
+                       const headerOffset = header ? header.offsetHeight + 20 : 80;
+                       const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                       window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                       if (history.replaceState && getPageName() === 'index.html') {
+                          const cleanUrl = new URL(window.location);
+                          cleanUrl.hash = '';
+                          history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search);
+                       }
+                   };
+                   if (link.closest('#mobile-menu')) {
+                       closeMobileMenu();
+                       setTimeout(performScroll, 300);
+                   } else {
+                       performScroll();
+                   }
+                }
+            }
+
+            if (link && link.dataset.tagLink) {
                  e.preventDefault();
                  window.location.href = link.href;
             }
