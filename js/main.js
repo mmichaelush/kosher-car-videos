@@ -468,6 +468,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const video = state.allVideos.find(v => v.id === videoId);
         if (!video) return;
 
+        // --- START: CODE ADDED ---
+        if (dom.mainPageContent) dom.mainPageContent.classList.add('hidden');
+        if (dom.siteFooter) dom.siteFooter.classList.add('hidden');
+        // --- END: CODE ADDED ---
+
         dom.body.classList.add('video-view-active');
         if (dom.singleVideoView.container) {
             dom.singleVideoView.container.classList.remove('hidden');
@@ -498,6 +503,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function hideSingleVideoView() {
         if (!dom.singleVideoView.container || dom.singleVideoView.container.classList.contains('hidden')) return;
+
+        // --- START: CODE ADDED ---
+        if (dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
+        if (dom.siteFooter) dom.siteFooter.classList.remove('hidden');
+        // --- END: CODE ADDED ---
 
         dom.body.classList.remove('video-view-active');
         if (dom.singleVideoView.container) dom.singleVideoView.container.classList.add('hidden');
@@ -795,7 +805,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const newSearchString = newParams.toString();
         if (url.search.substring(1) !== newSearchString) {
-            url.search = newSearchString;
             history.pushState({ videoId, filters: state.currentFilters }, '', url.toString());
         }
     }
