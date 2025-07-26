@@ -960,18 +960,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     const isVideoViewActive = !dom.singleVideoView.container.classList.contains('hidden');
 
                     if (isVideoViewActive) {
-                        // If we can go back in history (navigated from main page), do it.
-                        // It will trigger the popstate listener which calls hideSingleVideoView.
-                        if (history.length > 1) {
-                            history.back();
-                        } else {
-                            // If we can't go back (e.g., opened in new tab), manually hide the view
-                            // and update the URL.
-                            hideSingleVideoView();
-                            updateURLWithFilters(); // This removes the "?v=..." from the URL
-                        }
-                        // After the view is hidden (either by popstate or manually), scroll to the element.
-                        setTimeout(performScroll, 150);
+                        // This is the most robust way. It handles all cases (direct link, refresh, navigation).
+                        // It navigates to the main page with the correct hash. The page will reload,
+                        // and the handleInitialHash function will correctly scroll to the element.
+                        window.location.href = './' + link.hash;
                     } else {
                         // We are already on the main page, just handle the scroll.
                         if (link.closest('#mobile-menu')) {
