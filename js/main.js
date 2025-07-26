@@ -479,8 +479,9 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // *** CHANGE 1: Only hide mainPageContent, NOT the footer ***
         dom.mainPageContent.classList.add('hidden');
-        if (dom.siteFooter) dom.siteFooter.classList.add('hidden');
+        if (dom.siteFooter) dom.siteFooter.classList.remove('hidden'); // Ensure footer is visible
         if (dom.singleVideoView.container) dom.singleVideoView.container.classList.remove('hidden');
         
         window.scrollTo(0, 0);
@@ -507,6 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dom.singleVideoView.container) dom.singleVideoView.container.classList.add('hidden');
         if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = '';
         if (dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
+        // *** CHANGE 2: No need to show the footer as we never hide it now ***
         if (dom.siteFooter) dom.siteFooter.classList.remove('hidden');
         document.title = 'CAR-טיב - סרטוני רכבים כשרים';
     }
@@ -609,17 +611,20 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFiltersAndURL(false);
     }
 
+    // *** CHANGE 3: The corrected search logic ***
     function handleSearchSubmit(form) {
         const input = form.querySelector('input[type="search"]');
         if (!input) return;
         const searchTerm = input.value.trim();
-        const pageName = getPageName();
-        
-        if (pageName === 'category.html' || pageName === 'index.html') {
+        const isVideoViewActive = dom.singleVideoView.container && !dom.singleVideoView.container.classList.contains('hidden');
+
+        if (isVideoViewActive) {
+            // If we're on a video page, a search should always navigate to the main page with results.
+            window.location.href = `./?search=${encodeURIComponent(searchTerm)}#video-grid-section`;
+        } else {
+            // If we're already on a list page (index or category), just filter.
             state.currentFilters.searchTerm = searchTerm;
             updateFiltersAndURL();
-        } else {
-            window.location.href = `./?search=${encodeURIComponent(searchTerm)}#video-grid-section`;
         }
     }
 
@@ -943,40 +948,36 @@ document.addEventListener('DOMContentLoaded', () => {
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
             
-            // Logic for navigation links
             if (link && link.classList.contains('nav-link') && link.hash) {
-                const isVideoViewActive = dom.singleVideoView.container && !dom.singleVideoView.container.classList.contains('hidden');
-                
-                if (isVideoViewActive) {
-                    // If in video view, always navigate to the homepage with the hash
-                    e.preventDefault();
-                    window.location.href = './' + link.hash;
-                    return;
-                } else {
-                    // If on main page, just scroll smoothly
-                    const targetId = link.hash.substring(1);
-                    const targetElement = document.getElementById(targetId);
-                    if (targetElement) {
-                        e.preventDefault();
-                        const performScroll = () => {
-                            const header = document.querySelector('header.sticky');
-                            const headerOffset = header ? header.offsetHeight + 20 : 80;
-                            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                            window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                        };
+                const targetId = link.hash.substring(1);
+                const targetElement = document.getElementById(targetId);
 
+                if (targetElement) {
+                    e.preventDefault();
+
+                    const performScroll = () => {
+                        const header = document.querySelector('header.sticky');
+                        const headerOffset = header ? header.offsetHeight + 20 : 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                    };
+
+                    const isVideoViewActive = dom.singleVideoView.container && !dom.singleVideoView.container.classList.contains('hidden');
+
+                    if (isVideoViewActive) {
+                        window.location.href = './' + link.hash;
+                    } else {
                         if (link.closest('#mobile-menu')) {
                             closeMobileMenu();
                             setTimeout(performScroll, 300);
                         } else {
                             performScroll();
                         }
-                        return;
                     }
+                    return;
                 }
             }
 
-            // Logic for tag links in video view
             if (link && link.dataset.tagLink === "true") {
                  e.preventDefault();
                  window.location.href = link.href;
@@ -990,8 +991,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const videoTagButton = target.closest('.video-tag-button[data-tag]');
             if(videoTagButton) {
                 e.preventDefault();
-                const tagName = videoTagButton.dataset.tag;
-                window.location.href = `./?tags=${encodeURIComponent(tagName)}#video-grid-section`;
+                window.location.href = `./?tags=${encodeURIComponent(videoTagButton.dataset.tag)}#video-grid-section`;
             }
             
             if(card) {
@@ -1002,7 +1002,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         updateURLWithFilters(videoId);
                         showSingleVideoView(videoId);
                     } else {
-                        // If on any other page (like category.html), navigate to index to show the video
                         window.location.href = `./?v=${videoId}`;
                     }
                 } else if (target.closest('.video-play-link')) {
@@ -1018,7 +1017,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else if (target.closest('.share-btn')) {
                     e.preventDefault();
                     const video = state.allVideos.find(v => v.id === videoId);
-                    const url = new URL(`?v=${videoId}`, window.location.origin + window.location.pathname.replace('category.html', ''));
+                    const url = new URL(`?v=${videoId}`, window.location.origin + window.location.pathname.replace(/category\.html|index\.html/g, ''));
                     shareContent(url.href, target.closest('.share-btn'), 'הועתק!', video?.title || 'סרטון');
                 }
             }
