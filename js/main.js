@@ -116,11 +116,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const getPageName = () => {
         const path = window.location.pathname;
-        const page = path.split("/").pop();
-        if (page === 'category.html') return 'category.html';
-        if (page === 'add-video.html') return 'add-video.html';
-        if (page === 'privacy.html') return 'privacy.html';
-        if (page === 'terms.html') return 'terms.html';
+        const page = path.split("/").pop() || 'index.html'; // Default to index.html if empty
+        if (['category.html', 'add-video.html', 'privacy.html', 'terms.html'].includes(page)) {
+            return page;
+        }
         return 'index.html';
     };
 
@@ -481,8 +480,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         dom.mainPageContent.classList.add('hidden');
-        dom.siteFooter.classList.add('hidden');
-        dom.singleVideoView.container.classList.remove('hidden');
+        if (dom.siteFooter) dom.siteFooter.classList.add('hidden');
+        if (dom.singleVideoView.container) dom.singleVideoView.container.classList.remove('hidden');
         
         window.scrollTo(0, 0);
 
@@ -505,10 +504,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function hideSingleVideoView() {
-        dom.singleVideoView.container.classList.add('hidden');
-        dom.singleVideoView.player.innerHTML = '';
-        dom.mainPageContent.classList.remove('hidden');
-        dom.siteFooter.classList.remove('hidden');
+        if (dom.singleVideoView.container) dom.singleVideoView.container.classList.add('hidden');
+        if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = '';
+        if (dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
+        if (dom.siteFooter) dom.siteFooter.classList.remove('hidden');
         document.title = 'CAR-טיב - סרטוני רכבים כשרים';
     }
     
@@ -836,7 +835,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleScrollSpy() {
-        if (getPageName() !== 'index.html' || !dom.singleVideoView.container.classList.contains('hidden')) {
+        if (getPageName() !== 'index.html' || (dom.singleVideoView.container && !dom.singleVideoView.container.classList.contains('hidden'))) {
             document.querySelectorAll('header nav .nav-link.active-nav-link').forEach(link => link.classList.remove('active-nav-link'));
             return;
         }
@@ -957,23 +956,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                     };
 
-                    const isVideoViewActive = !dom.singleVideoView.container.classList.contains('hidden');
+                    const isVideoViewActive = dom.singleVideoView.container && !dom.singleVideoView.container.classList.contains('hidden');
 
                     if (isVideoViewActive) {
-                        // This is the most robust way. It handles all cases (direct link, refresh, navigation).
-                        // It navigates to the main page with the correct hash. The page will reload,
-                        // and the handleInitialHash function will correctly scroll to the element.
                         window.location.href = './' + link.hash;
                     } else {
-                        // We are already on the main page, just handle the scroll.
                         if (link.closest('#mobile-menu')) {
                             closeMobileMenu();
-                            setTimeout(performScroll, 300); // Wait for menu animation
+                            setTimeout(performScroll, 300);
                         } else {
                             performScroll();
                         }
                     }
-                    return; // Stop further execution for this click
+                    return;
                 }
             }
 
@@ -1135,34 +1130,36 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const currentPage = getPageName();
         state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
-
-        if (currentPage === 'category.html') {
-            const categoryFromURL = getCategoryFromURL();
-            if (categoryFromURL) {
-                state.currentFilters.category = categoryFromURL.toLowerCase();
-                const categoryVideos = state.allVideos.filter(v => v.category === state.currentFilters.category);
-                state.fuse = new Fuse(categoryVideos, CONSTANTS.FUSE_OPTIONS);
-                updateCategoryPageUI(state.currentFilters.category);
-            }
-        }
         
         const urlParams = new URLSearchParams(window.location.search);
         const videoIdFromUrl = urlParams.get('v');
 
-        if (videoIdFromUrl) {
+        if (videoIdFromUrl && dom.singleVideoView.container) {
             showSingleVideoView(videoIdFromUrl);
         } else {
-            hideSingleVideoView();
-            if(dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
+            // This handles index.html, category.html, etc.
+            if (dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
+            if (dom.siteFooter) dom.siteFooter.classList.remove('hidden');
+            if (dom.singleVideoView.container) dom.singleVideoView.container.classList.add('hidden');
 
-            if(currentPage === 'index.html' && dom.homepageCategoriesGrid) {
-                renderHomepageCategoryButtons();
+            if (currentPage === 'index.html') {
+                if(dom.homepageCategoriesGrid) renderHomepageCategoryButtons();
+                state.currentFilters.category = 'all';
+            } else if (currentPage === 'category.html') {
+                const categoryFromURL = getCategoryFromURL();
+                if (categoryFromURL) {
+                    state.currentFilters.category = categoryFromURL.toLowerCase();
+                    const categoryVideos = state.allVideos.filter(v => v.category === state.currentFilters.category);
+                    state.fuse = new Fuse(categoryVideos, CONSTANTS.FUSE_OPTIONS);
+                    updateCategoryPageUI(state.currentFilters.category);
+                }
             }
+
             applyFiltersFromURL();
             syncUIToState();
             if (dom.popularTagsContainer) renderPopularTags();
             applyFilters(false, false);
-            handleScrollSpy();
+            if (currentPage === 'index.html') handleScrollSpy();
         }
 
         setupEventListeners();
