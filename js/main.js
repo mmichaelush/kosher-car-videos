@@ -807,8 +807,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const newSearchString = newParams.toString();
         
         if (url.search.substring(1) !== newSearchString) {
-            const currentPath = window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-            const finalPath = pageName === 'index.html' ? currentPath : `${currentPath}${pageName}`;
+            const currentPath = window.location.pathname.endsWith('/') || window.location.pathname.endsWith('.html') ? window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1) : window.location.pathname + '/';
+            const base = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+            const finalPath = pageName === 'index.html' ? base : `${base}${pageName}`;
             history.pushState({ videoId, filters: state.currentFilters }, '', `${finalPath}?${newSearchString}`);
         }
     }
@@ -942,36 +943,40 @@ document.addEventListener('DOMContentLoaded', () => {
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
             
+            // Logic for navigation links
             if (link && link.classList.contains('nav-link') && link.hash) {
-                const targetId = link.hash.substring(1);
-                const targetElement = document.getElementById(targetId);
-
-                if (targetElement) {
+                const isVideoViewActive = dom.singleVideoView.container && !dom.singleVideoView.container.classList.contains('hidden');
+                
+                if (isVideoViewActive) {
+                    // If in video view, always navigate to the homepage with the hash
                     e.preventDefault();
+                    window.location.href = './' + link.hash;
+                    return;
+                } else {
+                    // If on main page, just scroll smoothly
+                    const targetId = link.hash.substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        e.preventDefault();
+                        const performScroll = () => {
+                            const header = document.querySelector('header.sticky');
+                            const headerOffset = header ? header.offsetHeight + 20 : 80;
+                            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                            window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                        };
 
-                    const performScroll = () => {
-                        const header = document.querySelector('header.sticky');
-                        const headerOffset = header ? header.offsetHeight + 20 : 80;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                    };
-
-                    const isVideoViewActive = dom.singleVideoView.container && !dom.singleVideoView.container.classList.contains('hidden');
-
-                    if (isVideoViewActive) {
-                        window.location.href = './' + link.hash;
-                    } else {
                         if (link.closest('#mobile-menu')) {
                             closeMobileMenu();
                             setTimeout(performScroll, 300);
                         } else {
                             performScroll();
                         }
+                        return;
                     }
-                    return;
                 }
             }
 
+            // Logic for tag links in video view
             if (link && link.dataset.tagLink === "true") {
                  e.preventDefault();
                  window.location.href = link.href;
@@ -986,26 +991,23 @@ document.addEventListener('DOMContentLoaded', () => {
             if(videoTagButton) {
                 e.preventDefault();
                 const tagName = videoTagButton.dataset.tag;
-                if (getPageName() === 'category.html' || getPageName() === 'index.html') {
-                    if (!state.currentFilters.tags.includes(tagName)) {
-                        toggleTagSelection(tagName);
-                    }
-                } else {
-                    window.location.href = `./?tags=${encodeURIComponent(tagName)}#video-grid-section`;
-                }
+                window.location.href = `./?tags=${encodeURIComponent(tagName)}#video-grid-section`;
             }
             
             if(card) {
                 const videoId = card.dataset.videoId;
-                const video = state.allVideos.find(v => v.id === videoId);
-
-                if (target.closest('.video-play-link')) {
+                if (target.closest('a.video-link')) {
+                    e.preventDefault();
+                    if (getPageName() === 'index.html') {
+                        updateURLWithFilters(videoId);
+                        showSingleVideoView(videoId);
+                    } else {
+                        // If on any other page (like category.html), navigate to index to show the video
+                        window.location.href = `./?v=${videoId}`;
+                    }
+                } else if (target.closest('.video-play-link')) {
                     e.preventDefault();
                     playVideoInline(card);
-                } else if (target.closest('a.video-link')) {
-                    e.preventDefault();
-                    updateURLWithFilters(videoId);
-                    showSingleVideoView(videoId);
                 } else if (target.closest('.fullscreen-btn')) {
                     e.preventDefault();
                     playVideoInline(card); 
@@ -1015,7 +1017,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 } else if (target.closest('.share-btn')) {
                     e.preventDefault();
-                    const url = new URL(`?v=${videoId}`, window.location.origin + window.location.pathname);
+                    const video = state.allVideos.find(v => v.id === videoId);
+                    const url = new URL(`?v=${videoId}`, window.location.origin + window.location.pathname.replace('category.html', ''));
                     shareContent(url.href, target.closest('.share-btn'), 'הועתק!', video?.title || 'סרטון');
                 }
             }
@@ -1053,7 +1056,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if(dom.contactForm) dom.contactForm.addEventListener('submit', handleContactFormSubmit);
         if(dom.singleVideoView.backBtn) dom.singleVideoView.backBtn.addEventListener('click', () => {
-             history.state ? history.back() : window.location.href = './';
+             history.state && history.length > 1 ? history.back() : window.location.href = './';
         });
 
         if(dom.hebrewFilterToggle) dom.hebrewFilterToggle.addEventListener('change', (e) => {
@@ -1085,7 +1088,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const videoId = params.get('v');
 
-            if (videoId) {
+            if (videoId && getPageName() === 'index.html') {
                 showSingleVideoView(videoId);
             } else {
                 hideSingleVideoView();
@@ -1137,7 +1140,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (videoIdFromUrl && dom.singleVideoView.container) {
             showSingleVideoView(videoIdFromUrl);
         } else {
-            // This handles index.html, category.html, etc.
             if (dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
             if (dom.siteFooter) dom.siteFooter.classList.remove('hidden');
             if (dom.singleVideoView.container) dom.singleVideoView.container.classList.add('hidden');
