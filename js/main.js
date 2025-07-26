@@ -472,52 +472,56 @@ document.addEventListener('DOMContentLoaded', () => {
         updateActiveTagVisuals();
     }
 
+    // *** THE CORRECTED FUNCTION ***
     function showSingleVideoView(videoId) {
         if (!videoId) return;
         const video = state.allVideos.find(v => v.id === videoId);
         if (!video) {
             console.error(`Video with ID ${videoId} not found.`);
+            // Optionally, show a "not found" message to the user
             return;
         }
 
-        // Hide main content and show video view
-        if (dom.mainPageContent) dom.mainPageContent.classList.add('hidden');
-        if (dom.siteFooter) dom.siteFooter.classList.add('hidden');
-        if (dom.singleVideoView.container) dom.singleVideoView.container.classList.remove('hidden');
-        
-        window.scrollTo(0, 0);
+        // 1. Hide the main content and footer
+        dom.mainPageContent.classList.add('hidden');
+        dom.siteFooter.classList.add('hidden');
 
-        // Populate video view with content
-        document.title = `${video.title} - CAR-טיב`;
-        if (dom.singleVideoView.title) dom.singleVideoView.title.innerHTML = video.title;
-        if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
-        if (dom.singleVideoView.channel) dom.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
-        if (dom.singleVideoView.duration) dom.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${video.duration}`;
+        // 2. Show the single video container
+        dom.singleVideoView.container.classList.remove('hidden');
         
-        if (dom.singleVideoView.date && video.dateAdded && !isNaN(video.dateAdded.getTime())) {
+        // 3. Populate the container with the video's data
+        document.title = `${video.title} - CAR-טיב`;
+        dom.singleVideoView.title.innerHTML = video.title;
+        dom.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+        dom.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
+        dom.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${video.duration}`;
+        
+        if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
             dom.singleVideoView.date.style.display = 'flex';
             dom.singleVideoView.date.innerHTML = `<i class="fas fa-calendar-alt fa-fw"></i> ${video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })}`;
-        } else if (dom.singleVideoView.date) {
+        } else {
             dom.singleVideoView.date.style.display = 'none';
         }
 
-        if (dom.singleVideoView.tags) {
-            dom.singleVideoView.tags.innerHTML = (video.tags || []).map(tag =>
-                `<a href="./?tags=${encodeURIComponent(tag)}#video-grid-section" data-tag-link="true" class="bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-sm font-medium px-3 py-1.5 rounded-full hover:bg-purple-200 dark:hover:bg-purple-700 transition-colors">${tag.charAt(0).toUpperCase() + tag.slice(1)}</a>`
-            ).join('');
-        }
+        dom.singleVideoView.tags.innerHTML = (video.tags || []).map(tag =>
+            `<a href="./?tags=${encodeURIComponent(tag)}#video-grid-section" data-tag-link="true" class="bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-sm font-medium px-3 py-1.5 rounded-full hover:bg-purple-200 dark:hover:bg-purple-700 transition-colors">${tag.charAt(0).toUpperCase() + tag.slice(1)}</a>`
+        ).join('');
+        
+        // 4. Scroll to the top of the page
+        window.scrollTo(0, 0);
     }
 
+    // *** THE CORRECTED FUNCTION ***
     function hideSingleVideoView() {
-        if (!dom.singleVideoView.container || dom.singleVideoView.container.classList.contains('hidden')) return;
-
-        // Hide video view and show main content
-        if (dom.singleVideoView.container) dom.singleVideoView.container.classList.add('hidden');
-        if (dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
-        if (dom.siteFooter) dom.siteFooter.classList.remove('hidden');
+        // 1. Hide the single video container and clean it
+        dom.singleVideoView.container.classList.add('hidden');
+        dom.singleVideoView.player.innerHTML = '';
         
-        // Cleanup
-        if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = '';
+        // 2. Show the main content and footer
+        dom.mainPageContent.classList.remove('hidden');
+        dom.siteFooter.classList.remove('hidden');
+
+        // 3. Reset the page title
         document.title = 'CAR-טיב - סרטוני רכבים כשרים';
     }
     
@@ -845,7 +849,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleScrollSpy() {
-        if (getPageName() !== 'index.html' || dom.singleVideoView.container.classList.contains('hidden') === false) {
+        if (getPageName() !== 'index.html' || !dom.singleVideoView.container.classList.contains('hidden')) {
             document.querySelectorAll('header nav .nav-link.active-nav-link').forEach(link => link.classList.remove('active-nav-link'));
             return;
         }
@@ -1119,7 +1123,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { threshold: 0.1 });
     }
 
+    // *** THE CORRECTED FUNCTION ***
     async function initializeApp() {
+        // Basic UI setup
         if (dom.currentYearFooter) dom.currentYearFooter.textContent = new Date().getFullYear();
         const isDark = document.documentElement.classList.contains('dark');
         dom.darkModeToggles.forEach(toggle => {
@@ -1130,16 +1136,19 @@ document.addEventListener('DOMContentLoaded', () => {
             toggle.setAttribute('aria-checked', String(isDark));
         });
 
+        // Load data
         await loadVideos();
         initVideoObserver();
         
         const currentPage = getPageName();
         state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
 
+        // Setup for category pages
         if (currentPage === 'category.html') {
             const categoryFromURL = getCategoryFromURL();
             if (categoryFromURL) {
                 state.currentFilters.category = categoryFromURL.toLowerCase();
+                // Re-create Fuse instance for the specific category to improve search performance
                 const categoryVideos = state.allVideos.filter(v => v.category === state.currentFilters.category);
                 state.fuse = new Fuse(categoryVideos, CONSTANTS.FUSE_OPTIONS);
                 updateCategoryPageUI(state.currentFilters.category);
@@ -1149,13 +1158,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const videoIdFromUrl = urlParams.get('v');
 
+        // This is the main logic fork: are we showing a video or the main page?
         if (videoIdFromUrl) {
             showSingleVideoView(videoIdFromUrl);
         } else {
-            hideSingleVideoView(); // Ensure video view is hidden on initial load of main page
-            if(dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
+            // It's not a video view, so show the main content
+            dom.mainPageContent.classList.remove('hidden');
+            dom.siteFooter.classList.remove('hidden');
+            dom.singleVideoView.container.classList.add('hidden');
 
-            if(currentPage === 'index.html' && dom.homepageCategoriesGrid) {
+            if (currentPage === 'index.html' && dom.homepageCategoriesGrid) {
                 renderHomepageCategoryButtons();
             }
             applyFiltersFromURL();
