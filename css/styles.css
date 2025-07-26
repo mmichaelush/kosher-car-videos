@@ -104,10 +104,3 @@ html[dir="rtl"] #mobile-menu .dark-mode-toggle-button .dot {
 .dark .tag.active-search-tag {
     background-color: #8b5cf6 !important; /* purple-500 */
 }
-
-/* === START: ADD THIS RULE AT THE END === */
-/* Ensure the .hidden class from Tailwind is fully non-interactive */
-.hidden {
-  display: none !important;
-}
-/* === END: ADD THIS RULE AT THE END === */
