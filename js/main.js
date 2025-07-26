@@ -203,7 +203,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return videos;
     }
     
-    // **REFACTORED FUNCTION**
     function applyFilters(isLoadMore = false, andScroll = true) {
         if (!isLoadMore) {
             state.ui.currentlyDisplayedVideosCount = 0;
@@ -218,10 +217,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         clearSearchSuggestions();
         updateFilterSummary();
-        // The call to updateURLWithFilters was removed from here
     }
     
-    // **NEW HELPER FUNCTION**
     function updateFiltersAndURL(andScroll = true) {
         applyFilters(false, andScroll);
         updateURLWithFilters();
@@ -475,16 +472,22 @@ document.addEventListener('DOMContentLoaded', () => {
         updateActiveTagVisuals();
     }
 
-    // **REFACTORED FUNCTION**
     function showSingleVideoView(videoId) {
         if (!videoId) return;
         const video = state.allVideos.find(v => v.id === videoId);
-        if (!video) return;
+        if (!video) {
+            console.error(`Video with ID ${videoId} not found.`);
+            return;
+        }
 
-        dom.body.classList.add('video-view-active');
+        // Hide main content and show video view
+        if (dom.mainPageContent) dom.mainPageContent.classList.add('hidden');
+        if (dom.siteFooter) dom.siteFooter.classList.add('hidden');
+        if (dom.singleVideoView.container) dom.singleVideoView.container.classList.remove('hidden');
         
         window.scrollTo(0, 0);
 
+        // Populate video view with content
         document.title = `${video.title} - CAR-טיב`;
         if (dom.singleVideoView.title) dom.singleVideoView.title.innerHTML = video.title;
         if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
@@ -505,11 +508,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // **REFACTORED FUNCTION**
     function hideSingleVideoView() {
-        if (!dom.body.classList.contains('video-view-active')) return;
+        if (!dom.singleVideoView.container || dom.singleVideoView.container.classList.contains('hidden')) return;
 
-        dom.body.classList.remove('video-view-active');
+        // Hide video view and show main content
+        if (dom.singleVideoView.container) dom.singleVideoView.container.classList.add('hidden');
+        if (dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
+        if (dom.siteFooter) dom.siteFooter.classList.remove('hidden');
+        
+        // Cleanup
         if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = '';
         document.title = 'CAR-טיב - סרטוני רכבים כשרים';
     }
@@ -590,7 +597,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (state.ui.lastFocusedElement) state.ui.lastFocusedElement.focus();
     }
 
-    // **REFACTORED FUNCTION**
     function toggleTagSelection(tagName) {
         if (!state.currentFilters.tags) return;
         const { tags } = state.currentFilters;
@@ -603,14 +609,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         updateActiveTagVisuals();
         renderSelectedTagChips();
-        updateFiltersAndURL(); // Use the new helper function
+        updateFiltersAndURL();
     }
 
     function clearAllFilters() {
         state.currentFilters = { ...state.currentFilters, tags: [], searchTerm: '', hebrewOnly: false, sortBy: 'date-desc' };
         localStorage.removeItem('hebrewOnlyPreference');
         syncUIToState();
-        updateFiltersAndURL(false); // Update with no scroll
+        updateFiltersAndURL(false);
     }
 
     function handleSearchSubmit(form) {
@@ -810,11 +816,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const newSearchString = newParams.toString();
         
-        // Only push state if the search string is different
         if (url.search.substring(1) !== newSearchString) {
-            // For index.html, we just update the path. For others, we keep the page name.
-            const newPath = pageName === 'index.html' ? url.pathname : `/${pageName}`;
-            history.pushState({ videoId, filters: state.currentFilters }, '', `${newPath}?${newSearchString}`);
+            const currentPath = window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            const finalPath = pageName === 'index.html' ? currentPath : `${currentPath}${pageName}`;
+            history.pushState({ videoId, filters: state.currentFilters }, '', `${finalPath}?${newSearchString}`);
         }
     }
 
@@ -832,14 +837,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleScroll() {
         const scrollPosition = window.pageYOffset;
         if(dom.backToTopButton) {
-            dom.backToTopButton.classList.toggle('invisible', scrollPosition <= 300);
-            dom.backToTopButton.classList.toggle('opacity-0', scrollPosition <= 300);
+            const isVisible = scrollPosition > 300;
+            dom.backToTopButton.classList.toggle('invisible', !isVisible);
+            dom.backToTopButton.classList.toggle('opacity-0', !isVisible);
         }
         handleScrollSpy();
     }
 
     function handleScrollSpy() {
-        if (getPageName() !== 'index.html' || dom.body.classList.contains('video-view-active')) {
+        if (getPageName() !== 'index.html' || dom.singleVideoView.container.classList.contains('hidden') === false) {
             document.querySelectorAll('header nav .nav-link.active-nav-link').forEach(link => link.classList.remove('active-nav-link'));
             return;
         }
@@ -971,9 +977,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            if (link && link.dataset.tagLink) {
+            if (link && link.dataset.tagLink === "true") {
                  e.preventDefault();
                  window.location.href = link.href;
+                 return;
             }
 
             if (target.closest('#check-yt-id-link') || target.closest('#check-yt-id-button')) handleCheckYtId(e);
@@ -1051,14 +1058,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if(dom.contactForm) dom.contactForm.addEventListener('submit', handleContactFormSubmit);
         if(dom.singleVideoView.backBtn) dom.singleVideoView.backBtn.addEventListener('click', () => {
-            if (history.state) { // Check if there's a state to go back to
-                history.back();
-            } else {
-                window.location.href = './';
-            }
+             history.state ? history.back() : window.location.href = './';
         });
 
-        // **UPDATED EVENT LISTENERS**
         if(dom.hebrewFilterToggle) dom.hebrewFilterToggle.addEventListener('change', (e) => {
             state.currentFilters.hebrewOnly = e.target.checked;
             localStorage.setItem('hebrewOnlyPreference', String(e.target.checked));
@@ -1067,7 +1069,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if(dom.sortSelect) dom.sortSelect.addEventListener('change', (e) => {
             state.currentFilters.sortBy = e.target.value;
-            updateFiltersAndURL(false); // Update without scrolling
+            updateFiltersAndURL(false);
         });
         
         if(dom.clearFiltersBtn) dom.clearFiltersBtn.addEventListener('click', clearAllFilters);
@@ -1078,7 +1080,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(dom.tagSearchInput) {
                 const newTagName = dom.tagSearchInput.value.trim().toLowerCase();
                 if (newTagName && !state.currentFilters.tags.includes(newTagName)) {
-                    toggleTagSelection(newTagName); // This now handles the URL update
+                    toggleTagSelection(newTagName);
                     dom.tagSearchInput.value = '';
                 }
             }
@@ -1150,22 +1152,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (videoIdFromUrl) {
             showSingleVideoView(videoIdFromUrl);
         } else {
-            // This ensures main content is visible if not in video view
-            dom.body.classList.remove('video-view-active'); 
-            
+            hideSingleVideoView(); // Ensure video view is hidden on initial load of main page
+            if(dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
+
             if(currentPage === 'index.html' && dom.homepageCategoriesGrid) {
                 renderHomepageCategoryButtons();
             }
             applyFiltersFromURL();
             syncUIToState();
-            renderPopularTags();
+            if (dom.popularTagsContainer) renderPopularTags();
             applyFilters(false, false);
             handleScrollSpy();
-        }
-        
-        // This makes sure the main content div is un-hidden if it's supposed to be visible
-        if (!videoIdFromUrl) {
-            dom.mainPageContent.classList.remove('hidden');
         }
 
         setupEventListeners();
