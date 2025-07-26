@@ -937,7 +937,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // *** THIS IS THE CORRECTED FUNCTION ***
     function setupEventListeners() {
         document.body.addEventListener('click', (e) => {
             const { target } = e;
@@ -961,17 +960,28 @@ document.addEventListener('DOMContentLoaded', () => {
                     const isVideoViewActive = !dom.singleVideoView.container.classList.contains('hidden');
 
                     if (isVideoViewActive) {
-                        history.back(); 
+                        // If we can go back in history (navigated from main page), do it.
+                        // It will trigger the popstate listener which calls hideSingleVideoView.
+                        if (history.length > 1) {
+                            history.back();
+                        } else {
+                            // If we can't go back (e.g., opened in new tab), manually hide the view
+                            // and update the URL.
+                            hideSingleVideoView();
+                            updateURLWithFilters(); // This removes the "?v=..." from the URL
+                        }
+                        // After the view is hidden (either by popstate or manually), scroll to the element.
                         setTimeout(performScroll, 150);
                     } else {
+                        // We are already on the main page, just handle the scroll.
                         if (link.closest('#mobile-menu')) {
                             closeMobileMenu();
-                            setTimeout(performScroll, 300);
+                            setTimeout(performScroll, 300); // Wait for menu animation
                         } else {
                             performScroll();
                         }
                     }
-                    return;
+                    return; // Stop further execution for this click
                 }
             }
 
@@ -1151,6 +1161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showSingleVideoView(videoIdFromUrl);
         } else {
             hideSingleVideoView();
+            if(dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
 
             if(currentPage === 'index.html' && dom.homepageCategoriesGrid) {
                 renderHomepageCategoryButtons();
