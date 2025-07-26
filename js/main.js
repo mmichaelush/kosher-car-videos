@@ -472,24 +472,20 @@ document.addEventListener('DOMContentLoaded', () => {
         updateActiveTagVisuals();
     }
 
-    // *** THE CORRECTED FUNCTION ***
     function showSingleVideoView(videoId) {
         if (!videoId) return;
         const video = state.allVideos.find(v => v.id === videoId);
         if (!video) {
             console.error(`Video with ID ${videoId} not found.`);
-            // Optionally, show a "not found" message to the user
             return;
         }
 
-        // 1. Hide the main content and footer
         dom.mainPageContent.classList.add('hidden');
         dom.siteFooter.classList.add('hidden');
-
-        // 2. Show the single video container
         dom.singleVideoView.container.classList.remove('hidden');
         
-        // 3. Populate the container with the video's data
+        window.scrollTo(0, 0);
+
         document.title = `${video.title} - CAR-טיב`;
         dom.singleVideoView.title.innerHTML = video.title;
         dom.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
@@ -506,22 +502,13 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.singleVideoView.tags.innerHTML = (video.tags || []).map(tag =>
             `<a href="./?tags=${encodeURIComponent(tag)}#video-grid-section" data-tag-link="true" class="bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 text-sm font-medium px-3 py-1.5 rounded-full hover:bg-purple-200 dark:hover:bg-purple-700 transition-colors">${tag.charAt(0).toUpperCase() + tag.slice(1)}</a>`
         ).join('');
-        
-        // 4. Scroll to the top of the page
-        window.scrollTo(0, 0);
     }
 
-    // *** THE CORRECTED FUNCTION ***
     function hideSingleVideoView() {
-        // 1. Hide the single video container and clean it
         dom.singleVideoView.container.classList.add('hidden');
         dom.singleVideoView.player.innerHTML = '';
-        
-        // 2. Show the main content and footer
         dom.mainPageContent.classList.remove('hidden');
         dom.siteFooter.classList.remove('hidden');
-
-        // 3. Reset the page title
         document.title = 'CAR-טיב - סרטוני רכבים כשרים';
     }
     
@@ -950,34 +937,41 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    // *** THIS IS THE CORRECTED FUNCTION ***
     function setupEventListeners() {
         document.body.addEventListener('click', (e) => {
             const { target } = e;
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
             
-            if (link && link.hash && (link.pathname.split('/').pop() || 'index.html').endsWith('index.html')) {
+            if (link && link.classList.contains('nav-link') && link.hash) {
                 const targetId = link.hash.substring(1);
-                if (document.getElementById(targetId)) {
-                   e.preventDefault();
-                   const targetElement = document.getElementById(targetId);
+                const targetElement = document.getElementById(targetId);
+
+                if (targetElement) {
+                    e.preventDefault();
+
                     const performScroll = () => {
-                       const header = document.querySelector('header.sticky');
-                       const headerOffset = header ? header.offsetHeight + 20 : 80;
-                       const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                       window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                       if (history.replaceState && getPageName() === 'index.html') {
-                          const cleanUrl = new URL(window.location);
-                          cleanUrl.hash = '';
-                          history.replaceState(null, '', cleanUrl.pathname + cleanUrl.search);
-                       }
-                   };
-                   if (link.closest('#mobile-menu')) {
-                       closeMobileMenu();
-                       setTimeout(performScroll, 300);
-                   } else {
-                       performScroll();
-                   }
+                        const header = document.querySelector('header.sticky');
+                        const headerOffset = header ? header.offsetHeight + 20 : 80;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                    };
+
+                    const isVideoViewActive = !dom.singleVideoView.container.classList.contains('hidden');
+
+                    if (isVideoViewActive) {
+                        history.back(); 
+                        setTimeout(performScroll, 150);
+                    } else {
+                        if (link.closest('#mobile-menu')) {
+                            closeMobileMenu();
+                            setTimeout(performScroll, 300);
+                        } else {
+                            performScroll();
+                        }
+                    }
+                    return;
                 }
             }
 
@@ -1123,9 +1117,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, { threshold: 0.1 });
     }
 
-    // *** THE CORRECTED FUNCTION ***
     async function initializeApp() {
-        // Basic UI setup
         if (dom.currentYearFooter) dom.currentYearFooter.textContent = new Date().getFullYear();
         const isDark = document.documentElement.classList.contains('dark');
         dom.darkModeToggles.forEach(toggle => {
@@ -1136,19 +1128,16 @@ document.addEventListener('DOMContentLoaded', () => {
             toggle.setAttribute('aria-checked', String(isDark));
         });
 
-        // Load data
         await loadVideos();
         initVideoObserver();
         
         const currentPage = getPageName();
         state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
 
-        // Setup for category pages
         if (currentPage === 'category.html') {
             const categoryFromURL = getCategoryFromURL();
             if (categoryFromURL) {
                 state.currentFilters.category = categoryFromURL.toLowerCase();
-                // Re-create Fuse instance for the specific category to improve search performance
                 const categoryVideos = state.allVideos.filter(v => v.category === state.currentFilters.category);
                 state.fuse = new Fuse(categoryVideos, CONSTANTS.FUSE_OPTIONS);
                 updateCategoryPageUI(state.currentFilters.category);
@@ -1158,16 +1147,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const urlParams = new URLSearchParams(window.location.search);
         const videoIdFromUrl = urlParams.get('v');
 
-        // This is the main logic fork: are we showing a video or the main page?
         if (videoIdFromUrl) {
             showSingleVideoView(videoIdFromUrl);
         } else {
-            // It's not a video view, so show the main content
-            dom.mainPageContent.classList.remove('hidden');
-            dom.siteFooter.classList.remove('hidden');
-            dom.singleVideoView.container.classList.add('hidden');
+            hideSingleVideoView();
 
-            if (currentPage === 'index.html' && dom.homepageCategoriesGrid) {
+            if(currentPage === 'index.html' && dom.homepageCategoriesGrid) {
                 renderHomepageCategoryButtons();
             }
             applyFiltersFromURL();
