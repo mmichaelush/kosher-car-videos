@@ -479,9 +479,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // *** CHANGE 1: Only hide mainPageContent, NOT the footer ***
         dom.mainPageContent.classList.add('hidden');
-        if (dom.siteFooter) dom.siteFooter.classList.remove('hidden'); // Ensure footer is visible
+        if (dom.siteFooter) dom.siteFooter.classList.remove('hidden');
         if (dom.singleVideoView.container) dom.singleVideoView.container.classList.remove('hidden');
         
         window.scrollTo(0, 0);
@@ -508,7 +507,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dom.singleVideoView.container) dom.singleVideoView.container.classList.add('hidden');
         if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = '';
         if (dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
-        // *** CHANGE 2: No need to show the footer as we never hide it now ***
         if (dom.siteFooter) dom.siteFooter.classList.remove('hidden');
         document.title = 'CAR-טיב - סרטוני רכבים כשרים';
     }
@@ -611,7 +609,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFiltersAndURL(false);
     }
 
-    // *** CHANGE 3: The corrected search logic ***
     function handleSearchSubmit(form) {
         const input = form.querySelector('input[type="search"]');
         if (!input) return;
@@ -619,10 +616,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const isVideoViewActive = dom.singleVideoView.container && !dom.singleVideoView.container.classList.contains('hidden');
 
         if (isVideoViewActive) {
-            // If we're on a video page, a search should always navigate to the main page with results.
             window.location.href = `./?search=${encodeURIComponent(searchTerm)}#video-grid-section`;
         } else {
-            // If we're already on a list page (index or category), just filter.
             state.currentFilters.searchTerm = searchTerm;
             updateFiltersAndURL();
         }
@@ -814,8 +809,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (url.search.substring(1) !== newSearchString) {
             const currentPath = window.location.pathname.endsWith('/') || window.location.pathname.endsWith('.html') ? window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1) : window.location.pathname + '/';
             const base = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
-            const finalPath = pageName === 'index.html' ? base : `${base}${pageName}`;
-            history.pushState({ videoId, filters: state.currentFilters }, '', `${finalPath}?${newSearchString}`);
+            let finalPath = pageName === 'index.html' ? base : `${base}${pageName}`;
+            
+            const finalUrl = newSearchString ? `${finalPath}?${newSearchString}` : finalPath;
+
+            history.pushState({ videoId, filters: state.currentFilters }, '', finalUrl);
         }
     }
 
@@ -949,32 +947,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = target.closest('article[data-video-id]');
             
             if (link && link.classList.contains('nav-link') && link.hash) {
-                const targetId = link.hash.substring(1);
-                const targetElement = document.getElementById(targetId);
-
-                if (targetElement) {
+                const isVideoViewActive = dom.singleVideoView.container && !dom.singleVideoView.container.classList.contains('hidden');
+                
+                if (isVideoViewActive) {
                     e.preventDefault();
+                    window.location.href = './' + link.hash;
+                    return;
+                } else {
+                    const targetId = link.hash.substring(1);
+                    const targetElement = document.getElementById(targetId);
+                    if (targetElement) {
+                        e.preventDefault();
+                        const performScroll = () => {
+                            const header = document.querySelector('header.sticky');
+                            const headerOffset = header ? header.offsetHeight + 20 : 80;
+                            const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                            window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                        };
 
-                    const performScroll = () => {
-                        const header = document.querySelector('header.sticky');
-                        const headerOffset = header ? header.offsetHeight + 20 : 80;
-                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                        window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                    };
-
-                    const isVideoViewActive = dom.singleVideoView.container && !dom.singleVideoView.container.classList.contains('hidden');
-
-                    if (isVideoViewActive) {
-                        window.location.href = './' + link.hash;
-                    } else {
                         if (link.closest('#mobile-menu')) {
                             closeMobileMenu();
                             setTimeout(performScroll, 300);
                         } else {
                             performScroll();
                         }
+                        return;
                     }
-                    return;
                 }
             }
 
