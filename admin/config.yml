@@ -7,61 +7,17 @@ media_folder: "data/assets/images"
 public_folder: "/data/assets/images"
 locale: 'he'
 
-x-fields:
-  id: &f_id
-    label: "מזהה יוטיוב (ID)"
-    name: "id"
-    widget: "string"
-    pattern: ['^[a-zA-Z0-9_-]{11}$', "חובה 11 תווים בדיוק"]
-  
-  title: &f_title
-    label: "כותרת הסרטון"
-    name: "title"
-    widget: "string"
-  
-  content: &f_content
-    label: "תיאור תוכן"
-    name: "content"
-    widget: "text"
-    required: false
-
-  duration: &f_duration
-    label: "אורך הסרטון"
-    name: "duration"
-    widget: "string"
-
-  channel: &f_channel
-    label: "שם הערוץ"
-    name: "channel"
-    widget: "string"
-
-  channelImage: &f_channelImage
-    label: "תמונת הערוץ (URL)"
-    name: "channelImage"
-    widget: "string"
-    required: false
-
-  tags: &f_tags
-    label: "תגיות"
-    name: "tags"
-    widget: "list"
-
-  hebrew: &f_hebrew
-    label: "תוכן בעברית?"
-    name: "hebrewContent"
-    widget: "boolean"
-    default: true
-
-  date: &f_date
-    label: "תאריך הוספה"
-    name: "dateAdded"
-    widget: "datetime"
-    format: "YYYY-MM-DD"
-    date_format: "DD.MM.YYYY"
-    time_format: false
-    required: false
+# הגדרת שדות ברירת מחדל לשימוש חוזר
+x-video_list_defaults: &video_list_defaults
+  label: "רשימת סרטונים"
+  name: "videos"
+  label_singular: "סרטון"
+  widget: "list"
+  collapsed: true
+  summary: "{{fields.title}} ({{fields.channel}})"
 
 collections:
+  # --- ערוצים מומלצים ---
   - name: "channels_collection"
     label: "ערוצים מומלצים"
     files:
@@ -80,6 +36,7 @@ collections:
               - { label: "תמונת הערוץ (URL)", name: "channel_image_url", widget: "string" }
               - { label: "תיאור הערוץ", name: "content_description", widget: "text" }
 
+  # --- קטגוריות סרטונים ---
   - name: "video_categories"
     label: "ניהול סרטונים (לפי קטגוריה)"
     files:
@@ -87,153 +44,117 @@ collections:
         label: "רכבי אספנות"
         file: "data/videos/collectors.json"
         fields:
-          - name: "videos"
-            label: "רשימת סרטונים"
-            label_singular: "סרטון"
-            widget: "list"
-            collapsed: true
-            summary: "{{fields.title}}"
+          - <<: *video_list_defaults
             fields:
               - { name: "category", widget: "hidden", default: "collectors" }
-              - *f_id
-              - *f_title
-              - *f_content
-              - *f_duration
-              - *f_channel
-              - *f_channelImage
-              - *f_tags
-              - *f_hebrew
-              - *f_date
+              - { label: "מזהה יוטיוב (ID)", name: "id", widget: "string", pattern: ['^[a-zA-Z0-9_-]{11}$', "חובה 11 תווים"] }
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "תיאור תוכן", name: "content", widget: "text", required: false }
+              - { label: "אורך", name: "duration", widget: "string" }
+              - { label: "ערוץ", name: "channel", widget: "string" }
+              - { label: "תמונת ערוץ", name: "channelImage", widget: "string", required: false }
+              - { label: "תגיות", name: "tags", widget: "list" }
+              - { label: "עברית?", name: "hebrewContent", widget: "boolean", default: true }
+              - { label: "תאריך", name: "dateAdded", widget: "datetime", format: "YYYY-MM-DD", required: false }
 
       - name: "diy"
         label: "עשה זאת בעצמך (DIY)"
         file: "data/videos/diy.json"
         fields:
-          - name: "videos"
-            label: "רשימת סרטונים"
-            label_singular: "סרטון"
-            widget: "list"
-            collapsed: true
-            summary: "{{fields.title}}"
+          - <<: *video_list_defaults
             fields:
               - { name: "category", widget: "hidden", default: "diy" }
-              - *f_id
-              - *f_title
-              - *f_content
-              - *f_duration
-              - *f_channel
-              - *f_channelImage
-              - *f_tags
-              - *f_hebrew
-              - *f_date
+              - { label: "מזהה יוטיוב (ID)", name: "id", widget: "string", pattern: ['^[a-zA-Z0-9_-]{11}$', "חובה 11 תווים"] }
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "תיאור תוכן", name: "content", widget: "text", required: false }
+              - { label: "אורך", name: "duration", widget: "string" }
+              - { label: "ערוץ", name: "channel", widget: "string" }
+              - { label: "תמונת ערוץ", name: "channelImage", widget: "string", required: false }
+              - { label: "תגיות", name: "tags", widget: "list" }
+              - { label: "עברית?", name: "hebrewContent", widget: "boolean", default: true }
+              - { label: "תאריך", name: "dateAdded", widget: "datetime", format: "YYYY-MM-DD", required: false }
 
       - name: "maintenance"
         label: "טיפולים"
         file: "data/videos/maintenance.json"
         fields:
-          - name: "videos"
-            label: "רשימת סרטונים"
-            label_singular: "סרטון"
-            widget: "list"
-            collapsed: true
-            summary: "{{fields.title}}"
+          - <<: *video_list_defaults
             fields:
               - { name: "category", widget: "hidden", default: "maintenance" }
-              - *f_id
-              - *f_title
-              - *f_content
-              - *f_duration
-              - *f_channel
-              - *f_channelImage
-              - *f_tags
-              - *f_hebrew
-              - *f_date
+              - { label: "מזהה יוטיוב (ID)", name: "id", widget: "string", pattern: ['^[a-zA-Z0-9_-]{11}$', "חובה 11 תווים"] }
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "תיאור תוכן", name: "content", widget: "text", required: false }
+              - { label: "אורך", name: "duration", widget: "string" }
+              - { label: "ערוץ", name: "channel", widget: "string" }
+              - { label: "תמונת ערוץ", name: "channelImage", widget: "string", required: false }
+              - { label: "תגיות", name: "tags", widget: "list" }
+              - { label: "עברית?", name: "hebrewContent", widget: "boolean", default: true }
+              - { label: "תאריך", name: "dateAdded", widget: "datetime", format: "YYYY-MM-DD", required: false }
 
       - name: "review"
         label: "סקירות רכב"
         file: "data/videos/review.json"
         fields:
-          - name: "videos"
-            label: "רשימת סרטונים"
-            label_singular: "סרטון"
-            widget: "list"
-            collapsed: true
-            summary: "{{fields.title}}"
+          - <<: *video_list_defaults
             fields:
               - { name: "category", widget: "hidden", default: "review" }
-              - *f_id
-              - *f_title
-              - *f_content
-              - *f_duration
-              - *f_channel
-              - *f_channelImage
-              - *f_tags
-              - *f_hebrew
-              - *f_date
+              - { label: "מזהה יוטיוב (ID)", name: "id", widget: "string", pattern: ['^[a-zA-Z0-9_-]{11}$', "חובה 11 תווים"] }
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "תיאור תוכן", name: "content", widget: "text", required: false }
+              - { label: "אורך", name: "duration", widget: "string" }
+              - { label: "ערוץ", name: "channel", widget: "string" }
+              - { label: "תמונת ערוץ", name: "channelImage", widget: "string", required: false }
+              - { label: "תגיות", name: "tags", widget: "list" }
+              - { label: "עברית?", name: "hebrewContent", widget: "boolean", default: true }
+              - { label: "תאריך", name: "dateAdded", widget: "datetime", format: "YYYY-MM-DD", required: false }
 
       - name: "systems"
         label: "מערכות הרכב"
         file: "data/videos/systems.json"
         fields:
-          - name: "videos"
-            label: "רשימת סרטונים"
-            label_singular: "סרטון"
-            widget: "list"
-            collapsed: true
-            summary: "{{fields.title}}"
+          - <<: *video_list_defaults
             fields:
               - { name: "category", widget: "hidden", default: "systems" }
-              - *f_id
-              - *f_title
-              - *f_content
-              - *f_duration
-              - *f_channel
-              - *f_channelImage
-              - *f_tags
-              - *f_hebrew
-              - *f_date
+              - { label: "מזהה יוטיוב (ID)", name: "id", widget: "string", pattern: ['^[a-zA-Z0-9_-]{11}$', "חובה 11 תווים"] }
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "תיאור תוכן", name: "content", widget: "text", required: false }
+              - { label: "אורך", name: "duration", widget: "string" }
+              - { label: "ערוץ", name: "channel", widget: "string" }
+              - { label: "תמונת ערוץ", name: "channelImage", widget: "string", required: false }
+              - { label: "תגיות", name: "tags", widget: "list" }
+              - { label: "עברית?", name: "hebrewContent", widget: "boolean", default: true }
+              - { label: "תאריך", name: "dateAdded", widget: "datetime", format: "YYYY-MM-DD", required: false }
 
       - name: "troubleshooting"
         label: "איתור תקלות"
         file: "data/videos/troubleshooting.json"
         fields:
-          - name: "videos"
-            label: "רשימת סרטונים"
-            label_singular: "סרטון"
-            widget: "list"
-            collapsed: true
-            summary: "{{fields.title}}"
+          - <<: *video_list_defaults
             fields:
               - { name: "category", widget: "hidden", default: "troubleshooting" }
-              - *f_id
-              - *f_title
-              - *f_content
-              - *f_duration
-              - *f_channel
-              - *f_channelImage
-              - *f_tags
-              - *f_hebrew
-              - *f_date
+              - { label: "מזהה יוטיוב (ID)", name: "id", widget: "string", pattern: ['^[a-zA-Z0-9_-]{11}$', "חובה 11 תווים"] }
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "תיאור תוכן", name: "content", widget: "text", required: false }
+              - { label: "אורך", name: "duration", widget: "string" }
+              - { label: "ערוץ", name: "channel", widget: "string" }
+              - { label: "תמונת ערוץ", name: "channelImage", widget: "string", required: false }
+              - { label: "תגיות", name: "tags", widget: "list" }
+              - { label: "עברית?", name: "hebrewContent", widget: "boolean", default: true }
+              - { label: "תאריך", name: "dateAdded", widget: "datetime", format: "YYYY-MM-DD", required: false }
 
       - name: "upgrades"
         label: "שיפורים ושדרוגים"
         file: "data/videos/upgrades.json"
         fields:
-          - name: "videos"
-            label: "רשימת סרטונים"
-            label_singular: "סרטון"
-            widget: "list"
-            collapsed: true
-            summary: "{{fields.title}}"
+          - <<: *video_list_defaults
             fields:
               - { name: "category", widget: "hidden", default: "upgrades" }
-              - *f_id
-              - *f_title
-              - *f_content
-              - *f_duration
-              - *f_channel
-              - *f_channelImage
-              - *f_tags
-              - *f_hebrew
-              - *f_date
-});
+              - { label: "מזהה יוטיוב (ID)", name: "id", widget: "string", pattern: ['^[a-zA-Z0-9_-]{11}$', "חובה 11 תווים"] }
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "תיאור תוכן", name: "content", widget: "text", required: false }
+              - { label: "אורך", name: "duration", widget: "string" }
+              - { label: "ערוץ", name: "channel", widget: "string" }
+              - { label: "תמונת ערוץ", name: "channelImage", widget: "string", required: false }
+              - { label: "תגיות", name: "tags", widget: "list" }
+              - { label: "עברית?", name: "hebrewContent", widget: "boolean", default: true }
+              - { label: "תאריך", name: "dateAdded", widget: "datetime", format: "YYYY-MM-DD", required: false }
