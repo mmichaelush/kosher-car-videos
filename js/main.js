@@ -211,11 +211,7 @@ async function loadFeaturedChannels() {
         const response = await fetch('data/featured_channels.json');
         if (!response.ok) return;
         const data = await response.json();
-        
-        // ---------- שינוי קריטי כאן גם עבור ערוצים ----------
-        const channels = data.channels || [];
-        // ---------------------------------------------------
-        
+        const channels = data.channels || [];        
         renderFeaturedChannels(channels);
     } catch (e) {
         console.error("Error loading featured channels:", e);
@@ -1270,8 +1266,6 @@ async function initializeApp() {
             const categoryFromURL = getCategoryFromURL();
             if (categoryFromURL) {
                 state.currentFilters.category = categoryFromURL.toLowerCase();
-                // Note: state.allVideos already contains only this category if loaded correctly
-                // But we ensure Fuse searches efficiently.
                 state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
                 updateCategoryPageUI(state.currentFilters.category);
             }
