@@ -11,8 +11,9 @@
 <script>
 var JsonArrayAdapter = {
 fromFile: function(content) {
-// תיקון קריטי: בדיקה אם התוכן ריק, null או undefined לפני שמנסים לפענח
-if (!content || content.trim() === "") {
+// הגנה קריטית מפני קבצים ריקים
+if (!content || typeof content !== 'string' || content.trim().length === 0) {
+console.warn("Recovered from empty/invalid file content.");
 return { videos: [] };
 }
 
@@ -20,22 +21,25 @@ try {
 var parsed = JSON.parse(content);
 
 if (Array.isArray(parsed)) {
-// זיהוי אם זה קובץ ערוצים
+// בדיקה אם זה קובץ ערוצים
 if (parsed.length > 0 && parsed[0].hasOwnProperty('channel_name')) {
 return { channels: parsed };
 }
-// ברירת מחדל: סרטונים
+// אחרת זה סרטונים
 return { videos: parsed };
 }
-// אם זה כבר אובייקט, החזר אותו כמו שהוא
+
+// אם זה כבר אובייקט תקין
 return parsed;
 } catch (e) {
-console.warn("JSON parsing failed, returning empty list.", e);
+console.error("JSON Parse Error:", e);
+// במקרה של שגיאה, החזר רשימה ריקה כדי לא לשבור את הממשק
 return { videos: [] };
 }
 },
 
 toFile: function(data) {
+// הסרת העטיפה לפני שמירה
 if (data.videos) {
 return JSON.stringify(data.videos, null, 2);
 }
@@ -46,6 +50,7 @@ return JSON.stringify(data, null, 2);
 }
 };
 
+// רישום הפורמט
 CMS.registerCustomFormat('json_root_array', 'json', JsonArrayAdapter);
 
 if (window.netlifyIdentity) {
