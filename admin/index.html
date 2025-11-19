@@ -7,40 +7,50 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
+<!-- טעינת Decap CMS -->
 <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 <script>
-var JsonArrayWidget = {
-fromBlock: function(match) {
-return match;
-},
-toBlock: function(obj) {
-return obj;
-},
-toPreview: function(obj) {
-return obj;
-}
-};
+// רישום פורמט מותאם אישית לקבצי JSON
+// המטרה: לגשר בין Decap שמצפה לאובייקט, לבין הקבצים שלנו שהם מערכים שטוחים
+CMS.registerCustomFormat('json_array_adapter', 'json', {
+// פונקציה זו רצה כשהמערכת קוראת את הקובץ
+fromFile: function(content) {
+try {
+const parsed = JSON.parse(content);
 
-CMS.registerEventListener({
-name: 'preSave',
-handler: ({ entry }) => {
-if (entry.get('collection') === 'video_categories') {
-const data = entry.get('data');
-if (data.has('videos')) {
-return data.get('videos');
+// אם הקובץ הוא מערך (כמו הקבצים שלנו)
+if (Array.isArray(parsed)) {
+// בדיקה האם זה קובץ ערוצים (לפי שדה ייחודי) או קובץ סרטונים
+if (parsed.length > 0 && parsed[0].hasOwnProperty('channel_name')) {
+return { channels: parsed }; // עוטף את המערך תחת המפתח 'channels'
 }
+// ברירת מחדל - זה קובץ סרטונים
+return { videos: parsed }; // עוטף את המערך תחת המפתח 'videos'
 }
-if (entry.get('collection') === 'channels_collection') {
-const data = entry.get('data');
-if (data.has('channels')) {
-return data.get('channels');
+
+// אם זה לא מערך, מחזיר כמו שזה
+return parsed;
+} catch (e) {
+return {};
 }
-}
-return entry.get('data');
 },
+
+// פונקציה זו רצה כשהמערכת שומרת את הקובץ
+toFile: function(data) {
+// אם יש מפתח 'videos', נשמור רק את התוכן שלו (המערך)
+if (data.videos) {
+return JSON.stringify(data.videos, null, 2);
+}
+// אם יש מפתח 'channels', נשמור רק את התוכן שלו
+if (data.channels) {
+return JSON.stringify(data.channels, null, 2);
+}
+// אחרת נשמור רגיל
+return JSON.stringify(data, null, 2);
+}
 });
-</script>
-<script>
+
+// ניהול הזדהות מול Netlify
 if (window.netlifyIdentity) {
 window.netlifyIdentity.on("init", user => {
 if (!user) {
