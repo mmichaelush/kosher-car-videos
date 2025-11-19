@@ -1,63 +1,62 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ניהול תוכן - CAR-טיב</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ניהול תוכן - CAR-טיב</title>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+<script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+<script>
+var JsonArrayAdapter = {
+fromFile: function(content) {
+// תיקון קריטי: בדיקה אם התוכן ריק, null או undefined לפני שמנסים לפענח
+if (!content || content.trim() === "") {
+return { videos: [] };
+}
 
-  <script>
-    // מתאם מיוחד לקבצי JSON שהם מערך שטוח (Root Array)
-    var JsonArrayAdapter = {
-      fromFile: function(content) {
-        try {
-          var parsed = JSON.parse(content);
-          // אם זה מערך, אנחנו עוטפים אותו באובייקט
-          if (Array.isArray(parsed)) {
-            // אם בקובץ יש שדה channel_name, כנראה שזה קובץ ערוצים
-            if (parsed.length > 0 && parsed[0].hasOwnProperty('channel_name')) {
-               return { channels: parsed };
-            }
-            // אחרת, זה קובץ סרטונים
-            return { videos: parsed };
-          }
-          return parsed;
-        } catch (e) {
-          // במקרה של שגיאה או קובץ ריק, נחזיר אובייקט ריק עם רשימת סרטונים ריקה
-          // זה מונע קריסה ומציג רשימה ריקה באדמין
-          console.warn("Failed to parse JSON, defaulting to empty video list:", e);
-          return { videos: [] };
-        }
-      },
-      
-      toFile: function(data) {
-        // אם יש מפתח 'videos', נשמור רק את התוכן שלו (המערך)
-        if (data.videos) {
-          return JSON.stringify(data.videos, null, 2);
-        }
-        // אם יש מפתח 'channels', נשמור רק את התוכן שלו
-        if (data.channels) {
-          return JSON.stringify(data.channels, null, 2);
-        }
-        return JSON.stringify(data, null, 2);
-      }
-    };
+try {
+var parsed = JSON.parse(content);
 
-    // רישום הפורמט לשימוש בקובץ config.yml
-    CMS.registerCustomFormat('json_root_array', 'json', JsonArrayAdapter);
+if (Array.isArray(parsed)) {
+// זיהוי אם זה קובץ ערוצים
+if (parsed.length > 0 && parsed[0].hasOwnProperty('channel_name')) {
+return { channels: parsed };
+}
+// ברירת מחדל: סרטונים
+return { videos: parsed };
+}
+// אם זה כבר אובייקט, החזר אותו כמו שהוא
+return parsed;
+} catch (e) {
+console.warn("JSON parsing failed, returning empty list.", e);
+return { videos: [] };
+}
+},
 
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
-          });
-        }
-      });
-    }
-  </script>
+toFile: function(data) {
+if (data.videos) {
+return JSON.stringify(data.videos, null, 2);
+}
+if (data.channels) {
+return JSON.stringify(data.channels, null, 2);
+}
+return JSON.stringify(data, null, 2);
+}
+};
+
+CMS.registerCustomFormat('json_root_array', 'json', JsonArrayAdapter);
+
+if (window.netlifyIdentity) {
+window.netlifyIdentity.on("init", user => {
+if (!user) {
+window.netlifyIdentity.on("login", () => {
+document.location.href = "/admin/";
+});
+}
+});
+}
+</script>
 </body>
 </html>
