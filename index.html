@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 
@@ -136,6 +137,10 @@
                     </button>
                 </div>
             </div>
+            
+            <!-- Video Content Description -->
+            <div id="single-video-content" class="mb-6 hidden"></div>
+
             <div id="single-video-tags" class="flex flex-wrap gap-2 mb-8">
             </div>
             <div class="mt-8 flex justify-center">
@@ -371,28 +376,39 @@
                 <div id="no-videos-found" class="hidden col-span-full text-center text-slate-500 dark:text-slate-400 py-16" aria-live="polite"></div>
             </section>
     
-            <section id="featured-channels-section" class="bg-purple-50 dark:bg-slate-800/60 py-16 md:py-20 transition-colors duration-300 rounded-2xl" aria-labelledby="featured-channels-heading">
+            <section id="featured-channels-section" class="bg-purple-50 dark:bg-slate-800/60 py-16 md:py-20 transition-colors duration-300 rounded-2xl overflow-hidden" aria-labelledby="featured-channels-heading">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h2 id="featured-channels-heading" class="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-12 text-center">
-                        <i class="fas fa-star text-yellow-400 dark:text-yellow-300 mr-3"></i>
-                        ערוצים מומלצים
-                    </h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                        <a href="https://www.youtube.com/@autoTV-israel" target="_blank" rel="noopener noreferrer" class="channel-card group block p-6 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl dark:hover:shadow-purple-600/40 text-center transition-all duration-300 transform hover:-translate-y-1.5 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
-                            <img src="https://yt3.googleusercontent.com/3qebPD_7MkRKogWeCpxol5jOQEI_QCr_XbSxd5Fg-YvkpofzuJr3mZzXTDWhP8DQlbjKqnY95Q=s72-c-k-c0x00ffffff-no-rj" alt="אוטו ישראל" class="h-20 w-20 mx-auto rounded-full object-cover mb-4 border-2 border-slate-200 dark:border-slate-500 group-hover:border-purple-400 dark:group-hover:border-purple-500 transition-colors" loading="lazy">
-                            <h3 class="font-semibold text-slate-800 dark:text-slate-100 group-hover:text-purple-600 dark:group-hover:text-purple-400">אוטו ישראל</h3>
-                            <p class="text-purple-600 dark:text-purple-400 text-sm">מבחני רכב</p>
-                        </a>
-                        <a href="https://www.youtube.com/@Knufia" target="_blank" rel="noopener noreferrer" class="channel-card group block p-6 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl dark:hover:shadow-purple-600/40 text-center transition-all duration-300 transform hover:-translate-y-1.5 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
-                            <img src="https://yt3.googleusercontent.com/GUgBg9CPvZAAijBQUaoViyGrQMFxci4g9lF_HAbTpbKDaJ8PgTD5qj_UE-dEClopYndj658WI_Q=s72-c-k-c0x00ffffff-no-rj" alt="הכנופיה" class="h-20 w-20 mx-auto rounded-full object-cover mb-4 border-2 border-slate-200 dark:border-slate-500 group-hover:border-purple-400 dark:group-hover:border-purple-500 transition-colors" loading="lazy">
-                            <h3 class="font-semibold text-slate-800 dark:text-slate-100 group-hover:text-purple-600 dark:group-hover:text-purple-400">הכנופיה</h3>
-                            <p class="text-purple-600 dark:text-purple-400 text-sm">פרויקטים ושיפורים</p>
-                        </a>
-                        <a href="https://www.youtube.com/@chrisfix" target="_blank" rel="noopener noreferrer" class="channel-card group block p-6 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg hover:shadow-xl dark:hover:shadow-purple-600/40 text-center transition-all duration-300 transform hover:-translate-y-1.5 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
-                            <img src="https://yt3.googleusercontent.com/ytc/AIdro_lsMlPXxQcSMI_EveG6eb7sd1T9vFkEQrXKruSjabO_ANY=s72-c-k-c0x00ffffff-no-rj" alt="ChrisFix" class="h-20 w-20 mx-auto rounded-full object-cover mb-4 border-2 border-slate-200 dark:border-slate-500 group-hover:border-purple-400 dark:group-hover:border-purple-500 transition-colors" loading="lazy">
-                            <h3 class="font-semibold text-slate-800 dark:text-slate-100 group-hover:text-purple-600 dark:group-hover:text-purple-400">ChrisFix</h3>
-                            <p class="text-purple-600 dark:text-purple-400 text-sm">מדריכי תיקונים</p>
-                        </a>
+                    <div class="text-center mb-10">
+                        <h2 id="featured-channels-heading" class="text-3xl font-bold text-slate-900 dark:text-slate-100 mb-3">
+                            <i class="fas fa-star text-yellow-400 dark:text-yellow-300 mr-3"></i>
+                            ערוצים מומלצים
+                        </h2>
+                         <p class="text-lg text-slate-600 dark:text-slate-300 flex items-center justify-center gap-2">
+                            ערוצים מומלצים שדף הבית של הערוץ פתוח ב
+                             <a href="https://netfree.link/" target="_blank" rel="noopener noreferrer" class="font-semibold underline hover:text-purple-600 dark:hover:text-purple-400 transition-colors inline-flex items-center">
+                                נטפרי
+                                <img src="https://netfree.link/wiki/images/6/6f/Netfree.png" alt="סמל נטפרי" class="w-5 h-5 ms-1.5 align-middle">
+                            </a>
+                        </p>
+                    </div>
+
+                    <div class="channels-carousel-wrapper relative group px-4 md:px-12">
+                        <button id="channels-scroll-right" class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 dark:bg-slate-700/80 p-3 rounded-full shadow-lg text-purple-600 dark:text-purple-400 hover:bg-white dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hidden md:block opacity-0 group-hover:opacity-100" aria-label="גלול ימינה">
+                             <i class="fas fa-chevron-right text-xl"></i>
+                        </button>
+
+                        <div class="channels-carousel-container no-scrollbar">
+                            <div id="featured-channels-track" class="channels-track">
+                                <!-- Channels will be injected here by JS -->
+                                <div class="flex items-center justify-center w-full py-10 text-slate-500">
+                                    <i class="fas fa-spinner fa-spin mr-2"></i> טוען ערוצים...
+                                </div>
+                            </div>
+                        </div>
+
+                         <button id="channels-scroll-left" class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 dark:bg-slate-700/80 p-3 rounded-full shadow-lg text-purple-600 dark:text-purple-400 hover:bg-white dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hidden md:block opacity-0 group-hover:opacity-100" aria-label="גלול שמאלה">
+                             <i class="fas fa-chevron-left text-xl"></i>
+                        </button>
                     </div>
                 </div>
             </section>
@@ -473,6 +489,12 @@
                             <div>
                                 <label for="contact-message" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">הודעה</label>
                                 <textarea id="contact-message" name="message" rows="5" required class="form-textarea py-3 px-4 block w-full shadow-sm focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg placeholder-slate-400 dark:placeholder-slate-500"></textarea>
+                            </div>
+                            <div class="flex items-center mt-4 mb-2">
+                                <input id="privacy-policy-checkbox" name="privacy_policy" type="checkbox" required class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded dark:bg-slate-700 dark:border-slate-500">
+                                <label for="privacy-policy-checkbox" class="mr-2 block text-sm text-slate-700 dark:text-slate-300">
+                                    קראתי ואני מאשר את <a href="privacy.html" class="text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 underline">מדיניות הפרטיות</a> שלנו.
+                                </label>
                             </div>
                             <div class="text-center pt-3">
                                 <button id="submit-button" type="submit" class="btn-primary !text-lg !px-10 !py-3.5 w-full sm:w-auto text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:ring-offset-2 dark:focus:ring-offset-slate-700 rounded-lg">
