@@ -50,43 +50,73 @@
   {
     "channel_name": "Aging Wheels | אייג'ינג ווילס",
     "channel_url": "https://www.youtube.com/@agingwheels",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_image_url": "https://yt3.googleusercontent.com/fwZ21v_5-9XLKTJ9WisqvsnnWJfpjAbK6UFvf3S47ZoQ6_-ii6bmeHZChh5lVi8FCn3m7RmQgw=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "סקירות משעשעות על רכבים מוזרים, ישנים וכושלים."
   },
   {
     "channel_name": "The Car Care Nut | דה קאר קר נאט",
     "channel_url": "https://www.youtube.com/@TheCarCareNut",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_m3IDUyQbLja2TSYNaRcLKe0e_jn630b_9djtsSWZMeiA=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "מומחה טויוטה (ו-Lexus), מספק מידע טכני מעמיק על אמינות ותחזוקה."
   },
   {
     "channel_name": "iCar | אתר הרכב של ישראל",
-    "channel_url": "https://www.youtube.com/@iCar_co_il",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_url": "https://www.youtube.com/@iCar_Official",
+    "channel_image_url": "https://yt3.googleusercontent.com/dYZTc2kToAPI7E9JTyKqV42HNjJ211cdrB2c-NiWULndBVzpTrQc2hk0nWMUHsKayYXdsf1V2A=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "מבחני דרכים וחדשות רכב מישראל."
   },
   {
     "channel_name": "Wheel News | וויל חדשות רכב",
-    "channel_url": "https://www.youtube.com/@WheelNews",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_url": "https://www.youtube.com/@wheel-sasi-cohen",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_nir5VTyQTumpYuMm7Ka_alnUs54j27ynsw-PKoDeP_=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "חדשות רכב, מבצעים ועדכונים מישראל."
   },
   {
+    "channel_name": "Tesla | טסלה",
+    "channel_url": "https://www.youtube.com/@vtest_igorvaiman",
+    "channel_image_url": "https://yt3.googleusercontent.com/YMRZbg8UjcGgiFOj4qxIWynUkxkV9h5KcpbQGO3yuJnU34Lga3UJeCEAP3T-t7MmNj8Yxsw-EQ=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "הערוץ הרשמי של רכבי טסלה."
+  },
+  {
+    "channel_name": "Vtest | וי טסט",
+    "channel_url": "https://www.youtube.com/@tesla",
+    "channel_image_url": "https://yt3.googleusercontent.com/Kxcof8p7Pwf2spifzOeY19KNbZYKRigXa6SPSggFbHZNIqRv0vujORc52RNP0n5tfiQPaVp6Cw=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "ערוץ עם סקירות על רכבי יוקרה."
+  },
+  {
+    "channel_name": "MotorTrend Channel | מוטור טרנד",
+    "channel_url": "https://www.youtube.com/@MotorTrendWatch",
+    "channel_image_url": "https://yt3.googleusercontent.com/JgxaUidJv3ovVL0BUK5z6duaNqRcjgWZPrgC85Lw0fGTw_h9GRtGij67rfoN582B5_sSOy6VfJs=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "ערוץ רכב אמריקאי ענק עם תוכניות רכב מגוונות, סקירות והשוואות."
+  },
+{
+    "channel_name": "ToyotaIsrael | טויוטה ישראל",
+    "channel_url": "https://www.youtube.com/@טויוטהישראל",
+    "channel_image_url": "https://yt3.googleusercontent.com/1eWeSzqIWw3PmmT7ziOQSYKl0NYGB8IoHNVhxkGB3-IZ-ZCjTsjV39UVBsSALRmCuKQ179USZg=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "הערוץ הרשמי של טויוטה ישראל."
+  },
+{
+    "channel_name": "Hyundai Israel | יונדאי ישראל",
+    "channel_url": "https://www.youtube.com/@hyundaiisrael",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_mfMNNNu3Xnv7uzqfibs2BnIK5bodtofrMBKvPU2yq9rA=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "הערוץ הרשמי של יונדאי ישראל."
+  },
+{
+    "channel_name": "Geely Israel | ג'ילי ישראל",
+    "channel_url": "https://www.youtube.com/@geelyisrael2758",
+    "channel_image_url": "https://yt3.googleusercontent.com/kyFAX7gUwnIXwdaH8v62xtxKlNCth4htlLPGHlRkt82yVbX9ocf4OunDMl-MpisPXEvQQdhqNQ=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "הערוץ הרשמי של ג'ילי ישראל."
+  },
+{
     "channel_name": "Tesla Tech | טסלה טק",
-    "channel_url": "https://www.youtube.com/@TeslaTech",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_url": "https://www.youtube.com/@TeslaTechIl",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_nlf46MD7M5flh5kY4Firk572qQsn4c_Bt0pwF_JyW99Q=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "ערוץ ישראלי המוקדש לכל מה שקשור ברכבי טסלה."
   },
   {
-    "channel_name": "MotorTrend | מוטור טרנד",
-    "channel_url": "https://www.youtube.com/@MotorTrend",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
-    "content_description": "ערוץ רכב אמריקאי ענק עם תוכניות רכב מגוונות, סקירות והשוואות."
-  },
-  {
     "channel_name": "Auto Bklali | אוטו בכללי",
-    "channel_url": "https://www.youtube.com/@AutoBklali",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_url": "https://www.youtube.com/@otobaklali",
+    "channel_image_url": "https://yt3.googleusercontent.com/JBQ8i4-yFD0FYiWQpx64GnaORUamqnePVVhCD_DU6EIDPPgt6kuvSDqUdgS-LC-dH5p4rYvqnw=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "פודקאסט/ערוץ דיבורים על עולם הרכב (לא תיקונים טכניים)."
   },
   {
