@@ -104,3 +104,52 @@ html[dir="rtl"] #mobile-menu .dark-mode-toggle-button .dot {
 .dark .tag.active-search-tag {
     background-color: #8b5cf6 !important; /* purple-500 */
 }
+
+/* Featured Channels Carousel Styles */
+.channels-carousel-container {
+    overflow: hidden;
+    position: relative;
+    padding: 1rem 0;
+}
+
+.channels-track {
+    display: flex;
+    gap: 1.5rem;
+    width: max-content;
+    animation: scroll-channels 60s linear infinite;
+    padding-left: 1rem; /* Offset for smooth loop */
+}
+
+.channels-carousel-container:hover .channels-track {
+    animation-play-state: paused;
+}
+
+@keyframes scroll-channels {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(50%); } /* Moves right for RTL naturally if positive, need to check dir */
+}
+
+/* Adjust animation for RTL specifically if needed, though translateX positive usually moves right */
+html[dir="rtl"] .channels-track {
+    animation: scroll-channels-rtl 60s linear infinite;
+}
+
+@keyframes scroll-channels-rtl {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(50%); } 
+}
+
+.channel-card {
+    flex: 0 0 280px; /* Fixed width for consistent carousel */
+    width: 280px;
+    scroll-snap-align: center;
+}
+
+/* Hide scrollbar but allow functionality if using touch */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
