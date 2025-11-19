@@ -1,518 +1,207 @@
 [
-    {
-        "channel_name": "The Garage (הגראז׳)",
-        "channel_url": "https://www.youtube.com/channel/UC-n-c5O_s2p6s5-uW3XW_7g",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k9_fHwks-rGv85EV6e_yv2yqN41kO5pS5b3-gY=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "ערוץ ישראלי קטן וחביב, בחור שמשפץ רכבי אספנות (בעיקר תוצ\"ג פיג׳ו וסיטרואן) ומעלה סרטונים באיכות טובה ובעברית."
-    },
-    {
-        "channel_name": "Iddo G",
-        "channel_url": "https://www.youtube.com/user/iddo100",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k0l3e7zV-c_Yl1B21h1o25b84L3H_C9Cg-vQ=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "ערוץ של בחור ישראלי שמתעד פרויקטים שהוא עושה, היילקס 94, ג׳אסטי, עבודות מנוע ושלדה ו-DIY. תענוג לצפות."
-    },
-    {
-        "channel_name": "E-Motion - אי-מושן",
-        "channel_url": "https://www.youtube.com/channel/UC4oQ_T63oE2o_uAlm_g_s0w",
-        "channel_image_url": "https://yt3.googleusercontent.com/1Gv2iCq35B29qcPP_i01-f222x3q-5q-3F_wZ4Y7B9y_x_w_w_h_z_c_c_z_z_z_z=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "ערוץ ישראלי על רכב חשמלי, מבחני דרכים, סקירות טכניות וכו׳."
-    },
-    {
-        "channel_name": "Car Story’s - סיפורי רכב",
-        "channel_url": "https://www.youtube.com/channel/UCcSBAbfaDBs3cTRt3qIIbPA",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k6_O7x_w_w_h_z_c_c_z_z_z_z_z_z_z_z_z_z=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "ערוץ ישראלי המציג סיפורים ומבחנים של מכוניות מיוחדות, לרוב רכבי אספנות, עם דגש על הסיפור מאחורי הרכב."
-    },
-    {
-        "channel_name": "Motor Junkies מוטור ג׳אנקיז",
-        "channel_url": "https://www.youtube.com/channel/UCfTjcFNX8iI2-wI949U_y-A",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_m-J_Z_z_x_y_Y_X_Y_X_Y_X_Y_X_Y_X_Y_X_Y_X_Y=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "ערוץ ישראלי שעוסק בשיפורי רכב, בעיקר ג׳ימני. התקנת מתלים וכו׳."
-    },
-    {
-        "channel_name": "גיל מאווי",
-        "channel_url": "https://www.youtube.com/user/mavigil",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k-v_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "לא ערוץ רכב במהותו, אך יש לו מספר סרטונים על רכישת ה-RS3 שלו ותחזוקתה."
-    },
-    {
-        "channel_name": "ChrisFix",
-        "channel_url": "https://www.youtube.com/user/PaintballOO7",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_m_w_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "ערוץ חובה לכל חובב רכב ו-DIY. מדריכים סופר איכותיים ומפורטים."
-    },
-    {
-        "channel_name": "Mighty Car Mods",
-        "channel_url": "https://www.youtube.com/user/mightycarmods",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "צמד חברים מאוסטרליה עם שלל פרויקטים מגוונים, מצחיקים וערוכים בצורה מעולה. תותחים אמיתיים."
-    },
-    {
-        "channel_name": "M539 Restorations",
-        "channel_url": "https://www.youtube.com/channel/UCg-s3GroQk7S_iH_x_3-2AA",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "סרבי שחי בגרמניה ומשפץ דגמי ב.מ.וו ישנים. העבודות הכי יסודיות ומעמיקות שיש."
-    },
-    {
-        "channel_name": "Donut Media",
-        "channel_url": "https://www.youtube.com/channel/UCL6JmiMXKoXS6bpP1D3bk8g",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "הכל מהכל, אבל מבדר ומצחיק. סדרת Up to speed שלהם מעולה."
-    },
-    {
-        "channel_name": "The Skid Factory",
-        "channel_url": "https://www.youtube.com/channel/UC68cT27-gBUyI5b5b-sAptA",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "ערוץ אוסטרלי נוסף, מתמקד בעיקר בפרויקטים של הסבות מנועים (אלון ווסקי)."
-    },
-    {
-        "channel_name": "Bad Obsession Motorsport",
-        "channel_url": "https://www.youtube.com/channel/UCHvBHWBzzB7NyU5tIiLdagw",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "שני בריטים עם פרויקט מטורף - ״פרויקט בלינקי״, מיני קלאסית עם מנוע ומתלים של סובארו אימפרזה."
-    },
-    {
-        "channel_name": "Jay Leno’s Garage",
-        "channel_url": "https://www.youtube.com/user/JayLenosGarage",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "ג׳יי לנו והאוסף המטורף שלו. אין צורך להוסיף."
-    },
-    {
-        "channel_name": "TFL (The Fast Lane) Car / Truck",
-        "channel_url": "https://www.youtube.com/user/TheFastLaneCar",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "מבחני דרכים אמיתיים, לא מכורים לחברות הרכב. הרכב עולה להרי הקולורדו ונבחן בתנאים אמיתיים."
-    },
-    {
-        "channel_name": "Doug DeMuro",
-        "channel_url": "https://www.youtube.com/channel/UCsqjHFMB_JYTaEnf_vmTNqg",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "המבחנים הכי מקיפים שיש. מתמקד ב-Quirks and features."
-    },
-    {
-        "channel_name": "Harry’s garage",
-        "channel_url": "https://www.youtube.com/channel/UCIB5XXHS-uWlgmfz-VEG_Lw",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "הארי מטקאלף, המייסד של מגזין EVO. מבחנים וחוות דעת אמיתיות, בעיקר על רכבים מהאוסף הפרטי שלו."
-    },
-    {
-        "channel_name": "Engineering Explained",
-        "channel_url": "https://www.youtube.com/user/EngineeringExplained",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "כל מה שרציתם לדעת על איך דברים עובדים ברכב שלכם."
-    },
-    {
-        "channel_name": "Throttle House",
-        "channel_url": "https://www.youtube.com/channel/UCU1X1jM23_RqAMb0_r8-R-w",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "צמד קנדים שמבצעים סקירות מעולות וסינמטיות לרכבים חדשים, תוך השוואות ביניהם. מומלץ!"
-    },
-    {
-        "channel_name": "RegularCars",
-        "channel_url": "https://www.youtube.com/user/RegularCars",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "כשמו כן הוא, סקירות של מכוניות רגילות, אבל בצורה ממש לא רגילה."
-    },
-    {
-        "channel_name": "Car Throttle",
-        "channel_url": "https://www.youtube.com/user/CarThrottle",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "ערוץ בריטי עם שלל מבחנים, פרויקטים והומור."
-    },
-    {
-        "channel_name": "TheSmokingTire",
-        "channel_url": "https://www.youtube.com/c/TheSmokingTire",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "מאט פארה עם שלל מבחנים ופודקאסט מצוין."
-    },
-    {
-        "channel_name": "Petrolicious",
-        "channel_url": "https://www.youtube.com/c/Petrolicious",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "סרטים קצרים באיכות קולנועית על רכבי אספנות והבעלים שלהם."
-    },
-    {
-        "channel_name": "AMMO NYC",
-        "channel_url": "https://www.youtube.com/user/AMMONYCdotcom",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "לארי קוסילה, אמן הדיטיילינג, מנקה ומשקם רכבים מיוחדים ונדירים."
-    },
-    {
-        "channel_name": "Alex rebuilt",
-        "channel_url": "https://www.youtube.com/channel/UCeTMR66pbbH59i-3A4upc-w",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "בחור צעיר שמשקם רכבי טסלה שעברו תאונות קשות."
-    },
-    {
-        "channel_name": "Gears and Gasoline",
-        "channel_url": "https://www.youtube.com/channel/UC_e_m2sBi-2C_8c1l_2DUuA",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "תרבות רכב, שיפורים, אירועים וכו׳."
-    },
-    {
-        "channel_name": "VINwiki",
-        "channel_url": "https://www.youtube.com/channel/UCefl-5pmhS_b_cGzaCVzO4w",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "סיפורים הזויים ומעניינים של אנשים על מכוניות."
-    },
-    {
-        "channel_name": "Hagerty",
-        "channel_url": "https://www.youtube.com/channel/UC2d33f_A6I4Yy2f67nOMpYw",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "ערוץ של חברת הביטוח לרכבי אספנות. סדרת ה-Time-lapse של שיפוצי מנועים שלהם פשוט מדהימה."
-    },
-    {
-        "channel_name": "The Straight Pipes",
-        "channel_url": "https://www.youtube.com/user/TheStraightPipes",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "עוד צמד קנדים שסוקרים מכוניות תוך כדי נהיגה."
-    },
-    {
-        "channel_name": "JayEmm on Cars",
-        "channel_url": "https://www.youtube.com/user/JayEmmOnCars",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "בריטי, נותן בראש בלי פילטרים."
-    },
-    {
-        "channel_name": "Tavarish",
-        "channel_url": "https://www.youtube.com/user/tavarish",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "קונה מכוניות על בזול ומשפץ אותן."
-    },
-    {
-        "channel_name": "Sarah -n- Tuned",
-        "channel_url": "https://www.youtube.com/user/Saaraazh",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "אחת היוטיובריות הבודדות בתחום."
-    },
-    {
-        "channel_name": "Redline Reviews",
-        "channel_url": "https://www.youtube.com/channel/UCn-7M-V-5-_tyASwp-L_4vg",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "סקירות מקיפות ומפורטות מאוד, צילום איכותי."
-    },
-    {
-        "channel_name": "DriveTribe",
-        "channel_url": "https://www.youtube.com/channel/UCGlc19zNbsa_oWw3_nOa_4A",
-        "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_k_x_y_z_a_b_c_d_e_f_g_h_i_j_k_l_m_n=s176-c-k-c0x00ffffff-no-rj",
-        "content_description": "הערוץ של קלארקסון, האמונד ומאי."
-    },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
   {
     "channel_name": "ChrisFix | כריספיקס",
     "channel_url": "https://www.youtube.com/@chrisfix",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsMlPXxQcSMI_EveG6eb7sd1T9vFkEQrXKruSjabO_ANY=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "ערוץ חובה לכל חובב רכב ו-DIY. מדריכים סופר איכותיים ומפורטים לתיקון ותחזוקת רכב."
   },
   {
-    "channel_name": "The Car Care Nut | קאר קייר נאט",
-    "channel_url": "https://www.youtube.com/@carcarenut",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "HaKnufia | הכנופיה",
+    "channel_url": "https://www.youtube.com/@HaKnufia",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "ערוץ ישראלי מעולה לתיקונים וטיפולים שוטפים ברכב עם הסברים ברורים בעברית."
   },
   {
-    "channel_name": "Scotty Kilmer | סקוטי קילמר",
-    "channel_url": "https://www.youtube.com/@scottykilmer",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Arsenic | ארסניק",
+    "channel_url": "https://www.youtube.com/@Arsenic",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "מדריכי רכב ותיקונים בעברית."
   },
   {
-    "channel_name": "Engineering Explained | הסבר הנדסי",
-    "channel_url": "https://www.youtube.com/@EngineeringExplained",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Alon Mechanic Mobile | אלון מכונאי נייד",
+    "channel_url": "https://www.youtube.com/@AlonMechanic",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "תיקוני רכב וסקירות מקיפות של כלי עבודה למכונאות."
   },
   {
-    "channel_name": "EricTheCarGuy | אריק דה קאר גאי",
-    "channel_url": "https://www.youtube.com/user/EricTheCarGuy",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Kfir Kasharian | כפיר כשריאן",
+    "channel_url": "https://www.youtube.com/@kfirkasharian",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "סקירות רכב והסברים טכניים בעברית."
   },
   {
-    "channel_name": "WeberAuto | וובר אוטו",
-    "channel_url": "https://www.youtube.com/@WeberAuto",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "David Matan | דוד מתן",
+    "channel_url": "https://www.youtube.com/@DavidMatan",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "ערוץ המתמקד בעיקר בתחום החשמל והדיאגנוסטיקה ברכב."
   },
   {
-    "channel_name": "The Gunman | הגאן-מן",
-    "channel_url": "https://www.youtube.com/@thegunmanpaint",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Auto Magazine | מגזין אוטו",
+    "channel_url": "https://www.youtube.com/@auto_magazine_il",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "ערוץ הוידאו של מגזין הרכב המוביל בישראל."
   },
   {
-    "channel_name": "D.I.Y. Auto School | די-איי-ווי אוטו סקול",
-    "channel_url": "https://www.youtube.com/@DIYAutoSchool",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Aging Wheels | אייג'ינג ווילס",
+    "channel_url": "https://www.youtube.com/@agingwheels",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "סקירות משעשעות על רכבים מוזרים, ישנים וכושלים."
   },
   {
-    "channel_name": "Donut | דונאט",
-    "channel_url": "https://www.youtube.com/@Donut",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "The Car Care Nut | דה קאר קר נאט",
+    "channel_url": "https://www.youtube.com/@TheCarCareNut",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "מומחה טויוטה (ו-Lexus), מספק מידע טכני מעמיק על אמינות ותחזוקה."
   },
   {
-    "channel_name": "Car Throttle | קאר ת׳רוטל",
-    "channel_url": "https://www.youtube.com/@carthrottle",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "iCar | אתר הרכב של ישראל",
+    "channel_url": "https://www.youtube.com/@iCar_co_il",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "מבחני דרכים וחדשות רכב מישראל."
   },
   {
-    "channel_name": "Mighty Car Mods | מייטי קאר מודס",
-    "channel_url": "https://www.youtube.com/@mightycarmods",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Wheel News | וויל חדשות רכב",
+    "channel_url": "https://www.youtube.com/@WheelNews",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "חדשות רכב, מבצעים ועדכונים מישראל."
   },
   {
-    "channel_name": "Auto Repair Guys | אוטו ריפייר גאייז",
-    "channel_url": "https://www.youtube.com/@autorepairguys",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Tesla Tech | טסלה טק",
+    "channel_url": "https://www.youtube.com/@TeslaTech",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "ערוץ ישראלי המוקדש לכל מה שקשור ברכבי טסלה."
   },
   {
-    "channel_name": "South Main Auto | סאות׳ מיין אוטו",
-    "channel_url": "https://www.youtube.com/@SouthMainAuto",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "Rich Rebuilds | ריץ׳ ריבלדס",
-    "channel_url": "https://www.youtube.com/@RichRebuilds",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "Vehicle Virgins | ויהיקל ורג׳ינס",
-    "channel_url": "https://www.youtube.com/@VehicleVirgins",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "Throttle House | ת׳רוטל האוס",
-    "channel_url": "https://www.youtube.com/@ThrottleHouse",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "Hoovie's Garage | הובי'ס גראג'",
-    "channel_url": "https://www.youtube.com/@hooviesgarage",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "Motor Trend Channel | מוטור טרנד",
+    "channel_name": "MotorTrend | מוטור טרנד",
     "channel_url": "https://www.youtube.com/@MotorTrend",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "ערוץ רכב אמריקאי ענק עם תוכניות רכב מגוונות, סקירות והשוואות."
   },
   {
-    "channel_name": "AutoTopNL | אוטו טופ NL",
-    "channel_url": "https://www.youtube.com/@AutoTopNL",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Auto Bklali | אוטו בכללי",
+    "channel_url": "https://www.youtube.com/@AutoBklali",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "פודקאסט/ערוץ דיבורים על עולם הרכב (לא תיקונים טכניים)."
   },
   {
-    "channel_name": "CarWizard | קאר וויזארד",
-    "channel_url": "https://www.youtube.com/@CarWizard",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Hagerty | האגרטי",
+    "channel_url": "https://www.youtube.com/@Hagerty",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "תוכן איכותי על רכבי אספנות, היסטוריה מוטורית וסדרות כמו Barn Find Hunter."
   },
   {
-    "channel_name": "AutoVlog | אוטו ולוג",
-    "channel_url": "https://www.youtube.com/@AutoVlog",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Grind Hard Plumbing Co | גרינד הארד",
+    "channel_url": "https://www.youtube.com/@GrindHardPlumbingCo",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "בניית כלי רכב מטורפים, הסבות מנועים ופרויקטים יצירתיים במיוחד."
   },
   {
-    "channel_name": "The Fast Lane Car | TFL קאר",
-    "channel_url": "https://www.youtube.com/@TFLcar",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Tester | טסטר",
+    "channel_url": "https://www.youtube.com/@TesterIsrael",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "מבחני דרכים וסקירות רכב בעברית."
   },
   {
-    "channel_name": "TFL Classics | TFL קלאסיקס",
-    "channel_url": "https://www.youtube.com/@TFLclassics",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "TFL Trucks | TFL טראקס",
-    "channel_url": "https://www.youtube.com/@TFLtruck",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "Auto Moto | אוטו מוטו",
-    "channel_url": "https://www.youtube.com/@automoto",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "PowerDrift | פאואר דריפט",
-    "channel_url": "https://www.youtube.com/@PowerDrift",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "CarExpert | קאר אקספרט",
-    "channel_url": "https://www.youtube.com/@CarExpert",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "Redline Reviews | רדליין ריוויוז",
-    "channel_url": "https://www.youtube.com/@RedlineReviews",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "Doug DeMuro | דאג דמירו",
-    "channel_url": "https://www.youtube.com/@DougDeMuro",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "SavageGeese | סאוואג' גיס",
-    "channel_url": "https://www.youtube.com/@SavageGeese",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "Jay Leno's Garage | ג׳יי לנו גאראז׳",
-    "channel_url": "https://www.youtube.com/@JayLenosGarage",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "AutoExpertTV | אוטו אקספרט",
-    "channel_url": "https://www.youtube.com/@AutoExpertTV",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "Shmee150 | שמי150",
-    "channel_url": "https://www.youtube.com/@Shmee150",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Auto Focus | אוטו פוקוס",
+    "channel_url": "https://www.youtube.com/@AutoFocusIsrael",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "מגזין רכב דיגיטלי עם סקירות וידאו."
   },
   {
     "channel_name": "Carwow | קארוואו",
     "channel_url": "https://www.youtube.com/@carwow",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "השוואות רכבים, מירוצי דראג ובידור רכב בריטי פופולרי."
   },
   {
-    "channel_name": "Throdle | ת׳רודל",
-    "channel_url": "https://www.youtube.com/@Throdle",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "The Electric Israeli | הישראלי החשמלי",
+    "channel_url": "https://www.youtube.com/@TheElectricIsraeli",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "סקירות רכב חשמלי וטסלה מנקודת מבט של ישראלי בארה\"ב."
   },
   {
-    "channel_name": "Adam LZ | אדם אל־זד",
-    "channel_url": "https://www.youtube.com/@AdamLZ",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Car Wizard | קאר וויזארד",
+    "channel_url": "https://www.youtube.com/@CarWizard",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "מכונאי המציג תקלות נפוצות, בדיקות קנייה וטיפים (Buy this, not that)."
   },
   {
-    "channel_name": "Hoonigan | הוניגן",
-    "channel_url": "https://www.youtube.com/@TheHoonigans",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Lior Tal | ליאור טל",
+    "channel_url": "https://www.youtube.com/@LiorTal",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "מורה נהיגה ישראלי עם סרטוני הדרכה רבים."
   },
   {
-    "channel_name": "Donut Media | דונאט מדיה",
-    "channel_url": "https://www.youtube.com/@donut",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Conquer Driving | לכבוש את הנהיגה",
+    "channel_url": "https://www.youtube.com/@ConquerDriving",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "ערוץ בריטי מצוין ללימוד נהיגה, טיפים לנהגים חדשים ומנוסים."
   },
   {
-    "channel_name": "Auto Auction Rebuilds | אוטו אוקשן ריבלדס",
-    "channel_url": "https://www.youtube.com/@AutoAuctionRebuilds",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "World Driving | נהיגה עולמית",
+    "channel_url": "https://www.youtube.com/@WorldDriving",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "סרטוני הדרכה ללימוד נהיגה."
   },
   {
-    "channel_name": "Samcrac | סם־קראק",
-    "channel_url": "https://www.youtube.com/@Samcrac",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "The Detail Geek | דה דיטייל גיק",
+    "channel_url": "https://www.youtube.com/@TheDetailGeek",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "סרטוני ניקוי עמוק (Detailing) ושיקום אסתטי של רכבים מלוכלכים."
   },
   {
-    "channel_name": "B is for Build | בי איז פור בילד",
-    "channel_url": "https://www.youtube.com/@BisforBuild",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "Stauffer Garage | מוסך סטופר",
+    "channel_url": "https://www.youtube.com/@StaufferGarage",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "ערוץ דיטיילינג פופולרי, שיקום רכבים מוזנחים."
   },
   {
-    "channel_name": "M539 Restorations | שיקום M539",
+    "channel_name": "Rich Rebuilds | ריץ' ריבילדס",
+    "channel_url": "https://www.youtube.com/@RichRebuilds",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "בנייה מחדש של רכבים (בעיקר חשמליים שעברו תאונות) ופרויקטים הנדסיים."
+  },
+  {
+    "channel_name": "Shvilim - Yoav Kaveh | שבילים - יואב קווה",
+    "channel_url": "https://www.youtube.com/@YoavKaveh",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "ערוץ ישראלי המתמקד בנהיגת שטח, מסלולים וסקירות רכבי 4X4."
+  },
+  {
+    "channel_name": "Manny Khoshbin | מני חושבין",
+    "channel_url": "https://www.youtube.com/@MannyKhoshbin",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "איל נדל\"ן המציג את אוסף רכבי העל (Hypercars) המטורף שלו (בוגאטי, פגאני ועוד)."
+  },
+  {
+    "channel_name": "DGN Driving | די.ג'י.אן נהיגה",
+    "channel_url": "https://www.youtube.com/@DGNDriving",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "מורה נהיגה בריטי, מציג טעויות נפוצות בטסטים ובנהיגה יומיומית."
+  },
+  {
+    "channel_name": "Throttle House | ת'רוטל האוס",
+    "channel_url": "https://www.youtube.com/@ThrottleHouse",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "צמד קנדי המבצע מבחני רכב מושקעים, הומוריסטיים ואיכותיים."
+  },
+  {
+    "channel_name": "Autogefuhl | אוטוגפיל",
+    "channel_url": "https://www.youtube.com/@Autogefuhl",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "סקירות עומק ארוכות ומפורטות של רכבים חדשים (דגש על רכבים גרמניים)."
+  },
+  {
+    "channel_name": "M539 Restorations | שחזורי M539",
     "channel_url": "https://www.youtube.com/@M539Restorations",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "שחזור מכני וקוסמטי מוקפד של רכבי ב.מ.וו קלאסיים."
   },
   {
-    "channel_name": "Tavarish | טאבריש",
-    "channel_url": "https://www.youtube.com/@Tavarish",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "Goonzquad | גונזסקוואד",
-    "channel_url": "https://www.youtube.com/@goonzquad",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "I Do Cars | איי דו קארס",
-    "channel_url": "https://www.youtube.com/@idocars",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "JR Garage | ג׳י־אר גראג׳",
-    "channel_url": "https://www.youtube.com/@JRGarage",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "AMMO NYC | אממו ניו־יורק",
-    "channel_url": "https://www.youtube.com/@AMMONYC",
-    "channel_image_url": "",
-    "content_description": ""
-  },
-  {
-    "channel_name": "Ideal Cars | איידיאל קארס",
-    "channel_url": "https://www.youtube.com/@IdealCars",
-    "channel_image_url": "",
-    "content_description": ""
+    "channel_name": "RoCars | רו-קארס",
+    "channel_url": "https://www.youtube.com/@RoCars",
+    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "content_description": "צילום קולנועי של רכבי יוקרה וספורט ללא דיבורים (Walkarounds וסאונד)."
   }
-
-
-
-
-
-    
 ]
+```[[1](https://www.google.com/url?sa=E&q=https%3A%2F%2Frechavimzelaze.ovh%2Ftopic%2F6479%2F%25D7%25A2%25D7%25A8%25D7%2595%25D7%25A6%25D7%2599-%25D7%2599%25D7%2595%25D7%2598%25D7%2599%25D7%2595%25D7%2591-%25D7%2591%25D7%25A0%25D7%2595%25D7%25A9%25D7%2590-%25D7%25A8%25D7%259B%25D7%2591%25D7%2599%25D7%259D-%25D7%25A8%25D7%25A9%25D7%2599%25D7%259E%25D7%2594-%25D7%259E%25D7%25AA%25D7%25A2%25D7%2593%25D7%259B%25D7%25A0%25D7%25AA)]
