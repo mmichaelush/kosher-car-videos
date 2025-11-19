@@ -1,4 +1,5 @@
-[
+{
+"channels": [
   {
     "channel_name": "ChrisFix | כריספיקס",
     "channel_url": "https://www.youtube.com/@chrisfix",
@@ -258,3 +259,4 @@
     "content_description": "סקירות עומק ארוכות ומפורטות של רכבים חדשים (דגש על רכבים גרמניים)."
   }
 ]
+}
