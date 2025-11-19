@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { name: 'title', weight: 0.6 },
                 { name: 'tags', weight: 0.3 },
                 { name: 'channel', weight: 0.1 },
-                { name: 'content', weight: 0.1 } // Added content description to search
+                { name: 'content', weight: 0.1 } 
             ],
             includeScore: true,
             includeMatches: true,
@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
             minMatchCharLength: 2,
             ignoreLocation: true
         },
-        // Names of the JSON files in data/videos/ without extension
         CATEGORY_FILES: [
             'collectors',
             'diy',
@@ -83,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
             container: document.getElementById('single-video-view'),
             player: document.getElementById('single-video-player-container'),
             title: document.getElementById('single-video-title'),
-            content: document.getElementById('single-video-content'), // Added content div in HTML
+            content: document.getElementById('single-video-content'), 
             tags: document.getElementById('single-video-tags'),
             channel: document.getElementById('single-video-channel'),
             duration: document.getElementById('single-video-duration'),
@@ -94,8 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     let state = {
-        allVideos: [], // Will contain either all videos or category specific ones
-        allVideosCache: null, // For the ID checker to always have access to everything
+        allVideos: [], 
+        allVideosCache: null,
         fuse: null,
         currentFilters: {
             category: 'all',
@@ -131,7 +130,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const getPageName = () => {
         const path = window.location.pathname;
         const page = path.split("/").pop() || 'index.html';
-        // Handle query parameters or empty string resulting in index.html
         if (page === '' || page === '/') return 'index.html';
         if (['category.html', 'add-video.html', 'privacy.html', 'terms.html'].includes(page)) {
             return page;
@@ -150,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return 0;
     };
 
-    // Generate Thumbnail URL from ID (Since we removed the field from JSON)
     const getThumbnailUrl = (videoId) => `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
 
     async function fetchVideosFromFile(filename) {
@@ -158,10 +155,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`data/videos/${filename}.json`);
             if (!response.ok) throw new Error(`Failed to load ${filename}`);
             const data = await response.json();
-            return data.map(video => ({
+            
+            // ---------- שינוי קריטי כאן ----------
+            // במקום לגשת ישירות ל-data, אנו ניגשים ל-data.videos
+            const videosArray = data.videos || []; 
+            // -------------------------------------
+
+            return videosArray.map(video => ({
                 ...video,
-                thumbnail: getThumbnailUrl(video.id), // Generate thumbnail on the fly
-                category: video.category || filename, // Ensure category is set
+                thumbnail: getThumbnailUrl(video.id), 
+                category: video.category || filename, 
                 tags: (video.tags || []).map(tag => String(tag).toLowerCase()),
                 durationInSeconds: parseDurationToSeconds(video.duration),
                 dateAdded: video.dateAdded ? new Date(video.dateAdded) : null
@@ -180,10 +183,8 @@ document.addEventListener('DOMContentLoaded', () => {
             let videos = [];
 
             if (page === 'category.html' && urlCategory && CONSTANTS.CATEGORY_FILES.includes(urlCategory)) {
-                // Optimization: Load only specific category file
                 videos = await fetchVideosFromFile(urlCategory);
             } else {
-                // Load all files (Home page or invalid category or global search)
                 const promises = CONSTANTS.CATEGORY_FILES.map(file => fetchVideosFromFile(file));
                 const results = await Promise.all(promises);
                 videos = results.flat();
@@ -203,14 +204,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Logic to load featured channels for the carousel
     async function loadFeaturedChannels() {
         if (!dom.featuredChannelsTrack) return;
         
         try {
             const response = await fetch('data/featured_channels.json');
             if (!response.ok) return;
-            const channels = await response.json();
+            const data = await response.json();
+            
+            // ---------- שינוי קריטי כאן גם עבור ערוצים ----------
+            const channels = data.channels || [];
+            // ---------------------------------------------------
             
             renderFeaturedChannels(channels);
         } catch (e) {
@@ -219,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderFeaturedChannels(channels) {
-        // Double the array to create smooth infinite scroll effect
         const displayChannels = [...channels, ...channels]; 
         
         dom.featuredChannelsTrack.innerHTML = displayChannels.map(channel => `
@@ -232,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </a>
         `).join('');
 
-        // Initialize Carousel Scroll Buttons Logic
         const scrollContainer = document.querySelector('.channels-carousel-container');
         const track = dom.featuredChannelsTrack;
         const btnLeft = document.getElementById('channels-scroll-left');
@@ -240,9 +242,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if(btnLeft && btnRight && scrollContainer) {
             btnRight.addEventListener('click', () => {
-                // Stop animation on manual interaction
                 track.style.animationPlayState = 'paused'; 
-                scrollContainer.scrollBy({ left: -300, behavior: 'smooth' }); // RTL: negative moves left visually (next items)
+                scrollContainer.scrollBy({ left: -300, behavior: 'smooth' });
             });
             
             btnLeft.addEventListener('click', () => {
@@ -257,8 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let filtered = state.allVideos;
 
         if (state.currentFilters.category !== 'all') {
-            // If we are on index page and filtered by category (via logic, though UI separates them)
-            // Or if on category page, data is already filtered by fetch, but we double check
              filtered = filtered.filter(v => v.category === state.currentFilters.category);
         }
         
@@ -374,7 +373,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const videoPageUrl = `./?v=${video.id}`;
         
         card.article.dataset.videoId = video.id;
-        // Use the generated thumbnail URL
         card.thumbnailImg.src = video.thumbnail || getThumbnailUrl(video.id);
         card.thumbnailImg.alt = video.title;
         card.duration.textContent = video.duration || '';
@@ -562,7 +560,6 @@ document.addEventListener('DOMContentLoaded', () => {
     async function showSingleVideoView(videoId) {
         if (!videoId) return;
         
-        // If we are on a page with limited data, we might need to fetch everything to find the video
         if(!state.allVideos.find(v => v.id === videoId)) {
              const promises = CONSTANTS.CATEGORY_FILES.map(file => fetchVideosFromFile(file));
              const results = await Promise.all(promises);
@@ -587,7 +584,6 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
         dom.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${video.duration}`;
         
-        // Render content description if exists
         if (video.content && dom.singleVideoView.content) {
             dom.singleVideoView.content.innerHTML = `<p class="text-slate-700 dark:text-slate-300 text-lg leading-relaxed bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border-r-4 border-purple-500">${video.content}</p>`;
             dom.singleVideoView.content.classList.remove('hidden');
@@ -628,7 +624,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Function to handle checking if a video exists across all JSON files
     async function handleCheckYtId(e) {
         if (e) e.preventDefault();
         
@@ -649,7 +644,6 @@ document.addEventListener('DOMContentLoaded', () => {
         async function checkVideoId(videoIdToCheck) {
             if (!videoIdToCheck) return { message: "לא סופק ID לבדיקה." };
             
-            // If cache isn't loaded, fetch all data now
             if (!state.allVideosCache) {
                 const btn = document.getElementById('check-yt-id-button') || document.getElementById('check-yt-id-link');
                 if(btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin ml-2"></i> בודק בכל הקבצים...';
@@ -660,7 +654,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 if(btn) {
                      btn.innerHTML = '<i class="fas fa-search ml-2"></i> בדיקה אם הסרטון כבר קיים במאגר';
-                     // Restore original text if it was the link in footer
                      if(btn.id === 'check-yt-id-link') btn.innerHTML = '<i class="fas fa-search fa-fw ml-2 opacity-70"></i>בדוק אם סרטון קיים';
                 }
             }
@@ -1296,4 +1289,3 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initializeApp();
-});
