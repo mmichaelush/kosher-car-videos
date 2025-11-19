@@ -120,6 +120,42 @@
     "content_description": "פודקאסט/ערוץ דיבורים על עולם הרכב (לא תיקונים טכניים)."
   },
   {
+    "channel_name": "Lancer 9 | לנסר 9",
+    "channel_url": "https://www.youtube.com/@lancer9234",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_kK5tFZyV75ARTs_meL8rBtI4Zhvuaf_Hu5vZv1OfywOQ=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "ערוץ בעברית על רכבי מיצובישי."
+  }, 
+   {
+    "channel_name": "The Detail Geek | דה דיטייל גיק",
+    "channel_url": "https://www.youtube.com/@TheDetailGeek",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_nh3BpO_PmKIExTQ9jmJWnD5b2TEqowJ8lRMqu2S9vbcQk=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "סרטוני ניקוי עמוק (Detailing) ושיקום אסתטי של רכבים מלוכלכים."
+  },
+  {
+    "channel_name": "Stauffer Garage | מוסך סטופר",
+    "channel_url": "https://www.youtube.com/@StaufferGarage",
+    "channel_image_url": "https://yt3.googleusercontent.com/3VT5yN8iD2padsU3s05RWbcwOiy156Uv9KNJyo1gDoRe1dU3oOJUb5lnbx4S6lBK8JXvzPf2=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "ערוץ דיטיילינג פופולרי, שיקום רכבים מוזנחים."
+  },
+   {
+    "channel_name": "M539 Restorations | שחזורי M539",
+    "channel_url": "https://www.youtube.com/@M539Restorations",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_kKYN7q7TeI6ZQ7C-wcSNaTd3k1R1dJ69P4a1im3g8njQjo=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "שחזור מכני וקוסמטי מוקפד של רכבי ב.מ.וו קלאסיים."
+  },
+   {
+    "channel_name": "RoCars | רו-קארס",
+    "channel_url": "https://www.youtube.com/@RoCarsTV",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_kPHe8M8vZIs9jSA0xx98owt8Y2QnIqtK1KbmYqc-1wzCY=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "צילום קולנועי של רכבי יוקרה וספורט ללא דיבורים (Walkarounds וסאונד)."
+  },
+   {
+    "channel_name": "Carwow | קארוואו",
+    "channel_url": "https://www.youtube.com/@carwow",
+    "channel_image_url": "https://yt3.googleusercontent.com/-PtulUvAuaVV3-Wqix3BuogI8ql9c5braOWPScH1KKf0V0-DeSv-h2rZpi7K9K_kYpw33zH9=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "תחרויות והשוואוות רכבים, מירוצי דראג ובידור רכב בריטי פופולרי."
+  },
+  {
     "channel_name": "Hagerty | האגרטי",
     "channel_url": "https://www.youtube.com/@Hagerty",
     "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
@@ -142,12 +178,6 @@
     "channel_url": "https://www.youtube.com/@AutoFocusIsrael",
     "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
     "content_description": "מגזין רכב דיגיטלי עם סקירות וידאו."
-  },
-  {
-    "channel_name": "Carwow | קארוואו",
-    "channel_url": "https://www.youtube.com/@carwow",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
-    "content_description": "השוואות רכבים, מירוצי דראג ובידור רכב בריטי פופולרי."
   },
   {
     "channel_name": "The Electric Israeli | הישראלי החשמלי",
@@ -178,18 +208,6 @@
     "channel_url": "https://www.youtube.com/@WorldDriving",
     "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
     "content_description": "סרטוני הדרכה ללימוד נהיגה."
-  },
-  {
-    "channel_name": "The Detail Geek | דה דיטייל גיק",
-    "channel_url": "https://www.youtube.com/@TheDetailGeek",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
-    "content_description": "סרטוני ניקוי עמוק (Detailing) ושיקום אסתטי של רכבים מלוכלכים."
-  },
-  {
-    "channel_name": "Stauffer Garage | מוסך סטופר",
-    "channel_url": "https://www.youtube.com/@StaufferGarage",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
-    "content_description": "ערוץ דיטיילינג פופולרי, שיקום רכבים מוזנחים."
   },
   {
     "channel_name": "Rich Rebuilds | ריץ' ריבילדס",
@@ -226,17 +244,5 @@
     "channel_url": "https://www.youtube.com/@Autogefuhl",
     "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
     "content_description": "סקירות עומק ארוכות ומפורטות של רכבים חדשים (דגש על רכבים גרמניים)."
-  },
-  {
-    "channel_name": "M539 Restorations | שחזורי M539",
-    "channel_url": "https://www.youtube.com/@M539Restorations",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
-    "content_description": "שחזור מכני וקוסמטי מוקפד של רכבי ב.מ.וו קלאסיים."
-  },
-  {
-    "channel_name": "RoCars | רו-קארס",
-    "channel_url": "https://www.youtube.com/@RoCars",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
-    "content_description": "צילום קולנועי של רכבי יוקרה וספורט ללא דיבורים (Walkarounds וסאונד)."
   }
 ]
