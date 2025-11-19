@@ -107,6 +107,18 @@
     "channel_image_url": "https://yt3.googleusercontent.com/kyFAX7gUwnIXwdaH8v62xtxKlNCth4htlLPGHlRkt82yVbX9ocf4OunDMl-MpisPXEvQQdhqNQ=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "הערוץ הרשמי של ג'ילי ישראל."
   },
+  {
+    "channel_name": "Kia  Israel | קיה ישראל ",
+    "channel_url": "https://www.youtube.com/@kiamotorsisrael",
+    "channel_image_url": "https://yt3.googleusercontent.com/WGRZBlT-bWw_F6Q7vjisjK8WH-PhTcO973nCPNjPh6-SboqDe64-8zIdoMDF-RNvyenCeoJM=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "הערוץ הרשמי של קיה ישראל."
+  },
+  {
+    "channel_name": "byd  Israel | בי וואיי די ישראל",
+    "channel_url": "https://www.youtube.com/@bydisrael5470",
+    "channel_image_url": "https://yt3.googleusercontent.com/xLjrFok0YhXzsIyAqy0bZIVX4u4JSMpBAlBx_lnifDia22BJDb-E2xXHJKn21HuE7G7Xg07092E=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "הערוץ הרשמי של בי וואיי די ישראל."
+  },
 {
     "channel_name": "Tesla Tech | טסלה טק",
     "channel_url": "https://www.youtube.com/@TeslaTechIl",
@@ -158,31 +170,31 @@
   {
     "channel_name": "Hagerty | האגרטי",
     "channel_url": "https://www.youtube.com/@Hagerty",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_nDN1i_81dOoxY_HU1plq0m32j0fN5A9Jxk4aFxmNG5Z2w=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "תוכן איכותי על רכבי אספנות, היסטוריה מוטורית וסדרות כמו Barn Find Hunter."
   },
   {
     "channel_name": "Grind Hard Plumbing Co | גרינד הארד",
     "channel_url": "https://www.youtube.com/@GrindHardPlumbingCo",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_mcbONUJvPVbCpvcd4GR7cMkHuxo6xypdOZcw9NuV91Uw=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "בניית כלי רכב מטורפים, הסבות מנועים ופרויקטים יצירתיים במיוחד."
   },
   {
-    "channel_name": "Tester | טסטר",
-    "channel_url": "https://www.youtube.com/@TesterIsrael",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_name": "Tester | טסטר - מבחני דרכים",
+    "channel_url": "https://www.youtube.com/@טסטר-מבחנידרכים",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_mFCWkIAdATY10no1vti-qvY-Mq2YaKtk6vuTDSoaTe-w=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "מבחני דרכים וסקירות רכב בעברית."
   },
   {
     "channel_name": "Auto Focus | אוטו פוקוס",
-    "channel_url": "https://www.youtube.com/@AutoFocusIsrael",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_url": "https://www.youtube.com/@AutoFocus",
+    "channel_image_url": "https://yt3.googleusercontent.com/hUes3DegxJOavHd_NNUcI4-1jAGDlqPjPqxJzfr27t5SZ3KnLtgbVF0VfK2FtVlldTtI-YEIWA=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "מגזין רכב דיגיטלי עם סקירות וידאו."
   },
   {
     "channel_name": "The Electric Israeli | הישראלי החשמלי",
     "channel_url": "https://www.youtube.com/@TheElectricIsraeli",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_image_url": "https://yt3.googleusercontent.com/kibDtdnYXliiQj4-nBaKpPL6dCZ9TVALJ2tjSzrzZn0ffzjlzCwP1uXjBtDm8mZ63cRhddJEe2Y=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "סקירות רכב חשמלי וטסלה מנקודת מבט של ישראלי בארה\"ב."
   },
   {
