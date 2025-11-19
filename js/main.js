@@ -10,7 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
             keys: [
                 { name: 'title', weight: 0.6 },
                 { name: 'tags', weight: 0.3 },
-                { name: 'channel', weight: 0.1 }
+                { name: 'channel', weight: 0.1 },
+                { name: 'content', weight: 0.1 } // Added content description to search
             ],
             includeScore: true,
             includeMatches: true,
@@ -18,6 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
             minMatchCharLength: 2,
             ignoreLocation: true
         },
+        // Names of the JSON files in data/videos/ without extension
+        CATEGORY_FILES: [
+            'collectors',
+            'diy',
+            'maintenance',
+            'review',
+            'systems',
+            'troubleshooting',
+            'upgrades'
+        ],
         PREDEFINED_CATEGORIES: [
             { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "film" },
             { id: "review", name: "סקירות רכב", description: "מבחנים והשוואות", icon: "magnifying-glass-chart", gradient: "from-purple-500 to-indigo-600", darkGradient: "dark:from-purple-600 dark:to-indigo-700" },
@@ -67,10 +78,12 @@ document.addEventListener('DOMContentLoaded', () => {
         contactForm: document.getElementById('contact-form'),
         mainPageContent: document.getElementById('main-page-content'),
         siteFooter: document.getElementById('site-footer'),
+        featuredChannelsTrack: document.getElementById('featured-channels-track'),
         singleVideoView: {
             container: document.getElementById('single-video-view'),
             player: document.getElementById('single-video-player-container'),
             title: document.getElementById('single-video-title'),
+            content: document.getElementById('single-video-content'), // Added content div in HTML
             tags: document.getElementById('single-video-tags'),
             channel: document.getElementById('single-video-channel'),
             duration: document.getElementById('single-video-duration'),
@@ -81,7 +94,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     let state = {
-        allVideos: [],
+        allVideos: [], // Will contain either all videos or category specific ones
+        allVideosCache: null, // For the ID checker to always have access to everything
         fuse: null,
         currentFilters: {
             category: 'all',
@@ -116,7 +130,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const getPageName = () => {
         const path = window.location.pathname;
-        const page = path.split("/").pop() || 'index.html'; // Default to index.html if empty
+        const page = path.split("/").pop() || 'index.html';
+        // Handle query parameters or empty string resulting in index.html
+        if (page === '' || page === '/') return 'index.html';
         if (['category.html', 'add-video.html', 'privacy.html', 'terms.html'].includes(page)) {
             return page;
         }
@@ -134,36 +150,105 @@ document.addEventListener('DOMContentLoaded', () => {
         return 0;
     };
 
-    async function loadVideos() {
+    // Generate Thumbnail URL from ID (Since we removed the field from JSON)
+    const getThumbnailUrl = (videoId) => `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+
+    async function fetchVideosFromFile(filename) {
         try {
-            const response = await fetch('data/videos.json');
-            if (!response.ok) throw new Error(`HTTP ${response.status} - failed to fetch videos.json`);
-            
-            const jsonData = await response.json();
-            
-            if (!jsonData || !Array.isArray(jsonData.videos)) {
-                 throw new Error("Video data is not a valid object with a 'videos' array.");
-            }
-            
-            state.allVideos = jsonData.videos.map(video => ({
+            const response = await fetch(`data/videos/${filename}.json`);
+            if (!response.ok) throw new Error(`Failed to load ${filename}`);
+            const data = await response.json();
+            return data.map(video => ({
                 ...video,
-                category: (video.category || '').toLowerCase(),
+                thumbnail: getThumbnailUrl(video.id), // Generate thumbnail on the fly
+                category: video.category || filename, // Ensure category is set
                 tags: (video.tags || []).map(tag => String(tag).toLowerCase()),
                 durationInSeconds: parseDurationToSeconds(video.duration),
                 dateAdded: video.dateAdded ? new Date(video.dateAdded) : null
             }));
+        } catch (e) {
+            console.warn(`Could not load videos for category: ${filename}`, e);
+            return [];
+        }
+    }
+
+    async function loadVideos() {
+        const page = getPageName();
+        const urlCategory = getCategoryFromURL();
+        
+        try {
+            let videos = [];
+
+            if (page === 'category.html' && urlCategory && CONSTANTS.CATEGORY_FILES.includes(urlCategory)) {
+                // Optimization: Load only specific category file
+                videos = await fetchVideosFromFile(urlCategory);
+            } else {
+                // Load all files (Home page or invalid category or global search)
+                const promises = CONSTANTS.CATEGORY_FILES.map(file => fetchVideosFromFile(file));
+                const results = await Promise.all(promises);
+                videos = results.flat();
+            }
+
+            state.allVideos = videos;
             
             if (dom.videoCountHero) {
                 const countSpan = dom.videoCountHero.querySelector('span');
                 if (countSpan) countSpan.textContent = state.allVideos.length;
             }
+
         } catch (error) {
             console.error("Error loading videos:", error);
             state.allVideos = [];
-            if (dom.videoCountHero && dom.videoCountHero.querySelector('span')) {
-                dom.videoCountHero.querySelector('span').textContent = "0";
-            }
-            displayError('שגיאה בטעינת המידע. ייתכן והקובץ videos.json אינו במבנה תקין.');
+            displayError('שגיאה בטעינת המידע.');
+        }
+    }
+
+    // Logic to load featured channels for the carousel
+    async function loadFeaturedChannels() {
+        if (!dom.featuredChannelsTrack) return;
+        
+        try {
+            const response = await fetch('data/featured_channels.json');
+            if (!response.ok) return;
+            const channels = await response.json();
+            
+            renderFeaturedChannels(channels);
+        } catch (e) {
+            console.error("Error loading featured channels:", e);
+        }
+    }
+
+    function renderFeaturedChannels(channels) {
+        // Double the array to create smooth infinite scroll effect
+        const displayChannels = [...channels, ...channels]; 
+        
+        dom.featuredChannelsTrack.innerHTML = displayChannels.map(channel => `
+            <a href="${channel.channel_url}" target="_blank" rel="noopener noreferrer" class="channel-card group flex-shrink-0 block p-5 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg border border-slate-100 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-500 text-center transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-purple-500">
+                <div class="relative mx-auto w-20 h-20 mb-4">
+                    <img src="${channel.channel_image_url}" alt="${channel.channel_name}" class="w-full h-full rounded-full object-cover border-2 border-slate-200 dark:border-slate-500 group-hover:border-purple-400 transition-colors shadow-sm" loading="lazy">
+                </div>
+                <h3 class="font-bold text-slate-800 dark:text-slate-100 text-lg mb-2 truncate group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors" title="${channel.channel_name}">${channel.channel_name}</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-sm line-clamp-3 leading-snug px-1">${channel.content_description}</p>
+            </a>
+        `).join('');
+
+        // Initialize Carousel Scroll Buttons Logic
+        const scrollContainer = document.querySelector('.channels-carousel-container');
+        const track = dom.featuredChannelsTrack;
+        const btnLeft = document.getElementById('channels-scroll-left');
+        const btnRight = document.getElementById('channels-scroll-right');
+
+        if(btnLeft && btnRight && scrollContainer) {
+            btnRight.addEventListener('click', () => {
+                // Stop animation on manual interaction
+                track.style.animationPlayState = 'paused'; 
+                scrollContainer.scrollBy({ left: -300, behavior: 'smooth' }); // RTL: negative moves left visually (next items)
+            });
+            
+            btnLeft.addEventListener('click', () => {
+                track.style.animationPlayState = 'paused';
+                scrollContainer.scrollBy({ left: 300, behavior: 'smooth' });
+            });
         }
     }
     
@@ -172,7 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let filtered = state.allVideos;
 
         if (state.currentFilters.category !== 'all') {
-            filtered = filtered.filter(v => v.category === state.currentFilters.category);
+            // If we are on index page and filtered by category (via logic, though UI separates them)
+            // Or if on category page, data is already filtered by fetch, but we double check
+             filtered = filtered.filter(v => v.category === state.currentFilters.category);
         }
         
         if (state.currentFilters.searchTerm.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
@@ -287,10 +374,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const videoPageUrl = `./?v=${video.id}`;
         
         card.article.dataset.videoId = video.id;
-        card.thumbnailImg.src = video.thumbnail;
+        // Use the generated thumbnail URL
+        card.thumbnailImg.src = video.thumbnail || getThumbnailUrl(video.id);
         card.thumbnailImg.alt = video.title;
         card.duration.textContent = video.duration || '';
-        card.playLink.href = "#"; // For inline play
+        card.playLink.href = "#"; 
         card.iframe.title = `נגן וידאו: ${video.title}`;
         card.titleLink.href = videoPageUrl;
         card.titleLink.innerHTML = video.title;
@@ -471,8 +559,16 @@ document.addEventListener('DOMContentLoaded', () => {
         updateActiveTagVisuals();
     }
 
-    function showSingleVideoView(videoId) {
+    async function showSingleVideoView(videoId) {
         if (!videoId) return;
+        
+        // If we are on a page with limited data, we might need to fetch everything to find the video
+        if(!state.allVideos.find(v => v.id === videoId)) {
+             const promises = CONSTANTS.CATEGORY_FILES.map(file => fetchVideosFromFile(file));
+             const results = await Promise.all(promises);
+             state.allVideos = results.flat();
+        }
+
         const video = state.allVideos.find(v => v.id === videoId);
         if (!video) {
             console.error(`Video with ID ${videoId} not found.`);
@@ -491,6 +587,14 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
         dom.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${video.duration}`;
         
+        // Render content description if exists
+        if (video.content && dom.singleVideoView.content) {
+            dom.singleVideoView.content.innerHTML = `<p class="text-slate-700 dark:text-slate-300 text-lg leading-relaxed bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border-r-4 border-purple-500">${video.content}</p>`;
+            dom.singleVideoView.content.classList.remove('hidden');
+        } else if(dom.singleVideoView.content) {
+            dom.singleVideoView.content.classList.add('hidden');
+        }
+
         if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
             dom.singleVideoView.date.style.display = 'flex';
             dom.singleVideoView.date.innerHTML = `<i class="fas fa-calendar-alt fa-fw"></i> ${video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })}`;
@@ -524,6 +628,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    // Function to handle checking if a video exists across all JSON files
     async function handleCheckYtId(e) {
         if (e) e.preventDefault();
         
@@ -543,10 +648,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
         async function checkVideoId(videoIdToCheck) {
             if (!videoIdToCheck) return { message: "לא סופק ID לבדיקה." };
-            if(state.allVideos.length === 0) await loadVideos();
-            const foundVideo = state.allVideos.find(video => video.id === videoIdToCheck);
+            
+            // If cache isn't loaded, fetch all data now
+            if (!state.allVideosCache) {
+                const btn = document.getElementById('check-yt-id-button') || document.getElementById('check-yt-id-link');
+                if(btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin ml-2"></i> בודק בכל הקבצים...';
+                
+                const promises = CONSTANTS.CATEGORY_FILES.map(file => fetchVideosFromFile(file));
+                const results = await Promise.all(promises);
+                state.allVideosCache = results.flat();
+                
+                if(btn) {
+                     btn.innerHTML = '<i class="fas fa-search ml-2"></i> בדיקה אם הסרטון כבר קיים במאגר';
+                     // Restore original text if it was the link in footer
+                     if(btn.id === 'check-yt-id-link') btn.innerHTML = '<i class="fas fa-search fa-fw ml-2 opacity-70"></i>בדוק אם סרטון קיים';
+                }
+            }
+
+            const foundVideo = state.allVideosCache.find(video => video.id === videoIdToCheck);
             return foundVideo
-                ? { message: `הסרטון "${foundVideo.title}" כבר קיים במאגר.` }
+                ? { message: `הסרטון "${foundVideo.title}" כבר קיים במאגר (בקטגוריה: ${foundVideo.category}).` }
                 : { message: `הסרטון עם ID: ${videoIdToCheck} עדיין לא קיים במאגר. אפשר להוסיף!` };
         }
 
@@ -628,6 +749,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const form = event.target;
         const submitButton = form.querySelector('button[type="submit"]');
         const formStatus = document.getElementById('form-status');
+        const checkbox = form.querySelector('input[type="checkbox"][name="privacy_policy"]');
+
+        if(checkbox && !checkbox.checked) {
+             alert("יש לאשר את מדיניות הפרטיות לפני השליחה.");
+             return;
+        }
+
         const originalButtonHtml = submitButton.innerHTML;
     
         submitButton.disabled = true;
@@ -1143,13 +1271,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (currentPage === 'index.html') {
                 if(dom.homepageCategoriesGrid) renderHomepageCategoryButtons();
+                loadFeaturedChannels(); // Load channels only on home page
                 state.currentFilters.category = 'all';
             } else if (currentPage === 'category.html') {
                 const categoryFromURL = getCategoryFromURL();
                 if (categoryFromURL) {
                     state.currentFilters.category = categoryFromURL.toLowerCase();
-                    const categoryVideos = state.allVideos.filter(v => v.category === state.currentFilters.category);
-                    state.fuse = new Fuse(categoryVideos, CONSTANTS.FUSE_OPTIONS);
+                    // Note: state.allVideos already contains only this category if loaded correctly
+                    // But we ensure Fuse searches efficiently.
+                    state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
                     updateCategoryPageUI(state.currentFilters.category);
                 }
             }
