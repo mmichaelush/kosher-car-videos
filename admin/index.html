@@ -9,50 +9,6 @@
 <body>
 <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 <script>
-var JsonArrayAdapter = {
-fromFile: function(content) {
-// הגנה קריטית מפני קבצים ריקים
-if (!content || typeof content !== 'string' || content.trim().length === 0) {
-console.warn("Recovered from empty/invalid file content.");
-return { videos: [] };
-}
-
-try {
-var parsed = JSON.parse(content);
-
-if (Array.isArray(parsed)) {
-// בדיקה אם זה קובץ ערוצים
-if (parsed.length > 0 && parsed[0].hasOwnProperty('channel_name')) {
-return { channels: parsed };
-}
-// אחרת זה סרטונים
-return { videos: parsed };
-}
-
-// אם זה כבר אובייקט תקין
-return parsed;
-} catch (e) {
-console.error("JSON Parse Error:", e);
-// במקרה של שגיאה, החזר רשימה ריקה כדי לא לשבור את הממשק
-return { videos: [] };
-}
-},
-
-toFile: function(data) {
-// הסרת העטיפה לפני שמירה
-if (data.videos) {
-return JSON.stringify(data.videos, null, 2);
-}
-if (data.channels) {
-return JSON.stringify(data.channels, null, 2);
-}
-return JSON.stringify(data, null, 2);
-}
-};
-
-// רישום הפורמט
-CMS.registerCustomFormat('json_root_array', 'json', JsonArrayAdapter);
-
 if (window.netlifyIdentity) {
 window.netlifyIdentity.on("init", user => {
 if (!user) {
