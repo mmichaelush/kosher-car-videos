@@ -1,25 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ניהול תוכן - CAR-טיב</title>
-  
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ניהול תוכן - CAR-טיב</title>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
-  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
-  
-  <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
-          });
-        }
-      });
-    }
-  </script>
+<script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+<script>
+var JsonArrayWidget = {
+fromBlock: function(match) {
+return match;
+},
+toBlock: function(obj) {
+return obj;
+},
+toPreview: function(obj) {
+return obj;
+}
+};
+
+CMS.registerEventListener({
+name: 'preSave',
+handler: ({ entry }) => {
+if (entry.get('collection') === 'video_categories') {
+const data = entry.get('data');
+if (data.has('videos')) {
+return data.get('videos');
+}
+}
+if (entry.get('collection') === 'channels_collection') {
+const data = entry.get('data');
+if (data.has('channels')) {
+return data.get('channels');
+}
+}
+return entry.get('data');
+},
+});
+</script>
+<script>
+if (window.netlifyIdentity) {
+window.netlifyIdentity.on("init", user => {
+if (!user) {
+window.netlifyIdentity.on("login", () => {
+document.location.href = "/admin/";
+});
+}
+});
+}
+</script>
 </body>
 </html>
