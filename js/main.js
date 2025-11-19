@@ -1283,4 +1283,4 @@ async function initializeApp() {
 }
 
 initializeApp();
-}
+});
