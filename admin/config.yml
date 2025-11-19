@@ -68,8 +68,6 @@ collections:
       - name: "featured_channels"
         label: "ניהול ערוצים"
         file: "data/featured_channels.json"
-        format: json_root_array
-        extension: "json"
         fields:
           - name: "channels"
             label: "רשימת ערוצים"
@@ -88,8 +86,6 @@ collections:
       - name: "collectors"
         label: "רכבי אספנות"
         file: "data/videos/collectors.json"
-        format: json_root_array
-        extension: "json"
         fields:
           - name: "videos"
             label: "רשימת סרטונים"
@@ -112,8 +108,6 @@ collections:
       - name: "diy"
         label: "עשה זאת בעצמך (DIY)"
         file: "data/videos/diy.json"
-        format: json_root_array
-        extension: "json"
         fields:
           - name: "videos"
             label: "רשימת סרטונים"
@@ -136,8 +130,6 @@ collections:
       - name: "maintenance"
         label: "טיפולים"
         file: "data/videos/maintenance.json"
-        format: json_root_array
-        extension: "json"
         fields:
           - name: "videos"
             label: "רשימת סרטונים"
@@ -160,8 +152,6 @@ collections:
       - name: "review"
         label: "סקירות רכב"
         file: "data/videos/review.json"
-        format: json_root_array
-        extension: "json"
         fields:
           - name: "videos"
             label: "רשימת סרטונים"
@@ -184,8 +174,6 @@ collections:
       - name: "systems"
         label: "מערכות הרכב"
         file: "data/videos/systems.json"
-        format: json_root_array
-        extension: "json"
         fields:
           - name: "videos"
             label: "רשימת סרטונים"
@@ -208,8 +196,6 @@ collections:
       - name: "troubleshooting"
         label: "איתור תקלות"
         file: "data/videos/troubleshooting.json"
-        format: json_root_array
-        extension: "json"
         fields:
           - name: "videos"
             label: "רשימת סרטונים"
@@ -232,8 +218,6 @@ collections:
       - name: "upgrades"
         label: "שיפורים ושדרוגים"
         file: "data/videos/upgrades.json"
-        format: json_root_array
-        extension: "json"
         fields:
           - name: "videos"
             label: "רשימת סרטונים"
@@ -252,3 +236,4 @@ collections:
               - *f_tags
               - *f_hebrew
               - *f_date
+});
