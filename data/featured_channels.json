@@ -216,21 +216,44 @@
     "channel_image_url": "https://yt3.googleusercontent.com/D8mpYMfcwhlIUnL651eERYPpozY3yXZvUHc6vyA3HRslxPjCGB_OGC_WWsmeVulHYYikGjlNd-0=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "מורה נהיגה ישראלי עם סרטוני הדרכה רבים."
   },
-
-
-  
   {
     "channel_name": "Conquer Driving | לכבוש את הנהיגה",
     "channel_url": "https://www.youtube.com/@ConquerDriving",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_mbDfafqB4SHsqnXNXNqxrqQ0t7FRRjff4k7_JiU8b3GEY=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "ערוץ בריטי מצוין ללימוד נהיגה, טיפים לנהגים חדשים ומנוסים."
   },
   {
     "channel_name": "World Driving | נהיגה עולמית",
     "channel_url": "https://www.youtube.com/@WorldDriving",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lrtcrMG0BGMxSAdHNir2iJbapLDBjwhHkjRw5RlePJXHg=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "סרטוני הדרכה ללימוד נהיגה."
   },
+ {
+    "channel_name": "Mercedes-Benz | מרצדס בנץ",
+    "channel_url": "https://www.youtube.com/@MercedesBenz",
+    "channel_image_url": "https://yt3.googleusercontent.com/Zd6Os4XjIeYmvYrx_x9ta_pZEL2knbnHmuh-S789lpUGVs8Q-4dbKbXmWqVR1DK8S4oc1_25fEQ=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "הערוץ הרשמי של מרצדס בנץ."
+  },
+ {
+    "channel_name": "Conduite Facile | נהיגה קלה",
+    "channel_url": "https://www.youtube.com/@ConduiteFacile",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_kms01AkSeFroACeQek1qEp0mq4TURomXV2K9qCd4azY6Q=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "סרטוני הדרכה על נהיגה."
+  },
+ {
+    "channel_name": "MOTORHEADS | מוטור הדס",
+    "channel_url": "https://www.youtube.com/@MOTORHEADS2K",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lSnZx49bxEBXGAXRkiMYlIy3HnxNhF1VbzAokt2Xv_VmE=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "סקירת מכוניות ספורט ומכוניות על.."
+  },
+ {
+    "channel_name": "World Driving | ? ?",
+    "channel_url": "https://www.youtube.com/@e.d.supercars",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lrtcrMG0BGMxSAdHNir2iJbapLDBjwhHkjRw5RlePJXHg=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "סרטוני הדרכה ללימוד נהיגה."
+  },
+
+  
   {
     "channel_name": "Rich Rebuilds | ריץ' ריבילדס",
     "channel_url": "https://www.youtube.com/@RichRebuilds",
