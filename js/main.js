@@ -26,10 +26,12 @@ document.addEventListener('DOMContentLoaded', () => {
             'review',
             'systems',
             'troubleshooting',
-            'upgrades'
+            'upgrades',
+            'driving' // הקטגוריה החדשה
         ],
         PREDEFINED_CATEGORIES: [
             { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "film" },
+            { id: "driving", name: "נהיגה נכונה", description: "טיפים לנהיגה בכביש ובשטח", icon: "road", gradient: "from-teal-500 to-emerald-600", darkGradient: "dark:from-teal-600 dark:to-emerald-700" },
             { id: "review", name: "סקירות רכב", description: "מבחנים והשוואות", icon: "magnifying-glass-chart", gradient: "from-purple-500 to-indigo-600", darkGradient: "dark:from-purple-600 dark:to-indigo-700" },
             { id: "maintenance", name: "טיפולים", description: "תחזוקה שוטפת ומניעתית", icon: "oil-can", gradient: "from-blue-500 to-cyan-600", darkGradient: "dark:from-blue-600 dark:to-cyan-700" },
             { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה", icon: "tools", gradient: "from-green-500 to-teal-600", darkGradient: "dark:from-green-600 dark:to-teal-700" },
@@ -154,10 +156,19 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchVideosFromFile(filename) {
         try {
             const response = await fetch(`data/videos/${filename}.json`);
-            if (!response.ok) throw new Error(`Failed to load ${filename}`);
+            if (!response.ok) {
+                 // If file not found, return empty array silently (e.g. driving.json not created yet)
+                 return [];
+            }
             const data = await response.json();
             
-            const videosArray = data.videos || []; 
+            // תמיכה גם במערך וגם באובייקט - למניעת באגים
+            let videosArray = [];
+            if (Array.isArray(data)) {
+                videosArray = data;
+            } else if (data && Array.isArray(data.videos)) {
+                videosArray = data.videos;
+            }
 
             return videosArray.map(video => ({
                 ...video,
@@ -210,7 +221,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!response.ok) return;
             const data = await response.json();
             
-            const channels = data.channels || [];
+            // תמיכה כפולה גם בערוצים
+            let channels = [];
+            if(Array.isArray(data)) {
+                 channels = data;
+            } else if(data && Array.isArray(data.channels)) {
+                 channels = data.channels;
+            }
             
             renderFeaturedChannels(channels);
         } catch (e) {
@@ -219,6 +236,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderFeaturedChannels(channels) {
+        if(channels.length === 0) return;
         const displayChannels = [...channels, ...channels]; 
         
         dom.featuredChannelsTrack.innerHTML = displayChannels.map(channel => `
@@ -319,15 +337,21 @@ document.addEventListener('DOMContentLoaded', () => {
         );
 
         const fragment = document.createDocumentFragment();
+        let addedCount = 0;
+
         videosToRender.forEach(video => {
             const cardElement = createVideoCardElement(video);
             if (cardElement) {
                 fragment.appendChild(cardElement);
                 if (videoObserver) videoObserver.observe(cardElement);
+                addedCount++;
             }
         });
+        
         dom.videoCardsContainer.appendChild(fragment);
-        state.ui.currentlyDisplayedVideosCount += videosToRender.length;
+        
+        // עדכון מונה רק לפי כמות הקלפים שבאמת נוספו
+        state.ui.currentlyDisplayedVideosCount += addedCount;
 
         const hasVideos = allMatchingVideos.length > 0;
         if(dom.noVideosFoundMessage) {
@@ -346,7 +370,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function createVideoCardElement(video) {
-        if (!dom.videoCardTemplate || !dom.videoCardTemplate.content) return null;
+        // בדיקה קריטית שהתבנית קיימת
+        if (!dom.videoCardTemplate || !dom.videoCardTemplate.content) {
+            console.error("Template not found!");
+            return null;
+        }
     
         const cardClone = dom.videoCardTemplate.content.cloneNode(true);
         const card = {
@@ -365,46 +393,57 @@ document.addEventListener('DOMContentLoaded', () => {
             newTabBtn: cardClone.querySelector('.new-tab-btn'),
             fullscreenBtn: cardClone.querySelector('.fullscreen-btn'),
         };
+
+        // אם אחד האלמנטים חסר בתבנית, החזר null כדי לא לשבור את האתר
+        if (!card.article || !card.thumbnailImg || !card.titleLink) {
+            return null;
+        }
         
         const videoPageUrl = `./?v=${video.id}`;
         
         card.article.dataset.videoId = video.id;
         card.thumbnailImg.src = video.thumbnail || getThumbnailUrl(video.id);
         card.thumbnailImg.alt = video.title;
-        card.duration.textContent = video.duration || '';
-        card.playLink.href = "#"; 
-        card.iframe.title = `נגן וידאו: ${video.title}`;
+        if(card.duration) card.duration.textContent = video.duration || '';
+        if(card.playLink) card.playLink.href = "#"; 
+        if(card.iframe) card.iframe.title = `נגן וידאו: ${video.title}`;
         card.titleLink.href = videoPageUrl;
         card.titleLink.innerHTML = video.title;
-        card.channelName.textContent = video.channel || '';
+        if(card.channelName) card.channelName.textContent = video.channel || '';
     
         if (card.shareBtn) card.shareBtn.dataset.videoId = video.id;
         if (card.newTabBtn) card.newTabBtn.href = videoPageUrl;
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
-        card.channelLogo.src = video.channelImage || 'about:blank';
-        card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
-        card.channelLogo.classList.toggle('hidden', !video.channelImage);
+        if(card.channelLogo) {
+            card.channelLogo.src = video.channelImage || 'about:blank';
+            card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
+            card.channelLogo.classList.toggle('hidden', !video.channelImage);
+        }
     
-        if (video.tags && video.tags.length > 0) {
+        if (card.tagsContainer && video.tags && video.tags.length > 0) {
             card.tagsContainer.innerHTML = video.tags.map(tag =>
                 `<button data-tag="${tag}" class="video-tag-button bg-purple-100 text-purple-700 dark:bg-purple-800 dark:text-purple-200 px-2 py-0.5 rounded-md hover:bg-purple-200 dark:hover:bg-purple-700 transition-colors">${tag.charAt(0).toUpperCase() + tag.slice(1)}</button>`
             ).join('');
         }
     
-        const categoryData = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === video.category);
-        const categoryName = categoryData ? categoryData.name : (video.category || '').charAt(0).toUpperCase() + (video.category || '').slice(1);
-        const categoryIconEl = cardClone.querySelector('.video-category-icon');
-        if (categoryIconEl) {
-            const icon = categoryData ? categoryData.icon : 'folder-open';
-            categoryIconEl.className = `video-category-icon fas fa-${icon} opacity-70 text-purple-500 dark:text-purple-400 ml-2`;
+        if(card.categoryDisplay) {
+            const categoryData = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === video.category);
+            const categoryName = categoryData ? categoryData.name : (video.category || '').charAt(0).toUpperCase() + (video.category || '').slice(1);
+            const categoryIconEl = cardClone.querySelector('.video-category-icon');
+            if (categoryIconEl) {
+                const icon = categoryData ? categoryData.icon : 'folder-open';
+                categoryIconEl.className = `video-category-icon fas fa-${icon} opacity-70 text-purple-500 dark:text-purple-400 ml-2`;
+            }
+            card.categoryDisplay.appendChild(document.createTextNode(categoryName));
         }
-        card.categoryDisplay.appendChild(document.createTextNode(categoryName));
         
-        if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
-            card.dateDisplay.appendChild(document.createTextNode(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })));
-        } else if (card.dateDisplay) {
-            card.dateDisplay.style.display = 'none';
+        if (card.dateDisplay) {
+            if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
+                card.dateDisplay.appendChild(document.createTextNode(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })));
+            } else {
+                card.dateDisplay.style.display = 'none';
+            }
         }
     
         return card.article;
@@ -556,7 +595,6 @@ document.addEventListener('DOMContentLoaded', () => {
     async function showSingleVideoView(videoId) {
         if (!videoId) return;
         
-        // If we are on a page with limited data, we might need to fetch everything to find the video
         if(!state.allVideos.find(v => v.id === videoId)) {
              const promises = CONSTANTS.CATEGORY_FILES.map(file => fetchVideosFromFile(file));
              const results = await Promise.all(promises);
@@ -581,7 +619,6 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
         dom.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${video.duration}`;
         
-        // Render content description if exists
         if (video.content && dom.singleVideoView.content) {
             dom.singleVideoView.content.innerHTML = `<p class="text-slate-700 dark:text-slate-300 text-lg leading-relaxed bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border-r-4 border-purple-500">${video.content}</p>`;
             dom.singleVideoView.content.classList.remove('hidden');
@@ -622,7 +659,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Function to handle checking if a video exists across all JSON files
     async function handleCheckYtId(e) {
         if (e) e.preventDefault();
         
@@ -640,16 +676,15 @@ document.addEventListener('DOMContentLoaded', () => {
             return null;
         }
 
-        // Input Alert
         const { value: userInput } = await Swal.fire({
             title: 'בדיקת סרטון במאגר',
             text: 'הכנס קישור לסרטון יוטיוב או מזהה (ID) לבדיקה:',
-            input: 'url', // Using 'url' gives browser validation
+            input: 'url', 
             inputPlaceholder: 'https://www.youtube.com/watch?v=...',
             confirmButtonText: 'בדוק',
             cancelButtonText: 'ביטול',
             showCancelButton: true,
-            confirmButtonColor: '#7c3aed', // Purple to match theme
+            confirmButtonColor: '#7c3aed', 
             inputAutoTrim: true
         });
 
@@ -667,14 +702,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Loading...
         Swal.fire({
             title: 'מחפש במאגר...',
             allowOutsideClick: false,
             didOpen: () => Swal.showLoading()
         });
 
-        // Load data if missing
         if (!state.allVideosCache) {
              const promises = CONSTANTS.CATEGORY_FILES.map(file => fetchVideosFromFile(file));
              const results = await Promise.all(promises);
@@ -684,7 +717,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const foundVideo = state.allVideosCache.find(v => v.id === videoId);
 
         if (foundVideo) {
-            // Video Exists
             Swal.fire({
                 icon: 'info',
                 title: 'הסרטון קיים!',
@@ -702,13 +734,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 confirmButtonColor: '#7c3aed'
             });
         } else {
-            // Video Does Not Exist
             Swal.fire({
                 icon: 'success',
                 title: 'הסרטון לא קיים',
                 text: `הסרטון (ID: ${videoId}) טרם נוסף למאגר. אתה מוזמן להוסיף אותו!`,
                 confirmButtonText: 'מעולה, תודה',
-                confirmButtonColor: '#10b981' // Green
+                confirmButtonColor: '#10b981' 
             });
         }
     }
