@@ -20,7 +20,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
+    
+    <!-- ספריות חיצוניות -->
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+    <!-- SweetAlert2 - חובה לפונקציית בדיקת סרטונים (קישור בפוטר) -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -74,8 +79,8 @@
             <div class="flex justify-between h-20 items-center">
                 <div class="flex items-center">
                     <a href="./" class="flex-shrink-0 flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-md p-1 -ml-1" aria-label="CAR-טיב דף הבית">
-                        <img src="data/assets/images/logo.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 md:h-12 dark:hidden">
-                        <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 md:h-12 hidden dark:block">
+                        <img src="data/assets/images/logo.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 dark:hidden">
+                        <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 hidden dark:block">
                         <span class="text-2xl font-bold text-slate-900 dark:text-slate-100 hidden sm:block">CAR-טיב</span>
                     </a>
                       <nav class="hidden md:mr-4 lg:mr-6 md:flex items-center md:space-x-0.5 lg:space-x-1" aria-label="ניווט ראשי"> 
