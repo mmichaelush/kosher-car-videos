@@ -20,7 +20,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
+    <!-- ספריות חיצוניות -->
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+    <!-- הוספת SweetAlert2 למראה מודרני -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -33,6 +36,7 @@
 
 <body class="font-rubik bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 antialiased transition-colors duration-300">
 
+    <!-- מסך טעינה (Preloader) -->
     <div id="site-preloader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-900 transition-opacity duration-700">
         <div class="relative flex items-center justify-center">
             <div class="animate-spin rounded-full h-24 w-24 border-t-4 border-b-4 border-purple-600 dark:border-purple-400"></div>
@@ -146,6 +150,7 @@
                 </div>
             </div>
             
+            <!-- Video Content Description -->
             <div id="single-video-content" class="mb-6 hidden"></div>
 
             <div id="single-video-tags" class="flex flex-wrap gap-2 mb-8">
@@ -406,6 +411,7 @@
 
                         <div class="channels-carousel-container no-scrollbar">
                             <div id="featured-channels-track" class="channels-track">
+                                <!-- Channels will be injected here by JS -->
                                 <div class="flex items-center justify-center w-full py-10 text-slate-500">
                                     <i class="fas fa-spinner fa-spin mr-2"></i> טוען ערוצים...
                                 </div>
