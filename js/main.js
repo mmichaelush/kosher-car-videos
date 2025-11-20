@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const dom = {
         body: document.body,
-        preloader: document.getElementById('site-preloader'), // נוסף: אלמנט הטעינה
+        preloader: document.getElementById('site-preloader'), 
         darkModeToggles: document.querySelectorAll('.dark-mode-toggle-button'),
         openMenuBtn: document.getElementById('open-menu-btn'),
         closeMenuBtn: document.getElementById('close-menu-btn'),
@@ -581,6 +581,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
         dom.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${video.duration}`;
         
+        // Render content description if exists
         if (video.content && dom.singleVideoView.content) {
             dom.singleVideoView.content.innerHTML = `<p class="text-slate-700 dark:text-slate-300 text-lg leading-relaxed bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border-r-4 border-purple-500">${video.content}</p>`;
             dom.singleVideoView.content.classList.remove('hidden');
@@ -621,6 +622,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
+    // Function to handle checking if a video exists across all JSON files
     async function handleCheckYtId(e) {
         if (e) e.preventDefault();
         
@@ -638,37 +640,77 @@ document.addEventListener('DOMContentLoaded', () => {
             return null;
         }
 
-        async function checkVideoId(videoIdToCheck) {
-            if (!videoIdToCheck) return { message: "לא סופק ID לבדיקה." };
-            
-            // If cache isn't loaded, fetch all data now
-            if (!state.allVideosCache) {
-                const btn = document.getElementById('check-yt-id-button') || document.getElementById('check-yt-id-link');
-                if(btn) btn.innerHTML = '<i class="fas fa-spinner fa-spin ml-2"></i> בודק בכל הקבצים...';
-                
-                const promises = CONSTANTS.CATEGORY_FILES.map(file => fetchVideosFromFile(file));
-                const results = await Promise.all(promises);
-                state.allVideosCache = results.flat();
-                
-                if(btn) {
-                     btn.innerHTML = '<i class="fas fa-search ml-2"></i> בדיקה אם הסרטון כבר קיים במאגר';
-                     // Restore original text if it was the link in footer
-                     if(btn.id === 'check-yt-id-link') btn.innerHTML = '<i class="fas fa-search fa-fw ml-2 opacity-70"></i>בדוק אם סרטון קיים';
-                }
-            }
+        // Input Alert
+        const { value: userInput } = await Swal.fire({
+            title: 'בדיקת סרטון במאגר',
+            text: 'הכנס קישור לסרטון יוטיוב או מזהה (ID) לבדיקה:',
+            input: 'url', // Using 'url' gives browser validation
+            inputPlaceholder: 'https://www.youtube.com/watch?v=...',
+            confirmButtonText: 'בדוק',
+            cancelButtonText: 'ביטול',
+            showCancelButton: true,
+            confirmButtonColor: '#7c3aed', // Purple to match theme
+            inputAutoTrim: true
+        });
 
-            const foundVideo = state.allVideosCache.find(video => video.id === videoIdToCheck);
-            return foundVideo
-                ? { message: `הסרטון "${foundVideo.title}" כבר קיים במאגר (בקטגוריה: ${foundVideo.category}).` }
-                : { message: `הסרטון עם ID: ${videoIdToCheck} עדיין לא קיים במאגר. אפשר להוסיף!` };
+        if (!userInput) return;
+
+        const videoId = extractYouTubeVideoId(userInput);
+
+        if (!videoId) {
+            Swal.fire({
+                icon: 'error',
+                title: 'שגיאה',
+                text: 'לא זוהה מזהה סרטון תקין.',
+                confirmButtonColor: '#7c3aed'
+            });
+            return;
         }
 
-        const userInput = prompt("הכנס קישור לסרטון יוטיוב או מזהה (ID) לבדיקה:");
-        if (!userInput) return;
-        
-        const videoId = extractYouTubeVideoId(userInput);
-        const result = videoId ? await checkVideoId(videoId) : { message: "לא זוהה ID תקין של סרטון יוטיוב מהקישור שהוכנס." };
-        alert(result.message);
+        // Loading...
+        Swal.fire({
+            title: 'מחפש במאגר...',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        // Load data if missing
+        if (!state.allVideosCache) {
+             const promises = CONSTANTS.CATEGORY_FILES.map(file => fetchVideosFromFile(file));
+             const results = await Promise.all(promises);
+             state.allVideosCache = results.flat();
+        }
+
+        const foundVideo = state.allVideosCache.find(v => v.id === videoId);
+
+        if (foundVideo) {
+            // Video Exists
+            Swal.fire({
+                icon: 'info',
+                title: 'הסרטון קיים!',
+                html: `
+                    <div class="text-right">
+                        <p class="mb-2">הסרטון <strong>"${foundVideo.title}"</strong> כבר נמצא במאגר.</p>
+                        <p class="text-sm text-gray-500">קטגוריה: ${foundVideo.category}</p>
+                    </div>
+                `,
+                imageUrl: foundVideo.thumbnail,
+                imageWidth: 320,
+                imageHeight: 180,
+                imageAlt: foundVideo.title,
+                confirmButtonText: 'סגור',
+                confirmButtonColor: '#7c3aed'
+            });
+        } else {
+            // Video Does Not Exist
+            Swal.fire({
+                icon: 'success',
+                title: 'הסרטון לא קיים',
+                text: `הסרטון (ID: ${videoId}) טרם נוסף למאגר. אתה מוזמן להוסיף אותו!`,
+                confirmButtonText: 'מעולה, תודה',
+                confirmButtonColor: '#10b981' // Green
+            });
+        }
     }
 
     function handleThemeToggle() {
@@ -1301,6 +1343,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         setupEventListeners();
         handleInitialHash();
+        
+        // Reveal the site content
         fadeOutPreloader();
     }
 
