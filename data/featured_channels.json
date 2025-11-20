@@ -199,17 +199,26 @@
     "content_description": "סקירות רכב חשמלי וטסלה מנקודת מבט של ישראלי בארה\"ב."
   },
   {
+    "channel_name": "MidragRechev | מידרג רכב",
+    "channel_url": "https://www.youtube.com/@מידרגרכב",
+    "channel_image_url": "https://yt3.googleusercontent.com/0wDZj1PmopUoZ-mGsux-4_CxfHvuWaP63Muops1tZDSwjDJ3vBaQht2wQNxKBv7nP8q6T1dg-w=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "הערוץ הרשמי של אתר מדרג עם סרטוני עשה זאת בעצמך."
+  },
+  {
     "channel_name": "Car Wizard | קאר וויזארד",
     "channel_url": "https://www.youtube.com/@CarWizard",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
-    "content_description": "מכונאי המציג תקלות נפוצות, בדיקות קנייה וטיפים (Buy this, not that)."
+    "channel_image_url": "https://yt3.googleusercontent.com/Y5HDOpwFuSx93iV6Q3Y9ycvORrpjegSB3hDKRSlzy4NzoxjvPJGAzKQkwBYyyfnZj7dTh5nYcA=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "מכונאי המציג תקלות נפוצות, בדיקות קנייה וטיפים לתיקונים מהירים ברכבים."
   },
   {
     "channel_name": "Lior Tal | ליאור טל",
-    "channel_url": "https://www.youtube.com/@LiorTal",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_url": "https://www.youtube.com/@liortal78",
+    "channel_image_url": "https://yt3.googleusercontent.com/D8mpYMfcwhlIUnL651eERYPpozY3yXZvUHc6vyA3HRslxPjCGB_OGC_WWsmeVulHYYikGjlNd-0=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "מורה נהיגה ישראלי עם סרטוני הדרכה רבים."
   },
+
+
+  
   {
     "channel_name": "Conquer Driving | לכבוש את הנהיגה",
     "channel_url": "https://www.youtube.com/@ConquerDriving",
