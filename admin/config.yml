@@ -158,3 +158,37 @@ collections:
               - { label: "תגיות", name: "tags", widget: "list" }
               - { label: "עברית?", name: "hebrewContent", widget: "boolean", default: true }
               - { label: "תאריך", name: "dateAdded", widget: "datetime", format: "YYYY-MM-DD", required: false }
+
+ - name: "driving"
+        label: "נהיגה נכנונה"
+        file: "data/videos/driving.json"
+        fields:
+          - <<: *video_list_defaults
+            fields:
+              - { name: "category", widget: "hidden", default: "upgrades" }
+              - { label: "מזהה יוטיוב (ID)", name: "id", widget: "string", pattern: ['^[a-zA-Z0-9_-]{11}$', "חובה 11 תווים"] }
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "תיאור תוכן", name: "content", widget: "text", required: false }
+              - { label: "אורך", name: "duration", widget: "string" }
+              - { label: "ערוץ", name: "channel", widget: "string" }
+              - { label: "תמונת ערוץ", name: "channelImage", widget: "string", required: false }
+              - { label: "תגיות", name: "tags", widget: "list" }
+              - { label: "עברית?", name: "hebrewContent", widget: "boolean", default: true }
+              - { label: "תאריך", name: "dateAdded", widget: "datetime", format: "YYYY-MM-DD", required: false }
+
+ - name: "safety"
+        label: "מבחני בטיחות"
+        file: "data/videos/safety.json"
+        fields:
+          - <<: *video_list_defaults
+            fields:
+              - { name: "category", widget: "hidden", default: "upgrades" }
+              - { label: "מזהה יוטיוב (ID)", name: "id", widget: "string", pattern: ['^[a-zA-Z0-9_-]{11}$', "חובה 11 תווים"] }
+              - { label: "כותרת", name: "title", widget: "string" }
+              - { label: "תיאור תוכן", name: "content", widget: "text", required: false }
+              - { label: "אורך", name: "duration", widget: "string" }
+              - { label: "ערוץ", name: "channel", widget: "string" }
+              - { label: "תמונת ערוץ", name: "channelImage", widget: "string", required: false }
+              - { label: "תגיות", name: "tags", widget: "list" }
+              - { label: "עברית?", name: "hebrewContent", widget: "boolean", default: true }
+              - { label: "תאריך", name: "dateAdded", widget: "datetime", format: "YYYY-MM-DD", required: false }
