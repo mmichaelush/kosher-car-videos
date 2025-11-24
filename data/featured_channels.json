@@ -252,44 +252,70 @@
     "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lPesG8358ExJXDwj25R-on3cZuLalVhIvC4pQ1kea3gA4=s160-c-k-c0x00ffffff-no-rj",
     "content_description": "סקירת מכוניות, בעיקר מכוניות ספורט ויוקרה."
   },
-
-
-  
-  
   {
     "channel_name": "Rich Rebuilds | ריץ' ריבילדס",
     "channel_url": "https://www.youtube.com/@RichRebuilds",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_kC1BXJRBQcnPcdPgNYv6Xdc3817KptRkBqNVHHPU1b0RM=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "בנייה מחדש של רכבים (בעיקר חשמליים שעברו תאונות) ופרויקטים הנדסיים."
   },
   {
-    "channel_name": "Shvilim - Yoav Kaveh | שבילים - יואב קווה",
-    "channel_url": "https://www.youtube.com/@YoavKaveh",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_name": "Shvilim - Yoav Kaveh | שבילים - יואב קווה - נהיגת שטח",
+    "channel_url": "https://www.youtube.com/@shvilim4X4",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_mULvgK2fDlDimIVYkS3Um-ddYQ9qUqhQ4KDocGkDcFAew=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "ערוץ ישראלי המתמקד בנהיגת שטח, מסלולים וסקירות רכבי 4X4."
   },
   {
     "channel_name": "Manny Khoshbin | מני חושבין",
-    "channel_url": "https://www.youtube.com/@MannyKhoshbin",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_url": "https://www.youtube.com/@MannyKhoshbinyt",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_mZPjOFouY6EKOqWZea3XzYgvqs5KSQm1rLNkPMTgIcvy0=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "איל נדל\"ן המציג את אוסף רכבי העל (Hypercars) המטורף שלו (בוגאטי, פגאני ועוד)."
+  },
+   {
+    "channel_name": "Yorkshire Car Restoration | יורקשייר שחזור מכוניות",
+    "channel_url": "https://www.youtube.com/@yorkshirecarrestoration",
+    "channel_image_url": "https://yt3.googleusercontent.com/6yNRN_ZsBsNLEa8MOj-jHck-RCpYcAvMnOf8QBFfj7HarfWeMKyvsmLCF-pCRyPUAiodFE_8=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "איל נדל\"ן המציג את אוסף רכבי העל (Hypercars) המטורף שלו (בוגאטי, פגאני ועוד)."
   },
   {
     "channel_name": "DGN Driving | די.ג'י.אן נהיגה",
     "channel_url": "https://www.youtube.com/@DGNDriving",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_image_url": "https://yt3.googleusercontent.com/qRb-JxhEKlresYHls4kgOLHj0WdtlJ9yS4YV3eMt10mTufjZy5qVyL0YkaIPw3wjhCCL9GbOMQ=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "מורה נהיגה בריטי, מציג טעויות נפוצות בטסטים ובנהיגה יומיומית."
+  },
+   {
+    "channel_name": "Driving TV | נהיגה בטלוויזיה",
+    "channel_url": "https://www.youtube.com/@DrivingTV",
+    "channel_image_url": "https://yt3.googleusercontent.com/X0KQVLpz3_A78lPxXqZ7oqaSyvRnqcODmNZRtFmoHb6gfqdI8NvhAL4F4-d_o1wQqGZKUddgCg=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "ערוץ עם סרטוני לימוד נהיגה של מורה נהיגה."
+  },
+   {
+    "channel_name": "Ashley Neal | אשלי ניל ",
+    "channel_url": "https://www.youtube.com/@ashley_neal",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_mSabjqopn4jjrpqsY6_XnkuNq1CSD6gzLw2p-Yr6EAWm0=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "ערוץ של סרטוני לימוד נהיגה של המורה אשלי ניל."
+  },
+   {
+    "channel_name": "Advance Driving School | בית ספר לנהיגה מתקדם",
+    "channel_url": "https://www.youtube.com/@AdvanceDrivingSchool",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_m-S5yMXYCio-V3rW4gvyzdl9BlBADScZz7tAjAaVqEWA=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "סרטונים מבית ספר ללימוד נהיגה בבריטניה."
   },
   {
     "channel_name": "Throttle House | ת'רוטל האוס",
     "channel_url": "https://www.youtube.com/@ThrottleHouse",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_image_url": "https://yt3.googleusercontent.com/iMmStD7OeBtgSlBVsx_XyvCWvPO76tSO-RDxVPsMytmuXT4IhRvz1nmwIuO4OZJIr26pd31YsA=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "צמד קנדי המבצע מבחני רכב מושקעים, הומוריסטיים ואיכותיים."
+  },
+ {
+    "channel_name": "KIT'S Auto and Truck Repair | תיקון רכב ומשאיות של קיט",
+    "channel_url": "https://www.youtube.com/@KITS_Auto_and_Truck_Repair",
+    "channel_image_url": "https://yt3.googleusercontent.com/4eBxBhdfiWO17ONHUhMTISLSvYTh0o38jvflpV5S7CkAiIKu6tjhyZyzAAOt30xYBhE06oEPhA=s72-c-k-c0x00ffffff-no-rj",
+    "content_description": "ערוץ עם סרטונים רבים על תיקוני תיקון רכב ומשאיות."
   },
   {
     "channel_name": "Autogefuhl | אוטוגפיל",
-    "channel_url": "https://www.youtube.com/@Autogefuhl",
-    "channel_image_url": "https://www.gstatic.com/youtube/img/branding/favicon/favicon_144x144.png",
+    "channel_url": "https://www.youtube.com/@autogefuehl",
+    "channel_image_url": "https://yt3.googleusercontent.com/nG3LCtHaI8ERw0WEon45DuQiDTpTCCVthnnSJpvV1jdS1yBdBAMk1hRVX5QSWrO9OP8gA-pgOQ=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "סקירות עומק ארוכות ומפורטות של רכבים חדשים (דגש על רכבים גרמניים)."
   }
 ]
