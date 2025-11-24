@@ -317,6 +317,167 @@
     "channel_url": "https://www.youtube.com/@autogefuehl",
     "channel_image_url": "https://yt3.googleusercontent.com/nG3LCtHaI8ERw0WEon45DuQiDTpTCCVthnnSJpvV1jdS1yBdBAMk1hRVX5QSWrO9OP8gA-pgOQ=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "סקירות עומק ארוכות ומפורטות של רכבים חדשים (דגש על רכבים גרמניים)."
+  },
+
+
+
+  
+  {
+    "channel_name": "The DIY Mechanic | המכונאי DIY",
+    "channel_url": "https://www.youtube.com/@DIY-Mechanic/featured",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsdiymech=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "ערוץ משלים ל'הכנופיה' עם מדריכי תיקון ו-DIY לרכב."
+  },
+  {
+    "channel_name": "Grind Hard Shorts | גריינד הארד שורטס",
+    "channel_url": "https://www.youtube.com/@GrindHardShorts",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsgrindshort=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "תכנים קצרים של פרויקטים מטורפים, בניות רכב וניסויים מכאניים."
+  },
+  {
+    "channel_name": "Edwin Olding | אדווין אולדינג",
+    "channel_url": "https://www.youtube.com/@EdwinOlding",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsedwin=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "סקירות וניסיון רכיבה על אופנועים — מתאים לחובבי דו־גלגלי."
+  },
+  {
+    "channel_name": "Scotty Kilmer | סקוטי קילמר",
+    "channel_url": "https://www.youtube.com/channel/UCuxpxCCevIlF-k-K5YU8XPA",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsoz=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "מכונאי ותיק עם טיפים, בדיקות ותיקונים לכל סוגי הרכב."
+  },
+  {
+    "channel_name": "Engineering Explained | הנדסה מוסברת",
+    "channel_url": "https://www.youtube.com/channel/UClqhvGmHcvWL9w3R48t9QXQ",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsoe=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "הסברים מעמיקים על מערכות רכב, פיזיקה והנדסה."
+  },
+  {
+    "channel_name": "EricTheCarGuy | אריק המכונאי",
+    "channel_url": "https://www.youtube.com/channel/UC_q-UNDJeEBSHqKzAP_8x_A",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsdf=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "תיקונים ושיפורים לרכב עם הדרכות מעשיות."
+  },
+  {
+    "channel_name": "WeberAuto | וובר אוטו",
+    "channel_url": "https://www.youtube.com/channel/UCtr07mdKhsUwVJjL8Kw_q5A",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lswe=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "הסברים מקצועיים על מערכות רכב כולל מערכות היברידיות."
+  },
+  {
+    "channel_name": "The Gunman | הגאנמן (צביעת רכבים)",
+    "channel_url": "https://www.youtube.com/channel/UCzJ7rCZtG8GVVKjv8_eynUg",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsgu=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "ערוץ מקצועי לצביעת רכבים וטכניקות צבע."
+  },
+  {
+    "channel_name": "D.I.Y. AUTO SCHOOL | בית הספר לאוטו DIY",
+    "channel_url": "https://www.youtube.com/channel/UCH7RpXjPcKNSw5Shb4WCIGA",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsda=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "שיחזור ותיקון רכבים שלב-אחר-שלב."
+  },
+  {
+    "channel_name": "Eastwood Company | איסטווד",
+    "channel_url": "https://www.youtube.com/channel/UCMb7dl9tHKx-zKDchXjeNfQ",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsea=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "הדרכות לשיפורי רכב, פחחות וצבע."
+  },
+  {
+    "channel_name": "Cars Evolution | התפתחות רכבים",
+    "channel_url": "https://www.youtube.com/channel/UCx8FETleGoRMoise1REvBtQ",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsec=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "סקירות התפתחות מותגי יוקרה – ערוץ מסעודיה."
+  },
+  {
+    "channel_name": "Fab Rats | פאב ראטס",
+    "channel_url": "https://www.youtube.com/@FabRats",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsfab=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "חידוש רכבים, הצלות ושחזורים."
+  },
+  {
+    "channel_name": "Westen Champlin | וסטן צ'מפלין",
+    "channel_url": "https://www.youtube.com/channel/UChRlaISXbl2gECFAmDzxgzg",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lswec=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "סדנה לשיפורי רכב ובניית פרויקטים מטורפים."
+  },
+  {
+    "channel_name": "AutomotivePress | אוטומוטיב פרס",
+    "channel_url": "https://www.youtube.com/c/AutomotivePress",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsaut=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "סקירות רכב וחדשות תעשיית הרכב."
+  },
+  {
+    "channel_name": "Donut | דונאט",
+    "channel_url": "https://www.youtube.com/@Donut",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsdon=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "סקירות, תיקונים, שדרוגים והסברים כיפיים על רכב."
+  },
+  {
+    "channel_name": "Plugmag | פלאג מג",
+    "channel_url": "https://www.youtube.com/@Plugmag",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsplug=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "מגזין ישראלי לרכב חשמלי והיברידי."
+  },
+  {
+    "channel_name": "EV Magazine | מגזין רכב חשמלי",
+    "channel_url": "https://www.youtube.com/@ev_magazine",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsevm=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "חדשות רכב חשמלי וסקירות."
+  },
+  {
+    "channel_name": "Cars BOOM | קארס בום",
+    "channel_url": "https://www.youtube.com/@CarsBOOM",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lscbm=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "סקירות רכבים וביקורים באולמות ייצור."
+  },
+  {
+    "channel_name": "על גלגלים | On Wheels",
+    "channel_url": "https://www.youtube.com/@onwheels2564",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsagl=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "סקירת כבישים ונסיעות."
+  },
+  {
+    "channel_name": "Top Gear Classic | טופ גיר קלאסיק",
+    "channel_url": "https://www.youtube.com/@TopGearClassic",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lstgc=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "קטעי הקלאסיקה הטובים של טופ גיר."
+  },
+  {
+    "channel_name": "DRIVETRIBE | דרייבטרייב",
+    "channel_url": "https://www.youtube.com/@Drivetribe",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsdrv=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "קלארקסון, המונד, מיי – תחרויות, בניות מכוניות ועוד."
+  },
+  {
+    "channel_name": "עמיחי והג'יפ | Amichay & The Jeep",
+    "channel_url": "https://www.youtube.com/@amichaynjeep",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsamc=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "טיולי ג'יפים בארה\"ב בעיקר."
+  },
+  {
+    "channel_name": "Repair Tips & Secrets Only Mechanics Know | טיפים וסודות של מכונאים",
+    "channel_url": "https://www.youtube.com/@1AAuto",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_ls1aa=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "כמעט 10,000 סרטוני תיקון וטיפים מקצועיים."
+  },
+  {
+    "channel_name": "Gears and Gasoline | גירס וגזולין",
+    "channel_url": "https://www.youtube.com/@GearsandGasoline",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsgag=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "שדרוגים, מסעות, תיקונים וסקירות."
+  },
+  {
+    "channel_name": "Car Throttle | קארת׳רוטל",
+    "channel_url": "https://www.youtube.com/@CarThrottle",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsct=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "אתגרים, תחרויות, תכני רכב רבים."
+  },
+  {
+    "channel_name": "Euro NCAP | יורו אנקאפ",
+    "channel_url": "https://www.youtube.com/@EuroNCAP_forsafercars",
+    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_lsencap=s160-c-k-c0x00ffffff-no-rj",
+    "content_description": "מבחני ריסוק רשמיים לרכבים."
   }
+
 ]
 }
