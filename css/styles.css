@@ -116,7 +116,7 @@ html[dir="rtl"] #mobile-menu .dark-mode-toggle-button .dot {
     display: flex;
     gap: 1.5rem;
     width: max-content;
-    animation: scroll-channels 90s linear infinite;
+    animation: scroll-channels 120s linear infinite;
     padding-left: 1rem; /* Offset for smooth loop */
 }
 
@@ -131,7 +131,7 @@ html[dir="rtl"] #mobile-menu .dark-mode-toggle-button .dot {
 
 /* Adjust animation for RTL specifically if needed, though translateX positive usually moves right */
 html[dir="rtl"] .channels-track {
-    animation: scroll-channels-rtl 90s linear infinite;
+    animation: scroll-channels-rtl 120s linear infinite;
 }
 
 @keyframes scroll-channels-rtl {
