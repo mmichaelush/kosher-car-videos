@@ -610,14 +610,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 confirmButtonColor: '#7c3aed'
             });
             
-            if (history.pushState) {
-                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-                window.history.pushState({path: newUrl}, '', newUrl);
-            }
-            
-            hideSingleVideoView();
-            if(dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
-            if(dom.siteFooter) dom.siteFooter.classList.remove('hidden');
+            // Force full redirect to homepage
+            window.location.href = './';
             return;
         }
 
