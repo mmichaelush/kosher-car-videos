@@ -600,7 +600,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const video = state.allVideos.find(v => v.id === videoId);
         if (!video) {
-            console.error(`Video with ID ${videoId} not found.`);
+            console.warn(`Video with ID ${videoId} not found.`);
+            
+            await Swal.fire({
+                icon: 'error',
+                title: 'הסרטון לא נמצא',
+                text: 'לצערנו הסרטון שחיפשת אינו קיים במאגר או שהוסר.',
+                confirmButtonText: 'חזרה לדף הבית',
+                confirmButtonColor: '#7c3aed'
+            });
+            
+            if (history.pushState) {
+                const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.pushState({path: newUrl}, '', newUrl);
+            }
+            
+            hideSingleVideoView();
+            if(dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
+            if(dom.siteFooter) dom.siteFooter.classList.remove('hidden');
             return;
         }
 
