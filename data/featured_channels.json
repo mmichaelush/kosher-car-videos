@@ -74,13 +74,13 @@
   },
   {
     "channel_name": "Tesla | טסלה",
-    "channel_url": "https://www.youtube.com/@vtest_igorvaiman",
+    "channel_url": "https://www.youtube.com/@tesla",
     "channel_image_url": "https://yt3.googleusercontent.com/YMRZbg8UjcGgiFOj4qxIWynUkxkV9h5KcpbQGO3yuJnU34Lga3UJeCEAP3T-t7MmNj8Yxsw-EQ=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "הערוץ הרשמי של רכבי טסלה."
   },
   {
     "channel_name": "Vtest | וי טסט",
-    "channel_url": "https://www.youtube.com/@tesla",
+    "channel_url": "https://www.youtube.com/@vtest_igorvaiman",
     "channel_image_url": "https://yt3.googleusercontent.com/Kxcof8p7Pwf2spifzOeY19KNbZYKRigXa6SPSggFbHZNIqRv0vujORc52RNP0n5tfiQPaVp6Cw=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "ערוץ עם סקירות על רכבי יוקרה."
   },
@@ -329,12 +329,6 @@
     "channel_url": "https://www.youtube.com/@GrindHardShorts",
     "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_kBo409vwi7PwWFct-6b5if_fTBY90r6b3QmfPNdxwCGg=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "תכנים קצרים של פרויקטים מטורפים, בניות רכב וניסויים מכאניים."
-  },
-  {
-    "channel_name": "Edwin Olding | אדווין אולדינג",
-    "channel_url": "https://www.youtube.com/@EdwinOlding",
-    "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_llfVSI_7pCwTuVACjuffD5uCyYfuhEVUx-Oc8YTjuLWQ=s72-c-k-c0x00ffffff-no-rj",
-    "content_description": "סקירות וניסיון רכיבה על אופנועים — מתאים לחובבי דו־גלגלי."
   },
   {
     "channel_name": "Scotty Kilmer | סקוטי קילמר",
