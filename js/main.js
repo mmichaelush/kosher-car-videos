@@ -108,13 +108,13 @@ document.addEventListener('DOMContentLoaded', () => {
         },
 
         // Category & Home Sections logic
-        homeViewSections: document.getElementById('home-view-sections'),
+        homeViewContainer: document.getElementById('home-view-container'),
         homeViewSectionsBottom: document.getElementById('home-view-sections-bottom'),
         categoryHeaderSection: document.getElementById('category-header-section'),
         categoryPageTitle: document.getElementById('category-page-title'),
         breadcrumbCategoryName: document.getElementById('breadcrumb-category-name'),
         categoryVideoCountSummary: document.getElementById('category-video-count-summary'),
-        videosGridTitle: document.getElementById('videos-grid-title'), // Or similar if exists
+        videosGridTitle: document.getElementById('videos-grid-title'),
         searchSectionTitle: document.getElementById('search-section-title')
     };
 
@@ -163,15 +163,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const path = window.location.pathname;
         const page = path.split("/").pop() || 'index.html';
         if (page === '' || page === '/') return 'index.html';
-        // Handle SPA routing: if path is index.html but we have ?name=... treat as category logic internally
         if (['add-video.html', 'privacy.html', 'terms.html'].includes(page)) {
             return page;
         }
         return 'index.html';
     };
     
-    const getURLParams = () => new URLSearchParams(window.location.search);
-
     const parseDurationToSeconds = (durationStr) => {
         if (!durationStr || typeof durationStr !== 'string') return 0;
         const parts = durationStr.split(':').map(Number);
@@ -251,16 +248,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --------------------------------------------------------------------------------
-    // 6. RENDERING LOGIC
+    // 6. RENDERING LOGIC (SPA)
     // --------------------------------------------------------------------------------
     
-    // --- View Management (SPA) ---
     function renderHomeView() {
         // Show Home Sections
-        if (dom.homeViewSections) dom.homeViewSections.classList.remove('hidden');
+        if (dom.homeViewContainer) dom.homeViewContainer.classList.remove('hidden');
         if (dom.homeViewSectionsBottom) dom.homeViewSectionsBottom.classList.remove('hidden');
+        
+        // Ensure Categories are rendered
         if (dom.homepageCategoriesGrid) {
-             dom.homepageCategoriesGrid.innerHTML = ''; // Clear to redraw if needed
+             dom.homepageCategoriesGrid.innerHTML = '';
              renderHomepageCategoryButtons();
         }
         
@@ -269,10 +267,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Update Titles
         document.title = 'CAR-טיב - סרטוני רכבים כשרים';
-        const videosHeading = document.getElementById('videos-heading');
-        if (videosHeading) {
-            const span = videosHeading.querySelector('span');
-            if (span) span.textContent = 'כל הסרטונים';
+        if (dom.videosGridTitle) {
+            dom.videosGridTitle.textContent = 'כל הסרטונים';
         }
 
         // Search Placeholder update
@@ -283,13 +279,13 @@ document.addEventListener('DOMContentLoaded', () => {
         // Set State
         state.currentFilters.category = 'all';
         
-        // Re-apply filters (which now includes 'all' categories)
+        // Re-apply filters
         applyFilters(false, false);
     }
 
     function renderCategoryView(categoryId) {
         // Hide Home Sections
-        if (dom.homeViewSections) dom.homeViewSections.classList.add('hidden');
+        if (dom.homeViewContainer) dom.homeViewContainer.classList.add('hidden');
         if (dom.homeViewSectionsBottom) dom.homeViewSectionsBottom.classList.add('hidden');
 
         // Show Category Header
@@ -319,10 +315,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Update "Videos" Section Title
-        const videosHeading = document.getElementById('videos-heading');
-        if (videosHeading) {
-            const span = videosHeading.querySelector('span');
-             if (span) span.innerHTML = `סרטונים בקטגוריה: <span class="font-bold text-purple-600 dark:text-purple-400">${name}</span>`;
+        if (dom.videosGridTitle) {
+            dom.videosGridTitle.innerHTML = `סרטונים בקטגוריה: <span class="font-bold text-purple-600 dark:text-purple-400">${name}</span>`;
         }
         
         // Search Placeholder update
@@ -382,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .map(cat => {
                 const count = state.allVideos.filter(v => v.category === cat.id).length;
                 const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`;
-                // Note: Using ?name= parameter for internal routing
+                
                 return `
                     <a href="?name=${cat.id}" class="relative category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
                         <div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]">
@@ -399,30 +393,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!state.allVideos) return [];
         let filtered = state.allVideos;
         
-        // Filter by Category
         if (state.currentFilters.category !== 'all') {
              filtered = filtered.filter(v => v.category === state.currentFilters.category);
         }
         
-        // Filter by Search Term
         if (state.currentFilters.searchTerm.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
-            // Re-initialize Fuse if category changed to search only within category? 
-            // Current Fuse is global. Let's filter Fuse results by category manually if needed.
-            // Or create a subset fuse. 
-            // For performance on small datasets, filtering global results is fine.
             const fuseResults = state.fuse.search(state.currentFilters.searchTerm);
             const resultIds = new Set(fuseResults.map(r => r.item.id));
             filtered = filtered.filter(v => resultIds.has(v.id));
         }
 
-        // Filter by Tags & Hebrew Only
         let videos = filtered.filter(video => {
             const tagsMatch = state.currentFilters.tags.length === 0 || state.currentFilters.tags.every(filterTag => (video.tags || []).includes(filterTag));
             const hebrewMatch = !state.currentFilters.hebrewOnly || video.hebrewContent;
             return tagsMatch && hebrewMatch;
         });
 
-        // Sort
         videos.sort((a, b) => {
             switch (state.currentFilters.sortBy) {
                 case 'date-desc': return (b.dateAdded || 0) - (a.dateAdded || 0);
@@ -443,9 +429,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         const allMatchingVideos = getFilteredAndSortedVideos();
         
-        // Render Tags specific to current view (All or Category)
         renderPopularTags();
-
         renderVideoCards(allMatchingVideos, isLoadMore);
         
         if (andScroll && !isLoadMore) {
@@ -467,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isLoadMore) {
             dom.videoCardsContainer.innerHTML = '';
             const skeletons = document.getElementById('video-skeletons');
-            if (skeletons) skeletons.remove(); // Usually handled by innerHTML=''
+            if (skeletons) skeletons.remove();
         }
 
         const videosToRender = allMatchingVideos.slice(
@@ -529,14 +513,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!card.article || !card.thumbnailImg || !card.titleLink) return null;
 
-        const videoPageUrl = `./?v=${video.id}`; // SPA Link
+        const videoPageUrl = `./?v=${video.id}`;
 
         card.article.dataset.videoId = video.id;
         card.thumbnailImg.src = video.thumbnail || getThumbnailUrl(video.id);
         card.thumbnailImg.alt = video.title;
         
         if(card.duration) card.duration.textContent = video.duration || '';
-        if(card.playLink) card.playLink.href = "#"; // Handled by JS
+        if(card.playLink) card.playLink.href = "#";
         if(card.iframe) card.iframe.title = `נגן וידאו: ${video.title}`;
         
         card.titleLink.href = videoPageUrl;
@@ -586,7 +570,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!dom.popularTagsContainer) return;
         
         const { category } = state.currentFilters;
-        // Calculate tags based on currently viewed category (or all)
         const videosToConsider = category !== 'all' ? state.allVideos.filter(v => v.category === category) : state.allVideos;
         
         if (videosToConsider.length === 0) {
@@ -687,7 +670,6 @@ document.addEventListener('DOMContentLoaded', () => {
     async function showSingleVideoView(videoId) {
         if (!videoId) return;
 
-        // Ensure videos are loaded
         if(!state.allVideos.length) {
              const promises = CONSTANTS.CATEGORY_FILES.map(file => fetchVideosFromFile(file));
              const results = await Promise.all(promises);
@@ -709,22 +691,17 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Hide Main Views
-        if (dom.homeViewSections) dom.homeViewSections.classList.add('hidden');
+        if (dom.homeViewContainer) dom.homeViewContainer.classList.add('hidden');
         if (dom.homeViewSectionsBottom) dom.homeViewSectionsBottom.classList.add('hidden');
         if (dom.categoryHeaderSection) dom.categoryHeaderSection.classList.add('hidden');
-        if (dom.mainPageContent) dom.mainPageContent.classList.add('hidden'); // Hide grid and filters entirely
+        if (dom.mainPageContent) dom.mainPageContent.classList.add('hidden');
 
-        // Show Footer (optional)
         if (dom.siteFooter) dom.siteFooter.classList.remove('hidden');
-        
-        // Show Single Video View
         if (dom.singleVideoView.container) dom.singleVideoView.container.classList.remove('hidden');
 
         window.scrollTo(0, 0);
         document.title = `${video.title} - CAR-טיב`;
 
-        // Populate Content
         dom.singleVideoView.title.innerHTML = video.title;
         dom.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
         dom.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
@@ -756,7 +733,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dom.mainPageContent) dom.mainPageContent.classList.remove('hidden');
         if (dom.siteFooter) dom.siteFooter.classList.remove('hidden');
         
-        // Restore appropriate view based on state
         if (state.currentFilters.category !== 'all') {
             renderCategoryView(state.currentFilters.category);
         } else {
@@ -914,7 +890,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFiltersAndURL(false);
     }
 
-    // Search Logic
     function handleSearchSubmit(form) {
         const input = form.querySelector('input[type="search"]');
         if (!input) return;
@@ -1055,7 +1030,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return result;
     }
 
-    // Contact Form
     function handleContactFormSubmit(event) {
         event.preventDefault();
         const form = event.target;
@@ -1114,7 +1088,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             const { searchTerm, tags, hebrewOnly, sortBy, category } = state.currentFilters;
             
-            // If in index.html, allow category param
             if (pageName === 'index.html' && category !== 'all') {
                  newParams.set('name', category);
             }
@@ -1127,8 +1100,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const newSearchString = newParams.toString();
         
-        // Logic specific to index.html serving as category page
-        // If we are at root, keep root.
         const currentPath = window.location.pathname.endsWith('/') || window.location.pathname.endsWith('.html') ? window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1) : window.location.pathname + '/';
         const base = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
         let finalPath = pageName === 'index.html' ? base : `${base}${pageName}`;
@@ -1149,7 +1120,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ? params.get('hebrew') === 'true'
             : localStorage.getItem('hebrewOnlyPreference') === 'true';
             
-        // Category param check
         const categoryParam = params.get('name');
         if (categoryParam) {
             state.currentFilters.category = categoryParam.toLowerCase();
@@ -1172,14 +1142,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleScrollSpy() {
-        // Only spy on index.html main view
         if (getPageName() !== 'index.html' || (dom.singleVideoView.container && !dom.singleVideoView.container.classList.contains('hidden'))) {
             document.querySelectorAll('header nav .nav-link.active-nav-link').forEach(link => link.classList.remove('active-nav-link'));
             return;
         }
-        // Only if home sections are visible
-        if (dom.homeViewSections && dom.homeViewSections.classList.contains('hidden')) {
-             // In Category View, maybe highlight only "Categories" link?
+        
+        if (dom.homeViewContainer && dom.homeViewContainer.classList.contains('hidden')) {
              return; 
         }
 
@@ -1196,7 +1164,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.querySelectorAll('header nav .nav-link[href*="#"]').forEach(link => {
             const linkHref = link.getAttribute('href');
-            // Fix logic to handle ./index.html#id vs #id
             const linkSectionId = linkHref.includes('#') ? linkHref.substring(linkHref.lastIndexOf('#') + 1) : '';
             link.classList.toggle('active-nav-link', linkSectionId === activeSectionId);
         });
@@ -1272,7 +1239,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         top: elementPosition,
                         behavior: 'smooth'
                     });
-                    // Clean URL hash without reload
                     if (history.replaceState) {
                         const url = new URL(window.location);
                         url.hash = '';
@@ -1323,7 +1289,6 @@ document.addEventListener('DOMContentLoaded', () => {
                      e.preventDefault();
                      
                      if (isVideoViewActive) {
-                         // Go back to home view first
                          hideSingleVideoView();
                      }
 
@@ -1342,9 +1307,8 @@ document.addEventListener('DOMContentLoaded', () => {
                           updateURLWithFilters();
                           window.scrollTo({ top: 0, behavior: 'smooth' });
                      } else {
-                          // Ensure we are in home view for standard sections
                           if(state.currentFilters.category !== 'all') {
-                              renderHomeView(); // Reset to home view
+                              renderHomeView();
                           }
                           
                           const targetElement = document.getElementById(targetId);
@@ -1367,7 +1331,6 @@ document.addEventListener('DOMContentLoaded', () => {
                      return;
                  }
                  
-                 // Special handling for "All Categories" or "All Videos" buttons
                  if (link.getAttribute('href') === './' || link.getAttribute('href') === './index.html') {
                      e.preventDefault();
                      if (isVideoViewActive) hideSingleVideoView();
@@ -1393,7 +1356,6 @@ document.addEventListener('DOMContentLoaded', () => {
                  const params = new URLSearchParams(link.search);
                  const tagName = params.get('tags');
                  
-                 // If we are in video view, go back to list
                  if (!dom.singleVideoView.container.classList.contains('hidden')) {
                      hideSingleVideoView();
                  }
@@ -1406,11 +1368,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (target.closest('#check-yt-id-link') || target.closest('#check-yt-id-button')) handleCheckYtId(e);
             
-            // Tag toggles in filter area
             if (target.closest('button.tag[data-tag-value]')) toggleTagSelection(target.closest('button.tag').dataset.tagValue);
             if (target.closest('.remove-tag-btn')) toggleTagSelection(target.closest('.remove-tag-btn').dataset.tagToRemove);
             
-            // Tag in video card
             const videoTagButton = target.closest('.video-tag-button[data-tag]');
             if(videoTagButton) {
                 e.preventDefault();
@@ -1419,7 +1379,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 scrollToVideoGridIfNeeded();
             }
 
-            // Video Card Interactions
             if(card) {
                 const videoId = card.dataset.videoId;
                 if (target.closest('a.video-link')) {
@@ -1448,7 +1407,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // Single Video View Share
             if (target.closest('#single-video-share-btn')) {
                 const videoId = new URLSearchParams(window.location.search).get('v');
                 const video = state.allVideos.find(v => v.id === videoId);
@@ -1458,7 +1416,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (target.id === 'no-results-clear-btn') clearAllFilters();
         });
 
-        // Theme & Mobile Menu
         dom.darkModeToggles.forEach(toggle => toggle.addEventListener('click', handleThemeToggle));
         if(dom.openMenuBtn) dom.openMenuBtn.addEventListener('click', openMobileMenu);
         if(dom.closeMenuBtn) dom.closeMenuBtn.addEventListener('click', closeMobileMenu);
@@ -1468,11 +1425,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.key === 'Escape' && dom.mobileMenu && !dom.mobileMenu.classList.contains('translate-x-full')) closeMobileMenu();
         });
 
-        // Scroll
         if(dom.backToTopButton) dom.backToTopButton.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
         window.addEventListener('scroll', () => throttle(handleScroll, 100));
 
-        // Search Forms
         Object.values(dom.searchForms).forEach(form => {
             if(!form) return;
             form.addEventListener('submit', (e) => { e.preventDefault(); handleSearchSubmit(form); });
@@ -1485,24 +1440,18 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Contact Form
         if(dom.contactForm) dom.contactForm.addEventListener('submit', handleContactFormSubmit);
 
-        // Single Video Back Button
         if(dom.singleVideoView.backBtn) dom.singleVideoView.backBtn.addEventListener('click', () => {
-             // If we have history state, go back. Else go to root.
-             // But simpler for this SPA: just hide the view and restore URL
              const params = new URLSearchParams(window.location.search);
-             params.delete('v'); // remove video id
+             params.delete('v');
              
              hideSingleVideoView();
-             updateURLWithFilters(); // Restores filter params to URL
+             updateURLWithFilters();
              
-             // Optionally scroll back to grid
              scrollToVideoGridIfNeeded();
         });
 
-        // Filter Controls
         if(dom.hebrewFilterToggle) dom.hebrewFilterToggle.addEventListener('change', (e) => {
             state.currentFilters.hebrewOnly = e.target.checked;
             localStorage.setItem('hebrewOnlyPreference', String(e.target.checked));
@@ -1529,26 +1478,22 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // History API (Back/Forward buttons)
         window.addEventListener('popstate', (event) => {
             const params = new URLSearchParams(window.location.search);
             const videoId = params.get('v');
             const categoryId = params.get('name');
             
-            // 1. Check if Single Video
             if (videoId) {
                 showSingleVideoView(videoId);
             } else {
                 hideSingleVideoView();
                 
-                // 2. Check if Category View or Home View
                 if (categoryId) {
                     renderCategoryView(categoryId);
                 } else {
                     renderHomeView();
                 }
 
-                // 3. Apply other filters
                 applyFiltersFromURL();
                 syncUIToState();
                 applyFilters(false, false);
@@ -1578,7 +1523,6 @@ document.addEventListener('DOMContentLoaded', () => {
     async function initializeApp() {
         if (dom.currentYearFooter) dom.currentYearFooter.textContent = new Date().getFullYear();
         
-        // Theme Init
         const isDark = document.documentElement.classList.contains('dark');
         dom.darkModeToggles.forEach(toggle => {
             const moonIcon = toggle.querySelector('.fa-moon');
@@ -1588,7 +1532,6 @@ document.addEventListener('DOMContentLoaded', () => {
             toggle.setAttribute('aria-checked', String(isDark));
         });
 
-        // Load Data
         try {
              await loadVideos();
         } catch (e) {
@@ -1597,7 +1540,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         initVideoObserver();
         
-        // URL Params Logic
         const currentPage = getPageName();
         const urlParams = new URLSearchParams(window.location.search);
         const videoIdFromUrl = urlParams.get('v');
@@ -1608,9 +1550,8 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             if (dom.singleVideoView.container) dom.singleVideoView.container.classList.add('hidden');
             
-            // Logic for index.html acting as both home and category page
             if (currentPage === 'index.html') {
-                loadFeaturedChannels(); // Only load these once
+                loadFeaturedChannels();
                 if(dom.homepageCategoriesGrid) renderHomepageCategoryButtons();
 
                 if (categoryFromUrl) {
@@ -1618,12 +1559,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                      renderHomeView();
                 }
-            } else if (currentPage === 'category.html') { 
-                // Legacy support if someone lands on category.html
-                // Should redirect to index.html? Or maintain behavior?
-                // Given the instruction to merge, category.html shouldn't exist anymore, 
-                // but if code runs on it, it behaves like old category page.
-                // Assuming we are on index.html structure now.
             }
 
             applyFiltersFromURL();
