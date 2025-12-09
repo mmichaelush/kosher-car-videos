@@ -1641,4 +1641,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initializeApp();
 });
-</file>
