@@ -122,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. STATE MANAGEMENT
     // --------------------------------------------------------------------------------
     let state = {
+        currentView: 'home', // 'home', 'category', 'video'
         allVideos: [],
         allVideosCache: null,
         fuse: null,
@@ -252,13 +253,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // --------------------------------------------------------------------------------
     
     function renderHomeView() {
+        state.currentView = 'home';
         // Show Home Sections
         if (dom.homeViewContainer) dom.homeViewContainer.classList.remove('hidden');
         if (dom.homeViewSectionsBottom) dom.homeViewSectionsBottom.classList.remove('hidden');
         
         // Ensure Categories are rendered
-        if (dom.homepageCategoriesGrid) {
-             dom.homepageCategoriesGrid.innerHTML = '';
+        if (dom.homepageCategoriesGrid && dom.homepageCategoriesGrid.children.length === 0) {
              renderHomepageCategoryButtons();
         }
         
@@ -284,6 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderCategoryView(categoryId) {
+        state.currentView = 'category';
         // Hide Home Sections
         if (dom.homeViewContainer) dom.homeViewContainer.classList.add('hidden');
         if (dom.homeViewSectionsBottom) dom.homeViewSectionsBottom.classList.add('hidden');
@@ -668,6 +670,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 7. SINGLE VIDEO VIEW LOGIC
     // --------------------------------------------------------------------------------
     async function showSingleVideoView(videoId) {
+        state.currentView = 'video';
         if (!videoId) return;
 
         if(!state.allVideos.length) {
@@ -1138,7 +1141,9 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.backToTopButton.classList.toggle('invisible', !isVisible);
             dom.backToTopButton.classList.toggle('opacity-0', !isVisible);
         }
-        handleScrollSpy();
+        
+        // Optimized ScrollSpy call
+        requestAnimationFrame(handleScrollSpy);
     }
 
     function handleScrollSpy() {
@@ -1307,7 +1312,9 @@ document.addEventListener('DOMContentLoaded', () => {
                           updateURLWithFilters();
                           window.scrollTo({ top: 0, behavior: 'smooth' });
                      } else {
-                          if(state.currentFilters.category !== 'all') {
+                          // Performance Optimization: 
+                          // If we are already in 'home' view, don't re-render, just scroll
+                          if (state.currentView !== 'home') {
                               renderHomeView();
                           }
                           
