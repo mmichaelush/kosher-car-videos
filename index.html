@@ -5,42 +5,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAR-טיב - סרטוני רכבים כשרים</title>
-    <meta name="description" content="מאגר וידאו ענק ואיכותי הפתוח בנטפרי, עם סרטוני רכב כשרים ומסוננים לכל חובבי הרכב שומרי התורה והמצוות.">
     
-    <!-- Preconnect להאצת טעינת משאבים חיצוניים -->
+    <!-- אופטימיזציה לטעינה -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdn.tailwindcss.com">
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     <script>
       tailwind.config = {
         darkMode: 'class',
         theme: {
-          extend: {
-            fontFamily: {
-                rubik: ['Rubik', 'sans-serif'],
-            }
-          }
+          extend: {}
         }
       }
     </script>
 
-    <!-- Fonts & Icons -->
+    <!-- פונטים ואייקונים -->
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Custom CSS -->
+    <!-- CSS מקורי -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
     
-    <!-- External Libraries (Deferred for performance) -->
+    <!-- ספריות חיצוניות (Defer לביצועים) -->
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
 
     <script>
-        // מניעת הבהוב בעת טעינת הדף (Dark Mode Flash)
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -49,9 +43,9 @@
     </script>
 </head>
 
-<body class="font-rubik bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 antialiased transition-colors duration-300 flex flex-col min-h-screen">
+<body class="font-rubik bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 antialiased transition-colors duration-300">
 
-    <!-- מסך טעינה (Preloader) -->
+    <!-- Preloader -->
     <div id="site-preloader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-900 transition-opacity duration-500">
         <div class="relative flex items-center justify-center">
             <div class="animate-spin rounded-full h-24 w-24 border-t-4 border-b-4 border-purple-600 dark:border-purple-400"></div>
@@ -61,30 +55,31 @@
         <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm">טוען תוכן כשר...</p>
     </div>
 
-    <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black bg-opacity-75 z-40 hidden transition-opacity duration-300" aria-hidden="true"></div>
-
-    <!-- Mobile Sidebar -->
-    <aside id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-800 shadow-xl z-50 p-6 transform translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto" role="dialog" aria-modal="true">
+    <!-- תפריט מובייל -->
+    <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black bg-opacity-75 z-40 md:hidden transition-opacity duration-300 opacity-0 invisible" aria-hidden="true"></div>
+    <aside id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-800 shadow-xl z-50 p-6 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out overflow-y-auto">
         <div class="flex justify-between items-center mb-8">
-            <a href="#/" class="flex items-center focus:outline-none">
-                <img src="data/assets/images/logo.png" alt="Logo" class="h-8 w-auto ml-2 dark:hidden">
-                <img src="data/assets/images/logo-white.png" alt="Logo" class="h-8 w-auto ml-2 hidden dark:block">
+            <a href="#home" class="flex items-center">
+                <img src="data/assets/images/logo.png" class="h-8 w-auto ml-2 dark:hidden" alt="Logo">
+                <img src="data/assets/images/logo-white.png" class="h-8 w-auto ml-2 hidden dark:block" alt="Logo">
                 <span class="text-xl font-bold text-slate-900 dark:text-slate-100">CAR-טיב</span>
             </a>
-            <button id="close-menu-btn" class="text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-300 focus:outline-none p-1">
-                <i class="fas fa-times text-2xl"></i>
+            <button id="close-menu-btn" class="text-slate-500 hover:text-purple-600 p-1"><i class="fas fa-times text-2xl"></i></button>
+        </div>
+        <nav class="flex flex-col space-y-1">
+            <a href="#home" onclick="app.router('home')" class="nav-link-mobile py-3 px-4 rounded hover:bg-purple-50 dark:hover:bg-slate-700 flex items-center"><i class="fas fa-home w-6 ml-3 text-purple-600"></i>בית</a>
+            <a href="#categories" onclick="app.router('all-categories')" class="nav-link-mobile py-3 px-4 rounded hover:bg-purple-50 dark:hover:bg-slate-700 flex items-center"><i class="fas fa-th-large w-6 ml-3 text-purple-600"></i>קטגוריות</a>
+            <a href="#all-videos" onclick="app.router('category', 'all')" class="nav-link-mobile py-3 px-4 rounded hover:bg-purple-50 dark:hover:bg-slate-700 flex items-center"><i class="fas fa-play-circle w-6 ml-3 text-purple-600"></i>סרטונים</a>
+            <a href="#featured-channels-section" class="nav-link-mobile py-3 px-4 rounded hover:bg-purple-50 dark:hover:bg-slate-700 flex items-center"><i class="fas fa-tv w-6 ml-3 text-purple-600"></i>ערוצים</a>
+            <a href="#about-section" class="nav-link-mobile py-3 px-4 rounded hover:bg-purple-50 dark:hover:bg-slate-700 flex items-center"><i class="fas fa-info-circle w-6 ml-3 text-purple-600"></i>אודות</a>
+            <a href="add-video.html" class="nav-link-mobile py-3 px-4 rounded hover:bg-purple-50 dark:hover:bg-slate-700 text-purple-600 font-bold"><i class="fas fa-plus-circle w-6 ml-3"></i>הוסף סרטון</a>
+        </nav>
+        <div class="mt-auto pt-6 border-t border-slate-200 dark:border-slate-700">
+            <button class="dark-mode-toggle-button w-full flex items-center justify-between text-slate-700 dark:text-slate-300 py-3 px-4 rounded hover:bg-purple-50 dark:hover:bg-slate-700">
+                <span class="flex items-center"><i class="fas fa-moon w-6 ml-3 text-purple-600"></i>מצב תצוגה</span>
+                <div class="relative"><div class="block bg-slate-300 dark:bg-slate-600 w-10 h-6 rounded-full"></div><div class="dot absolute right-1 top-1 bg-white w-4 h-4 rounded-full transition-transform"></div></div>
             </button>
         </div>
-        <nav class="flex flex-col space-y-1" id="mobile-nav-links">
-            <!-- Links will be populated via JS or are static -->
-            <a href="#/" class="nav-link-mobile py-3 px-4 rounded-md flex items-center hover:bg-purple-50 dark:hover:bg-slate-700"><i class="fas fa-home w-6 ml-3 text-purple-600"></i>בית</a>
-            <a href="#/categories" class="nav-link-mobile py-3 px-4 rounded-md flex items-center hover:bg-purple-50 dark:hover:bg-slate-700"><i class="fas fa-th-large w-6 ml-3 text-purple-600"></i>קטגוריות</a>
-            <a href="#/all-videos" class="nav-link-mobile py-3 px-4 rounded-md flex items-center hover:bg-purple-50 dark:hover:bg-slate-700"><i class="fas fa-play-circle w-6 ml-3 text-purple-600"></i>כל הסרטונים</a>
-            <a href="#/channels" class="nav-link-mobile py-3 px-4 rounded-md flex items-center hover:bg-purple-50 dark:hover:bg-slate-700"><i class="fas fa-tv w-6 ml-3 text-purple-600"></i>ערוצים</a>
-            <a href="#/about" class="nav-link-mobile py-3 px-4 rounded-md flex items-center hover:bg-purple-50 dark:hover:bg-slate-700"><i class="fas fa-info-circle w-6 ml-3 text-purple-600"></i>אודות</a>
-            <a href="add-video.html" class="nav-link-mobile py-3 px-4 rounded-md flex items-center hover:bg-purple-50 dark:hover:bg-slate-700 text-purple-600 font-semibold"><i class="fas fa-plus-circle w-6 ml-3"></i>הוסף סרטון</a>
-        </nav>
     </aside>
 
     <!-- Header -->
@@ -92,245 +87,250 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <div class="flex items-center">
-                    <a href="#/" class="flex-shrink-0 flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 rounded-md p-1 -ml-1">
-                        <img src="data/assets/images/logo.png" alt="Logo" class="h-10 w-auto ml-2 md:h-12 dark:hidden">
-                        <img src="data/assets/images/logo-white.png" alt="Logo" class="h-10 w-auto ml-2 md:h-12 hidden dark:block">
+                    <a href="#home" onclick="app.router('home')" class="flex items-center p-1 -ml-1">
+                        <img src="data/assets/images/logo.png" class="h-10 ml-2 dark:hidden" alt="Logo">
+                        <img src="data/assets/images/logo-white.png" class="h-10 ml-2 hidden dark:block" alt="Logo">
                         <span class="text-2xl font-bold text-slate-900 dark:text-slate-100 hidden sm:block">CAR-טיב</span>
                     </a>
-                    <nav class="hidden md:mr-4 lg:mr-6 md:flex items-center space-x-1 rtl:space-x-reverse" id="desktop-nav">
-                        <a href="#/" class="nav-link px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 transition-colors">בית</a>
-                        <a href="#/categories" class="nav-link px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 transition-colors">קטגוריות</a>
-                        <a href="#/about" class="nav-link px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 transition-colors">אודות</a>
-                        <a href="add-video.html" class="nav-link px-3 py-2 rounded-lg text-purple-700 dark:text-purple-400 font-medium hover:bg-purple-100 dark:hover:bg-slate-700 transition-colors">הוסף סרטון</a>
+                    <nav class="hidden md:mr-6 md:flex items-center space-x-1 rtl:space-x-reverse">
+                        <a href="#home" onclick="app.router('home')" class="nav-link px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600">בית</a>
+                        <a href="#categories" onclick="app.router('all-categories')" class="nav-link px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600">קטגוריות</a>
+                        <a href="#all-videos" onclick="app.router('category', 'all')" class="nav-link px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600">סרטונים</a>
+                        <a href="#about-section" class="nav-link px-3 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600">אודות</a>
+                        <a href="add-video.html" class="nav-link px-3 py-2 rounded-lg text-purple-700 dark:text-purple-400 font-bold hover:bg-purple-100 dark:hover:bg-slate-700">הוסף סרטון</a>
                     </nav>
                 </div>
-
                 <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                    <!-- Search Bar -->
                     <div class="hidden md:block relative">
-                        <input type="search" id="global-search-input" class="w-48 lg:w-60 pr-4 pl-10 py-2 text-sm border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-full focus:ring-purple-500 focus:w-64 transition-all" placeholder="חיפוש..." autocomplete="off">
-                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                        <!-- Suggestions Container -->
-                        <div id="search-suggestions" class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-slate-800 rounded-xl shadow-xl z-50 hidden border border-slate-100 dark:border-slate-700 overflow-hidden"></div>
+                        <input type="search" id="global-search-input" class="w-48 lg:w-60 pr-4 pl-10 py-2.5 text-sm border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 rounded-lg focus:ring-purple-500 focus:border-purple-500" placeholder="חיפוש...">
+                        <button class="absolute left-0 top-0 h-full px-3 text-slate-400"><i class="fas fa-search"></i></button>
+                        <div id="desktop-search-suggestions" class="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-800 border dark:border-slate-600 rounded-md shadow-lg hidden z-50"><ul></ul></div>
                     </div>
-
-                    <!-- Theme Toggle -->
-                    <button id="theme-toggle-btn" class="p-2 text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-300 transition-colors rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500">
-                        <i class="fas fa-moon text-lg dark:hidden"></i>
-                        <i class="fas fa-sun text-lg hidden dark:block"></i>
+                    <button class="dark-mode-toggle-button hidden md:flex p-2.5 rounded-full text-slate-500 hover:text-purple-600 dark:text-slate-400">
+                        <i class="fas fa-moon text-lg dark:hidden"></i><i class="fas fa-sun text-lg hidden dark:block"></i>
                     </button>
-
-                    <!-- Mobile Menu Button -->
-                    <button id="open-menu-btn" class="md:hidden text-slate-500 hover:text-purple-600 focus:outline-none p-2 rounded-md">
-                        <i class="fas fa-bars text-xl"></i>
-                    </button>
+                    <button id="open-menu-btn" class="md:hidden p-2 text-slate-500 hover:text-purple-600"><i class="fas fa-bars text-xl"></i></button>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Area - SPA Container -->
+    <!-- App Container (מחליף את התוכן דינמית) -->
     <main id="app-container" class="flex-grow">
         
-        <!-- View: Home -->
-        <div id="view-home" class="page-view animate-fade-in">
-            <!-- Hero Section -->
+        <!-- View 1: Home Page (העיצוב המקורי) -->
+        <div id="view-home" class="page-view">
+            <!-- Hero -->
             <section class="hero-gradient text-white relative overflow-hidden pt-10 pb-20 md:pt-16 md:pb-28">
-                <div class="absolute inset-0 opacity-10 dark:opacity-[0.07]">
-                    <img src="data/assets/images/circuit-board.svg" alt="" class="w-full h-full object-cover">
-                </div>
+                <div class="absolute inset-0 opacity-10 dark:opacity-[0.07]"><img src="data/assets/images/circuit-board.svg" class="w-full h-full object-cover"></div>
+                <div class="absolute top-1/4 left-1/4 w-20 h-20 rounded-full bg-purple-400/25 blur-xl floating"></div>
+                <div class="absolute bottom-1/3 right-1/3 w-28 h-28 rounded-full bg-indigo-400/25 blur-xl floating" style="animation-delay: 2s;"></div>
                 <div class="max-w-4xl mx-auto px-4 relative z-10 text-center">
-                    <h1 class="text-4xl md:text-6xl font-extrabold mb-6 tracking-tight">
-                        סרטוני רכב <span class="text-purple-300">כשרים ומסוננים</span>
-                    </h1>
-                    <p class="text-lg md:text-xl text-purple-100 mb-8 max-w-2xl mx-auto">
-                        המאגר הגדול ביותר ברשת המותאם לחסימות נטפרי. סקירות, מדריכים, וטיפים לנהגים שומרי תורה ומצוות.
-                    </p>
-                    <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <a href="#/categories" class="px-8 py-3 bg-white text-purple-700 font-bold rounded-full shadow-lg hover:bg-purple-50 transition-transform transform hover:-translate-y-1">צפה בקטגוריות</a>
-                        <a href="#/all-videos" class="px-8 py-3 bg-purple-600 border border-purple-400 text-white font-bold rounded-full shadow-lg hover:bg-purple-700 transition-transform transform hover:-translate-y-1">כל הסרטונים</a>
+                    <h1 class="text-4xl md:text-6xl font-extrabold mb-6">סרטוני רכב <span class="text-purple-300">כשרים ומסוננים</span></h1>
+                    <p class="text-lg md:text-xl text-purple-100 mb-8 max-w-xl mx-auto">מאגר וידאו ענק ואיכותי הפתוח בנטפרי לכל חובבי הרכב שומרי התורה והמצוות.</p>
+                    <p id="video-count-hero" class="mb-8 text-purple-200">במאגר יש כרגע <span class="font-bold text-white">...</span> סרטונים.</p>
+                    <div class="flex justify-center gap-4">
+                        <button onclick="app.router('category', 'all')" class="px-8 py-3.5 bg-white text-purple-700 font-bold rounded-xl shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all"><i class="fas fa-play ml-2"></i>צפו עכשיו</button>
+                        <a href="#about-section" class="px-8 py-3.5 bg-purple-600 border border-purple-400 text-white font-bold rounded-xl shadow-lg hover:bg-purple-500 hover:-translate-y-1 transition-all"><i class="fas fa-info-circle ml-2"></i>עוד עלינו</a>
                     </div>
-                    <p class="mt-6 text-sm opacity-80" id="hero-stats">טוען נתונים...</p>
                 </div>
             </section>
 
-            <!-- Featured Categories Preview -->
-            <section class="max-w-7xl mx-auto px-4 py-12">
-                <h2 class="text-2xl font-bold mb-6 text-slate-800 dark:text-white flex items-center">
-                    <i class="fas fa-star text-yellow-500 ml-2"></i> קטגוריות מובילות
-                </h2>
-                <div id="home-categories-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Categories injected by JS -->
+            <!-- Categories Grid (Home) -->
+            <section id="homepage-categories-section" class="max-w-7xl mx-auto px-4 py-16">
+                <h2 class="text-3xl font-extrabold text-center mb-10 text-slate-900 dark:text-slate-100"><i class="fas fa-compass text-purple-600 ml-3"></i>גלה את עולם הרכב</h2>
+                <div id="homepage-categories-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+                <div class="text-center mt-12">
+                    <button onclick="app.router('category', 'all')" class="px-8 py-3 border border-purple-600 text-purple-600 dark:text-purple-400 font-medium rounded-md hover:bg-purple-50 dark:hover:bg-slate-800 transition-all">לכל הסרטונים</button>
                 </div>
             </section>
 
-            <!-- Latest Videos -->
-            <section class="max-w-7xl mx-auto px-4 pb-16">
-                <div class="flex justify-between items-end mb-6">
-                    <h2 class="text-2xl font-bold text-slate-800 dark:text-white">עלו לאחרונה</h2>
-                    <a href="#/all-videos" class="text-purple-600 dark:text-purple-400 font-medium hover:underline text-sm">לכל הסרטונים <i class="fas fa-arrow-left mr-1"></i></a>
+            <!-- Featured Channels -->
+            <section id="featured-channels-section" class="bg-purple-50 dark:bg-slate-800/60 py-16">
+                <div class="max-w-7xl mx-auto px-4">
+                    <h2 class="text-3xl font-bold text-center mb-10 dark:text-white"><i class="fas fa-star text-yellow-400 ml-3"></i>ערוצים מומלצים</h2>
+                    <div class="channels-carousel-container no-scrollbar overflow-x-auto">
+                        <div id="featured-channels-track" class="flex gap-6 pb-4"></div>
+                    </div>
                 </div>
-                <div id="home-videos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <!-- Video Cards injected by JS -->
+            </section>
+
+            <!-- Forum Section -->
+            <section id="forum-inspiration-section" class="bg-gradient-to-br from-purple-700 to-indigo-700 text-white py-20 my-12 relative overflow-hidden">
+                <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+                    <i class="fas fa-comments fa-3x mb-6 text-purple-300"></i>
+                    <h2 class="text-3xl font-bold mb-4">שאלה או דיון בנושא רכב?</h2>
+                    <p class="text-lg mb-8 opacity-90">הכנסו לפורום "רכבים זה לזה".</p>
+                    <a href="https://rechavimzelaze.ovh/" target="_blank" class="px-10 py-4 bg-white text-purple-700 font-bold rounded-xl shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all">כניסה לפורום</a>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section id="about-section" class="max-w-7xl mx-auto px-4 py-20">
+                <div class="text-center mb-12">
+                    <i class="fas fa-info-circle fa-3x text-purple-600 mb-4"></i>
+                    <h2 class="text-4xl font-bold dark:text-white">אודות CAR-טיב</h2>
+                    <p class="mt-4 text-xl text-slate-600 dark:text-slate-300">המקור שלכם לסרטוני רכב כשרים ואיכותיים.</p>
+                </div>
+                <div class="prose prose-lg prose-purple mx-auto dark:prose-invert">
+                    <p>ב-CAR-טיב, אנו מחויבים לספק פלטפורמה ייחודית ונגישה לחובבי רכב מהמגזר הדתי והחרדי. כל סרטון נבדק ומסונן.</p>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact-section" class="bg-purple-50 dark:bg-slate-800/60 py-20">
+                <div class="max-w-2xl mx-auto px-4">
+                    <h2 class="text-4xl font-bold text-center mb-10 dark:text-white">צרו קשר</h2>
+                    <div class="bg-white dark:bg-slate-700 p-8 rounded-2xl shadow-xl">
+                        <form id="contact-form" class="space-y-6" onsubmit="event.preventDefault(); alert('הטופס נשלח בהצלחה!');">
+                            <div><label class="block text-sm font-medium mb-1 dark:text-slate-200">שם מלא</label><input type="text" class="w-full rounded-lg border-slate-300 dark:bg-slate-600"></div>
+                            <div><label class="block text-sm font-medium mb-1 dark:text-slate-200">אימייל</label><input type="email" class="w-full rounded-lg border-slate-300 dark:bg-slate-600"></div>
+                            <div><label class="block text-sm font-medium mb-1 dark:text-slate-200">הודעה</label><textarea rows="4" class="w-full rounded-lg border-slate-300 dark:bg-slate-600"></textarea></div>
+                            <button type="submit" class="w-full py-3 bg-purple-600 text-white font-bold rounded-lg hover:bg-purple-700">שלח</button>
+                        </form>
+                    </div>
                 </div>
             </section>
         </div>
 
-        <!-- View: Category / Grid List -->
-        <div id="view-category" class="page-view hidden max-w-7xl mx-auto px-4 py-8 animate-fade-in">
-            <div class="mb-8 text-center md:text-right">
-                <nav class="text-sm text-slate-500 mb-2">
-                    <a href="#/" class="hover:text-purple-600">בית</a> / <span id="breadcrumb-current">...</span>
-                </nav>
-                <h1 id="category-title" class="text-3xl font-bold text-slate-900 dark:text-white mb-2">...</h1>
-                <p id="category-desc" class="text-slate-600 dark:text-slate-400"></p>
+        <!-- View 2: Category / Grid Page (העיצוב המקורי של דף קטגוריה) -->
+        <div id="view-category" class="page-view hidden max-w-7xl mx-auto px-4 py-12">
+            <div class="text-center md:text-right mb-10">
+                <nav class="text-sm text-slate-500 mb-2"><a href="#home" onclick="app.router('home')" class="hover:text-purple-600">בית</a> / <span id="breadcrumb-current">...</span></nav>
+                <h1 id="category-page-title" class="text-3xl font-extrabold text-slate-900 dark:text-slate-100 flex items-center justify-center md:justify-start">
+                    <i id="category-icon" class="fas fa-folder text-purple-600 ml-3"></i> <span id="category-name">...</span>
+                </h1>
             </div>
 
-            <!-- Filters Bar -->
-            <div class="bg-white dark:bg-slate-800 p-4 rounded-xl shadow-sm mb-8 border border-slate-200 dark:border-slate-700 flex flex-col md:flex-row gap-4 items-center justify-between sticky top-24 z-20">
-                <div class="relative w-full md:w-96">
-                    <input type="text" id="category-search" placeholder="סנן סרטונים ברשימה..." class="w-full pl-4 pr-10 py-2 rounded-lg border-slate-300 dark:border-slate-600 dark:bg-slate-700 focus:ring-purple-500">
-                    <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                </div>
-                <div class="flex gap-2 text-sm w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
-                    <!-- Tags or Sort options can go here -->
-                    <span class="text-slate-500 self-center whitespace-nowrap ml-2">נמצאו <strong id="category-count">0</strong> סרטונים</span>
+            <!-- Filters Section -->
+            <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 mb-10">
+                <div class="flex flex-col md:flex-row gap-6 justify-between">
+                    <div class="flex-1">
+                        <h3 class="text-lg font-medium mb-3 dark:text-slate-200">חיפוש וסינון:</h3>
+                        <div class="relative mb-4">
+                            <input type="text" id="category-search-input" class="w-full pl-4 pr-10 py-2 rounded-lg border-slate-300 dark:bg-slate-700 dark:border-slate-600" placeholder="חפש סרטון בקטגוריה זו...">
+                            <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        </div>
+                        <div id="popular-tags-container" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div class="w-full md:w-64">
+                        <h3 class="text-lg font-medium mb-3 dark:text-slate-200">אפשרויות:</h3>
+                        <label class="flex items-center cursor-pointer mb-4">
+                            <input type="checkbox" id="hebrew-filter" class="sr-only peer">
+                            <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                            <span class="mr-3 text-sm font-medium dark:text-slate-300">רק בעברית</span>
+                        </label>
+                        <select id="sort-select" class="w-full rounded-lg border-slate-300 dark:bg-slate-700 text-sm">
+                            <option value="newest">החדש ביותר</option>
+                            <option value="oldest">הישן ביותר</option>
+                            <option value="az">א-ת</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <div id="category-videos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 min-h-[400px]">
-                <!-- Cards injected here -->
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold dark:text-white">סרטונים (<span id="category-count">0</span>)</h2>
             </div>
+
+            <div id="video-grid-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[400px]"></div>
             
-            <div id="load-more-container" class="text-center mt-10 hidden">
-                <button id="load-more-btn" class="px-6 py-2 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-full hover:shadow-md transition-all text-slate-700 dark:text-slate-300">
-                    טען עוד
-                </button>
+            <div class="text-center mt-12">
+                <button id="load-more-btn" class="hidden px-8 py-3 border border-purple-600 text-purple-600 rounded-full hover:bg-purple-50 font-bold transition-all">טען עוד</button>
             </div>
         </div>
 
-        <!-- View: Single Video -->
-        <div id="view-video" class="page-view hidden max-w-7xl mx-auto px-4 py-8 animate-fade-in">
-            <button onclick="window.history.back()" class="mb-4 text-slate-500 hover:text-purple-600 flex items-center gap-2">
-                <i class="fas fa-arrow-right"></i> חזרה
+        <!-- View 3: Single Video View (מסך מלא) -->
+        <div id="view-video" class="page-view hidden max-w-5xl mx-auto px-4 py-10">
+            <button onclick="window.history.back()" class="mb-6 flex items-center text-slate-500 hover:text-purple-600 transition-colors">
+                <i class="fas fa-arrow-right ml-2"></i> חזרה לרשימה
             </button>
             
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <!-- Video Player & Details -->
-                <div class="lg:col-span-2">
-                    <div class="aspect-video bg-black rounded-xl overflow-hidden shadow-2xl mb-6 relative group">
-                        <iframe id="video-player-iframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                    </div>
-                    
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700">
-                        <div id="video-tags-container" class="flex flex-wrap gap-2 mb-3"></div>
-                        <h1 id="video-page-title" class="text-2xl font-bold text-slate-900 dark:text-white mb-2"></h1>
-                        
-                        <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-700 pb-4 mb-4">
-                            <div class="flex items-center gap-3">
-                                <img id="video-channel-img" src="" class="w-10 h-10 rounded-full bg-slate-200">
-                                <div>
-                                    <div id="video-channel-name" class="font-bold text-slate-800 dark:text-slate-200"></div>
-                                    <div id="video-date" class="text-xs text-slate-500"></div>
-                                </div>
-                            </div>
-                            <button id="share-video-btn" class="text-slate-500 hover:text-purple-600 p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" title="שתף">
-                                <i class="fas fa-share-alt text-xl"></i>
-                            </button>
-                        </div>
-                        
-                        <div class="prose dark:prose-invert max-w-none text-slate-700 dark:text-slate-300 text-sm">
-                            <p id="video-description">אין תיאור זמין.</p>
+            <div class="aspect-video bg-black rounded-2xl overflow-hidden shadow-2xl mb-6">
+                <iframe id="single-video-iframe" class="w-full h-full" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+
+            <div class="bg-white dark:bg-slate-800 p-6 md:p-8 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
+                <h1 id="single-video-title" class="text-2xl md:text-3xl font-bold mb-4 text-slate-900 dark:text-slate-100"></h1>
+                
+                <div class="flex flex-wrap items-center justify-between gap-4 mb-6 border-b border-slate-200 dark:border-slate-700 pb-6">
+                    <div class="flex items-center gap-4">
+                        <img id="single-video-channel-img" src="" class="w-12 h-12 rounded-full bg-slate-200">
+                        <div>
+                            <div id="single-video-channel" class="font-bold text-lg dark:text-white"></div>
+                            <div id="single-video-date" class="text-sm text-slate-500"></div>
                         </div>
                     </div>
-                </div>
-
-                <!-- Sidebar: Related Videos -->
-                <div class="lg:col-span-1">
-                    <h3 class="font-bold text-lg mb-4 text-slate-800 dark:text-white">אולי יעניין אותך גם</h3>
-                    <div id="related-videos-container" class="space-y-4">
-                        <!-- Related items -->
+                    <div class="flex gap-2">
+                        <button onclick="navigator.clipboard.writeText(window.location.href); Swal.fire('הקישור הועתק!', '', 'success');" class="px-4 py-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 font-medium"><i class="fas fa-share ml-2"></i>שתף</button>
                     </div>
                 </div>
+
+                <div id="single-video-tags" class="flex flex-wrap gap-2 mb-6"></div>
+                <div id="single-video-desc" class="prose max-w-none dark:prose-invert bg-slate-50 dark:bg-slate-700/50 p-4 rounded-xl"></div>
             </div>
-        </div>
 
-        <!-- View: Channels List -->
-        <div id="view-channels" class="page-view hidden max-w-7xl mx-auto px-4 py-12 animate-fade-in text-center">
-            <h1 class="text-3xl font-bold mb-4">ערוצים מומלצים</h1>
-            <p class="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto mb-12">רשימת הערוצים האיכותיים והנקיים ביותר בתחום הרכב.</p>
-            <div id="channels-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-right">
-                <!-- Channels injected here -->
-            </div>
-        </div>
-
-        <!-- View: About -->
-        <div id="view-about" class="page-view hidden max-w-4xl mx-auto px-4 py-12 animate-fade-in">
-            <div class="bg-white dark:bg-slate-800 p-8 md:p-12 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700">
-                <div class="text-center mb-10">
-                    <div class="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
-                        <i class="fas fa-info"></i>
-                    </div>
-                    <h1 class="text-3xl font-bold">אודות CAR-טיב</h1>
-                </div>
-                <div class="prose dark:prose-invert max-w-none text-lg leading-relaxed">
-                    <p>ב-CAR-טיב, אנו מחויבים לספק פלטפורמה ייחודית ונגישה לחובבי רכב מהמגזר הדתי והחרדי. אנו מבינים את הצורך בתוכן "כשר ומסונן" התואם את ערכי הקהילה.</p>
-                    <p>האתר מרכז מגוון רחב של סרטונים שנבדקו ידנית או אושרו על ידי סינוני נטפרי, במטרה לספק מידע מקצועי ללא תכנים לא ראויים.</p>
-                    <div class="mt-8 flex justify-center">
-                        <a href="mailto:michaelush613@gmail.com" class="text-purple-600 hover:underline">צור קשר במייל</a>
-                    </div>
-                </div>
+            <div class="mt-12">
+                <h3 class="text-2xl font-bold mb-6 dark:text-white">אולי יעניין אותך גם</h3>
+                <div id="related-videos-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
             </div>
         </div>
 
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 mt-auto">
-        <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-2">
-                    <img src="data/assets/images/logo.png" class="h-8 dark:hidden">
-                    <img src="data/assets/images/logo-white.png" class="h-8 hidden dark:block">
-                    <span class="font-bold text-slate-700 dark:text-slate-300">CAR-טיב</span>
+    <footer class="bg-slate-900 text-slate-400 py-16 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center md:text-right">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <img src="data/assets/images/logo-white.png" class="h-10 mb-4 inline-block md:block">
+                    <p class="text-sm">מאגר וידאו כשר ומסונן לחובבי רכב.</p>
                 </div>
-                <div class="text-sm text-slate-500 dark:text-slate-400 text-center md:text-right">
-                    <p>&copy; 2025 כל הזכויות שמורות.</p>
-                    <p>נבנה ע"י <a href="https://github.com/mmichaelush" target="_blank" class="hover:text-purple-600 transition-colors">מיכאלוש</a></p>
+                <div>
+                    <h4 class="text-white font-bold mb-4">קישורים</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#home" onclick="app.router('home')" class="hover:text-purple-400">בית</a></li>
+                        <li><a href="#about-section" class="hover:text-purple-400">אודות</a></li>
+                        <li><a href="#contact-section" class="hover:text-purple-400">צור קשר</a></li>
+                    </ul>
                 </div>
-                <div class="flex gap-4">
-                    <a href="privacy.html" class="text-sm text-slate-500 hover:text-purple-600">פרטיות</a>
-                    <a href="terms.html" class="text-sm text-slate-500 hover:text-purple-600">תנאים</a>
+                <div>
+                    <h4 class="text-white font-bold mb-4">קטגוריות</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#all-videos" onclick="app.router('category', 'review')" class="hover:text-purple-400">סקירות</a></li>
+                        <li><a href="#all-videos" onclick="app.router('category', 'maintenance')" class="hover:text-purple-400">טיפולים</a></li>
+                        <li><a href="#all-videos" onclick="app.router('category', 'diy')" class="hover:text-purple-400">DIY</a></li>
+                    </ul>
                 </div>
+                <div>
+                    <h4 class="text-white font-bold mb-4">משפטי</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="privacy.html" class="hover:text-purple-400">פרטיות</a></li>
+                        <li><a href="terms.html" class="hover:text-purple-400">תנאים</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-slate-800 pt-8 text-sm flex flex-col md:flex-row justify-between items-center">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxח ע"י מיכאלוש</p>
             </div>
         </div>
     </footer>
 
-    <!-- Scroll Top Button -->
-    <button id="back-to-top-btn" class="fixed bottom-6 left-6 bg-purple-600 hover:bg-purple-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 translate-y-10 z-40">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <!-- Template: Video Card (Hidden) -->
+    <!-- תבנית כרטיס וידאו (לשימוש ב-JS) -->
     <template id="video-card-template">
-        <article class="video-card group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm hover:shadow-lg border border-slate-100 dark:border-slate-700 transition-all duration-300 h-full flex flex-col">
-            <a href="#" class="video-link block relative aspect-video overflow-hidden">
-                <img src="" alt="" class="video-thumb w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
-                <div class="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors"></div>
-                <span class="video-duration absolute bottom-2 left-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded font-mono backdrop-blur-sm"></span>
-                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <div class="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center text-white border border-white/40"><i class="fas fa-play ml-1"></i></div>
+        <article class="group bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-md hover:shadow-xl border border-slate-100 dark:border-slate-700 transition-all duration-300 hover:-translate-y-1 h-full flex flex-col cursor-pointer video-card-click">
+            <div class="relative aspect-video overflow-hidden">
+                <img src="" class="video-thumb w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+                <span class="video-duration absolute bottom-2 left-2 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded"></span>
+                <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/20">
+                    <div class="w-12 h-12 bg-white/20 backdrop-blur rounded-full flex items-center justify-center text-white border border-white/40"><i class="fas fa-play ml-1"></i></div>
                 </div>
-            </a>
+            </div>
             <div class="p-4 flex flex-col flex-grow">
                 <div class="flex justify-between items-start mb-2">
-                    <span class="category-badge text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300 truncate max-w-[60%]"></span>
-                    <span class="date-badge text-[10px] text-slate-400"></span>
+                    <span class="category-badge text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-700 dark:bg-slate-700 dark:text-purple-300 truncate"></span>
                 </div>
-                <h3 class="video-title font-bold text-sm text-slate-900 dark:text-white line-clamp-2 mb-auto group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
-                    <a href="#" class="video-link-text"></a>
-                </h3>
-                <div class="flex items-center gap-2 pt-3 mt-2 border-t border-slate-50 dark:border-slate-700/50">
+                <h3 class="video-title font-bold text-sm text-slate-900 dark:text-white line-clamp-2 mb-auto group-hover:text-purple-600 transition-colors"></h3>
+                <div class="flex items-center gap-2 pt-3 mt-2 border-t border-slate-50 dark:border-slate-700">
                     <img src="" class="channel-img w-6 h-6 rounded-full object-cover bg-slate-200">
                     <span class="channel-name text-xs text-slate-600 dark:text-slate-400 truncate"></span>
                 </div>
@@ -338,7 +338,9 @@
         </article>
     </template>
 
-    <!-- Main Application Script -->
-    <script type="module" src="js/app.js"></script>
+    <button id="back-to-top-btn" class="fixed bottom-6 left-6 bg-purple-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-all duration-300 opacity-0 translate-y-10 z-40"><i class="fas fa-arrow-up"></i></button>
+
+    <!-- קובץ JS יחיד -->
+    <script src="js/main.js"></script>
 </body>
 </html>
