@@ -31,14 +31,22 @@ body {
 .video-thumbnail-container {
   position: relative; 
   width: 100%;
-  padding-top: 56.25%;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
   height: 0; 
 }
 
-/* שיפור ביצועים לגריד */
-#video-grid-container, #category-videos-grid {
-    content-visibility: auto;
-    contain-intrinsic-size: 1px 300px;
+.video-thumbnail-container > img,
+.video-thumbnail-container > iframe,
+.video-thumbnail-container > a {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.video-thumbnail-container > img {
+  object-fit: cover;
 }
 
 .line-clamp-2 {
@@ -52,23 +60,92 @@ body {
     transition: color 0.2s ease-in-out;
 }
 .footer-link:hover {
-    color: #a78bfa;
+    color: #a78bfa; /* purple-400 */
 }
 .dark .footer-link:hover {
-    color: #c4b5fd;
+    color: #c4b5fd; /* purple-300 */
+}
+
+#back-to-top-btn {
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out, transform 0.2s ease-out;
+}
+#back-to-top-btn:hover {
+    transform: scale(1.1);
 }
 
 .nav-link.active-nav-link {
-    background-color: #ede9fe;
-    color: #7c3aed;
+    background-color: #ede9fe; /* purple-100 */
+    color: #7c3aed; /* purple-600 */
     font-weight: 600;
 }
 .dark .nav-link.active-nav-link {
-    background-color: #334155;
-    color: #c4b5fd;
+    background-color: #334155; /* slate-700 */
+    color: #c4b5fd; /* purple-300 */
 }
 
-/* Custom Scrollbar for channels */
+html[dir="rtl"].dark #mobile-menu .dark-mode-toggle-button .dot {
+    transform: translateX(-100%);
+}
+html[dir="rtl"] #mobile-menu .dark-mode-toggle-button .dot {
+    transform: translateX(0%);
+}
+
+.search-suggestions-container ul li.active-suggestion {
+    background-color: #ede9fe; /* purple-100 */
+}
+.dark .search-suggestions-container ul li.active-suggestion {
+    background-color: #475569; /* slate-600 */
+}
+
+.tag.active-search-tag {
+    background-color: #7c3aed !important; /* purple-600 */
+    color: #ffffff !important;
+}
+.dark .tag.active-search-tag {
+    background-color: #8b5cf6 !important; /* purple-500 */
+}
+
+/* Featured Channels Carousel Styles */
+.channels-carousel-container {
+    overflow: hidden;
+    position: relative;
+    padding: 1rem 0;
+}
+
+.channels-track {
+    display: flex;
+    gap: 1.5rem;
+    width: max-content;
+    animation: scroll-channels 120s linear infinite;
+    padding-left: 1rem; /* Offset for smooth loop */
+}
+
+.channels-carousel-container:hover .channels-track {
+    animation-play-state: paused;
+}
+
+@keyframes scroll-channels {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(50%); } /* Moves right for RTL naturally if positive, need to check dir */
+}
+
+/* Adjust animation for RTL specifically if needed, though translateX positive usually moves right */
+html[dir="rtl"] .channels-track {
+    animation: scroll-channels-rtl 120s linear infinite;
+}
+
+@keyframes scroll-channels-rtl {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(50%); } 
+}
+
+.channel-card {
+    flex: 0 0 280px; /* Fixed width for consistent carousel */
+    width: 280px;
+    scroll-snap-align: center;
+}
+
+/* Hide scrollbar but allow functionality if using touch */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
