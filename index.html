@@ -20,7 +20,7 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
     
-    <!-- Scripts with defer for performance -->
+    <!-- Defer scripts for non-blocking load -->
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
     <script src="js/main.js" defer></script>
@@ -34,7 +34,8 @@
     </script>
 </head>
 <body class="font-rubik bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 antialiased transition-colors duration-300">
-    <div id="site-preloader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-900 transition-opacity duration-700">
+    <!-- Preloader -->
+    <div id="site-preloader" class="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-slate-100 dark:bg-slate-900 transition-opacity duration-500">
         <div class="relative flex items-center justify-center">
             <div class="animate-spin rounded-full h-24 w-24 border-t-4 border-b-4 border-purple-600 dark:border-purple-400"></div>
             <i class="fas fa-car-side absolute text-purple-600 dark:text-purple-400 text-2xl animate-pulse"></i>
@@ -42,7 +43,10 @@
         <h2 class="mt-8 text-2xl font-bold text-slate-700 dark:text-slate-200 tracking-wider animate-pulse">CAR-טיב</h2>
         <p class="text-slate-500 dark:text-slate-400 mt-2 text-sm">טוען תוכן כשר...</p>
     </div>
+
     <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black bg-opacity-75 z-40 md:hidden transition-opacity duration-300 opacity-0 invisible" aria-hidden="true"></div>
+    
+    <!-- Mobile Menu -->
     <aside id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-800 shadow-xl z-50 p-6 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title">
         <div class="flex justify-between items-center mb-8">
             <a href="./" class="flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded" aria-label="CAR-טיב דף הבית">
@@ -77,6 +81,8 @@
             </button>
         </div>
     </aside>
+
+    <!-- Header -->
     <header class="bg-slate-50/80 dark:bg-slate-900/80 shadow-md sticky top-0 z-30 transition-colors duration-300 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
@@ -360,42 +366,6 @@
                 <div id="video-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
                      <div id="video-skeletons" class="contents">
                         <div class="animate-pulse flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                            <div class="bg-slate-200 dark:bg-slate-700 aspect-video w-full"></div>
-                            <div class="p-4 sm:p-5 flex flex-col flex-grow">
-                                <div class="flex justify-between items-center mb-2.5">
-                                    <div class="flex items-center gap-2 w-full">
-                                        <div class="h-7 w-7 rounded-full bg-slate-300 dark:bg-slate-600 flex-shrink-0"></div>
-                                        <div class="h-4 bg-slate-300 dark:bg-slate-600 rounded w-1/2"></div>
-                                    </div>
-                                </div>
-                                <div class="h-5 bg-slate-300 dark:bg-slate-600 rounded w-5/6 mb-1"></div>
-                                <div class="h-5 bg-slate-300 dark:bg-slate-600 rounded w-3/4 mb-3"></div>
-                                <div class="flex flex-wrap gap-1.5 mt-1 mb-auto">
-                                    <div class="h-5 w-12 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
-                                    <div class="h-5 w-16 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
-                                </div>
-                                <div class="h-px bg-slate-200 dark:bg-slate-500 mt-4"></div>
-                            </div>
-                        </div>
-                        <div class="animate-pulse flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
-                            <div class="bg-slate-200 dark:bg-slate-700 aspect-video w-full"></div>
-                            <div class="p-4 sm:p-5 flex flex-col flex-grow">
-                                <div class="flex justify-between items-center mb-2.5">
-                                    <div class="flex items-center gap-2 w-full">
-                                        <div class="h-7 w-7 rounded-full bg-slate-300 dark:bg-slate-600 flex-shrink-0"></div>
-                                        <div class="h-4 bg-slate-300 dark:bg-slate-600 rounded w-1/2"></div>
-                                    </div>
-                                </div>
-                                <div class="h-5 bg-slate-300 dark:bg-slate-600 rounded w-5/6 mb-1"></div>
-                                <div class="h-5 bg-slate-300 dark:bg-slate-600 rounded w-3/4 mb-3"></div>
-                                <div class="flex flex-wrap gap-1.5 mt-1 mb-auto">
-                                    <div class="h-5 w-12 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
-                                    <div class="h-5 w-16 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
-                                </div>
-                                <div class="h-px bg-slate-200 dark:bg-slate-500 mt-4"></div>
-                            </div>
-                        </div>
-                        <div class="animate-pulse hidden sm:flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
                             <div class="bg-slate-200 dark:bg-slate-700 aspect-video w-full"></div>
                             <div class="p-4 sm:p-5 flex flex-col flex-grow">
                                 <div class="flex justify-between items-center mb-2.5">
