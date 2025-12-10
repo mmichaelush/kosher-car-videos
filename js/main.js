@@ -105,9 +105,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // נגן יחיד
         player: {
             container: document.getElementById('single-video-player-container'),
+            frame: document.getElementById('single-video-player-container'), // Added duplicate for clarity
             title: document.getElementById('single-video-title'),
-            content: document.getElementById('single-video-content'),
+            desc: document.getElementById('single-video-content'),
             tags: document.getElementById('single-video-tags'),
+            meta: document.getElementById('single-video-metadata'),
             channel: document.getElementById('single-video-channel'),
             duration: document.getElementById('single-video-duration'),
             date: document.getElementById('single-video-date'),
@@ -139,7 +141,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         search: {
             activeSuggestionIndex: -1,
-            isSuggestionClicked: false
+            isSuggestionClicked: false,
+            currentInput: null,
+            currentSuggestionsContainer: null
         }
     };
 
@@ -259,39 +263,37 @@ document.addEventListener('DOMContentLoaded', () => {
     // --------------------------------------------------------------------------------
     function renderView() {
         // הסתרת נגן
-        dom.singleVideoContainer.classList.add('hidden');
-        dom.player.container.innerHTML = '';
-        dom.mainContent.classList.remove('hidden');
-        dom.footer.classList.remove('hidden');
+        if (dom.singleVideoContainer) dom.singleVideoContainer.classList.add('hidden');
+        if (dom.player.frame) dom.player.frame.innerHTML = '';
+        if (dom.mainContent) dom.mainContent.classList.remove('hidden');
+        if (dom.footer) dom.footer.classList.remove('hidden');
 
         if (state.view === 'category' && state.filters.category !== 'all') {
             // תצוגת קטגוריה
-            dom.homeContainer.classList.add('hidden');
-            dom.homeBottomSection.classList.add('hidden');
-            dom.categoryHeader.classList.remove('hidden');
+            if(dom.homeContainer) dom.homeContainer.classList.add('hidden');
+            if(dom.homeBottomSection) dom.homeBottomSection.classList.add('hidden');
+            if(dom.categoryHeader) dom.categoryHeader.classList.remove('hidden');
 
             const cat = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === state.filters.category);
             const catName = cat ? cat.name : state.filters.category;
             const icon = cat ? cat.icon : 'folder';
 
             document.title = `${catName} - CAR-טיב`;
-            dom.pageTitleCategory.innerHTML = `<i class="fas fa-${icon} text-purple-600 dark:text-purple-400 mr-4"></i>${catName}`;
-            dom.breadcrumbName.textContent = catName;
-            dom.videoGridTitle.innerHTML = `סרטונים בקטגוריה: <span class="text-purple-600 dark:text-purple-400">${catName}</span>`;
-            
-            // עדכון מונה קטגוריה אחרי הפילטור יבוצע ב-filterVideos
+            if(dom.pageTitleCategory) dom.pageTitleCategory.innerHTML = `<i class="fas fa-${icon} text-purple-600 dark:text-purple-400 mr-4"></i>${catName}`;
+            if(dom.breadcrumbName) dom.breadcrumbName.textContent = catName;
+            if(dom.videoGridTitle) dom.videoGridTitle.innerHTML = `סרטונים בקטגוריה: <span class="text-purple-600 dark:text-purple-400">${catName}</span>`;
 
         } else {
             // תצוגת בית
             state.view = 'home';
             state.filters.category = 'all';
             
-            dom.categoryHeader.classList.add('hidden');
-            dom.homeContainer.classList.remove('hidden');
-            dom.homeBottomSection.classList.remove('hidden');
+            if(dom.categoryHeader) dom.categoryHeader.classList.add('hidden');
+            if(dom.homeContainer) dom.homeContainer.classList.remove('hidden');
+            if(dom.homeBottomSection) dom.homeBottomSection.classList.remove('hidden');
             
             document.title = 'CAR-טיב - סרטוני רכבים כשרים';
-            dom.videoGridTitle.textContent = 'כל הסרטונים';
+            if(dom.videoGridTitle) dom.videoGridTitle.textContent = 'כל הסרטונים';
             
             if (dom.homepageCategoriesGrid && dom.homepageCategoriesGrid.children.length === 0) {
                 renderHomepageCategoryButtons();
@@ -445,7 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.videoCardsContainer.insertAdjacentHTML('beforeend', html);
         state.pagination.count += nextBatch.length;
 
-        // כפתור טען עוד
+        // ניהול כפתור "טען עוד"
         let loadMoreBtn = document.getElementById('load-more-btn');
         if (state.pagination.count < state.filteredVideos.length) {
             if (!loadMoreBtn) {
@@ -466,10 +468,23 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (loadMoreBtn) {
             loadMoreBtn.remove();
         }
+        
+        // אתחול IntersectionObserver לתמונות אם צריך
+        if (videoObserver) {
+            document.querySelectorAll('.video-card:not(.observed)').forEach(card => {
+                videoObserver.observe(card);
+                card.classList.add('observed');
+            });
+        }
+    }
+
+    function getCategoryName(id) {
+        const cat = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === id);
+        return cat ? cat.name : id;
     }
 
     // --------------------------------------------------------------------------------
-    // 8. עדכון UI ותגים
+    // 8. עדכון ממשק (UI)
     // --------------------------------------------------------------------------------
     function updateUI() {
         // עדכון תגיות פופולריות
@@ -496,18 +511,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTagsCloud() {
         if (!dom.tagsContainer) return;
         
-        // חישוב תגיות מתוך הסרטונים הרלוונטיים (לפי קטגוריה וחיפוש)
-        let sourceVideos = state.allVideos;
-        
-        if (state.filters.category !== 'all') {
-            sourceVideos = sourceVideos.filter(v => v.category === state.filters.category);
-        }
-        
-        if (state.filters.search.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
-             const searchResults = state.fuse.search(state.filters.search);
-             const ids = new Set(searchResults.map(r => r.item.id));
-             sourceVideos = sourceVideos.filter(v => ids.has(v.id));
-        }
+        const sourceVideos = state.filters.category === 'all' 
+            ? state.allVideos 
+            : state.allVideos.filter(v => v.category === state.filters.category);
 
         const tagCounts = {};
         sourceVideos.forEach(v => {
@@ -522,7 +528,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .map(entry => entry[0]);
 
         dom.tagsContainer.innerHTML = sortedTags.map(tag => `
-            <button class="tag-btn bg-slate-100 hover:bg-purple-100 hover:text-purple-700 text-slate-600 px-3 py-1.5 rounded-full text-sm border border-slate-200 transition-all dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-purple-900/50 dark:hover:text-purple-300 ${state.filters.tags.includes(tag) ? '!bg-purple-600 !text-white !border-purple-600 dark:!bg-purple-500' : ''}" data-tag="${tag}">
+            <button class="tag-btn bg-slate-100 dark:bg-slate-700 hover:bg-purple-100 hover:text-purple-700 text-slate-600 px-3 py-1.5 rounded-full text-sm border border-slate-200 transition-all dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-purple-900/50 dark:hover:text-purple-300 ${state.filters.tags.includes(tag) ? '!bg-purple-600 !text-white !border-purple-600 dark:!bg-purple-500' : ''}" data-tag="${tag}">
                 ${tag}
             </button>
         `).join('');
@@ -555,8 +561,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // חיפוש ב-Fuse לצורך הצעות
-        // אם אנחנו בקטגוריה מסוימת, נסנן את המקור ל-Fuse? לא, נחפש בהכל
         const results = state.fuse.search(query, { limit: CONSTANTS.MAX_SUGGESTIONS });
         
         if (results.length === 0) {
@@ -566,7 +570,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const ul = suggestionsBox.querySelector('ul');
         ul.innerHTML = results.map((r, i) => {
-            // הדגשת הטקסט
             const title = r.item.title.replace(new RegExp(`(${query})`, 'gi'), '<strong class="text-purple-600 dark:text-purple-400">$1</strong>');
             return `
                 <li class="px-4 py-2.5 hover:bg-purple-50 dark:hover:bg-slate-700 cursor-pointer text-sm text-slate-700 dark:text-slate-200 transition-colors" data-index="${i}">
@@ -626,22 +629,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         state.view = 'video';
         
-        // הסתרת תוכן ראשי
         dom.mainContent.classList.add('hidden');
-        dom.footer.classList.remove('hidden'); // הפוטר נשאר
+        dom.footer.classList.remove('hidden');
         dom.singleVideoContainer.classList.remove('hidden');
         
         window.scrollTo({top: 0, behavior: 'instant'});
 
-        // עדכון כותרת דף
         document.title = `${video.title} - CAR-טיב`;
 
-        // נגן
         dom.player.frame.innerHTML = `<iframe class="w-full h-full absolute inset-0 rounded-lg shadow-2xl" src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1" frameborder="0" allowfullscreen allow="autoplay"></iframe>`;
-        
         dom.player.title.textContent = video.title;
         
-        // תיאור
         if (video.content) {
             dom.player.desc.innerHTML = `<p class="text-lg leading-relaxed text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border-r-4 border-purple-500 shadow-sm">${video.content}</p>`;
             dom.player.desc.classList.remove('hidden');
@@ -649,13 +647,11 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.player.desc.classList.add('hidden');
         }
         
-        // מטא-דאטה
         dom.player.channel.innerHTML = `<img src="${video.channelImage || ''}" class="w-8 h-8 rounded-full border border-slate-200 bg-slate-100 object-cover"> <span class="text-lg font-medium">${video.channel}</span>`;
         dom.player.duration.innerHTML = `<i class="far fa-clock"></i> ${video.duration}`;
         dom.player.date.innerHTML = `<i class="far fa-calendar-alt"></i> ${video.date.toLocaleDateString('he-IL')}`;
         dom.player.date.style.display = 'inline-flex';
 
-        // תגיות
         dom.player.tags.innerHTML = video.tags.map(t => 
             `<button class="tag-link bg-purple-50 text-purple-700 dark:bg-slate-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm hover:bg-purple-100 transition-colors cursor-pointer" data-tag="${t}">#${t}</button>`
         ).join(' ');
@@ -664,30 +660,19 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function closeVideo() {
-        // חזרה לתצוגה הקודמת
+        state.view = state.filters.category === 'all' ? 'home' : 'category';
+        
         dom.singleVideoContainer.classList.add('hidden');
-        dom.player.frame.innerHTML = ''; // עצירת וידאו
+        dom.player.frame.innerHTML = '';
         
-        // שחזור המצב
-        if (state.filters.category === 'all') {
-            renderView(); // יחזיר ל-Home
-        } else {
-            // החזרת מצב קטגוריה ידנית
-            state.view = 'category';
-            renderView();
-        }
-        
+        renderView();
         updateUrl();
-        
-        // גלילה חזרה לגריד (אופציונלי)
-        // dom.videoCardsContainer.scrollIntoView({ behavior: 'smooth' });
     }
 
     function updateUrl() {
         const params = new URLSearchParams();
         
         if (state.view === 'video') {
-            // שליפת ID מה-iframe במידה והמשתמש בפנים
             const iframe = dom.player.frame.querySelector('iframe');
             if (iframe) {
                 const vidId = iframe.src.split('/embed/')[1].split('?')[0];
@@ -706,269 +691,75 @@ document.addEventListener('DOMContentLoaded', () => {
     function readUrl() {
         const params = new URLSearchParams(window.location.search);
         
-        // 1. וידאו ישיר
         const videoId = params.get('v');
         if (videoId && state.allVideos.length > 0) {
             openVideo(videoId);
             return;
         }
 
-        // 2. פילטרים
-        if (params.get('search')) state.filters.search = params.get('search');
-        if (params.get('tags')) state.filters.tags = params.get('tags').split(',');
-        if (params.get('hebrew')) state.filters.hebrewOnly = true;
-
-        // 3. קטגוריה
         const cat = params.get('name');
         if (cat && CONSTANTS.PREDEFINED_CATEGORIES.some(c => c.id === cat)) {
-            state.filters.category = cat;
             state.view = 'category';
+            state.filters.category = cat;
         } else {
-            state.filters.category = 'all';
             state.view = 'home';
+            state.filters.category = 'all';
+        }
+
+        if (params.get('search')) {
+            state.filters.search = params.get('search');
+            dom.searchInput.value = state.filters.search;
+        }
+        if (params.get('tags')) state.filters.tags = params.get('tags').split(',');
+        if (params.get('hebrew')) {
+            state.filters.hebrewOnly = true;
+            dom.hebrewToggle.checked = true;
         }
 
         renderView();
     }
 
     // --------------------------------------------------------------------------------
-    // 11. אירועים (Event Listeners)
+    // 11. טיפול בטפסים (הפונקציה שהייתה חסרה!)
     // --------------------------------------------------------------------------------
-    function setupEvents() {
-        // חיפוש - עם Debounce
-        Object.values(dom.searchForms).forEach(form => {
-            if (!form) return;
-            const input = form.querySelector('input');
-            
-            // הקלדה
-            input.addEventListener('input', debounce((e) => {
-                handleSearchInput(e.target);
-            }, 300));
-            
-            // ניווט במקלדת בהצעות
-            input.addEventListener('keydown', handleSearchKeydown);
-
-            // אישור טופס
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                state.filters.search = input.value.trim();
-                document.getElementById(input.id.replace('input', 'suggestions')).classList.add('hidden');
-                
-                // אם אנחנו בנגן, נצא ממנו לתוצאות חיפוש
-                if (state.view === 'video') {
-                    state.view = 'home'; // או קטגוריה, תלוי בלוגיקה הרצויה
-                }
-                
-                renderView();
-                updateUrl();
-            });
-            
-            // לחיצה מחוץ להצעות
-            input.addEventListener('blur', () => {
-                setTimeout(() => {
-                     document.getElementById(input.id.replace('input', 'suggestions')).classList.add('hidden');
-                }, 200);
-            });
-        });
-
-        // לחיצה על הצעת חיפוש (Delegation)
-        document.addEventListener('click', (e) => {
-            const suggestion = e.target.closest('li[data-index]');
-            if (suggestion && suggestion.closest('.search-suggestions-container')) {
-                const text = suggestion.querySelector('span').textContent;
-                const container = suggestion.closest('.search-suggestions-container');
-                const inputId = container.id.replace('suggestions', 'input');
-                const input = document.getElementById(inputId);
-                
-                input.value = text;
-                state.filters.search = text;
-                container.classList.add('hidden');
-                
-                if (state.view === 'video') state.view = 'home';
-                renderView();
-                updateUrl();
-            }
-        });
-
-        // קליק על כרטיס וידאו
-        dom.videoCardsContainer.addEventListener('click', (e) => {
-            // שיתוף
-            const shareBtn = e.target.closest('.share-btn');
-            if (shareBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                const card = shareBtn.closest('article');
-                const url = new URL(`?v=${card.dataset.id}`, window.location.origin + window.location.pathname).href;
-                navigator.clipboard.writeText(url).then(() => alert('הקישור הועתק!'));
-                return;
-            }
-            
-            // תגית בתוך כרטיס
-            const tagBtn = e.target.closest('.video-tag-button');
-            if (tagBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                const tag = tagBtn.dataset.tag;
-                if (!state.filters.tags.includes(tag)) {
-                    state.filters.tags.push(tag);
-                    renderView();
-                    updateUrl();
-                    window.scrollTo({top: 0, behavior: 'smooth'});
-                }
-                return;
-            }
-
-            // פתיחת וידאו
-            const card = e.target.closest('article');
-            if (card && !e.target.closest('a')) { // אם לא לחץ על קישור חיצוני/כותרת עם href
-                e.preventDefault();
-                openVideo(card.dataset.id);
-            } else if (e.target.closest('a.video-link')) {
-                 e.preventDefault();
-                 openVideo(card.dataset.id);
-            }
-        });
-
-        // כפתורי תגיות (פילטר ונגן)
-        document.addEventListener('click', (e) => {
-            const btn = e.target.closest('button');
-            if (!btn) return;
-
-            // הוספת תגית
-            if (btn.classList.contains('tag-btn') || btn.classList.contains('tag-link')) {
-                const tag = btn.dataset.tag;
-                if (!state.filters.tags.includes(tag)) {
-                    state.filters.tags.push(tag);
-                    if (state.view === 'video') closeVideo();
-                    else renderView();
-                    updateUrl();
-                }
-            }
-            // הסרת תגית
-            else if (btn.classList.contains('remove-tag')) {
-                const tag = btn.dataset.tag;
-                state.filters.tags = state.filters.tags.filter(t => t !== tag);
-                renderView();
-                updateUrl();
-            }
-        });
-
-        // כפתורי נגן
-        dom.player.backBtn.addEventListener('click', closeVideo);
-        dom.player.shareBtn.addEventListener('click', () => {
-             navigator.clipboard.writeText(window.location.href).then(() => alert('הקישור הועתק!'));
-        });
-
-        // פילטרים
-        dom.clearFiltersBtn.addEventListener('click', () => {
-            state.filters.search = '';
-            state.filters.tags = [];
-            state.filters.hebrewOnly = false;
-            // שומרים על הקטגוריה הנוכחית אלא אם כן המשתמש רוצה לנקות הכל כולל קטגוריה?
-            // בדרך כלל "נקה הכל" מנקה גם קטגוריה, אבל כאן נשאיר באותו View
-            
-            Object.values(dom.searchForms).forEach(f => f.querySelector('input').value = '');
-            dom.hebrewToggle.checked = false;
-            
-            renderView();
-            updateUrl();
-        });
-
-        dom.hebrewToggle.addEventListener('change', (e) => {
-            state.filters.hebrewOnly = e.target.checked;
-            renderView();
-        });
-
-        dom.sortSelect.addEventListener('change', (e) => {
-            state.filters.sort = e.target.value;
-            renderView();
-        });
-
-        // ניווט בתפריט (טיפול בלינקים פנימיים)
-        document.body.addEventListener('click', (e) => {
-            const link = e.target.closest('a');
-            if (!link) return;
-
-            // קישור לקטגוריה
-            if (link.search && link.search.includes('name=')) {
-                e.preventDefault();
-                const params = new URLSearchParams(link.search);
-                state.filters.category = params.get('name');
-                state.view = 'category';
-                renderView();
-                updateUrl();
-                
-                // סגירת תפריט מובייל אם פתוח
-                dom.mobileMenu.classList.add('translate-x-full');
-                dom.backdrop.classList.add('invisible', 'opacity-0');
-            }
-            
-            // קישור לדף הבית (לוגו או תפריט)
-            else if (link.getAttribute('href') === './' || link.getAttribute('href') === './index.html' || link.hash === '#home') {
-                 e.preventDefault();
-                 if (state.view === 'video') closeVideo();
-                 state.view = 'home';
-                 state.filters.category = 'all';
-                 renderView();
-                 updateUrl();
-                 window.scrollTo({top: 0, behavior: 'smooth'});
-                 
-                 dom.mobileMenu.classList.add('translate-x-full');
-                 dom.backdrop.classList.add('invisible', 'opacity-0');
-            }
-        });
-
-        // היסטוריה
-        window.addEventListener('popstate', readUrl);
-
-        // טעינה עצלה
-        videoObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // כאן היה אפשר לטעון תמונה, אבל כרגע הדפדפן מטפל בזה עם loading="lazy"
-                    // אפשר להשתמש בזה לאנימציות כניסה
-                    entry.target.classList.remove('opacity-0', 'translate-y-4');
-                    videoObserver.unobserve(entry.target);
-                }
-            });
-        });
-
-        // בדיקת וידאו קיים
-        if (dom.checkYtBtn) dom.checkYtBtn.addEventListener('click', handleCheckYtId);
-        if (dom.checkYtLink) dom.checkYtLink.addEventListener('click', handleCheckYtId);
+    function handleContactFormSubmit(event) {
+        event.preventDefault();
+        const form = event.target;
+        const submitButton = form.querySelector('button[type="submit"]');
+        const formStatus = document.getElementById('form-status');
+        const checkbox = form.querySelector('input[type="checkbox"][name="privacy_policy"]');
         
-        // צור קשר
-        if (dom.contactForm) dom.contactForm.addEventListener('submit', handleContactFormSubmit);
+        if(checkbox && !checkbox.checked) {
+             Swal.fire({ title: 'שגיאה', text: 'יש לאשר את מדיניות הפרטיות', icon: 'error', confirmButtonColor: '#7c3aed' });
+             return;
+        }
 
-        // תפריט מובייל
-        dom.mobileMenuBtn.addEventListener('click', () => {
-            dom.mobileMenu.classList.remove('translate-x-full');
-            dom.backdrop.classList.remove('invisible', 'opacity-0');
-        });
-        const closeMenu = () => {
-            dom.mobileMenu.classList.add('translate-x-full');
-            dom.backdrop.classList.add('invisible', 'opacity-0');
-        };
-        dom.closeMenuBtn.addEventListener('click', closeMenu);
-        dom.backdrop.addEventListener('click', closeMenu);
+        const originalButtonHtml = submitButton.innerHTML;
+        submitButton.disabled = true;
+        submitButton.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> שולח...`;
+        if (formStatus) formStatus.innerHTML = '';
 
-        // מצב לילה
-        dom.darkModeToggles.forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.documentElement.classList.toggle('dark');
-                localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-            });
-        });
-        
-        // כפתור למעלה
-        dom.backToTopBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
-        window.addEventListener('scroll', () => {
-             dom.backToTopBtn.classList.toggle('opacity-0', window.scrollY < 300);
-             dom.backToTopBtn.classList.toggle('invisible', window.scrollY < 300);
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            mode: 'no-cors',
+        })
+        .then(() => {
+            if (formStatus) formStatus.innerHTML = "<p class='text-green-600 dark:text-green-500 font-semibold'>תודה! הודעתך נשלחה בהצלחה.</p>";
+            form.reset();
+        })
+        .catch(error => {
+            if (formStatus) formStatus.innerHTML = "<p class='text-red-600 dark:text-red-500 font-semibold'>אופס, אירעה שגיאת רשת.</p>";
+        })
+        .finally(() => {
+            setTimeout(() => {
+                 submitButton.disabled = false;
+                 submitButton.innerHTML = originalButtonHtml;
+                 if (formStatus) formStatus.innerHTML = '';
+            }, 5000);
         });
     }
 
-    // פונקציות חסרות שהיו בקוד המקורי
     async function handleCheckYtId(e) {
         e.preventDefault();
         const { value: url } = await Swal.fire({
@@ -982,7 +773,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!url) return;
 
-        // חילוץ ID
         const match = url.match(/(?:v=|\/)([\w-]{11})(?:\?|&|\/|$)/);
         const id = match ? match[1] : null;
 
@@ -1009,28 +799,228 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function clearFilters() {
+        state.filters.search = '';
+        state.filters.tags = [];
+        state.filters.hebrewOnly = false;
+        state.filters.category = 'all';
+        state.view = 'home';
+        
+        dom.searchInput.value = '';
+        dom.hebrewToggle.checked = false;
+        
+        renderView();
+        updateUrl();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    // --------------------------------------------------------------------------------
+    // 12. הגדרת אירועים (Event Listeners)
+    // --------------------------------------------------------------------------------
+    function setupEvents() {
+        // חיפוש
+        dom.searchInput.addEventListener('input', debounce((e) => {
+            handleSearchInput(e.target);
+        }, 300));
+        
+        dom.searchInput.addEventListener('keydown', handleSearchKeydown);
+
+        Object.values(dom.searchForms).forEach(form => {
+            if (!form) return;
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                state.filters.search = dom.searchInput.value.trim();
+                document.getElementById('main-content-search-suggestions').classList.add('hidden');
+                
+                if (state.view === 'video') state.view = 'home';
+                
+                renderView();
+                updateUrl();
+            });
+        });
+
+        // לחיצה על הצעת חיפוש
+        document.addEventListener('click', (e) => {
+            const suggestion = e.target.closest('li[data-index]');
+            if (suggestion) {
+                const text = suggestion.innerText; // שונה מ-textContent כדי לתפוס טקסט נקי
+                dom.searchInput.value = text;
+                state.filters.search = text;
+                suggestion.closest('.search-suggestions-container').classList.add('hidden');
+                if (state.view === 'video') state.view = 'home';
+                renderView();
+                updateUrl();
+            }
+        });
+
+        // קליק על כרטיס וידאו
+        dom.videoCardsContainer.addEventListener('click', (e) => {
+            const shareBtn = e.target.closest('.share-btn');
+            if (shareBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const card = shareBtn.closest('article');
+                const url = new URL(`?v=${card.dataset.id}`, window.location.origin + window.location.pathname).href;
+                navigator.clipboard.writeText(url).then(() => alert('הקישור הועתק!'));
+                return;
+            }
+            
+            const tagBtn = e.target.closest('.video-tag-button');
+            if (tagBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const tag = tagBtn.dataset.tag;
+                if (!state.filters.tags.includes(tag)) {
+                    state.filters.tags.push(tag);
+                    renderView();
+                    updateUrl();
+                    window.scrollTo({top: 0, behavior: 'smooth'});
+                }
+                return;
+            }
+
+            const card = e.target.closest('article');
+            if (card && !e.target.closest('a')) {
+                e.preventDefault();
+                openVideo(card.dataset.id);
+            } else if (e.target.closest('a.video-link')) {
+                 e.preventDefault();
+                 openVideo(card.dataset.id);
+            }
+        });
+
+        // כפתורים גלובליים
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+
+            if (btn.classList.contains('tag-btn') || btn.classList.contains('tag-link')) {
+                const tag = btn.dataset.tag;
+                if (!state.filters.tags.includes(tag)) {
+                    state.filters.tags.push(tag);
+                    if (state.view === 'video') closeVideo();
+                    else renderView();
+                    updateUrl();
+                }
+            } else if (btn.classList.contains('remove-tag')) {
+                const tag = btn.dataset.tag;
+                state.filters.tags = state.filters.tags.filter(t => t !== tag);
+                renderView();
+                updateUrl();
+            }
+        });
+
+        dom.player.backBtn.addEventListener('click', closeVideo);
+        dom.player.shareBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(window.location.href).then(() => alert('הקישור הועתק!'));
+        });
+
+        dom.clearFiltersBtn.addEventListener('click', clearFilters);
+        
+        dom.hebrewToggle.addEventListener('change', (e) => {
+            state.filters.hebrewOnly = e.target.checked;
+            renderView();
+        });
+        
+        dom.sortSelect.addEventListener('change', (e) => {
+            state.filters.sort = e.target.value;
+            renderView();
+        });
+
+        window.addEventListener('popstate', readUrl);
+        
+        window.addEventListener('scroll', () => {
+            dom.backToTopBtn.classList.toggle('opacity-0', window.scrollY < 300);
+            dom.backToTopBtn.classList.toggle('invisible', window.scrollY < 300);
+        });
+        dom.backToTopBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
+        
+        // תפריט
+        dom.mobileMenuBtn.addEventListener('click', () => {
+            dom.mobileMenu.classList.remove('translate-x-full');
+            dom.backdrop.classList.remove('invisible', 'opacity-0');
+        });
+        const closeMenu = () => {
+            dom.mobileMenu.classList.add('translate-x-full');
+            dom.backdrop.classList.add('invisible', 'opacity-0');
+        };
+        dom.closeMenuBtn.addEventListener('click', closeMenu);
+        dom.backdrop.addEventListener('click', closeMenu);
+        
+        // Dark Mode
+        dom.darkModeToggles.forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.documentElement.classList.toggle('dark');
+                localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+            });
+        });
+
+        // לינקים פנימיים
+        document.body.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (!link) return;
+
+            if (link.search && link.search.includes('name=')) {
+                e.preventDefault();
+                const params = new URLSearchParams(link.search);
+                state.filters.category = params.get('name');
+                state.view = 'category';
+                renderView();
+                updateUrl();
+                closeMenu();
+                return;
+            }
+            
+            if (link.getAttribute('href') === './' || link.getAttribute('href') === './index.html' || link.hash === '#home') {
+                 e.preventDefault();
+                 if (state.view === 'video') closeVideo();
+                 state.view = 'home';
+                 state.filters.category = 'all';
+                 renderView();
+                 updateUrl();
+                 window.scrollTo({top:0, behavior:'smooth'});
+                 closeMenu();
+            }
+        });
+
+        if (dom.checkYtBtn) dom.checkYtBtn.addEventListener('click', handleCheckYtId);
+        if (dom.checkYtLink) dom.checkYtLink.addEventListener('click', handleCheckYtId);
+        if (dom.contactForm) dom.contactForm.addEventListener('submit', handleContactFormSubmit);
+    }
+
     // --------------------------------------------------------------------------------
     // אתחול (Entry Point)
     // --------------------------------------------------------------------------------
     (async function init() {
-        dom.mainContent.classList.add('hidden'); // הסתרה התחלתית
+        dom.mainContent.classList.add('hidden');
         
-        // 1. טעינת נתונים (חוסמת)
         await fetchAllData();
-        
-        // 2. טעינת ערוצים (לא חוסמת)
-        loadFeaturedChannels();
-        
-        // 3. הגדרת אירועים
+        await loadFeaturedChannels();
+        renderHomepageCategoryButtons();
+
         setupEvents();
-        
-        // 4. רינדור ראשוני לפי URL
         readUrl();
-        
-        // 5. סיום
+
         dom.preloader.style.opacity = '0';
         setTimeout(() => {
             dom.preloader.style.display = 'none';
+            if (state.view !== 'video') {
+                dom.mainContent.classList.remove('hidden');
+            }
+            dom.footer.classList.remove('hidden');
         }, 500);
+
+        videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target.querySelector('img');
+                    if (img && img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                    }
+                    videoObserver.unobserve(entry.target);
+                }
+            });
+        });
     })();
 });
