@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         MIN_SEARCH_TERM_LENGTH: 2,
         FUSE_OPTIONS: {
             keys: ['title', 'tags', 'channel'],
-            threshold: 0.3, // דיוק חיפוש (נמוך יותר = יותר מדויק)
+            threshold: 0.3,
             ignoreLocation: true
         },
         CATEGORY_FILES: [
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'troubleshooting', 'upgrades', 'driving', 'safety', 'offroad',
         ],
         PREDEFINED_CATEGORIES: [
-            { id: "all", name: "הכל", icon: "film", gradient: "from-gray-600 to-gray-800" }, // Fallback gradient
+            { id: "all", name: "הכל", icon: "film", gradient: "from-gray-600 to-gray-800" },
             { id: "review", name: "סקירות רכב", icon: "magnifying-glass-chart" },
             { id: "safety", name: "מבחני בטיחות", icon: "shield-halved" },
             { id: "offroad", name: "שטח ו-4X4", icon: "mountain" },
@@ -35,13 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 2. אלמנטים בדף (DOM)
     // --------------------------------------------------------------------------------
     const dom = {
-        // כללי
         preloader: document.getElementById('site-preloader'),
         videoCardsContainer: document.getElementById('video-cards-container'),
         videoCardTemplate: document.getElementById('video-card-template'),
         noVideosMessage: document.getElementById('no-videos-found'),
         
-        // אזורי תוכן ראשיים
+        // אזורי תוכן
         homeContainer: document.getElementById('home-view-container'),
         homeBottomSection: document.getElementById('home-view-sections-bottom'),
         categoryHeader: document.getElementById('category-header-section'),
@@ -77,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // ערוצים מומלצים
         channelsTrack: document.getElementById('featured-channels-track'),
+        homepageCategoriesGrid: document.getElementById('homepage-categories-grid'),
         
         // נגן יחיד
         player: {
@@ -85,6 +85,9 @@ document.addEventListener('DOMContentLoaded', () => {
             desc: document.getElementById('single-video-content'),
             tags: document.getElementById('single-video-tags'),
             meta: document.getElementById('single-video-metadata'),
+            channel: document.getElementById('single-video-channel'),
+            duration: document.getElementById('single-video-duration'),
+            date: document.getElementById('single-video-date'),
             backBtn: document.getElementById('single-video-back-btn'),
             shareBtn: document.getElementById('single-video-share-btn')
         }
@@ -94,10 +97,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. ניהול מצב (State)
     // --------------------------------------------------------------------------------
     let state = {
-        allVideos: [],      // כל הסרטונים שנטענו
-        filteredVideos: [], // הסרטונים המוצגים כרגע לאחר סינון
-        fuse: null,         // מנוע חיפוש
-        view: 'home',       // 'home', 'category', 'video'
+        allVideos: [],
+        filteredVideos: [],
+        fuse: null,
+        view: 'home', // 'home', 'category', 'video'
         
         filters: {
             category: 'all',
@@ -109,12 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         pagination: {
             count: 0
-        },
-        
-        isSearchDirty: false
+        }
     };
 
-    let videoObserver = null; // לטעינה עצלה של תמונות/אייפריימים
+    let videoObserver;
 
     // --------------------------------------------------------------------------------
     // 4. פונקציות עזר
@@ -140,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --------------------------------------------------------------------------------
     async function fetchAllData() {
         try {
-            // טעינת כל הקבצים במקביל
             const promises = CONSTANTS.CATEGORY_FILES.map(async file => {
                 try {
                     const res = await fetch(`data/videos/${file}.json`);
@@ -148,7 +148,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const json = await res.json();
                     const list = Array.isArray(json) ? json : (json.videos || []);
                     
-                    // עיבוד מקדים לשיפור ביצועים
                     return list.map(v => ({
                         id: v.id,
                         title: v.title,
@@ -157,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         channelImage: v.channelImage,
                         duration: v.duration,
                         durationSec: parseDuration(v.duration),
-                        date: v.dateAdded ? new Date(v.dateAdded) : new Date(0), // תאריך ברירת מחדל אם אין
+                        date: v.dateAdded ? new Date(v.dateAdded) : new Date(0),
                         hebrew: v.hebrewContent,
                         tags: (v.tags || []).map(t => t.toLowerCase()),
                         content: v.content,
@@ -172,17 +171,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const results = await Promise.all(promises);
             state.allVideos = results.flat();
             
-            // אתחול מנוע חיפוש
+            // בניית Fuse
             state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
 
-            // עדכון מונה בדף הבית
+            // עדכון מונה ב-Hero
             if(dom.heroCount) dom.heroCount.querySelector('span').textContent = state.allVideos.length;
 
-            console.log(`Loaded ${state.allVideos.length} videos.`);
-
         } catch (error) {
-            console.error("Critical Error Loading Data", error);
-            dom.videoCardsContainer.innerHTML = '<p class="text-center text-red-500 mt-10">שגיאה בטעינת הנתונים. אנא רענן את הדף.</p>';
+            console.error("Critical Error", error);
+            dom.videoCardsContainer.innerHTML = '<p class="text-center text-red-500 mt-10">שגיאה בטעינת הנתונים.</p>';
         }
     }
 
@@ -196,7 +193,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if(channels.length) {
                 const html = [...channels, ...channels].map(c => `
-                    <a href="${c.channel_url}" target="_blank" class="channel-card block p-4 bg-white dark:bg-slate-700 rounded-xl shadow-md border border-slate-100 dark:border-slate-600 hover:border-purple-500 dark:hover:border-purple-400 text-center transition-transform hover:-translate-y-1 mx-2" style="min-width: 200px;">
+                    <a href="${c.channel_url}" target="_blank" class="channel-card block p-4 bg-white dark:bg-slate-700 rounded-xl shadow-md border border-slate-100 dark:border-slate-600 hover:border-purple-500 dark:hover:border-purple-400 text-center transition-transform hover:-translate-y-1 mx-2 shrink-0 w-64 snap-center">
                         <img src="${c.channel_image_url}" class="w-16 h-16 mx-auto rounded-full mb-3 object-cover border-2 border-slate-200" loading="lazy" alt="${c.channel_name}">
                         <h3 class="font-bold text-slate-800 dark:text-white truncate">${c.channel_name}</h3>
                         <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-1">${c.content_description}</p>
@@ -207,35 +204,52 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch(e) { console.error(e); }
     }
 
+    function renderHomepageCategoryButtons() {
+        if (!dom.homepageCategoriesGrid) return;
+        
+        dom.homepageCategoriesGrid.innerHTML = CONSTANTS.PREDEFINED_CATEGORIES
+            .filter(cat => cat.id !== 'all')
+            .map(cat => {
+                const count = state.allVideos.filter(v => v.category === cat.id).length;
+                
+                // צבעים דיפולטיביים אם אין בהגדרה
+                const gradient = cat.gradient || "from-purple-500 to-indigo-600";
+                
+                return `
+                    <a href="?name=${cat.id}" class="category-link relative group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 bg-gradient-to-br ${gradient} text-white text-center overflow-hidden">
+                        <div class="flex flex-col items-center justify-center h-full min-h-[140px]">
+                            <i class="fas fa-${cat.icon || 'folder'} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i>
+                            <h3 class="text-xl font-bold">${cat.name}</h3>
+                        </div>
+                        <span class="absolute top-3 right-3 bg-black/30 text-white text-xs font-bold py-1 px-2.5 rounded-full">${count}</span>
+                    </a>`;
+            }).join('');
+    }
+
     // --------------------------------------------------------------------------------
-    // 6. לוגיקת ליבה - סינון ורינדור
+    // 6. לוגיקת סינון ורינדור
     // --------------------------------------------------------------------------------
     function filterVideos() {
         let result = state.allVideos;
 
-        // 1. קטגוריה
         if (state.filters.category !== 'all') {
             result = result.filter(v => v.category === state.filters.category);
         }
 
-        // 2. חיפוש טקסט
         if (state.filters.search.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH) {
             const searchResults = state.fuse.search(state.filters.search);
             const ids = new Set(searchResults.map(r => r.item.id));
             result = result.filter(v => ids.has(v.id));
         }
 
-        // 3. תגיות
         if (state.filters.tags.length > 0) {
             result = result.filter(v => state.filters.tags.every(tag => v.tags.includes(tag)));
         }
 
-        // 4. עברית בלבד
         if (state.filters.hebrewOnly) {
             result = result.filter(v => v.hebrew);
         }
 
-        // 5. מיון
         result.sort((a, b) => {
             switch (state.filters.sort) {
                 case 'date-desc': return b.date - a.date;
@@ -249,100 +263,145 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         state.filteredVideos = result;
-        state.pagination.count = 0; // איפוס פגינציה
+        state.pagination.count = 0;
         
-        renderGrid(false); // רינדור מחדש (לא Append)
+        renderGrid(false);
         updateUI();
     }
 
     function renderGrid(isAppend) {
+        if (!dom.videoCardsContainer) return;
+
         const start = isAppend ? state.pagination.count : 0;
         const limit = isAppend ? CONSTANTS.VIDEOS_TO_LOAD_MORE : CONSTANTS.VIDEOS_TO_SHOW_INITIALLY;
         const nextBatch = state.filteredVideos.slice(start, start + limit);
         
-        // אם זה לא Append, מנקים את הקונטיינר
         if (!isAppend) {
             dom.videoCardsContainer.innerHTML = '';
-            window.scrollTo({ top: 0, behavior: 'instant' }); // גלילה למעלה רק בשינוי פילטר
-            // אם אנחנו לא בדף הבית הראשי, אולי נרצה לגלול לאזור הוידאו
-            if (state.view === 'home' && state.filters.category === 'all') {
-                // Do nothing special on initial load
-            } else {
-                 const headerHeight = document.querySelector('header').offsetHeight || 80;
-                 // אופציונלי: גלילה לאזור הוידאו
-            }
+            // הסרת כפתור "טען עוד" ישן אם קיים
+            const oldBtn = document.getElementById('load-more-btn');
+            if(oldBtn) oldBtn.remove();
         }
 
-        // יצירת ה-HTML (String Concatenation מהיר יותר מ-DOM Nodes)
-        const html = nextBatch.map(v => `
-            <article class="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden hover:shadow-xl transition-shadow" data-id="${v.id}">
-                <div class="relative aspect-video bg-slate-200 dark:bg-slate-700 cursor-pointer video-thumb-wrapper">
-                    <img src="${v.thumbnail}" alt="${v.title}" class="w-full h-full object-cover" loading="lazy">
-                    <span class="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">${v.duration}</span>
-                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/20">
-                        <i class="fas fa-play-circle text-5xl text-white drop-shadow-lg"></i>
+        if (nextBatch.length === 0 && !isAppend) {
+            dom.noVideosMessage.classList.remove('hidden');
+            dom.noVideosMessage.innerHTML = `
+                <div class="text-center py-12">
+                    <i class="fas fa-video-slash fa-3x text-slate-400 mb-4"></i>
+                    <p class="text-xl text-slate-500">לא נמצאו סרטונים.</p>
+                    <button class="mt-4 text-purple-600 underline" onclick="document.getElementById('clear-filters-btn').click()">נקה סינון</button>
+                </div>
+            `;
+            return;
+        } else {
+            dom.noVideosMessage.classList.add('hidden');
+        }
+
+        const html = nextBatch.map(v => {
+            // יצירת תגיות HTML
+            const tagsHtml = v.tags.slice(0, 3).map(tag => 
+                `<span class="text-[10px] bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full dark:bg-slate-700 dark:text-purple-300">#${tag}</span>`
+            ).join('');
+
+            // אייקון קטגוריה
+            const cat = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === v.category);
+            const catIcon = cat ? cat.icon : 'folder';
+            const catName = cat ? cat.name : v.category;
+
+            return `
+            <article class="video-card group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden transition-all duration-300 transform hover:-translate-y-1" data-id="${v.id}">
+                <!-- Thumbnail -->
+                <div class="relative aspect-video bg-slate-200 dark:bg-slate-700 cursor-pointer overflow-hidden video-thumb-wrapper">
+                    <img src="${v.thumbnail}" alt="${v.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
+                    
+                    <!-- Duration Badge -->
+                    <span class="absolute bottom-2 left-2 bg-black/80 text-white text-xs font-medium px-2 py-1 rounded backdrop-blur-sm">
+                        ${v.duration}
+                    </span>
+
+                    <!-- Play Overlay -->
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/30 backdrop-blur-[2px]">
+                        <button class="bg-white/90 text-purple-600 rounded-full p-3 shadow-lg transform scale-75 group-hover:scale-100 transition-transform">
+                            <i class="fas fa-play fa-lg ml-1"></i>
+                        </button>
                     </div>
                 </div>
+
+                <!-- Content -->
                 <div class="p-4 flex flex-col flex-grow">
-                     <div class="flex justify-between items-center text-xs text-slate-500 mb-2">
-                        <div class="flex items-center gap-2">
-                             ${v.channelImage ? `<img src="${v.channelImage}" class="w-6 h-6 rounded-full">` : '<i class="fas fa-user-circle"></i>'}
-                             <span class="truncate max-w-[120px]">${v.channel}</span>
+                     <!-- Channel Info -->
+                     <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center gap-2 min-w-0">
+                             ${v.channelImage ? 
+                                `<img src="${v.channelImage}" class="w-6 h-6 rounded-full border border-slate-200" alt="${v.channel}">` : 
+                                `<div class="w-6 h-6 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center"><i class="fas fa-user text-xs"></i></div>`
+                             }
+                             <span class="text-xs font-medium text-slate-600 dark:text-slate-400 truncate">${v.channel}</span>
                         </div>
-                        <span class="text-xs bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded text-slate-600 dark:text-slate-300">
-                             ${getCategoryName(v.category)}
-                        </span>
+                        <!-- Category Badge -->
+                        <div class="flex items-center gap-1 text-[10px] font-medium text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-full shrink-0">
+                            <i class="fas fa-${catIcon}"></i>
+                            <span>${catName}</span>
+                        </div>
                      </div>
-                     <h3 class="font-bold text-slate-900 dark:text-white mb-2 line-clamp-2 leading-tight">
-                         <a href="?v=${v.id}" class="hover:text-purple-600 transition-colors video-link">${v.title}</a>
+
+                     <!-- Title -->
+                     <h3 class="font-bold text-slate-900 dark:text-white text-sm md:text-base leading-tight mb-2 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                         <a href="?v=${v.id}" class="video-link focus:outline-none">${v.title}</a>
                      </h3>
-                     <div class="mt-auto pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs text-slate-400">
-                         <span>${v.date.toLocaleDateString('he-IL')}</span>
-                         <button class="hover:text-purple-500 share-btn" title="שתף"><i class="fas fa-share-alt"></i></button>
+
+                     <!-- Tags -->
+                     <div class="flex flex-wrap gap-1 mb-4 mt-auto">
+                        ${tagsHtml}
+                     </div>
+
+                     <!-- Footer Actions -->
+                     <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs text-slate-400">
+                         <span class="flex items-center gap-1.5">
+                            <i class="far fa-calendar"></i>
+                            ${v.date.toLocaleDateString('he-IL')}
+                         </span>
+                         <div class="flex gap-2">
+                            <button class="hover:text-purple-500 transition-colors p-1 share-btn" title="שתף"><i class="fas fa-share-alt"></i></button>
+                            <a href="?v=${v.id}" target="_blank" class="hover:text-purple-500 transition-colors p-1" title="פתח בטאב חדש"><i class="fas fa-external-link-alt"></i></a>
+                         </div>
                      </div>
                 </div>
             </article>
-        `).join('');
+            `;
+        }).join('');
 
-        if (isAppend) {
-            dom.videoCardsContainer.insertAdjacentHTML('beforeend', html);
-        } else {
-            dom.videoCardsContainer.innerHTML = html;
-        }
-
+        dom.videoCardsContainer.insertAdjacentHTML('beforeend', html);
         state.pagination.count += nextBatch.length;
-        
-        // כפתור "טען עוד"
+
+        // ניהול כפתור "טען עוד"
         let loadMoreBtn = document.getElementById('load-more-btn');
         if (state.pagination.count < state.filteredVideos.length) {
             if (!loadMoreBtn) {
-                loadMoreBtn = document.createElement('button');
+                loadMoreBtn = document.createElement('div');
                 loadMoreBtn.id = 'load-more-btn';
-                loadMoreBtn.className = 'col-span-full mx-auto mt-8 px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition-colors shadow-md';
-                loadMoreBtn.textContent = 'טען עוד סרטונים';
-                loadMoreBtn.onclick = () => renderGrid(true);
+                loadMoreBtn.className = 'col-span-full flex justify-center mt-8';
+                loadMoreBtn.innerHTML = `
+                    <button class="px-8 py-3 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 font-medium rounded-full shadow-sm hover:shadow-md hover:border-purple-400 transition-all flex items-center gap-2 group">
+                        <span>טען עוד סרטונים</span>
+                        <i class="fas fa-chevron-down group-hover:translate-y-1 transition-transform"></i>
+                    </button>
+                `;
+                loadMoreBtn.querySelector('button').onclick = () => renderGrid(true);
                 dom.videoCardsContainer.parentNode.appendChild(loadMoreBtn);
             } else {
-                loadMoreBtn.style.display = 'block';
-                dom.videoCardsContainer.parentNode.appendChild(loadMoreBtn); // Move to bottom
+                dom.videoCardsContainer.parentNode.appendChild(loadMoreBtn); // הזזה לסוף
             }
         } else if (loadMoreBtn) {
-            loadMoreBtn.style.display = 'none';
+            loadMoreBtn.remove();
         }
-
-        // הודעת "לא נמצאו תוצאות"
-        if (state.filteredVideos.length === 0) {
-            dom.noVideosMessage.classList.remove('hidden');
-            dom.noVideosMessage.innerHTML = `
-                <div class="text-center py-10">
-                    <i class="fas fa-search fa-3x text-slate-300 mb-4"></i>
-                    <p class="text-xl text-slate-500">לא נמצאו סרטונים התואמים את החיפוש.</p>
-                    <button id="reset-search-btn" class="mt-4 text-purple-600 underline">נקה חיפוש וסינון</button>
-                </div>
-            `;
-            document.getElementById('reset-search-btn')?.addEventListener('click', clearFilters);
-        } else {
-            dom.noVideosMessage.classList.add('hidden');
+        
+        // אתחול IntersectionObserver לתמונות אם צריך (כרגע הדפדפן מטפל ב-loading="lazy")
+        if (videoObserver) {
+            document.querySelectorAll('.video-card:not(.observed)').forEach(card => {
+                videoObserver.observe(card);
+                card.classList.add('observed');
+            });
         }
     }
 
@@ -352,32 +411,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --------------------------------------------------------------------------------
-    // 7. עדכון ממשק משתמש (UI)
+    // 7. עדכון ממשק (UI)
     // --------------------------------------------------------------------------------
     function updateUI() {
-        // עדכון כותרות
+        // עדכון כותרות ותצוגה ראשית
         if (state.view === 'category' && state.filters.category !== 'all') {
             const catName = getCategoryName(state.filters.category);
             dom.categoryHeader.classList.remove('hidden');
             dom.homeContainer.classList.add('hidden');
             dom.homeBottomSection.classList.add('hidden');
             
-            if(dom.pageTitleCategory) dom.pageTitleCategory.textContent = catName;
-            if(dom.breadcrumbName) dom.breadcrumbName.textContent = catName;
-            if(dom.videoGridTitle) dom.videoGridTitle.textContent = `סרטונים בקטגוריה: ${catName}`;
-            if(dom.categoryCount) dom.categoryCount.textContent = `נמצאו ${state.filteredVideos.length} סרטונים`;
+            dom.pageTitleCategory.textContent = catName;
+            dom.breadcrumbName.textContent = catName;
+            dom.videoGridTitle.textContent = `סרטונים בקטגוריה: ${catName}`;
+            dom.categoryCount.textContent = `נמצאו ${state.filteredVideos.length} סרטונים`;
         } else {
-            // תצוגת הבית
             dom.categoryHeader.classList.add('hidden');
             dom.homeContainer.classList.remove('hidden');
             dom.homeBottomSection.classList.remove('hidden');
-            if(dom.videoGridTitle) dom.videoGridTitle.textContent = 'כל הסרטונים';
+            dom.videoGridTitle.textContent = 'כל הסרטונים';
         }
 
-        // עדכון תגיות
+        // עדכון תגיות פופולריות (Tag Cloud)
         updateTagsCloud();
         
-        // עדכון סימון תגיות פעילות
+        // עדכון תגיות נבחרות
         updateActiveTagsUI();
 
         // עדכון סיכום פילטרים
@@ -391,7 +449,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTagsCloud() {
         if (!dom.tagsContainer) return;
         
-        // חישוב תגיות מתוך התוצאות הנוכחיות (או מתוך הקטגוריה)
         const sourceVideos = state.filters.category === 'all' 
             ? state.allVideos 
             : state.allVideos.filter(v => v.category === state.filters.category);
@@ -409,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .map(entry => entry[0]);
 
         dom.tagsContainer.innerHTML = sortedTags.map(tag => `
-            <button class="tag-btn bg-slate-200 dark:bg-slate-700 hover:bg-purple-100 dark:hover:bg-purple-900 text-slate-700 dark:text-slate-200 px-3 py-1 rounded-full text-sm transition-colors ${state.filters.tags.includes(tag) ? 'ring-2 ring-purple-500 bg-purple-100' : ''}" data-tag="${tag}">
+            <button class="tag-btn bg-slate-100 dark:bg-slate-700 hover:bg-purple-100 hover:text-purple-700 dark:hover:bg-purple-900/50 dark:hover:text-purple-300 text-slate-600 dark:text-slate-300 px-3 py-1.5 rounded-lg text-sm transition-all border border-slate-200 dark:border-slate-600 ${state.filters.tags.includes(tag) ? '!bg-purple-600 !text-white !border-purple-600' : ''}" data-tag="${tag}">
                 ${tag}
             </button>
         `).join('');
@@ -418,9 +475,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateActiveTagsUI() {
         if(!dom.activeTagsContainer) return;
         dom.activeTagsContainer.innerHTML = state.filters.tags.map(tag => `
-            <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-purple-600 text-white shadow-sm animate-fadeIn">
                 ${tag}
-                <button type="button" class="remove-tag hover:text-purple-900" data-tag="${tag}">×</button>
+                <button type="button" class="remove-tag hover:bg-white/20 rounded-full p-0.5 transition-colors" data-tag="${tag}">
+                    <i class="fas fa-times text-xs"></i>
+                </button>
             </span>
         `).join('');
     }
@@ -434,43 +493,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
         state.view = 'video';
         
-        // הסתרת הכל
         dom.mainContent.classList.add('hidden');
         dom.singleVideoContainer.classList.remove('hidden');
         
-        // גלילה למעלה
-        window.scrollTo(0,0);
+        window.scrollTo({top: 0, behavior: 'smooth'});
 
-        // מילוי תוכן
-        dom.player.frame.innerHTML = `<iframe class="w-full h-full absolute inset-0" src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1" frameborder="0" allowfullscreen allow="autoplay"></iframe>`;
-        dom.player.title.textContent = video.title;
-        dom.player.desc.innerHTML = video.content || 'אין תיאור זמין.';
-        dom.player.desc.classList.remove('hidden');
+        // נגן
+        dom.player.frame.innerHTML = `<iframe class="w-full h-full absolute inset-0 rounded-lg" src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1" frameborder="0" allowfullscreen allow="autoplay"></iframe>`;
         
-        // מטא דאטה
-        let metaHtml = `<span class="flex items-center gap-2"><i class="fas fa-user-circle"></i> ${video.channel}</span>`;
-        metaHtml += `<span class="flex items-center gap-2"><i class="fas fa-clock"></i> ${video.duration}</span>`;
-        if(video.date) metaHtml += `<span class="flex items-center gap-2"><i class="fas fa-calendar"></i> ${video.date.toLocaleDateString('he-IL')}</span>`;
-        dom.player.meta.innerHTML = metaHtml;
+        // מידע
+        dom.player.title.textContent = video.title;
+        dom.player.desc.innerHTML = video.content ? `<p class="text-lg leading-relaxed text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 p-6 rounded-xl border-r-4 border-purple-500 shadow-sm">${video.content}</p>` : '';
+        dom.player.desc.classList.toggle('hidden', !video.content);
+        
+        // מטא
+        dom.player.channel.innerHTML = `<img src="${video.channelImage || ''}" class="w-8 h-8 rounded-full border border-slate-200"> <span class="text-lg font-medium">${video.channel}</span>`;
+        dom.player.duration.innerHTML = `<i class="far fa-clock"></i> ${video.duration}`;
+        dom.player.date.innerHTML = `<i class="far fa-calendar"></i> ${video.date.toLocaleDateString('he-IL')}`;
+        dom.player.date.style.display = 'inline-flex';
 
         // תגיות
         dom.player.tags.innerHTML = video.tags.map(t => 
-            `<button class="text-sm text-purple-600 hover:underline cursor-pointer tag-link" data-tag="${t}">#${t}</button>`
-        ).join(' ');
+            `<button class="tag-link bg-purple-50 text-purple-700 dark:bg-slate-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm hover:bg-purple-100 transition-colors" data-tag="${t}">#${t}</button>`
+        ).join('');
 
-        // עדכון URL
         updateUrl();
     }
 
     function closeVideo() {
         state.view = state.filters.category === 'all' ? 'home' : 'category';
+        
         dom.singleVideoContainer.classList.add('hidden');
         dom.mainContent.classList.remove('hidden');
-        dom.player.frame.innerHTML = ''; // עצירת הוידאו
+        dom.player.frame.innerHTML = ''; // ניקוי ה-iframe לעצירת ניגון
         
-        // החזרת ה-UI למצב הקודם
         updateUI();
         updateUrl();
+        
+        // גלילה חזרה לגריד אם צריך
+        // dom.videoCardsContainer.scrollIntoView({ behavior: 'smooth' }); 
     }
 
     // --------------------------------------------------------------------------------
@@ -480,12 +541,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams();
         
         if (state.view === 'video') {
-            const vidId = dom.singleVideoContainer.querySelector('iframe')?.src.split('/embed/')[1].split('?')[0];
-            if(vidId) params.set('v', vidId);
+            const iframe = dom.player.frame.querySelector('iframe');
+            if (iframe) {
+                const vidId = iframe.src.split('/embed/')[1].split('?')[0];
+                params.set('v', vidId);
+            }
         } else {
             if (state.filters.category !== 'all') params.set('name', state.filters.category);
             if (state.filters.search) params.set('search', state.filters.search);
             if (state.filters.tags.length) params.set('tags', state.filters.tags.join(','));
+            if (state.filters.hebrewOnly) params.set('hebrew', 'true');
         }
 
         const newUrl = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
@@ -495,17 +560,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function readUrl() {
         const params = new URLSearchParams(window.location.search);
         
-        // בדיקת וידאו בודד
+        // 1. וידאו ישיר
         const videoId = params.get('v');
-        if (videoId) {
-            // אנחנו חייבים לחכות שהנתונים ייטענו קודם
-            if (state.allVideos.length > 0) {
-                openVideo(videoId);
-                return;
-            }
+        if (videoId && state.allVideos.length > 0) {
+            openVideo(videoId);
+            return;
         }
 
-        // קטגוריה
+        // 2. קטגוריה
         const cat = params.get('name');
         if (cat && CONSTANTS.PREDEFINED_CATEGORIES.some(c => c.id === cat)) {
             state.view = 'category';
@@ -515,15 +577,22 @@ document.addEventListener('DOMContentLoaded', () => {
             state.filters.category = 'all';
         }
 
-        // פילטרים נוספים
-        if (params.get('search')) state.filters.search = params.get('search');
+        // 3. פילטרים
+        if (params.get('search')) {
+            state.filters.search = params.get('search');
+            dom.searchInput.value = state.filters.search;
+        }
         if (params.get('tags')) state.filters.tags = params.get('tags').split(',');
+        if (params.get('hebrew')) {
+            state.filters.hebrewOnly = true;
+            dom.hebrewToggle.checked = true;
+        }
 
         filterVideos();
     }
 
     // --------------------------------------------------------------------------------
-    // 10. אירועים (Event Listeners)
+    // 10. הגדרת אירועים (Event Listeners)
     // --------------------------------------------------------------------------------
     function setupEvents() {
         // חיפוש
@@ -535,64 +604,107 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // קליק על כרטיס וידאו (Delegation)
         dom.videoCardsContainer.addEventListener('click', (e) => {
+            // טיפול בלחיצה על כפתור שיתוף
+            const shareBtn = e.target.closest('.share-btn');
+            if (shareBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const card = shareBtn.closest('article');
+                const url = new URL(`?v=${card.dataset.id}`, window.location.href).href;
+                navigator.clipboard.writeText(url).then(() => alert('הקישור הועתק!'));
+                return;
+            }
+
+            // טיפול בלחיצה על הכרטיס
             const card = e.target.closest('article');
-            if (card && !e.target.closest('.share-btn')) { // מניעת פתיחה בלחיצה על שיתוף
+            const link = e.target.closest('a'); // אם לחץ על קישור בתוך הכרטיס
+            
+            if (card) {
                 e.preventDefault();
                 openVideo(card.dataset.id);
             }
         });
 
-        // כפתורי תגיות (Delegation)
+        // קליק על קישורים בתפריט / קטגוריות
+        document.body.addEventListener('click', (e) => {
+            const link = e.target.closest('a');
+            if (!link) return;
+
+            // קישורי קטגוריה (כמו בדף הבית)
+            if (link.href.includes('?name=')) {
+                e.preventDefault();
+                const urlParams = new URLSearchParams(link.search);
+                const cat = urlParams.get('name');
+                state.filters.category = cat;
+                state.view = 'category';
+                filterVideos();
+                updateUrl();
+                return;
+            }
+
+            // חזרה לדף הבית / ניקוי קטגוריה
+            if (link.getAttribute('href') === './' || link.getAttribute('href') === './index.html' || (link.hash === '#home' && state.view === 'category')) {
+                e.preventDefault();
+                state.filters.category = 'all';
+                state.view = 'home';
+                filterVideos();
+                updateUrl();
+                window.scrollTo({top:0, behavior:'smooth'});
+            }
+        });
+
+        // ניהול תגיות (הוספה/הסרה)
         document.addEventListener('click', (e) => {
-            // הוספת תגית
-            if (e.target.classList.contains('tag-btn') || e.target.classList.contains('tag-link')) {
-                const tag = e.target.dataset.tag;
+            const btn = e.target.closest('button');
+            if (!btn) return;
+
+            if (btn.classList.contains('tag-btn') || btn.classList.contains('tag-link')) {
+                const tag = btn.dataset.tag;
                 if (!state.filters.tags.includes(tag)) {
                     state.filters.tags.push(tag);
-                    filterVideos();
-                    updateUrl();
-                    // אם אנחנו בנגן, נסגור אותו ונחזור לגריד המסונן
-                    if(state.view === 'video') closeVideo();
+                    // אם אנחנו בנגן, נסגור אותו
+                    if (state.view === 'video') closeVideo();
+                    else {
+                        filterVideos();
+                        updateUrl();
+                    }
                 }
-            }
-            // הסרת תגית
-            if (e.target.classList.contains('remove-tag')) {
-                const tag = e.target.dataset.tag;
+            } else if (btn.classList.contains('remove-tag')) {
+                const tag = btn.dataset.tag;
                 state.filters.tags = state.filters.tags.filter(t => t !== tag);
                 filterVideos();
                 updateUrl();
             }
         });
 
-        // כפתור חזור בנגן
+        // כפתורים בנגן
         dom.player.backBtn.addEventListener('click', closeVideo);
+        dom.player.shareBtn.addEventListener('click', () => {
+            navigator.clipboard.writeText(window.location.href).then(() => alert('הקישור הועתק!'));
+        });
 
-        // כפתור ניקוי פילטרים
+        // כפתורי פילטרים
         dom.clearFiltersBtn.addEventListener('click', clearFilters);
-
-        // טוגל עברית
         dom.hebrewToggle.addEventListener('change', (e) => {
             state.filters.hebrewOnly = e.target.checked;
             filterVideos();
         });
-
-        // מיון
         dom.sortSelect.addEventListener('change', (e) => {
             state.filters.sort = e.target.value;
             filterVideos();
         });
 
-        // ניווט בדפדפן (Back/Forward)
+        // היסטוריית דפדפן
         window.addEventListener('popstate', readUrl);
         
-        // גלילה (Scroll to top button)
+        // גלילה
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) dom.backToTopBtn.classList.remove('invisible', 'opacity-0');
-            else dom.backToTopBtn.classList.add('invisible', 'opacity-0');
+            dom.backToTopBtn.classList.toggle('opacity-0', window.scrollY < 300);
+            dom.backToTopBtn.classList.toggle('invisible', window.scrollY < 300);
         });
         dom.backToTopBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
         
-        // תפריט מובייל
+        // תפריט נייד
         dom.mobileMenuBtn.addEventListener('click', () => {
             dom.mobileMenu.classList.remove('translate-x-full');
             dom.backdrop.classList.remove('invisible', 'opacity-0');
@@ -617,8 +729,8 @@ document.addEventListener('DOMContentLoaded', () => {
         state.filters.search = '';
         state.filters.tags = [];
         state.filters.hebrewOnly = false;
-        state.filters.category = 'all'; // איפוס גם קטגוריה? לשיקולך. כרגע מאפס הכל.
-        state.view = 'home'; // חוזר לבית
+        state.filters.category = 'all';
+        state.view = 'home';
         
         dom.searchInput.value = '';
         dom.hebrewToggle.checked = false;
@@ -631,31 +743,42 @@ document.addEventListener('DOMContentLoaded', () => {
     // אתחול האפליקציה (Entry Point)
     // --------------------------------------------------------------------------------
     (async function init() {
-        // 1. הסתרת תוכן עד לטעינה
+        // הסתרת תוכן ראשונית
         dom.mainContent.classList.add('hidden');
-        dom.footer.classList.add('hidden');
         
-        // 2. טעינת נתונים
+        // טעינת נתונים
         await fetchAllData();
         await loadFeaturedChannels();
+        renderHomepageCategoryButtons();
 
-        // 3. הגדרת אירועים
+        // הגדרת אירועים
         setupEvents();
 
-        // 4. קריאת מצב התחלתי מה-URL
+        // קריאת מצב התחלתי
         readUrl();
 
-        // 5. הצגת האתר
+        // הצגת האתר
         dom.preloader.style.opacity = '0';
         setTimeout(() => {
             dom.preloader.style.display = 'none';
             if (state.view !== 'video') {
                 dom.mainContent.classList.remove('hidden');
-            } else {
-                // אם נכנסנו ישר לוידאו, ה-mainContent נשאר מוסתר ורק הנגן מוצג (טופל ב-openVideo)
             }
             dom.footer.classList.remove('hidden');
         }, 500);
 
+        // Intersection Observer לטעינה עצלה (אם יש אלמנטים נוספים)
+        videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target.querySelector('img');
+                    if (img && img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                    }
+                    videoObserver.unobserve(entry.target);
+                }
+            });
+        });
     })();
 });
