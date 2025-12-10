@@ -19,8 +19,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <!-- Added defer to scripts for performance -->
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
+    <script src="js/main.js" defer></script>
+    
     <script>
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -207,7 +211,6 @@
                 </form>
             </div>
 
-            <!-- Categories Grid -->
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
                 <section id="homepage-categories-section" class="mb-12 md:mb-20 bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 sm:p-8" aria-labelledby="homepage-categories-heading">
                     <h2 id="homepage-categories-heading" class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 mb-10 text-center">
@@ -230,8 +233,7 @@
                 </section>
             </div>
         </div>
-        <!-- End Home View Container -->
-
+        
         <!-- Category Header (Hidden by default, shown when viewing a specific category) -->
         <div id="category-header-section" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
             <section class="mb-8 md:mb-12 text-center md:text-right">
@@ -268,7 +270,6 @@
 
         <!-- Shared Content Area (Search, Filters, Video Grid) -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Search Section -->
              <section id="main-content-search-section" class="my-12 md:my-16">
                 <div class="max-w-2xl mx-auto px-4">
                     <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6 text-center">
@@ -287,7 +288,6 @@
                 </div>
             </section>
             
-            <!-- Filters Section -->
             <section class="mb-12 md:mb-16 bg-white dark:bg-slate-800/75 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-xl dark:shadow-black/30 border border-slate-200 dark:border-slate-700" aria-labelledby="filter-heading">
                 <div class="flex flex-col sm:flex-row justify-between items-start mb-6 gap-4">
                     <h2 id="filter-heading" class="text-2xl font-semibold text-slate-900 dark:text-slate-100 flex items-center shrink-0">
@@ -339,7 +339,6 @@
                 </div>
             </section>
             
-            <!-- Video Grid Section -->
             <section id="video-grid-section" class="mb-12 md:mb-16 bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 sm:p-8" aria-labelledby="videos-heading">
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
                     <h2 id="videos-heading" class="text-3xl font-bold text-slate-900 dark:text-slate-100 flex-1 text-center sm:text-right">
@@ -360,7 +359,6 @@
                 </div>
                 <div id="video-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
                      <div id="video-skeletons" class="contents">
-                        <!-- Skeletons... -->
                         <div class="animate-pulse flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
                             <div class="bg-slate-200 dark:bg-slate-700 aspect-video w-full"></div>
                             <div class="p-4 sm:p-5 flex flex-col flex-grow">
@@ -421,7 +419,7 @@
             </section>
         </div>
 
-        <!-- Home View Bottom Sections (Visible ONLY on homepage) -->
+        <!-- Home Specific Sections (Additional) -->
         <div id="home-view-sections-bottom">
             <section id="featured-channels-section" class="bg-purple-50 dark:bg-slate-800/60 py-16 md:py-20 transition-colors duration-300 rounded-2xl overflow-hidden" aria-labelledby="featured-channels-heading">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -607,51 +605,5 @@
     <button id="back-to-top-btn" aria-label="חזור לראש העמוד" class="fixed bottom-6 right-6 rtl:left-6 rtl:right-auto z-50 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-900 opacity-0 invisible h-12 w-12 flex items-center justify-center">
         <i class="fas fa-arrow-up text-lg"></i>
     </button>
-    <template id="video-card-template">
-        <article class="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-xl dark:shadow-black/40 dark:hover:shadow-purple-500/30 transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-[1.03] border border-slate-200 dark:border-slate-700 hover:border-purple-300 dark:hover:border-purple-500 overflow-hidden">
-            <div class="video-thumbnail-container bg-slate-200 dark:bg-slate-700 relative overflow-hidden border-b border-slate-200 dark:border-slate-700">
-                <a href="#" class="video-play-link absolute inset-0 z-20" aria-label="נגן סרטון">
-                    <img src="" alt="" class="video-thumbnail-img absolute inset-0 w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 opacity-90 group-hover:opacity-100" loading="lazy">
-                    <span class="video-duration absolute bottom-2 right-2 rtl:bottom-2 rtl:left-2 rtl:right-auto bg-black/75 text-white text-xs font-semibold px-2 py-1 rounded-md z-10 backdrop-blur-sm"></span>
-                    <div class="play-video-button absolute inset-0 w-full h-full flex items-center justify-center text-white transition-all duration-300 group-hover:scale-110 group-hover:opacity-90">
-                        <i class="fas fa-play-circle fa-5x sm:fa-6x text-purple-500 dark:text-purple-400 opacity-80 group-hover:opacity-100 drop-shadow-lg"></i>
-                    </div>
-                </a>
-                <iframe class="video-iframe hidden absolute inset-0 w-full h-full z-30" loading="lazy" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>
-            </div>
-            <div class="video-details-container bg-slate-50 dark:bg-slate-700 p-4 sm:p-5 flex flex-col flex-grow">
-                 <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 mb-2.5">
-                    <div class="video-channel-info flex items-center gap-2 overflow-hidden">
-                        <img src="" alt="" class="channel-logo h-7 w-7 rounded-full object-cover border-2 border-slate-200 dark:border-slate-600 flex-shrink-0" loading="lazy">
-                        <span class="channel-name font-medium truncate"></span>
-                    </div>
-                    <div class="flex items-center gap-1 flex-shrink-0">
-                        <button class="fullscreen-btn p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" aria-label="מסך מלא" title="מסך מלא">
-                            <i class="fas fa-expand fa-fw"></i>
-                        </button>
-                        <a href="#" class="new-tab-btn p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" target="_blank" rel="noopener noreferrer" aria-label="פתח בכרטיסייה חדשה" title="פתח בכרטיסייה חדשה">
-                           <i class="fas fa-external-link-alt fa-fw"></i>
-                       </a>
-                       <button class="share-btn p-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors" aria-label="שתף סרטון" title="שתף סרטון">
-                            <i class="fas fa-share-alt fa-fw"></i>
-                        </button>
-                    </div>
-                </div>
-                <h3 class="video-title font-semibold text-base md:text-lg text-slate-800 dark:text-slate-100 mb-3 group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors leading-tight line-clamp-2">
-                    <a href="" class="video-link hover:underline focus:outline-none focus:ring-1 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-sm"></a>
-                </h3>
-                <div class="video-tags flex flex-wrap gap-1.5 mb-auto mt-1 text-xs"></div>
-                <div class="flex items-center justify-between text-slate-500 dark:text-slate-300 text-xs mt-4 pt-3 border-t border-slate-200 dark:border-slate-500">
-                    <span class="video-category-display flex items-center">
-                        <i class="video-category-icon fas fa-folder-open opacity-70 text-purple-500 dark:text-purple-400 ml-2"></i>
-                    </span>
-                    <span class="video-date-display flex items-center">
-                        <i class="fas fa-calendar-alt opacity-70 text-purple-500 dark:text-purple-400 ml-2"></i>
-                    </span>
-                </div>
-            </div>
-        </article>
-    </template>
-    <script src="js/main.js"></script>
 </body>
 </html>
