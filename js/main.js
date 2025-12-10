@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
     // --------------------------------------------------------------------------------
     // 1. CONSTANTS & CONFIGURATION
@@ -268,64 +267,57 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --------------------------------------------------------------------------------
-    // 6. LOGIC & RENDERING
+    // 6. RENDERING LOGIC (SPA)
     // --------------------------------------------------------------------------------
     
-    // UI SYNC
-    function syncUIToState() {
-        const { searchTerm, hebrewOnly, sortBy } = state.currentFilters;
-        
-        Object.values(dom.searchForms).forEach(form => {
-            if(form) {
-                const input = form.querySelector('input[type="search"]');
-                if (input) input.value = searchTerm;
-            }
-        });
-
-        if(dom.hebrewFilterToggle) dom.hebrewFilterToggle.checked = hebrewOnly;
-        if(dom.sortSelect) dom.sortSelect.value = sortBy;
-        
-        renderSelectedTagChips();
-        updateActiveTagVisuals();
-    }
-
     function renderHomeView() {
-        if (state.currentView === 'home' && state.currentFilters.category === 'all') return;
+        // Optimization: If already in home view and category is 'all', do nothing but scroll
+        if (state.currentView === 'home' && state.currentFilters.category === 'all') {
+            return;
+        }
 
         state.currentView = 'home';
         state.currentFilters.category = 'all';
 
+        // Show Home Sections
         if (dom.homeViewContainer) dom.homeViewContainer.classList.remove('hidden');
         if (dom.homeViewSectionsBottom) dom.homeViewSectionsBottom.classList.remove('hidden');
         
+        // Ensure Categories are rendered
         if (dom.homepageCategoriesGrid && dom.homepageCategoriesGrid.children.length === 0) {
              renderHomepageCategoryButtons();
         }
         
+        // Hide Category specific header
         if (dom.categoryHeaderSection) dom.categoryHeaderSection.classList.add('hidden');
 
+        // Update Titles
         document.title = 'CAR-טיב - סרטוני רכבים כשרים';
         if (dom.videosGridTitle) {
             dom.videosGridTitle.textContent = 'כל הסרטונים';
         }
 
+        // Search Placeholder update
         if (dom.searchSectionTitle) dom.searchSectionTitle.textContent = "הכנס טקסט לחיפוש";
         const mainSearchInput = document.getElementById('main-content-search-input');
         if (mainSearchInput) mainSearchInput.placeholder = "חפש בכל האתר...";
 
-        recalculateVideos();
-        renderVideoCards(state.filteredVideos, false);
+        // Re-apply filters
+        applyFilters(false, false);
     }
 
     function renderCategoryView(categoryId) {
         state.currentView = 'category';
         state.currentFilters.category = categoryId;
 
+        // Hide Home Sections
         if (dom.homeViewContainer) dom.homeViewContainer.classList.add('hidden');
         if (dom.homeViewSectionsBottom) dom.homeViewSectionsBottom.classList.add('hidden');
 
+        // Show Category Header
         if (dom.categoryHeaderSection) dom.categoryHeaderSection.classList.remove('hidden');
 
+        // Update Category Header Info
         const categoryData = CONSTANTS.PREDEFINED_CATEGORIES.find(cat => cat.id === categoryId);
         const name = categoryData ? categoryData.name : (categoryId || 'קטגוריה');
         const icon = categoryData ? categoryData.icon : 'folder-open';
@@ -339,6 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.breadcrumbCategoryName.textContent = name;
         }
 
+        // Update Video Count Summary for Category
         if (dom.categoryVideoCountSummary) {
             const categoryVideos = state.allVideos.filter(v => v.category === categoryId);
             const count = categoryVideos.length;
@@ -347,22 +340,24 @@ document.addEventListener('DOMContentLoaded', () => {
                 : `בקטגוריה זו קיימים <strong class="text-purple-600 dark:text-purple-400">${count}</strong> סרטונים.`;
         }
 
+        // Update "Videos" Section Title
         if (dom.videosGridTitle) {
             dom.videosGridTitle.innerHTML = `סרטונים בקטגוריה: <span class="font-bold text-purple-600 dark:text-purple-400">${name}</span>`;
         }
         
+        // Search Placeholder update
         if (dom.searchSectionTitle) dom.searchSectionTitle.textContent = `חיפוש ב${name}`;
         const mainSearchInput = document.getElementById('main-content-search-input');
         if (mainSearchInput) mainSearchInput.placeholder = `חפש סרטונים ב${name}...`;
 
-        recalculateVideos();
-        renderVideoCards(state.filteredVideos, false);
+        // Re-apply filters
+        applyFilters(false, false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function renderFeaturedChannels(channels) {
         if(channels.length === 0) return;
-        const displayChannels = [...channels, ...channels];
+        const displayChannels = [...channels, ...channels]; // Duplicate for infinite scroll effect
         if (dom.featuredChannelsTrack) {
             dom.featuredChannelsTrack.innerHTML = displayChannels.map(channel => `
                 <a href="${channel.channel_url}" target="_blank" rel="noopener noreferrer" class="channel-card group flex-shrink-0 block p-5 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg border border-slate-100 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-500 text-center transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-purple-500">
@@ -375,6 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('');
         }
         
+        // Setup Carousel Controls
         const scrollContainer = document.querySelector('.channels-carousel-container');
         const track = dom.featuredChannelsTrack;
         const btnLeft = document.getElementById('channels-scroll-left');
@@ -416,26 +412,27 @@ document.addEventListener('DOMContentLoaded', () => {
             }).join('');
     }
 
-    // --- RECALCULATION & FILTER LOGIC ---
-
+    // --------------------------------------------------------------------------------
+    // FILTER CALCULATION (Separate from Rendering)
+    // --------------------------------------------------------------------------------
     function recalculateVideos() {
         if (!state.allVideos) return;
         
         let filtered = state.allVideos;
         
-        // 1. Category
+        // 1. Category Filter
         if (state.currentFilters.category !== 'all') {
              filtered = filtered.filter(v => v.category === state.currentFilters.category);
         }
         
-        // 2. Search
+        // 2. Search Filter (Using global Fuse instance)
         if (state.currentFilters.searchTerm.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
             const fuseResults = state.fuse.search(state.currentFilters.searchTerm);
             const resultIds = new Set(fuseResults.map(r => r.item.id));
             filtered = filtered.filter(v => resultIds.has(v.id));
         }
 
-        // 3. Tags & Hebrew
+        // 3. Tags & Hebrew Filter
         if (state.currentFilters.tags.length > 0 || state.currentFilters.hebrewOnly) {
             filtered = filtered.filter(video => {
                 const tagsMatch = state.currentFilters.tags.length === 0 || state.currentFilters.tags.every(filterTag => (video.tags || []).includes(filterTag));
@@ -463,7 +460,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function applyFilters(isLoadMore = false, andScroll = true) {
         if (!isLoadMore) {
             state.ui.currentlyDisplayedVideosCount = 0;
-            recalculateVideos();
+            recalculateVideos(); // Only recalc on new filter, not pagination
         }
         
         renderPopularTags();
@@ -487,6 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!isLoadMore) {
             dom.videoCardsContainer.innerHTML = '';
+            // No need to manually remove skeletons if innerHTML is cleared
         }
 
         const videosToRender = videos.slice(
@@ -606,11 +604,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!dom.popularTagsContainer) return;
         
         const { category } = state.currentFilters;
+        // Use cached filtered results if possible, or recalculate for tag cloud context
+        // For performance, we can use state.filteredVideos BUT those are already filtered by tags.
+        // To show *available* tags for current category/search but ignoring selected tags:
+        
         let contextVideos = state.allVideos;
         
         if (state.currentFilters.category !== 'all') {
             contextVideos = contextVideos.filter(v => v.category === state.currentFilters.category);
         }
+         // If search term exists, narrow down tags to search results too
         if (state.currentFilters.searchTerm.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
              const fuseResults = state.fuse.search(state.currentFilters.searchTerm);
              const resultIds = new Set(fuseResults.map(r => r.item.id));
