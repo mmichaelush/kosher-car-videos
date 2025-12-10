@@ -7,13 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
         VIDEOS_TO_SHOW_INITIALLY: 24,
         VIDEOS_TO_LOAD_MORE: 12,
         MIN_SEARCH_TERM_LENGTH: 2,
-        MAX_SUGGESTIONS: 7,
+        MAX_SUGGESTIONS: 5,
         FUSE_OPTIONS: {
             keys: [
                 { name: 'title', weight: 0.6 },
                 { name: 'tags', weight: 0.3 },
-                { name: 'channel', weight: 0.1 },
-                { name: 'content', weight: 0.1 }
+                { name: 'channel', weight: 0.1 }
             ],
             includeScore: true,
             threshold: 0.4,
@@ -64,7 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // רשת הסרטונים
         videoCardsContainer: document.getElementById('video-cards-container'),
-        videoCardTemplate: document.getElementById('video-card-template'),
         noVideosMessage: document.getElementById('no-videos-found'),
         videosGridTitle: document.getElementById('videos-grid-title'),
 
@@ -253,13 +251,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const gradient = cat.gradient || "from-purple-500 to-indigo-600";
                 
                 return `
-                    <a href="?name=${cat.id}" class="relative category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradient} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
-                        <div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]">
+                    <a href="?name=${cat.id}" class="category-link relative group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 bg-gradient-to-br ${gradient} text-white text-center overflow-hidden focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white">
+                        <div class="flex flex-col items-center justify-center h-full min-h-[140px]">
                             <i class="fas fa-${cat.icon || 'folder'} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i>
-                            <h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 dark:group-hover:text-yellow-200 transition-colors">${cat.name}</h3>
-                            <p class="text-sm opacity-80 mt-1 px-2">${cat.description || ''}</p>
+                            <h3 class="text-xl md:text-2xl font-bold">${cat.name}</h3>
                         </div>
-                        <span class="absolute top-4 right-4 bg-black/30 text-white text-xs font-bold py-1 px-2.5 rounded-full">${count}</span>
+                        <span class="absolute top-3 right-3 bg-black/30 text-white text-xs font-bold py-1 px-2.5 rounded-full">${count}</span>
                     </a>`;
             }).join('');
     }
@@ -397,7 +394,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const html = nextBatch.map(v => {
-            // יצירת תגיות HTML לכרטיס
+            // יצירת תגיות HTML לכרטיס (תוקן!)
             const tagsHtml = v.tags.slice(0, 3).map(tag => 
                 `<button class="video-tag-button text-[10px] bg-purple-50 text-purple-700 hover:bg-purple-100 px-2 py-0.5 rounded-full dark:bg-slate-700 dark:text-purple-300 dark:hover:bg-slate-600 transition-colors" data-tag="${tag}">#${tag}</button>`
             ).join('');
@@ -407,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const catName = cat ? cat.name : v.category;
 
             return `
-            <article class="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden transition-all duration-300 transform hover:-translate-y-1 h-full" data-id="${v.id}">
+            <article class="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden transition-all duration-300 transform hover:-translate-y-1 h-full animate-fadeIn" data-id="${v.id}">
                 <!-- Thumbnail -->
                 <div class="relative aspect-video bg-slate-200 dark:bg-slate-700 cursor-pointer overflow-hidden video-thumb-wrapper">
                     <img src="${v.thumbnail}" alt="${v.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
@@ -456,8 +453,9 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.videoCardsContainer.insertAdjacentHTML('beforeend', html);
         state.pagination.count += nextBatch.length;
 
+        // ניהול כפתור "טען עוד"
+        let loadMoreBtn = document.getElementById('load-more-btn');
         if (state.pagination.count < state.filteredVideos.length) {
-            let loadMoreBtn = document.getElementById('load-more-btn');
             if (!loadMoreBtn) {
                 loadMoreBtn = document.createElement('div');
                 loadMoreBtn.id = 'load-more-btn';
@@ -471,13 +469,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadMoreBtn.querySelector('button').onclick = () => renderGrid(true);
                 dom.videoCardsContainer.parentNode.appendChild(loadMoreBtn);
             } else {
-                dom.videoCardsContainer.parentNode.appendChild(loadMoreBtn);
+                dom.videoCardsContainer.parentNode.appendChild(loadMoreBtn); // הזזה לסוף
             }
-        } else {
-             const btn = document.getElementById('load-more-btn');
-             if(btn) btn.remove();
+        } else if (loadMoreBtn) {
+            loadMoreBtn.remove();
         }
         
+        // אתחול IntersectionObserver לתמונות אם צריך
         if (videoObserver) {
             document.querySelectorAll('.video-card:not(.observed)').forEach(card => {
                 videoObserver.observe(card);
@@ -486,13 +484,21 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function getCategoryName(id) {
+        const cat = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === id);
+        return cat ? cat.name : id;
+    }
+
     // --------------------------------------------------------------------------------
     // 8. עדכון ממשק (UI)
     // --------------------------------------------------------------------------------
     function updateUI() {
+        // עדכון תגיות פופולריות
         updateTagsCloud();
+        // עדכון תגיות נבחרות
         updateActiveTagsUI();
         
+        // עדכון סיכום פילטרים
         const activeCount = state.filters.tags.length + (state.filters.hebrewOnly ? 1 : 0) + (state.filters.search ? 1 : 0);
         if(dom.filterSummary) {
             dom.filterSummary.classList.toggle('hidden', activeCount === 0);
@@ -501,8 +507,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        if(dom.hebrewToggle) dom.hebrewToggle.checked = state.filters.hebrewOnly;
-        if(dom.sortSelect) dom.sortSelect.value = state.filters.sort;
+        // סנכרון שדות קלט
+        dom.hebrewToggle.checked = state.filters.hebrewOnly;
+        dom.sortSelect.value = state.filters.sort;
         Object.values(dom.searchForms).forEach(f => {
              if(!f) return;
              const input = f.querySelector('input');
@@ -513,6 +520,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTagsCloud() {
         if (!dom.tagsContainer) return;
         
+        // חישוב תגיות מתוך הסרטונים הרלוונטיים
         let sourceVideos = state.allVideos;
         
         if (state.filters.category !== 'all') {
@@ -538,7 +546,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .map(entry => entry[0]);
 
         dom.tagsContainer.innerHTML = sortedTags.map(tag => `
-            <button class="tag-btn bg-slate-100 dark:bg-slate-700 hover:bg-purple-100 hover:text-purple-700 text-slate-600 px-3 py-1.5 rounded-full text-sm border border-slate-200 transition-all dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-purple-900/50 dark:hover:text-purple-300 ${state.filters.tags.includes(tag) ? '!bg-purple-600 !text-white !border-purple-600 dark:!bg-purple-500' : ''}" data-tag="${tag}">
+            <button class="tag-btn bg-slate-100 hover:bg-purple-100 hover:text-purple-700 text-slate-600 px-3 py-1.5 rounded-full text-sm border border-slate-200 transition-all dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-purple-900/50 dark:hover:text-purple-300 ${state.filters.tags.includes(tag) ? '!bg-purple-600 !text-white !border-purple-600 dark:!bg-purple-500' : ''}" data-tag="${tag}">
                 ${tag}
             </button>
         `).join('');
@@ -757,7 +765,102 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --------------------------------------------------------------------------------
-    // 12. הגדרת אירועים (Event Listeners)
+    // 12. טיפול בטפסים ובדיקת וידאו (הפונקציות שהיו חסרות)
+    // --------------------------------------------------------------------------------
+    function handleContactFormSubmit(event) {
+        event.preventDefault();
+        const form = event.target;
+        const submitButton = form.querySelector('button[type="submit"]');
+        const formStatus = document.getElementById('form-status');
+        const checkbox = form.querySelector('input[type="checkbox"][name="privacy_policy"]');
+        
+        if(checkbox && !checkbox.checked) {
+             Swal.fire({ title: 'שגיאה', text: 'יש לאשר את מדיניות הפרטיות', icon: 'error', confirmButtonColor: '#7c3aed' });
+             return;
+        }
+
+        const originalButtonHtml = submitButton.innerHTML;
+        submitButton.disabled = true;
+        submitButton.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> שולח...`;
+        if (formStatus) formStatus.innerHTML = '';
+
+        fetch(form.action, {
+            method: 'POST',
+            body: new FormData(form),
+            mode: 'no-cors',
+        })
+        .then(() => {
+            if (formStatus) formStatus.innerHTML = "<p class='text-green-600 dark:text-green-500 font-semibold'>תודה! הודעתך נשלחה בהצלחה.</p>";
+            form.reset();
+        })
+        .catch(error => {
+            if (formStatus) formStatus.innerHTML = "<p class='text-red-600 dark:text-red-500 font-semibold'>אופס, אירעה שגיאת רשת.</p>";
+        })
+        .finally(() => {
+            setTimeout(() => {
+                 submitButton.disabled = false;
+                 submitButton.innerHTML = originalButtonHtml;
+                 if (formStatus) formStatus.innerHTML = '';
+            }, 5000);
+        });
+    }
+
+    async function handleCheckYtId(e) {
+        e.preventDefault();
+        const { value: url } = await Swal.fire({
+            title: 'בדיקת סרטון',
+            text: 'הכנס קישור ליוטיוב:',
+            input: 'url',
+            confirmButtonText: 'בדוק',
+            confirmButtonColor: '#7c3aed',
+            showCancelButton: true
+        });
+
+        if (!url) return;
+
+        const match = url.match(/(?:v=|\/)([\w-]{11})(?:\?|&|\/|$)/);
+        const id = match ? match[1] : null;
+
+        if (!id) {
+            Swal.fire('שגיאה', 'קישור לא תקין', 'error');
+            return;
+        }
+
+        const exists = state.allVideos.find(v => v.id === id);
+        if (exists) {
+            Swal.fire({
+                title: 'קיים במאגר!',
+                text: `הסרטון "${exists.title}" כבר קיים בקטגורית ${exists.category}`,
+                icon: 'info',
+                confirmButtonColor: '#7c3aed'
+            });
+        } else {
+            Swal.fire({
+                title: 'לא נמצא',
+                text: 'הסרטון אינו קיים במאגר. אתה מוזמן להוסיף אותו!',
+                icon: 'success',
+                confirmButtonColor: '#10b981'
+            });
+        }
+    }
+
+    function clearFilters() {
+        state.filters.search = '';
+        state.filters.tags = [];
+        state.filters.hebrewOnly = false;
+        state.filters.category = 'all';
+        state.view = 'home';
+        
+        if(dom.searchInput) dom.searchInput.value = '';
+        if(dom.hebrewToggle) dom.hebrewToggle.checked = false;
+        
+        renderView();
+        updateUrl();
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    // --------------------------------------------------------------------------------
+    // 13. הגדרת אירועים (Event Listeners)
     // --------------------------------------------------------------------------------
     function setupEvents() {
         // חיפוש
@@ -958,7 +1061,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // אתחול (Entry Point)
     // --------------------------------------------------------------------------------
     (async function init() {
-        // אתחול Intersection Observer (לפני טעינת הנתונים)
+        // אתחול Intersection Observer
         videoObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -967,7 +1070,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         img.src = img.dataset.src;
                         img.removeAttribute('data-src');
                     }
-                    entry.target.classList.add('observed');
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
                     videoObserver.unobserve(entry.target);
                 }
             });
