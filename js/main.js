@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let state = {
         currentView: 'home', // 'home', 'category', 'video'
         allVideos: [],
-        allVideosCache: null,
+        filteredVideos: [], // Cache for filtered results
         fuse: null,
         currentFilters: {
             category: 'all',
@@ -135,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         ui: {
             currentlyDisplayedVideosCount: 0,
-            lastFocusedElement: null,
             throttleTimer: false
         },
         search: {
@@ -151,6 +150,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // --------------------------------------------------------------------------------
     // 4. UTILITIES
     // --------------------------------------------------------------------------------
+    
+    // Debounce function for search
+    const debounce = (func, wait) => {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    };
+
     const throttle = (callback, time) => {
         if (state.ui.throttleTimer) return;
         state.ui.throttleTimer = true;
@@ -179,7 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return 0;
     };
 
-    const getThumbnailUrl = (videoId) => `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+    // Use MQDefault for grid (faster load), HQDefault for player
+    const getThumbnailUrl = (videoId, quality = 'mqdefault') => `https://i.ytimg.com/vi/${videoId}/${quality}.jpg`;
 
     // --------------------------------------------------------------------------------
     // 5. DATA FETCHING
@@ -218,10 +232,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const results = await Promise.all(promises);
             state.allVideos = results.flat();
             
-            // Defer Fuse indexing to not block main thread on load
-            setTimeout(() => {
-                 state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
-            }, 100);
+            // Defer Fuse indexing to idle time
+            if (window.requestIdleCallback) {
+                requestIdleCallback(() => {
+                     state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
+                });
+            } else {
+                setTimeout(() => {
+                     state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
+                }, 500);
+            }
 
             if (dom.videoCountHero) {
                 const countSpan = dom.videoCountHero.querySelector('span');
@@ -269,13 +289,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dom.homeViewContainer) dom.homeViewContainer.classList.remove('hidden');
         if (dom.homeViewSectionsBottom) dom.homeViewSectionsBottom.classList.remove('hidden');
         
-        // Hide Category specific header
-        if (dom.categoryHeaderSection) dom.categoryHeaderSection.classList.add('hidden');
-
-        // Ensure Categories are rendered if empty
+        // Ensure Categories are rendered
         if (dom.homepageCategoriesGrid && dom.homepageCategoriesGrid.children.length === 0) {
              renderHomepageCategoryButtons();
         }
+        
+        // Hide Category specific header
+        if (dom.categoryHeaderSection) dom.categoryHeaderSection.classList.add('hidden');
 
         // Update Titles
         document.title = 'CAR-טיב - סרטוני רכבים כשרים';
@@ -288,8 +308,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainSearchInput = document.getElementById('main-content-search-input');
         if (mainSearchInput) mainSearchInput.placeholder = "חפש בכל האתר...";
 
-        // Re-apply filters
-        applyFilters(false, false);
+        // Recalculate & Render
+        recalculateVideos();
+        renderVideoCards(state.filteredVideos, false);
     }
 
     function renderCategoryView(categoryId) {
@@ -336,14 +357,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainSearchInput = document.getElementById('main-content-search-input');
         if (mainSearchInput) mainSearchInput.placeholder = `חפש סרטונים ב${name}...`;
 
-        // Re-apply filters
-        applyFilters(false, false);
+        // Recalculate & Render
+        recalculateVideos();
+        renderVideoCards(state.filteredVideos, false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function renderFeaturedChannels(channels) {
         if(channels.length === 0) return;
-        const displayChannels = [...channels, ...channels]; // Duplicate for infinite scroll effect
+        const displayChannels = [...channels, ...channels];
         if (dom.featuredChannelsTrack) {
             dom.featuredChannelsTrack.innerHTML = displayChannels.map(channel => `
                 <a href="${channel.channel_url}" target="_blank" rel="noopener noreferrer" class="channel-card group flex-shrink-0 block p-5 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg border border-slate-100 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-500 text-center transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-purple-500">
@@ -356,7 +378,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `).join('');
         }
         
-        // Setup Carousel Controls
         const scrollContainer = document.querySelector('.channels-carousel-container');
         const track = dom.featuredChannelsTrack;
         const btnLeft = document.getElementById('channels-scroll-left');
@@ -398,27 +419,37 @@ document.addEventListener('DOMContentLoaded', () => {
             }).join('');
     }
 
-    function getFilteredAndSortedVideos() {
-        if (!state.allVideos) return [];
+    // --------------------------------------------------------------------------------
+    // FILTER CALCULATION (Separate from Rendering)
+    // --------------------------------------------------------------------------------
+    function recalculateVideos() {
+        if (!state.allVideos) return;
+        
         let filtered = state.allVideos;
         
+        // 1. Category Filter
         if (state.currentFilters.category !== 'all') {
              filtered = filtered.filter(v => v.category === state.currentFilters.category);
         }
         
+        // 2. Search Filter (Using global Fuse instance)
         if (state.currentFilters.searchTerm.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
             const fuseResults = state.fuse.search(state.currentFilters.searchTerm);
             const resultIds = new Set(fuseResults.map(r => r.item.id));
             filtered = filtered.filter(v => resultIds.has(v.id));
         }
 
-        let videos = filtered.filter(video => {
-            const tagsMatch = state.currentFilters.tags.length === 0 || state.currentFilters.tags.every(filterTag => (video.tags || []).includes(filterTag));
-            const hebrewMatch = !state.currentFilters.hebrewOnly || video.hebrewContent;
-            return tagsMatch && hebrewMatch;
-        });
+        // 3. Tags & Hebrew Filter
+        if (state.currentFilters.tags.length > 0 || state.currentFilters.hebrewOnly) {
+            filtered = filtered.filter(video => {
+                const tagsMatch = state.currentFilters.tags.length === 0 || state.currentFilters.tags.every(filterTag => (video.tags || []).includes(filterTag));
+                const hebrewMatch = !state.currentFilters.hebrewOnly || video.hebrewContent;
+                return tagsMatch && hebrewMatch;
+            });
+        }
 
-        videos.sort((a, b) => {
+        // 4. Sort
+        filtered.sort((a, b) => {
             switch (state.currentFilters.sortBy) {
                 case 'date-desc': return (b.dateAdded || 0) - (a.dateAdded || 0);
                 case 'date-asc': return (a.dateAdded || 0) - (b.dateAdded || 0);
@@ -429,17 +460,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 default: return 0;
             }
         });
-        return videos;
+
+        state.filteredVideos = filtered;
     }
 
     function applyFilters(isLoadMore = false, andScroll = true) {
         if (!isLoadMore) {
             state.ui.currentlyDisplayedVideosCount = 0;
+            recalculateVideos(); // Only recalc on new filter, not pagination
         }
-        const allMatchingVideos = getFilteredAndSortedVideos();
         
         renderPopularTags();
-        renderVideoCards(allMatchingVideos, isLoadMore);
+        renderVideoCards(state.filteredVideos, isLoadMore);
         
         if (andScroll && !isLoadMore) {
             scrollToVideoGridIfNeeded();
@@ -454,16 +486,15 @@ document.addEventListener('DOMContentLoaded', () => {
         updateURLWithFilters();
     }
 
-    function renderVideoCards(allMatchingVideos, isLoadMore) {
+    function renderVideoCards(videos, isLoadMore) {
         if (!dom.videoCardsContainer) return;
         
         if (!isLoadMore) {
             dom.videoCardsContainer.innerHTML = '';
-            const skeletons = document.getElementById('video-skeletons');
-            if (skeletons) skeletons.remove();
+            // No need to manually remove skeletons if innerHTML is cleared
         }
 
-        const videosToRender = allMatchingVideos.slice(
+        const videosToRender = videos.slice(
             state.ui.currentlyDisplayedVideosCount,
             state.ui.currentlyDisplayedVideosCount + (isLoadMore ? CONSTANTS.VIDEOS_TO_LOAD_MORE : CONSTANTS.VIDEOS_TO_SHOW_INITIALLY)
         );
@@ -483,7 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.videoCardsContainer.appendChild(fragment);
         state.ui.currentlyDisplayedVideosCount += addedCount;
 
-        const hasVideos = allMatchingVideos.length > 0;
+        const hasVideos = videos.length > 0;
         if(dom.noVideosFoundMessage) {
             dom.noVideosFoundMessage.classList.toggle('hidden', hasVideos);
             if (!hasVideos && !isLoadMore) {
@@ -496,7 +527,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        updateLoadMoreButton(allMatchingVideos.length);
+        updateLoadMoreButton(videos.length);
     }
 
     function createVideoCardElement(video) {
@@ -525,7 +556,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const videoPageUrl = `./?v=${video.id}`;
 
         card.article.dataset.videoId = video.id;
-        card.thumbnailImg.src = video.thumbnail || getThumbnailUrl(video.id);
+        // Use MQDefault for grid performance
+        card.thumbnailImg.src = video.thumbnail || getThumbnailUrl(video.id, 'mqdefault');
         card.thumbnailImg.alt = video.title;
         
         if(card.duration) card.duration.textContent = video.duration || '';
@@ -579,14 +611,28 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!dom.popularTagsContainer) return;
         
         const { category } = state.currentFilters;
-        const videosToConsider = category !== 'all' ? state.allVideos.filter(v => v.category === category) : state.allVideos;
+        // Use cached filtered results if possible, or recalculate for tag cloud context
+        // For performance, we can use state.filteredVideos BUT those are already filtered by tags.
+        // To show *available* tags for current category/search but ignoring selected tags:
         
-        if (videosToConsider.length === 0) {
+        let contextVideos = state.allVideos;
+        
+        if (state.currentFilters.category !== 'all') {
+            contextVideos = contextVideos.filter(v => v.category === state.currentFilters.category);
+        }
+         // If search term exists, narrow down tags to search results too
+        if (state.currentFilters.searchTerm.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
+             const fuseResults = state.fuse.search(state.currentFilters.searchTerm);
+             const resultIds = new Set(fuseResults.map(r => r.item.id));
+             contextVideos = contextVideos.filter(v => resultIds.has(v.id));
+        }
+        
+        if (contextVideos.length === 0) {
             dom.popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא נמצאו תגיות${category !== 'all' ? ' בקטגוריה זו' : ''}.</p>`;
             return;
         }
 
-        const tagCounts = videosToConsider.flatMap(v => v.tags).reduce((acc, tag) => ({ ...acc, [tag]: (acc[tag] || 0) + 1 }), {});
+        const tagCounts = contextVideos.flatMap(v => v.tags).reduce((acc, tag) => ({ ...acc, [tag]: (acc[tag] || 0) + 1 }), {});
         const sortedTags = Object.entries(tagCounts).sort(([, a], [, b]) => b - a).slice(0, CONSTANTS.MAX_POPULAR_TAGS).map(([tag]) => tag);
         
         dom.popularTagsContainer.innerHTML = sortedTags.map(tag => {
@@ -629,50 +675,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function updateLoadMoreButton(totalMatchingVideos) {
-        let loadMoreBtn = document.getElementById('load-more-videos-btn');
-        
-        if (state.ui.currentlyDisplayedVideosCount < totalMatchingVideos) {
-            if (!loadMoreBtn) {
-                loadMoreBtn = document.createElement('button');
-                loadMoreBtn.id = 'load-more-videos-btn';
-                loadMoreBtn.className = 'mt-8 mb-4 mx-auto block px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 dark:focus:ring-offset-slate-900 transition-transform hover:scale-105';
-                loadMoreBtn.addEventListener('click', () => applyFilters(true));
-                if (dom.videoCardsContainer && dom.noVideosFoundMessage) {
-                    dom.videoCardsContainer.parentNode.insertBefore(loadMoreBtn, dom.noVideosFoundMessage.nextSibling);
-                }
-            }
-            loadMoreBtn.textContent = `טען עוד (${totalMatchingVideos - state.ui.currentlyDisplayedVideosCount} נותרו)`;
-            loadMoreBtn.classList.remove('hidden');
-        } else if (loadMoreBtn) {
-            loadMoreBtn.remove();
-        }
-    }
-
-    function displayError(message, container = dom.noVideosFoundMessage) {
-        if (container) {
-            container.classList.remove('hidden');
-            container.innerHTML = `<div class="text-center text-red-500 dark:text-red-400 py-10"><i class="fas fa-exclamation-triangle fa-3x mb-4"></i><p class="text-xl font-semibold">${message}</p></div>`;
-        }
-    }
-
-    function syncUIToState() {
-        const { searchTerm, hebrewOnly, sortBy } = state.currentFilters;
-        
-        Object.values(dom.searchForms).forEach(form => {
-            if(form) {
-                const input = form.querySelector('input[type="search"]');
-                if (input) input.value = searchTerm;
-            }
-        });
-
-        if(dom.hebrewFilterToggle) dom.hebrewFilterToggle.checked = hebrewOnly;
-        if(dom.sortSelect) dom.sortSelect.value = sortBy;
-        
-        renderSelectedTagChips();
-        updateActiveTagVisuals();
-    }
-
     // --------------------------------------------------------------------------------
     // 7. SINGLE VIDEO VIEW LOGIC
     // --------------------------------------------------------------------------------
@@ -713,6 +715,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.title = `${video.title} - CAR-טיב`;
 
         dom.singleVideoView.title.innerHTML = video.title;
+        // Use HQDefault for player poster / loading
         dom.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
         dom.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
         dom.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${video.duration}`;
@@ -936,7 +939,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ? state.allVideos.filter(v => v.category === state.currentFilters.category)
             : state.allVideos;
 
-        displaySearchSuggestions(searchTerm, new Fuse(fuseSource, CONSTANTS.FUSE_OPTIONS));
+        displaySearchSuggestions(searchTerm, state.fuse);
     }
 
     function displaySearchSuggestions(searchTerm, fuseInstance) {
@@ -1038,49 +1041,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         if (lastIndex < text.length) result += text.substring(lastIndex);
         return result;
-    }
-
-    function handleContactFormSubmit(event) {
-        event.preventDefault();
-        const form = event.target;
-        const submitButton = form.querySelector('button[type="submit"]');
-        const formStatus = document.getElementById('form-status');
-        const checkbox = form.querySelector('input[type="checkbox"][name="privacy_policy"]');
-        
-        if(checkbox && !checkbox.checked) {
-             alert("יש לאשר את מדיניות הפרטיות לפני השליחה.");
-             return;
-        }
-
-        const originalButtonHtml = submitButton.innerHTML;
-        submitButton.disabled = true;
-        submitButton.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> שולח...`;
-        if (formStatus) formStatus.innerHTML = '';
-
-        fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form),
-            mode: 'no-cors',
-        })
-        .then(() => {
-            if (formStatus) {
-                formStatus.innerHTML = "<p class='text-green-600 dark:text-green-500 font-semibold'>תודה! הודעתך נשלחה בהצלחה.</p>";
-            }
-            form.reset();
-        })
-        .catch(error => {
-            if (formStatus) {
-                formStatus.innerHTML = "<p class='text-red-600 dark:text-red-500 font-semibold'>אופס, אירעה שגיאת רשת. אנא נסה שנית מאוחר יותר.</p>";
-            }
-            console.error('Error submitting contact form:', error);
-        })
-        .finally(() => {
-            setTimeout(() => {
-                 submitButton.disabled = false;
-                 submitButton.innerHTML = originalButtonHtml;
-                 if (formStatus) formStatus.innerHTML = '';
-            }, 5000);
-        });
     }
 
     // --------------------------------------------------------------------------------
@@ -1456,7 +1416,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             const input = form.querySelector('input[type="search"]');
             if (input) {
-                input.addEventListener('input', () => throttle(() => handleSearchInput(input), 300));
+                // Using Debounce for search input
+                input.addEventListener('input', debounce(() => handleSearchInput(input), 300));
                 input.addEventListener('keydown', handleSearchKeyDown);
                 input.addEventListener('blur', () => setTimeout(() => { if (!state.search.isSuggestionClicked) clearSearchSuggestions(); }, 150));
             }
