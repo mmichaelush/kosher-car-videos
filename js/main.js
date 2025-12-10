@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // נגן יחיד
         player: {
             container: document.getElementById('single-video-player-container'),
-            frame: document.getElementById('single-video-player-container'), 
+            frame: document.getElementById('single-video-player-container'),
             title: document.getElementById('single-video-title'),
             desc: document.getElementById('single-video-content'),
             tags: document.getElementById('single-video-tags'),
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         allVideos: [],
         filteredVideos: [],
         fuse: null,
-        view: null,
+        view: null, // 'home', 'category', 'video'
         
         filters: {
             category: 'all',
@@ -146,6 +146,8 @@ document.addEventListener('DOMContentLoaded', () => {
             currentSuggestionsContainer: null
         }
     };
+
+    let videoObserver; // משתנה גלובלי
 
     // --------------------------------------------------------------------------------
     // 4. פונקציות עזר
@@ -201,8 +203,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const results = await Promise.all(promises);
             state.allVideos = results.flat();
             
+            // בניית Fuse לחיפוש
             state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
 
+            // עדכון מונה בהירו
             if(dom.heroCount) dom.heroCount.querySelector('span').textContent = state.allVideos.length;
 
         } catch (error) {
@@ -624,7 +628,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.title = `${video.title} - CAR-טיב`;
 
-        dom.player.container.innerHTML = `<iframe class="w-full h-full absolute inset-0 rounded-lg shadow-2xl" src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1" frameborder="0" allowfullscreen allow="autoplay"></iframe>`;
+        dom.player.frame.innerHTML = `<iframe class="w-full h-full absolute inset-0 rounded-lg shadow-2xl" src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1" frameborder="0" allowfullscreen allow="autoplay"></iframe>`;
         dom.player.title.textContent = video.title;
         
         if (video.content) {
@@ -650,7 +654,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.view = state.filters.category === 'all' ? 'home' : 'category';
         
         dom.singleVideoContainer.classList.add('hidden');
-        dom.player.container.innerHTML = ''; 
+        dom.player.frame.innerHTML = '';
         
         renderView();
         updateUrl();
@@ -660,7 +664,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams();
         
         if (state.view === 'video') {
-            const iframe = dom.player.container.querySelector('iframe');
+            const iframe = dom.player.frame.querySelector('iframe');
             if (iframe) {
                 const vidId = iframe.src.split('/embed/')[1].split('?')[0];
                 params.set('v', vidId);
@@ -988,6 +992,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // אתחול (Entry Point)
     // --------------------------------------------------------------------------------
     (async function init() {
+        // אתחול Intersection Observer (לפני טעינת הנתונים)
+        videoObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target.querySelector('img');
+                    if (img && img.dataset.src) {
+                        img.src = img.dataset.src;
+                        img.removeAttribute('data-src');
+                    }
+                    videoObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
         if(dom.mainContent) dom.mainContent.classList.add('hidden');
         
         await fetchAllData();
@@ -1007,18 +1025,5 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(dom.footer) dom.footer.classList.remove('hidden');
             }, 500);
         }
-
-        videoObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target.querySelector('img');
-                    if (img && img.dataset.src) {
-                        img.src = img.dataset.src;
-                        img.removeAttribute('data-src');
-                    }
-                    videoObserver.unobserve(entry.target);
-                }
-            });
-        });
     })();
 });
