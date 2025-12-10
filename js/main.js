@@ -217,7 +217,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const promises = CONSTANTS.CATEGORY_FILES.map(file => fetchVideosFromFile(file));
             const results = await Promise.all(promises);
             state.allVideos = results.flat();
-            state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
+            
+            // Defer Fuse indexing to not block main thread on load
+            setTimeout(() => {
+                 state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
+            }, 100);
 
             if (dom.videoCountHero) {
                 const countSpan = dom.videoCountHero.querySelector('span');
@@ -253,18 +257,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // --------------------------------------------------------------------------------
     
     function renderHomeView() {
+        // Optimization: If already in home view and category is 'all', do nothing but scroll
+        if (state.currentView === 'home' && state.currentFilters.category === 'all') {
+            return;
+        }
+
         state.currentView = 'home';
+        state.currentFilters.category = 'all';
+
         // Show Home Sections
         if (dom.homeViewContainer) dom.homeViewContainer.classList.remove('hidden');
         if (dom.homeViewSectionsBottom) dom.homeViewSectionsBottom.classList.remove('hidden');
         
-        // Ensure Categories are rendered
+        // Hide Category specific header
+        if (dom.categoryHeaderSection) dom.categoryHeaderSection.classList.add('hidden');
+
+        // Ensure Categories are rendered if empty
         if (dom.homepageCategoriesGrid && dom.homepageCategoriesGrid.children.length === 0) {
              renderHomepageCategoryButtons();
         }
-        
-        // Hide Category specific header
-        if (dom.categoryHeaderSection) dom.categoryHeaderSection.classList.add('hidden');
 
         // Update Titles
         document.title = 'CAR-טיב - סרטוני רכבים כשרים';
@@ -277,15 +288,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainSearchInput = document.getElementById('main-content-search-input');
         if (mainSearchInput) mainSearchInput.placeholder = "חפש בכל האתר...";
 
-        // Set State
-        state.currentFilters.category = 'all';
-        
         // Re-apply filters
         applyFilters(false, false);
     }
 
     function renderCategoryView(categoryId) {
         state.currentView = 'category';
+        state.currentFilters.category = categoryId;
+
         // Hide Home Sections
         if (dom.homeViewContainer) dom.homeViewContainer.classList.add('hidden');
         if (dom.homeViewSectionsBottom) dom.homeViewSectionsBottom.classList.add('hidden');
@@ -326,9 +336,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainSearchInput = document.getElementById('main-content-search-input');
         if (mainSearchInput) mainSearchInput.placeholder = `חפש סרטונים ב${name}...`;
 
-        // Set State
-        state.currentFilters.category = categoryId;
-        
         // Re-apply filters
         applyFilters(false, false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1142,7 +1149,6 @@ document.addEventListener('DOMContentLoaded', () => {
             dom.backToTopButton.classList.toggle('opacity-0', !isVisible);
         }
         
-        // Optimized ScrollSpy call
         requestAnimationFrame(handleScrollSpy);
     }
 
@@ -1312,27 +1318,36 @@ document.addEventListener('DOMContentLoaded', () => {
                           updateURLWithFilters();
                           window.scrollTo({ top: 0, behavior: 'smooth' });
                      } else {
-                          // Performance Optimization: 
-                          // If we are already in 'home' view, don't re-render, just scroll
+                          // Performance Optimization: If already in home view, just scroll
                           if (state.currentView !== 'home') {
                               renderHomeView();
-                          }
-                          
-                          const targetElement = document.getElementById(targetId);
-                          if (targetElement) {
-                             const performScroll = () => {
-                                 const header = document.querySelector('header.sticky');
-                                 const headerOffset = header ? header.offsetHeight + 20 : 80;
-                                 const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                                 window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                             };
-                             
-                             if (link.closest('#mobile-menu')) {
-                                 closeMobileMenu();
-                                 setTimeout(performScroll, 300);
-                             } else {
-                                 performScroll();
-                             }
+                              // Delay scroll slightly to allow rendering
+                              setTimeout(() => {
+                                  const targetElement = document.getElementById(targetId);
+                                  if(targetElement) {
+                                      const header = document.querySelector('header.sticky');
+                                      const headerOffset = header ? header.offsetHeight + 20 : 80;
+                                      const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                                      window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                                  }
+                              }, 50);
+                          } else {
+                              const targetElement = document.getElementById(targetId);
+                              if (targetElement) {
+                                 const performScroll = () => {
+                                     const header = document.querySelector('header.sticky');
+                                     const headerOffset = header ? header.offsetHeight + 20 : 80;
+                                     const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                                     window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                                 };
+                                 
+                                 if (link.closest('#mobile-menu')) {
+                                     closeMobileMenu();
+                                     setTimeout(performScroll, 300);
+                                 } else {
+                                     performScroll();
+                                 }
+                              }
                           }
                      }
                      return;
