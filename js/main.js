@@ -7,12 +7,13 @@ document.addEventListener('DOMContentLoaded', () => {
         VIDEOS_TO_SHOW_INITIALLY: 24,
         VIDEOS_TO_LOAD_MORE: 12,
         MIN_SEARCH_TERM_LENGTH: 2,
-        MAX_SUGGESTIONS: 5,
+        MAX_SUGGESTIONS: 7,
         FUSE_OPTIONS: {
             keys: [
                 { name: 'title', weight: 0.6 },
                 { name: 'tags', weight: 0.3 },
-                { name: 'channel', weight: 0.1 }
+                { name: 'channel', weight: 0.1 },
+                { name: 'content', weight: 0.1 }
             ],
             includeScore: true,
             threshold: 0.4,
@@ -51,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         backdrop: document.getElementById('mobile-menu-backdrop'),
         darkModeToggles: document.querySelectorAll('.dark-mode-toggle-button'),
         backToTopBtn: document.getElementById('back-to-top-btn'),
+        navLinks: document.querySelectorAll('.nav-link'),
 
         // אזורי תצוגה
         homeContainer: document.getElementById('home-view-container'),
@@ -86,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clearFiltersBtn: document.getElementById('clear-filters-btn'),
         shareFiltersBtn: document.getElementById('share-filters-btn'),
         filterSummary: document.getElementById('filter-summary-container'),
+        searchSectionTitle: document.getElementById('search-section-title'),
         
         // כותרות קטגוריה
         categoryPageTitle: document.getElementById('category-page-title'),
@@ -96,6 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // ערוצים מומלצים
         channelsTrack: document.getElementById('featured-channels-track'),
         homepageCategoriesGrid: document.getElementById('homepage-categories-grid'),
+        channelsScrollLeft: document.getElementById('channels-scroll-left'),
+        channelsScrollRight: document.getElementById('channels-scroll-right'),
         
         // טפסים
         contactForm: document.getElementById('contact-form'),
@@ -147,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    let videoObserver; // משתנה גלובלי
+    let videoObserver;
 
     // --------------------------------------------------------------------------------
     // 4. פונקציות עזר
@@ -203,10 +208,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const results = await Promise.all(promises);
             state.allVideos = results.flat();
             
-            // בניית Fuse לחיפוש
+            // בניית Fuse
             state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
 
-            // עדכון מונה בהירו
+            // עדכון מונה ב-Hero
             if(dom.heroCount) dom.heroCount.querySelector('span').textContent = state.allVideos.length;
 
         } catch (error) {
@@ -225,12 +230,12 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if(channels.length) {
                 const html = [...channels, ...channels].map(c => `
-                    <a href="${c.channel_url}" target="_blank" class="channel-card block p-4 bg-white dark:bg-slate-700 rounded-xl shadow-md border border-slate-100 dark:border-slate-600 hover:border-purple-500 dark:hover:border-purple-400 text-center transition-transform hover:-translate-y-1 mx-2 shrink-0 w-64 snap-center group">
-                        <div class="relative w-20 h-20 mx-auto mb-3">
-                             <img src="${c.channel_image_url}" class="w-full h-full rounded-full object-cover border-2 border-slate-200 group-hover:border-purple-400 transition-colors" loading="lazy" alt="${c.channel_name}">
+                    <a href="${c.channel_url}" target="_blank" rel="noopener noreferrer" class="channel-card group flex-shrink-0 block p-5 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg border border-slate-100 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-500 text-center transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-purple-500 mx-3 snap-center w-64">
+                        <div class="relative mx-auto w-20 h-20 mb-4">
+                            <img src="${c.channel_image_url}" alt="${c.channel_name}" class="w-full h-full rounded-full object-cover border-2 border-slate-200 dark:border-slate-500 group-hover:border-purple-400 transition-colors shadow-sm" loading="lazy">
                         </div>
-                        <h3 class="font-bold text-slate-800 dark:text-white truncate text-lg">${c.channel_name}</h3>
-                        <p class="text-sm text-slate-500 dark:text-slate-400 line-clamp-2 mt-1">${c.content_description}</p>
+                        <h3 class="font-bold text-slate-800 dark:text-slate-100 text-lg mb-2 truncate group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors" title="${c.channel_name}">${c.channel_name}</h3>
+                        <p class="text-slate-500 dark:text-slate-400 text-sm line-clamp-3 leading-snug px-1">${c.content_description}</p>
                     </a>
                 `).join('');
                 dom.channelsTrack.innerHTML = html;
@@ -241,35 +246,36 @@ document.addEventListener('DOMContentLoaded', () => {
     function renderHomepageCategoryButtons() {
         if (!dom.homepageCategoriesGrid) return;
         
-        const html = CONSTANTS.PREDEFINED_CATEGORIES
+        dom.homepageCategoriesGrid.innerHTML = CONSTANTS.PREDEFINED_CATEGORIES
             .filter(cat => cat.id !== 'all')
             .map(cat => {
                 const count = state.allVideos.filter(v => v.category === cat.id).length;
                 const gradient = cat.gradient || "from-purple-500 to-indigo-600";
                 
                 return `
-                    <a href="?name=${cat.id}" class="category-link relative group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 bg-gradient-to-br ${gradient} text-white text-center overflow-hidden focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white">
-                        <div class="flex flex-col items-center justify-center h-full min-h-[140px]">
+                    <a href="?name=${cat.id}" class="relative category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradient} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
+                        <div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]">
                             <i class="fas fa-${cat.icon || 'folder'} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i>
-                            <h3 class="text-xl md:text-2xl font-bold">${cat.name}</h3>
+                            <h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 dark:group-hover:text-yellow-200 transition-colors">${cat.name}</h3>
+                            <p class="text-sm opacity-80 mt-1 px-2">${cat.description || ''}</p>
                         </div>
-                        <span class="absolute top-3 right-3 bg-black/30 text-white text-xs font-bold py-1 px-2.5 rounded-full">${count}</span>
+                        <span class="absolute top-4 right-4 bg-black/30 text-white text-xs font-bold py-1 px-2.5 rounded-full">${count}</span>
                     </a>`;
             }).join('');
-            
-        dom.homepageCategoriesGrid.innerHTML = html;
     }
 
     // --------------------------------------------------------------------------------
     // 6. ניהול תצוגות (Routing)
     // --------------------------------------------------------------------------------
     function renderView() {
+        // הסתרת נגן
         if (dom.singleVideoContainer) dom.singleVideoContainer.classList.add('hidden');
         if (dom.player.frame) dom.player.frame.innerHTML = '';
         if (dom.mainContent) dom.mainContent.classList.remove('hidden');
         if (dom.footer) dom.footer.classList.remove('hidden');
 
         if (state.view === 'category' && state.filters.category !== 'all') {
+            // תצוגת קטגוריה
             if(dom.homeContainer) dom.homeContainer.classList.add('hidden');
             if(dom.homeBottomSection) dom.homeBottomSection.classList.add('hidden');
             if(dom.categoryHeader) dom.categoryHeader.classList.remove('hidden');
@@ -282,8 +288,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if(dom.pageTitleCategory) dom.pageTitleCategory.innerHTML = `<i class="fas fa-${icon} text-purple-600 dark:text-purple-400 mr-4"></i>${catName}`;
             if(dom.breadcrumbName) dom.breadcrumbName.textContent = catName;
             if(dom.videoGridTitle) dom.videoGridTitle.innerHTML = `סרטונים בקטגוריה: <span class="text-purple-600 dark:text-purple-400">${catName}</span>`;
+            if(dom.searchSectionTitle) dom.searchSectionTitle.textContent = `חיפוש ב${catName}`;
 
         } else {
+            // תצוגת בית
             state.view = 'home';
             state.filters.category = 'all';
             
@@ -293,12 +301,14 @@ document.addEventListener('DOMContentLoaded', () => {
             
             document.title = 'CAR-טיב - סרטוני רכבים כשרים';
             if(dom.videoGridTitle) dom.videoGridTitle.textContent = 'כל הסרטונים';
+            if(dom.searchSectionTitle) dom.searchSectionTitle.textContent = 'הכנס טקסט לחיפוש';
             
             if (dom.homepageCategoriesGrid && dom.homepageCategoriesGrid.children.length === 0) {
                 renderHomepageCategoryButtons();
             }
         }
         
+        handleScrollSpy();
         filterVideos();
     }
 
@@ -308,24 +318,29 @@ document.addEventListener('DOMContentLoaded', () => {
     function filterVideos() {
         let result = state.allVideos;
 
+        // 1. קטגוריה
         if (state.filters.category !== 'all') {
             result = result.filter(v => v.category === state.filters.category);
         }
 
+        // 2. חיפוש
         if (state.filters.search.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
             const searchResults = state.fuse.search(state.filters.search);
             const ids = new Set(searchResults.map(r => r.item.id));
             result = result.filter(v => ids.has(v.id));
         }
 
+        // 3. תגיות
         if (state.filters.tags.length > 0) {
             result = result.filter(v => state.filters.tags.every(tag => v.tags.includes(tag)));
         }
 
+        // 4. עברית בלבד
         if (state.filters.hebrewOnly) {
             result = result.filter(v => v.hebrew);
         }
 
+        // 5. מיון
         result.sort((a, b) => {
             switch (state.filters.sort) {
                 case 'date-desc': return b.date - a.date;
@@ -341,6 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.filteredVideos = result;
         state.pagination.count = 0;
         
+        // עדכון מונה קטגוריה
         if (dom.categoryCount) {
              dom.categoryCount.innerHTML = state.filteredVideos.length === 0 
                 ? 'לא נמצאו סרטונים.' 
@@ -360,6 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!isAppend) {
             dom.videoCardsContainer.innerHTML = '';
+            // הסרת כפתור טען עוד ישן
             const oldBtn = document.getElementById('load-more-btn');
             if(oldBtn) oldBtn.remove();
         }
@@ -380,6 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const html = nextBatch.map(v => {
+            // יצירת תגיות HTML לכרטיס
             const tagsHtml = v.tags.slice(0, 3).map(tag => 
                 `<button class="video-tag-button text-[10px] bg-purple-50 text-purple-700 hover:bg-purple-100 px-2 py-0.5 rounded-full dark:bg-slate-700 dark:text-purple-300 dark:hover:bg-slate-600 transition-colors" data-tag="${tag}">#${tag}</button>`
             ).join('');
@@ -390,6 +408,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             return `
             <article class="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden transition-all duration-300 transform hover:-translate-y-1 h-full" data-id="${v.id}">
+                <!-- Thumbnail -->
                 <div class="relative aspect-video bg-slate-200 dark:bg-slate-700 cursor-pointer overflow-hidden video-thumb-wrapper">
                     <img src="${v.thumbnail}" alt="${v.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
                     <span class="absolute bottom-2 left-2 bg-black/75 text-white text-xs font-bold px-2 py-0.5 rounded backdrop-blur-sm">${v.duration}</span>
@@ -397,6 +416,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         <i class="fas fa-play-circle text-5xl text-white drop-shadow-xl transform scale-90 group-hover:scale-100 transition-transform"></i>
                     </div>
                 </div>
+
+                <!-- Content -->
                 <div class="p-4 flex flex-col flex-grow">
                      <div class="flex justify-between items-start mb-2 text-xs text-slate-500 dark:text-slate-400">
                         <div class="flex items-center gap-1.5 min-w-0">
@@ -408,12 +429,15 @@ document.addEventListener('DOMContentLoaded', () => {
                              <span>${catName}</span>
                         </div>
                      </div>
+
                      <h3 class="font-bold text-slate-900 dark:text-white text-base leading-snug mb-2 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                          <a href="?v=${v.id}" class="video-link focus:outline-none">${v.title}</a>
                      </h3>
+
                      <div class="flex flex-wrap gap-1.5 mb-4 mt-auto">
                         ${tagsHtml}
                      </div>
+
                      <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs text-slate-400">
                          <span class="flex items-center gap-1">
                             <i class="far fa-calendar-alt"></i>
@@ -460,11 +484,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 card.classList.add('observed');
             });
         }
-    }
-
-    function getCategoryName(id) {
-        const cat = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === id);
-        return cat ? cat.name : id;
     }
 
     // --------------------------------------------------------------------------------
@@ -519,7 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .map(entry => entry[0]);
 
         dom.tagsContainer.innerHTML = sortedTags.map(tag => `
-            <button class="tag-btn bg-slate-100 hover:bg-purple-100 hover:text-purple-700 text-slate-600 px-3 py-1.5 rounded-full text-sm border border-slate-200 transition-all dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-purple-900/50 dark:hover:text-purple-300 ${state.filters.tags.includes(tag) ? '!bg-purple-600 !text-white !border-purple-600 dark:!bg-purple-500' : ''}" data-tag="${tag}">
+            <button class="tag-btn bg-slate-100 dark:bg-slate-700 hover:bg-purple-100 hover:text-purple-700 text-slate-600 px-3 py-1.5 rounded-full text-sm border border-slate-200 transition-all dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-purple-900/50 dark:hover:text-purple-300 ${state.filters.tags.includes(tag) ? '!bg-purple-600 !text-white !border-purple-600 dark:!bg-purple-500' : ''}" data-tag="${tag}">
                 ${tag}
             </button>
         `).join('');
@@ -711,98 +730,30 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --------------------------------------------------------------------------------
-    // 11. טיפול בטפסים
+    // 11. ניהול ScrollSpy
     // --------------------------------------------------------------------------------
-    function handleContactFormSubmit(event) {
-        event.preventDefault();
-        const form = event.target;
-        const submitButton = form.querySelector('button[type="submit"]');
-        const formStatus = document.getElementById('form-status');
-        const checkbox = form.querySelector('input[type="checkbox"][name="privacy_policy"]');
-        
-        if(checkbox && !checkbox.checked) {
-             Swal.fire({ title: 'שגיאה', text: 'יש לאשר את מדיניות הפרטיות', icon: 'error', confirmButtonColor: '#7c3aed' });
-             return;
-        }
+    function handleScrollSpy() {
+        if (state.view !== 'home') return;
 
-        const originalButtonHtml = submitButton.innerHTML;
-        submitButton.disabled = true;
-        submitButton.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i> שולח...`;
-        if (formStatus) formStatus.innerHTML = '';
+        const headerHeight = document.querySelector('header').offsetHeight || 80;
+        const scrollPos = window.scrollY + headerHeight + 50;
 
-        fetch(form.action, {
-            method: 'POST',
-            body: new FormData(form),
-            mode: 'no-cors',
-        })
-        .then(() => {
-            if (formStatus) formStatus.innerHTML = "<p class='text-green-600 dark:text-green-500 font-semibold'>תודה! הודעתך נשלחה בהצלחה.</p>";
-            form.reset();
-        })
-        .catch(error => {
-            if (formStatus) formStatus.innerHTML = "<p class='text-red-600 dark:text-red-500 font-semibold'>אופס, אירעה שגיאת רשת.</p>";
-        })
-        .finally(() => {
-            setTimeout(() => {
-                 submitButton.disabled = false;
-                 submitButton.innerHTML = originalButtonHtml;
-                 if (formStatus) formStatus.innerHTML = '';
-            }, 5000);
+        dom.navLinks.forEach(link => {
+            const hash = link.getAttribute('href').split('#')[1];
+            if (!hash) return;
+            
+            const section = document.getElementById(hash);
+            if (section) {
+                const top = section.offsetTop;
+                const bottom = top + section.offsetHeight;
+
+                if (scrollPos >= top && scrollPos < bottom) {
+                    link.classList.add('text-purple-600', 'dark:text-purple-400', 'bg-purple-50', 'dark:bg-slate-700');
+                } else {
+                    link.classList.remove('text-purple-600', 'dark:text-purple-400', 'bg-purple-50', 'dark:bg-slate-700');
+                }
+            }
         });
-    }
-
-    async function handleCheckYtId(e) {
-        e.preventDefault();
-        const { value: url } = await Swal.fire({
-            title: 'בדיקת סרטון',
-            text: 'הכנס קישור ליוטיוב:',
-            input: 'url',
-            confirmButtonText: 'בדוק',
-            confirmButtonColor: '#7c3aed',
-            showCancelButton: true
-        });
-
-        if (!url) return;
-
-        const match = url.match(/(?:v=|\/)([\w-]{11})(?:\?|&|\/|$)/);
-        const id = match ? match[1] : null;
-
-        if (!id) {
-            Swal.fire('שגיאה', 'קישור לא תקין', 'error');
-            return;
-        }
-
-        const exists = state.allVideos.find(v => v.id === id);
-        if (exists) {
-            Swal.fire({
-                title: 'קיים במאגר!',
-                text: `הסרטון "${exists.title}" כבר קיים בקטגורית ${exists.category}`,
-                icon: 'info',
-                confirmButtonColor: '#7c3aed'
-            });
-        } else {
-            Swal.fire({
-                title: 'לא נמצא',
-                text: 'הסרטון אינו קיים במאגר. אתה מוזמן להוסיף אותו!',
-                icon: 'success',
-                confirmButtonColor: '#10b981'
-            });
-        }
-    }
-
-    function clearFilters() {
-        state.filters.search = '';
-        state.filters.tags = [];
-        state.filters.hebrewOnly = false;
-        state.filters.category = 'all';
-        state.view = 'home';
-        
-        if(dom.searchInput) dom.searchInput.value = '';
-        if(dom.hebrewToggle) dom.hebrewToggle.checked = false;
-        
-        renderView();
-        updateUrl();
-        window.scrollTo({top: 0, behavior: 'smooth'});
     }
 
     // --------------------------------------------------------------------------------
@@ -933,6 +884,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 dom.backToTopBtn.classList.toggle('opacity-0', window.scrollY < 300);
                 dom.backToTopBtn.classList.toggle('invisible', window.scrollY < 300);
             }
+            handleScrollSpy();
         });
         if(dom.backToTopBtn) dom.backToTopBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
         
@@ -955,6 +907,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
             });
         });
+
+        // גלילת ערוצים
+        if (dom.channelsScrollLeft && dom.channelsScrollRight && dom.channelsTrack) {
+             const scrollAmount = 300;
+             const container = dom.channelsTrack.parentElement;
+             
+             dom.channelsScrollRight.addEventListener('click', () => {
+                 container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+             });
+             
+             dom.channelsScrollLeft.addEventListener('click', () => {
+                 container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+             });
+        }
 
         document.body.addEventListener('click', (e) => {
             const link = e.target.closest('a');
@@ -1001,6 +967,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         img.src = img.dataset.src;
                         img.removeAttribute('data-src');
                     }
+                    entry.target.classList.add('observed');
                     videoObserver.unobserve(entry.target);
                 }
             });
