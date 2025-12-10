@@ -122,7 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. STATE MANAGEMENT
     // --------------------------------------------------------------------------------
     let state = {
-        currentView: 'home', // 'home', 'category', 'video'
+        currentView: null, // Changed from 'home' to null to force initial render
         allVideos: [],
         filteredVideos: [],
         fuse: null,
@@ -232,6 +232,9 @@ document.addEventListener('DOMContentLoaded', () => {
             const results = await Promise.all(promises);
             state.allVideos = results.flat();
             
+            // Initial population of filtered videos
+            state.filteredVideos = [...state.allVideos];
+            
             // Defer Fuse indexing
             setTimeout(() => {
                  state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
@@ -271,7 +274,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // --------------------------------------------------------------------------------
     
     function renderHomeView() {
-        // Optimization: If already in home view and category is 'all', do nothing but scroll
+        // Only return if we are STRICTLY in home view and category is all.
+        // If state.currentView is null (first load), we MUST proceed.
         if (state.currentView === 'home' && state.currentFilters.category === 'all') {
             return;
         }
@@ -302,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const mainSearchInput = document.getElementById('main-content-search-input');
         if (mainSearchInput) mainSearchInput.placeholder = "חפש בכל האתר...";
 
-        // Re-apply filters
+        // Force recalculation and render
         applyFilters(false, false);
     }
 
@@ -416,7 +420,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // FILTER CALCULATION (Separate from Rendering)
     // --------------------------------------------------------------------------------
     function recalculateVideos() {
-        if (!state.allVideos) return;
+        // Ensure we have videos
+        if (!state.allVideos || state.allVideos.length === 0) {
+            state.filteredVideos = [];
+            return;
+        }
         
         let filtered = state.allVideos;
         
@@ -460,7 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function applyFilters(isLoadMore = false, andScroll = true) {
         if (!isLoadMore) {
             state.ui.currentlyDisplayedVideosCount = 0;
-            recalculateVideos(); // Only recalc on new filter, not pagination
+            recalculateVideos();
         }
         
         renderPopularTags();
@@ -484,7 +492,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!isLoadMore) {
             dom.videoCardsContainer.innerHTML = '';
-            // No need to manually remove skeletons if innerHTML is cleared
         }
 
         const videosToRender = videos.slice(
@@ -604,16 +611,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!dom.popularTagsContainer) return;
         
         const { category } = state.currentFilters;
-        // Use cached filtered results if possible, or recalculate for tag cloud context
-        // For performance, we can use state.filteredVideos BUT those are already filtered by tags.
-        // To show *available* tags for current category/search but ignoring selected tags:
-        
         let contextVideos = state.allVideos;
         
         if (state.currentFilters.category !== 'all') {
             contextVideos = contextVideos.filter(v => v.category === state.currentFilters.category);
         }
-         // If search term exists, narrow down tags to search results too
         if (state.currentFilters.searchTerm.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
              const fuseResults = state.fuse.search(state.currentFilters.searchTerm);
              const resultIds = new Set(fuseResults.map(r => r.item.id));
