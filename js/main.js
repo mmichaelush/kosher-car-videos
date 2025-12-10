@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // נגן יחיד
         player: {
             container: document.getElementById('single-video-player-container'),
-            frame: document.getElementById('single-video-player-container'), // Added duplicate for clarity
+            frame: document.getElementById('single-video-player-container'), 
             title: document.getElementById('single-video-title'),
             desc: document.getElementById('single-video-content'),
             tags: document.getElementById('single-video-tags'),
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
         allVideos: [],
         filteredVideos: [],
         fuse: null,
-        view: null, // 'home', 'category', 'video'
+        view: null,
         
         filters: {
             category: 'all',
@@ -201,10 +201,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const results = await Promise.all(promises);
             state.allVideos = results.flat();
             
-            // בניית Fuse לחיפוש
             state.fuse = new Fuse(state.allVideos, CONSTANTS.FUSE_OPTIONS);
 
-            // עדכון מונה בהירו
             if(dom.heroCount) dom.heroCount.querySelector('span').textContent = state.allVideos.length;
 
         } catch (error) {
@@ -262,14 +260,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 6. ניהול תצוגות (Routing)
     // --------------------------------------------------------------------------------
     function renderView() {
-        // הסתרת נגן
         if (dom.singleVideoContainer) dom.singleVideoContainer.classList.add('hidden');
         if (dom.player.frame) dom.player.frame.innerHTML = '';
         if (dom.mainContent) dom.mainContent.classList.remove('hidden');
         if (dom.footer) dom.footer.classList.remove('hidden');
 
         if (state.view === 'category' && state.filters.category !== 'all') {
-            // תצוגת קטגוריה
             if(dom.homeContainer) dom.homeContainer.classList.add('hidden');
             if(dom.homeBottomSection) dom.homeBottomSection.classList.add('hidden');
             if(dom.categoryHeader) dom.categoryHeader.classList.remove('hidden');
@@ -284,7 +280,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if(dom.videoGridTitle) dom.videoGridTitle.innerHTML = `סרטונים בקטגוריה: <span class="text-purple-600 dark:text-purple-400">${catName}</span>`;
 
         } else {
-            // תצוגת בית
             state.view = 'home';
             state.filters.category = 'all';
             
@@ -309,29 +304,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function filterVideos() {
         let result = state.allVideos;
 
-        // 1. קטגוריה
         if (state.filters.category !== 'all') {
             result = result.filter(v => v.category === state.filters.category);
         }
 
-        // 2. חיפוש
         if (state.filters.search.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
             const searchResults = state.fuse.search(state.filters.search);
             const ids = new Set(searchResults.map(r => r.item.id));
             result = result.filter(v => ids.has(v.id));
         }
 
-        // 3. תגיות
         if (state.filters.tags.length > 0) {
             result = result.filter(v => state.filters.tags.every(tag => v.tags.includes(tag)));
         }
 
-        // 4. עברית בלבד
         if (state.filters.hebrewOnly) {
             result = result.filter(v => v.hebrew);
         }
 
-        // 5. מיון
         result.sort((a, b) => {
             switch (state.filters.sort) {
                 case 'date-desc': return b.date - a.date;
@@ -347,7 +337,6 @@ document.addEventListener('DOMContentLoaded', () => {
         state.filteredVideos = result;
         state.pagination.count = 0;
         
-        // עדכון מונה קטגוריה
         if (dom.categoryCount) {
              dom.categoryCount.innerHTML = state.filteredVideos.length === 0 
                 ? 'לא נמצאו סרטונים.' 
@@ -367,7 +356,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (!isAppend) {
             dom.videoCardsContainer.innerHTML = '';
-            // הסרת כפתור טען עוד ישן
             const oldBtn = document.getElementById('load-more-btn');
             if(oldBtn) oldBtn.remove();
         }
@@ -388,7 +376,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const html = nextBatch.map(v => {
-            // יצירת תגיות HTML לכרטיס
             const tagsHtml = v.tags.slice(0, 3).map(tag => 
                 `<button class="video-tag-button text-[10px] bg-purple-50 text-purple-700 hover:bg-purple-100 px-2 py-0.5 rounded-full dark:bg-slate-700 dark:text-purple-300 dark:hover:bg-slate-600 transition-colors" data-tag="${tag}">#${tag}</button>`
             ).join('');
@@ -399,7 +386,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             return `
             <article class="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-sm hover:shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden transition-all duration-300 transform hover:-translate-y-1 h-full" data-id="${v.id}">
-                <!-- Thumbnail -->
                 <div class="relative aspect-video bg-slate-200 dark:bg-slate-700 cursor-pointer overflow-hidden video-thumb-wrapper">
                     <img src="${v.thumbnail}" alt="${v.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy">
                     <span class="absolute bottom-2 left-2 bg-black/75 text-white text-xs font-bold px-2 py-0.5 rounded backdrop-blur-sm">${v.duration}</span>
@@ -407,8 +393,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         <i class="fas fa-play-circle text-5xl text-white drop-shadow-xl transform scale-90 group-hover:scale-100 transition-transform"></i>
                     </div>
                 </div>
-
-                <!-- Content -->
                 <div class="p-4 flex flex-col flex-grow">
                      <div class="flex justify-between items-start mb-2 text-xs text-slate-500 dark:text-slate-400">
                         <div class="flex items-center gap-1.5 min-w-0">
@@ -420,15 +404,12 @@ document.addEventListener('DOMContentLoaded', () => {
                              <span>${catName}</span>
                         </div>
                      </div>
-
                      <h3 class="font-bold text-slate-900 dark:text-white text-base leading-snug mb-2 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                          <a href="?v=${v.id}" class="video-link focus:outline-none">${v.title}</a>
                      </h3>
-
                      <div class="flex flex-wrap gap-1.5 mb-4 mt-auto">
                         ${tagsHtml}
                      </div>
-
                      <div class="pt-3 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center text-xs text-slate-400">
                          <span class="flex items-center gap-1">
                             <i class="far fa-calendar-alt"></i>
@@ -447,9 +428,8 @@ document.addEventListener('DOMContentLoaded', () => {
         dom.videoCardsContainer.insertAdjacentHTML('beforeend', html);
         state.pagination.count += nextBatch.length;
 
-        // ניהול כפתור "טען עוד"
-        let loadMoreBtn = document.getElementById('load-more-btn');
         if (state.pagination.count < state.filteredVideos.length) {
+            let loadMoreBtn = document.getElementById('load-more-btn');
             if (!loadMoreBtn) {
                 loadMoreBtn = document.createElement('div');
                 loadMoreBtn.id = 'load-more-btn';
@@ -463,13 +443,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadMoreBtn.querySelector('button').onclick = () => renderGrid(true);
                 dom.videoCardsContainer.parentNode.appendChild(loadMoreBtn);
             } else {
-                dom.videoCardsContainer.parentNode.appendChild(loadMoreBtn); // הזזה לסוף
+                dom.videoCardsContainer.parentNode.appendChild(loadMoreBtn);
             }
-        } else if (loadMoreBtn) {
-            loadMoreBtn.remove();
+        } else {
+             const btn = document.getElementById('load-more-btn');
+             if(btn) btn.remove();
         }
         
-        // אתחול IntersectionObserver לתמונות אם צריך
         if (videoObserver) {
             document.querySelectorAll('.video-card:not(.observed)').forEach(card => {
                 videoObserver.observe(card);
@@ -487,22 +467,21 @@ document.addEventListener('DOMContentLoaded', () => {
     // 8. עדכון ממשק (UI)
     // --------------------------------------------------------------------------------
     function updateUI() {
-        // עדכון תגיות פופולריות
         updateTagsCloud();
-        // עדכון תגיות נבחרות
         updateActiveTagsUI();
         
-        // עדכון סיכום פילטרים
         const activeCount = state.filters.tags.length + (state.filters.hebrewOnly ? 1 : 0) + (state.filters.search ? 1 : 0);
-        dom.filterSummary.classList.toggle('hidden', activeCount === 0);
-        if(activeCount > 0) {
-            dom.filterSummary.querySelector('span').textContent = `${activeCount} סינונים פעילים`;
+        if(dom.filterSummary) {
+            dom.filterSummary.classList.toggle('hidden', activeCount === 0);
+            if(activeCount > 0) {
+                dom.filterSummary.querySelector('span').textContent = `${activeCount} סינונים פעילים`;
+            }
         }
 
-        // סנכרון שדות קלט
-        dom.hebrewToggle.checked = state.filters.hebrewOnly;
-        dom.sortSelect.value = state.filters.sort;
+        if(dom.hebrewToggle) dom.hebrewToggle.checked = state.filters.hebrewOnly;
+        if(dom.sortSelect) dom.sortSelect.value = state.filters.sort;
         Object.values(dom.searchForms).forEach(f => {
+             if(!f) return;
              const input = f.querySelector('input');
              if(input) input.value = state.filters.search;
         });
@@ -511,9 +490,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTagsCloud() {
         if (!dom.tagsContainer) return;
         
-        const sourceVideos = state.filters.category === 'all' 
-            ? state.allVideos 
-            : state.allVideos.filter(v => v.category === state.filters.category);
+        let sourceVideos = state.allVideos;
+        
+        if (state.filters.category !== 'all') {
+            sourceVideos = sourceVideos.filter(v => v.category === state.filters.category);
+        }
+        
+        if (state.filters.search.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
+             const searchResults = state.fuse.search(state.filters.search);
+             const ids = new Set(searchResults.map(r => r.item.id));
+             sourceVideos = sourceVideos.filter(v => ids.has(v.id));
+        }
 
         const tagCounts = {};
         sourceVideos.forEach(v => {
@@ -528,7 +515,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .map(entry => entry[0]);
 
         dom.tagsContainer.innerHTML = sortedTags.map(tag => `
-            <button class="tag-btn bg-slate-100 dark:bg-slate-700 hover:bg-purple-100 hover:text-purple-700 text-slate-600 px-3 py-1.5 rounded-full text-sm border border-slate-200 transition-all dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-purple-900/50 dark:hover:text-purple-300 ${state.filters.tags.includes(tag) ? '!bg-purple-600 !text-white !border-purple-600 dark:!bg-purple-500' : ''}" data-tag="${tag}">
+            <button class="tag-btn bg-slate-100 hover:bg-purple-100 hover:text-purple-700 text-slate-600 px-3 py-1.5 rounded-full text-sm border border-slate-200 transition-all dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-purple-900/50 dark:hover:text-purple-300 ${state.filters.tags.includes(tag) ? '!bg-purple-600 !text-white !border-purple-600 dark:!bg-purple-500' : ''}" data-tag="${tag}">
                 ${tag}
             </button>
         `).join('');
@@ -557,14 +544,14 @@ document.addEventListener('DOMContentLoaded', () => {
         state.search.currentSuggestionsContainer = suggestionsBox;
 
         if (query.length < CONSTANTS.MIN_SEARCH_TERM_LENGTH) {
-            suggestionsBox.classList.add('hidden');
+            if(suggestionsBox) suggestionsBox.classList.add('hidden');
             return;
         }
 
         const results = state.fuse.search(query, { limit: CONSTANTS.MAX_SUGGESTIONS });
         
         if (results.length === 0) {
-            suggestionsBox.classList.add('hidden');
+            if(suggestionsBox) suggestionsBox.classList.add('hidden');
             return;
         }
 
@@ -637,7 +624,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.title = `${video.title} - CAR-טיב`;
 
-        dom.player.frame.innerHTML = `<iframe class="w-full h-full absolute inset-0 rounded-lg shadow-2xl" src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1" frameborder="0" allowfullscreen allow="autoplay"></iframe>`;
+        dom.player.container.innerHTML = `<iframe class="w-full h-full absolute inset-0 rounded-lg shadow-2xl" src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1" frameborder="0" allowfullscreen allow="autoplay"></iframe>`;
         dom.player.title.textContent = video.title;
         
         if (video.content) {
@@ -663,7 +650,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.view = state.filters.category === 'all' ? 'home' : 'category';
         
         dom.singleVideoContainer.classList.add('hidden');
-        dom.player.frame.innerHTML = '';
+        dom.player.container.innerHTML = ''; 
         
         renderView();
         updateUrl();
@@ -673,7 +660,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const params = new URLSearchParams();
         
         if (state.view === 'video') {
-            const iframe = dom.player.frame.querySelector('iframe');
+            const iframe = dom.player.container.querySelector('iframe');
             if (iframe) {
                 const vidId = iframe.src.split('/embed/')[1].split('?')[0];
                 params.set('v', vidId);
@@ -708,19 +695,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (params.get('search')) {
             state.filters.search = params.get('search');
-            dom.searchInput.value = state.filters.search;
+            if(dom.searchInput) dom.searchInput.value = state.filters.search;
         }
         if (params.get('tags')) state.filters.tags = params.get('tags').split(',');
         if (params.get('hebrew')) {
             state.filters.hebrewOnly = true;
-            dom.hebrewToggle.checked = true;
+            if(dom.hebrewToggle) dom.hebrewToggle.checked = true;
         }
 
         renderView();
     }
 
     // --------------------------------------------------------------------------------
-    // 11. טיפול בטפסים (הפונקציה שהייתה חסרה!)
+    // 11. טיפול בטפסים
     // --------------------------------------------------------------------------------
     function handleContactFormSubmit(event) {
         event.preventDefault();
@@ -806,8 +793,8 @@ document.addEventListener('DOMContentLoaded', () => {
         state.filters.category = 'all';
         state.view = 'home';
         
-        dom.searchInput.value = '';
-        dom.hebrewToggle.checked = false;
+        if(dom.searchInput) dom.searchInput.value = '';
+        if(dom.hebrewToggle) dom.hebrewToggle.checked = false;
         
         renderView();
         updateUrl();
@@ -819,18 +806,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // --------------------------------------------------------------------------------
     function setupEvents() {
         // חיפוש
-        dom.searchInput.addEventListener('input', debounce((e) => {
-            handleSearchInput(e.target);
-        }, 300));
-        
-        dom.searchInput.addEventListener('keydown', handleSearchKeydown);
+        if(dom.searchInput) {
+            dom.searchInput.addEventListener('input', debounce((e) => {
+                handleSearchInput(e.target);
+            }, 300));
+            dom.searchInput.addEventListener('keydown', handleSearchKeydown);
+        }
 
         Object.values(dom.searchForms).forEach(form => {
             if (!form) return;
             form.addEventListener('submit', (e) => {
                 e.preventDefault();
                 state.filters.search = dom.searchInput.value.trim();
-                document.getElementById('main-content-search-suggestions').classList.add('hidden');
+                const suggestions = document.getElementById('main-content-search-suggestions');
+                if(suggestions) suggestions.classList.add('hidden');
                 
                 if (state.view === 'video') state.view = 'home';
                 
@@ -843,8 +832,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             const suggestion = e.target.closest('li[data-index]');
             if (suggestion) {
-                const text = suggestion.innerText; // שונה מ-textContent כדי לתפוס טקסט נקי
-                dom.searchInput.value = text;
+                const text = suggestion.innerText;
+                if(dom.searchInput) dom.searchInput.value = text;
                 state.filters.search = text;
                 suggestion.closest('.search-suggestions-container').classList.add('hidden');
                 if (state.view === 'video') state.view = 'home';
@@ -854,40 +843,42 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // קליק על כרטיס וידאו
-        dom.videoCardsContainer.addEventListener('click', (e) => {
-            const shareBtn = e.target.closest('.share-btn');
-            if (shareBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                const card = shareBtn.closest('article');
-                const url = new URL(`?v=${card.dataset.id}`, window.location.origin + window.location.pathname).href;
-                navigator.clipboard.writeText(url).then(() => alert('הקישור הועתק!'));
-                return;
-            }
-            
-            const tagBtn = e.target.closest('.video-tag-button');
-            if (tagBtn) {
-                e.preventDefault();
-                e.stopPropagation();
-                const tag = tagBtn.dataset.tag;
-                if (!state.filters.tags.includes(tag)) {
-                    state.filters.tags.push(tag);
-                    renderView();
-                    updateUrl();
-                    window.scrollTo({top: 0, behavior: 'smooth'});
+        if(dom.videoCardsContainer) {
+            dom.videoCardsContainer.addEventListener('click', (e) => {
+                const shareBtn = e.target.closest('.share-btn');
+                if (shareBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const card = shareBtn.closest('article');
+                    const url = new URL(`?v=${card.dataset.id}`, window.location.origin + window.location.pathname).href;
+                    navigator.clipboard.writeText(url).then(() => alert('הקישור הועתק!'));
+                    return;
                 }
-                return;
-            }
+                
+                const tagBtn = e.target.closest('.video-tag-button');
+                if (tagBtn) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const tag = tagBtn.dataset.tag;
+                    if (!state.filters.tags.includes(tag)) {
+                        state.filters.tags.push(tag);
+                        renderView();
+                        updateUrl();
+                        window.scrollTo({top: 0, behavior: 'smooth'});
+                    }
+                    return;
+                }
 
-            const card = e.target.closest('article');
-            if (card && !e.target.closest('a')) {
-                e.preventDefault();
-                openVideo(card.dataset.id);
-            } else if (e.target.closest('a.video-link')) {
-                 e.preventDefault();
-                 openVideo(card.dataset.id);
-            }
-        });
+                const card = e.target.closest('article');
+                if (card && !e.target.closest('a')) {
+                    e.preventDefault();
+                    openVideo(card.dataset.id);
+                } else if (e.target.closest('a.video-link')) {
+                    e.preventDefault();
+                    openVideo(card.dataset.id);
+                }
+            });
+        }
 
         // כפתורים גלובליים
         document.addEventListener('click', (e) => {
@@ -910,44 +901,50 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        dom.player.backBtn.addEventListener('click', closeVideo);
-        dom.player.shareBtn.addEventListener('click', () => {
+        if(dom.player.backBtn) dom.player.backBtn.addEventListener('click', closeVideo);
+        if(dom.player.shareBtn) dom.player.shareBtn.addEventListener('click', () => {
             navigator.clipboard.writeText(window.location.href).then(() => alert('הקישור הועתק!'));
         });
 
-        dom.clearFiltersBtn.addEventListener('click', clearFilters);
+        if(dom.clearFiltersBtn) dom.clearFiltersBtn.addEventListener('click', clearFilters);
         
-        dom.hebrewToggle.addEventListener('change', (e) => {
-            state.filters.hebrewOnly = e.target.checked;
-            renderView();
-        });
+        if(dom.hebrewToggle) {
+            dom.hebrewToggle.addEventListener('change', (e) => {
+                state.filters.hebrewOnly = e.target.checked;
+                renderView();
+            });
+        }
         
-        dom.sortSelect.addEventListener('change', (e) => {
-            state.filters.sort = e.target.value;
-            renderView();
-        });
+        if(dom.sortSelect) {
+            dom.sortSelect.addEventListener('change', (e) => {
+                state.filters.sort = e.target.value;
+                renderView();
+            });
+        }
 
         window.addEventListener('popstate', readUrl);
         
         window.addEventListener('scroll', () => {
-            dom.backToTopBtn.classList.toggle('opacity-0', window.scrollY < 300);
-            dom.backToTopBtn.classList.toggle('invisible', window.scrollY < 300);
+            if(dom.backToTopBtn) {
+                dom.backToTopBtn.classList.toggle('opacity-0', window.scrollY < 300);
+                dom.backToTopBtn.classList.toggle('invisible', window.scrollY < 300);
+            }
         });
-        dom.backToTopBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
+        if(dom.backToTopBtn) dom.backToTopBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
         
-        // תפריט
-        dom.mobileMenuBtn.addEventListener('click', () => {
-            dom.mobileMenu.classList.remove('translate-x-full');
-            dom.backdrop.classList.remove('invisible', 'opacity-0');
-        });
+        if(dom.mobileMenuBtn) {
+            dom.mobileMenuBtn.addEventListener('click', () => {
+                dom.mobileMenu.classList.remove('translate-x-full');
+                dom.backdrop.classList.remove('invisible', 'opacity-0');
+            });
+        }
         const closeMenu = () => {
-            dom.mobileMenu.classList.add('translate-x-full');
-            dom.backdrop.classList.add('invisible', 'opacity-0');
+            if(dom.mobileMenu) dom.mobileMenu.classList.add('translate-x-full');
+            if(dom.backdrop) dom.backdrop.classList.add('invisible', 'opacity-0');
         };
-        dom.closeMenuBtn.addEventListener('click', closeMenu);
-        dom.backdrop.addEventListener('click', closeMenu);
+        if(dom.closeMenuBtn) dom.closeMenuBtn.addEventListener('click', closeMenu);
+        if(dom.backdrop) dom.backdrop.addEventListener('click', closeMenu);
         
-        // Dark Mode
         dom.darkModeToggles.forEach(btn => {
             btn.addEventListener('click', () => {
                 document.documentElement.classList.toggle('dark');
@@ -955,7 +952,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // לינקים פנימיים
         document.body.addEventListener('click', (e) => {
             const link = e.target.closest('a');
             if (!link) return;
@@ -992,7 +988,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // אתחול (Entry Point)
     // --------------------------------------------------------------------------------
     (async function init() {
-        dom.mainContent.classList.add('hidden');
+        if(dom.mainContent) dom.mainContent.classList.add('hidden');
         
         await fetchAllData();
         await loadFeaturedChannels();
@@ -1001,14 +997,16 @@ document.addEventListener('DOMContentLoaded', () => {
         setupEvents();
         readUrl();
 
-        dom.preloader.style.opacity = '0';
-        setTimeout(() => {
-            dom.preloader.style.display = 'none';
-            if (state.view !== 'video') {
-                dom.mainContent.classList.remove('hidden');
-            }
-            dom.footer.classList.remove('hidden');
-        }, 500);
+        if(dom.preloader) {
+            dom.preloader.style.opacity = '0';
+            setTimeout(() => {
+                dom.preloader.style.display = 'none';
+                if (state.view !== 'video' && dom.mainContent) {
+                    dom.mainContent.classList.remove('hidden');
+                }
+                if(dom.footer) dom.footer.classList.remove('hidden');
+            }, 500);
+        }
 
         videoObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
