@@ -68,20 +68,16 @@ document.addEventListener('DOMContentLoaded', () => {
         videosGridTitle: document.getElementById('videos-grid-title'),
 
         // חיפוש ופילטרים
-        // שימוש במערך כדי להקל על איטרציה
-        searchForms: [
-            document.getElementById('desktop-search-form'),
-            document.getElementById('mobile-search-form'),
-            document.getElementById('main-content-search-form')
-        ].filter(el => el !== null), // סינון אלמנטים שלא קיימים
-
-        searchSuggestions: {
-            // מיפוי לפי ID של האינפוט כדי למצוא את ההצעות המתאימות
-            'desktop-search-input': document.getElementById('desktop-search-suggestions'),
-            'mobile-search-input': document.getElementById('mobile-search-suggestions'),
-            'main-content-search-input': document.getElementById('main-content-search-suggestions')
+        searchForms: {
+            desktop: document.getElementById('desktop-search-form'),
+            mobile: document.getElementById('mobile-search-form'),
+            main: document.getElementById('main-content-search-form')
         },
-
+        searchSuggestions: {
+            desktop: document.getElementById('desktop-search-suggestions'),
+            mobile: document.getElementById('mobile-search-suggestions'),
+            main: document.getElementById('main-content-search-suggestions')
+        },
         popularTagsContainer: document.getElementById('popular-tags-container'),
         selectedTagsContainer: document.getElementById('selected-tags-container'),
         tagSearchInput: document.getElementById('tag-search-input'),
@@ -326,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 2. חיפוש
-        if (state.filters.search && state.filters.search.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
+        if (state.filters.search.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
             const searchResults = state.fuse.search(state.filters.search);
             const ids = new Set(searchResults.map(r => r.item.id));
             result = result.filter(v => ids.has(v.id));
@@ -477,7 +473,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 dom.videoCardsContainer.parentNode.appendChild(loadMoreBtn);
             }
         } else {
-             if (loadMoreBtn) loadMoreBtn.remove();
+             const btn = document.getElementById('load-more-btn');
+             if(btn) btn.remove();
         }
         
         // אתחול IntersectionObserver לתמונות
@@ -498,9 +495,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 8. עדכון ממשק (UI)
     // --------------------------------------------------------------------------------
     function updateUI() {
+        // עדכון תגיות פופולריות
         updateTagsCloud();
+        // עדכון תגיות נבחרות
         updateActiveTagsUI();
         
+        // עדכון סיכום פילטרים
         const activeCount = state.filters.tags.length + (state.filters.hebrewOnly ? 1 : 0) + (state.filters.search ? 1 : 0);
         if(dom.filterSummary) {
             dom.filterSummary.classList.toggle('hidden', activeCount === 0);
@@ -512,7 +512,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // סנכרון שדות קלט
         if(dom.hebrewToggle) dom.hebrewToggle.checked = state.filters.hebrewOnly;
         if(dom.sortSelect) dom.sortSelect.value = state.filters.sort;
-        dom.searchForms.forEach(f => {
+        Object.values(dom.searchForms).forEach(f => {
+             if(!f) return;
              const input = f.querySelector('input');
              if(input) input.value = state.filters.search;
         });
@@ -521,6 +522,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTagsCloud() {
         if (!dom.tagsContainer) return;
         
+        // חישוב תגיות מתוך הסרטונים הרלוונטיים
         let sourceVideos = state.allVideos;
         
         if (state.filters.category !== 'all') {
@@ -859,9 +861,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.filters.search = input.value.trim();
                 
                 // סגירת כל ההצעות
-                Object.values(dom.searchSuggestions).forEach(box => {
-                    if(box) box.classList.add('hidden');
-                });
+                Object.values(dom.searchSuggestions).forEach(box => box.classList.add('hidden'));
 
                 if (state.view === 'video') state.view = 'home';
                 
@@ -873,9 +873,9 @@ document.addEventListener('DOMContentLoaded', () => {
             input.addEventListener('blur', () => {
                  setTimeout(() => {
                       if (!state.search.isSuggestionClicked) {
-                          Object.values(dom.searchSuggestions).forEach(box => {
-                             if(box) box.classList.add('hidden');
-                          });
+                          const boxId = input.id.replace('input', 'suggestions');
+                          const box = document.getElementById(boxId);
+                          if(box) box.classList.add('hidden');
                       }
                       state.search.isSuggestionClicked = false;
                  }, 200);
@@ -886,9 +886,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             const suggestion = e.target.closest('li[data-index]');
             if (suggestion) {
-                state.search.isSuggestionClicked = true;
-                const text = suggestion.innerText;
+                state.search.isSuggestionClicked = true; // מניעת סגירה ב-Blur
+                const text = suggestion.innerText; // שימוש ב-innerText לקבלת טקסט נקי
                 
+                // עדכון כל שדות החיפוש
                 dom.searchForms.forEach(f => { if(f) f.querySelector('input').value = text; });
                 
                 state.filters.search = text;
@@ -1079,7 +1080,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const bottom = top + section.offsetHeight;
 
                 if (scrollPos >= top && scrollPos < bottom) {
-                    link.classList.add('active-nav-link');
+                    link.classList.add('active-nav-link'); 
                 } else {
                     link.classList.remove('active-nav-link');
                 }
