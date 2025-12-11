@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { name: 'channel', weight: 0.1 }
             ],
             includeScore: true,
-            threshold: 0.4,
+            threshold: 0.35, // דיוק חיפוש
             ignoreLocation: true
         },
         CATEGORY_FILES: [
@@ -68,20 +68,16 @@ document.addEventListener('DOMContentLoaded', () => {
         videosGridTitle: document.getElementById('videos-grid-title'),
 
         // חיפוש ופילטרים
-        // שינוי: מערך של טפסים קיימים בלבד
-        searchForms: [
-            document.getElementById('desktop-search-form'),
-            document.getElementById('mobile-search-form'),
-            document.getElementById('main-content-search-form')
-        ].filter(el => el !== null), 
-
-        // מיפוי הצעות לפי ID של שדה הקלט
-        searchSuggestions: {
-            'desktop-search-input': document.getElementById('desktop-search-suggestions'),
-            'mobile-search-input': document.getElementById('mobile-search-suggestions'),
-            'main-content-search-input': document.getElementById('main-content-search-suggestions')
+        searchForms: {
+            desktop: document.getElementById('desktop-search-form'),
+            mobile: document.getElementById('mobile-search-form'),
+            main: document.getElementById('main-content-search-form')
         },
-
+        searchSuggestions: {
+            desktop: document.getElementById('desktop-search-suggestions'),
+            mobile: document.getElementById('mobile-search-suggestions'),
+            main: document.getElementById('main-content-search-suggestions')
+        },
         popularTagsContainer: document.getElementById('popular-tags-container'),
         selectedTagsContainer: document.getElementById('selected-tags-container'),
         tagSearchInput: document.getElementById('tag-search-input'),
@@ -233,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if(channels.length) {
                 const html = [...channels, ...channels].map(c => `
-                    <a href="${c.channel_url}" target="_blank" rel="noopener noreferrer" class="channel-card group flex-shrink-0 block p-5 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg border border-slate-100 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-400 text-center transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-purple-500 mx-3 snap-center w-64">
+                    <a href="${c.channel_url}" target="_blank" rel="noopener noreferrer" class="channel-card group flex-shrink-0 block p-5 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg border border-slate-100 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-500 text-center transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-purple-500 mx-3 snap-center w-64">
                         <div class="relative w-20 h-20 mx-auto mb-3">
                             <img src="${c.channel_image_url}" alt="${c.channel_name}" class="w-full h-full rounded-full object-cover border-2 border-slate-200 dark:border-slate-500 group-hover:border-purple-400 transition-colors shadow-sm" loading="lazy">
                         </div>
@@ -401,7 +397,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const html = nextBatch.map(v => {
             // יצירת תגיות HTML לכרטיס
             const tagsHtml = v.tags.slice(0, 3).map(tag => 
-                `<button class="video-tag-button text-[10px] bg-purple-50 text-purple-700 hover:bg-purple-100 px-2 py-0.5 rounded-full dark:bg-slate-700 dark:text-purple-300 dark:hover:bg-slate-600 transition-colors" data-tag="${tag}">#${tag}</button>`
+                `<button class="video-tag-button text-[10px] bg-purple-50 text-purple-700 hover:bg-purple-100 px-2 py-0.5 rounded-full dark:bg-slate-700 dark:text-purple-300 dark:hover:bg-slate-600 transition-colors cursor-pointer" data-tag="${tag}">#${tag}</button>`
             ).join('');
 
             const cat = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === v.category);
@@ -516,7 +512,8 @@ document.addEventListener('DOMContentLoaded', () => {
         // סנכרון שדות קלט
         if(dom.hebrewToggle) dom.hebrewToggle.checked = state.filters.hebrewOnly;
         if(dom.sortSelect) dom.sortSelect.value = state.filters.sort;
-        dom.searchForms.forEach(f => {
+        Object.values(dom.searchForms).forEach(f => {
+             if(!f) return;
              const input = f.querySelector('input');
              if(input) input.value = state.filters.search;
         });
@@ -738,7 +735,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (params.get('search')) {
             state.filters.search = params.get('search');
-            if(dom.searchInput) dom.searchInput.value = state.filters.search;
+            if(dom.tagSearchInput) dom.tagSearchInput.value = state.filters.search;
+            // Update search inputs as well
+            Object.values(dom.searchForms).forEach(f => {
+                if(f) {
+                    const input = f.querySelector('input');
+                    if(input) input.value = state.filters.search;
+                }
+            });
         }
         if (params.get('tags')) state.filters.tags = params.get('tags').split(',');
         if (params.get('hebrew')) {
@@ -836,7 +840,12 @@ document.addEventListener('DOMContentLoaded', () => {
         state.filters.category = 'all';
         state.view = 'home';
         
-        dom.searchForms.forEach(f => { if(f) f.querySelector('input').value = ''; });
+        Object.values(dom.searchForms).forEach(f => {
+            if(f) {
+                const input = f.querySelector('input');
+                if(input) input.value = '';
+            }
+        });
         if(dom.hebrewToggle) dom.hebrewToggle.checked = false;
         
         renderView();
@@ -849,12 +858,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // --------------------------------------------------------------------------------
     function setupEvents() {
         // חיפוש
-        dom.searchForms.forEach(form => {
+        Object.values(dom.searchForms).forEach(form => {
             if (!form) return;
             const input = form.querySelector('input');
             
             input.addEventListener('input', debounce((e) => {
-                handleSearchInput(e.target);
+                // Live Filter
+                state.filters.search = e.target.value.trim();
+                renderView(); // Updates grid
+                handleSearchInput(e.target); // Updates suggestions
             }, 300));
             
             input.addEventListener('keydown', handleSearchKeydown);
@@ -864,7 +876,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.filters.search = input.value.trim();
                 
                 // סגירת כל ההצעות
-                Object.values(dom.searchSuggestions).forEach(box => box.classList.add('hidden'));
+                Object.values(dom.searchSuggestions).forEach(box => {
+                    if(box) box.classList.add('hidden');
+                });
 
                 if (state.view === 'video') state.view = 'home';
                 
@@ -889,11 +903,15 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             const suggestion = e.target.closest('li[data-index]');
             if (suggestion) {
-                state.search.isSuggestionClicked = true; // מניעת סגירה ב-Blur
-                const text = suggestion.innerText; // שימוש ב-innerText לקבלת טקסט נקי
+                state.search.isSuggestionClicked = true;
+                const text = suggestion.innerText;
                 
-                // עדכון כל שדות החיפוש
-                dom.searchForms.forEach(f => { if(f) f.querySelector('input').value = text; });
+                Object.values(dom.searchForms).forEach(f => {
+                    if(f) {
+                        const input = f.querySelector('input');
+                        if(input) input.value = text;
+                    }
+                });
                 
                 state.filters.search = text;
                 suggestion.closest('.search-suggestions-container').classList.add('hidden');
@@ -932,6 +950,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const card = e.target.closest('article');
+                // אם הלחיצה לא הייתה על קישור אחר (כמו שם הערוץ)
                 if (card && !e.target.closest('a')) {
                     e.preventDefault();
                     openVideo(card.dataset.id);
@@ -1104,7 +1123,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         img.src = img.dataset.src;
                         img.removeAttribute('data-src');
                     }
-                    entry.target.classList.add('observed');
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
                     videoObserver.unobserve(entry.target);
                 }
             });
