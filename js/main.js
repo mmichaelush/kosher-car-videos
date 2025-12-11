@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { name: 'channel', weight: 0.1 }
             ],
             includeScore: true,
-            threshold: 0.3, // דיוק חיפוש משופר
+            threshold: 0.3,
             ignoreLocation: true
         },
         CATEGORY_FILES: [
@@ -479,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
              if(btn) btn.remove();
         }
         
-        // אתחול IntersectionObserver לתמונות
+        // אתחול IntersectionObserver לתמונות אם צריך
         if (videoObserver) {
             document.querySelectorAll('.video-card:not(.observed)').forEach(card => {
                 videoObserver.observe(card);
@@ -524,6 +524,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!dom.tagsContainer) return;
         
         // חישוב תגיות מתוך הסרטונים הרלוונטיים
+        // שינוי קריטי: אנחנו רוצים להראות את התגיות שרלוונטיות *לקטגוריה הנוכחית* ולחיפוש הנוכחי,
+        // אבל *לפני* שהתחשבנו בתגיות שכבר נבחרו. אחרת, בחירת תגית אחת תעלים את כל השאר.
         let sourceVideos = state.allVideos;
         
         if (state.filters.category !== 'all') {
@@ -572,12 +574,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --------------------------------------------------------------------------------
     function handleSearchInput(input) {
         const query = input.value.trim();
-        // עדכון ה-State עם הערך הנוכחי לצורך חיפוש חי
-        state.filters.search = query;
-        
-        // ביצוע פילטור חי (Live Filtering)
-        filterVideos();
-
         // מציאת קונטיינר ההצעות המתאים לאינפוט הנוכחי
         const suggestionsId = input.id.replace('input', 'suggestions');
         const suggestionsBox = dom.searchSuggestions[input.id];
@@ -863,7 +859,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const input = form.querySelector('input');
             
             input.addEventListener('input', debounce((e) => {
-                handleSearchInput(e.target);
+                // Live Filter
+                state.filters.search = e.target.value.trim();
+                renderView(); // Updates grid
+                handleSearchInput(e.target); // Updates suggestions
             }, 300));
             
             input.addEventListener('keydown', handleSearchKeydown);
@@ -873,9 +872,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.filters.search = input.value.trim();
                 
                 // סגירת כל ההצעות
-                Object.values(dom.searchSuggestions).forEach(box => {
-                    if(box) box.classList.add('hidden');
-                });
+                Object.values(dom.searchSuggestions).forEach(box => box.classList.add('hidden'));
 
                 if (state.view === 'video') state.view = 'home';
                 
