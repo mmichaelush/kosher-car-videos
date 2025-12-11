@@ -68,11 +68,20 @@ document.addEventListener('DOMContentLoaded', () => {
         videosGridTitle: document.getElementById('videos-grid-title'),
 
         // חיפוש ופילטרים
+        // שימוש במערך כדי להקל על איטרציה
         searchForms: [
             document.getElementById('desktop-search-form'),
             document.getElementById('mobile-search-form'),
             document.getElementById('main-content-search-form')
-        ],
+        ].filter(el => el !== null), // סינון אלמנטים שלא קיימים
+
+        searchSuggestions: {
+            // מיפוי לפי ID של האינפוט כדי למצוא את ההצעות המתאימות
+            'desktop-search-input': document.getElementById('desktop-search-suggestions'),
+            'mobile-search-input': document.getElementById('mobile-search-suggestions'),
+            'main-content-search-input': document.getElementById('main-content-search-suggestions')
+        },
+
         popularTagsContainer: document.getElementById('popular-tags-container'),
         selectedTagsContainer: document.getElementById('selected-tags-container'),
         tagSearchInput: document.getElementById('tag-search-input'),
@@ -267,9 +276,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dom.mainContent) dom.mainContent.classList.remove('hidden');
         if (dom.footer) dom.footer.classList.remove('hidden');
 
-        // אם אנחנו במצב קטגוריה וגם לא נבחרה "הכל"
         if (state.view === 'category' && state.filters.category !== 'all') {
-            // תצוגת קטגוריה: הסתרת ההירו וקטגוריות הבית
+            // תצוגת קטגוריה
             if(dom.homeContainer) dom.homeContainer.classList.add('hidden');
             if(dom.homeBottomSection) dom.homeBottomSection.classList.add('hidden');
             if(dom.categoryHeader) dom.categoryHeader.classList.remove('hidden');
@@ -285,7 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if(dom.searchSectionTitle) dom.searchSectionTitle.textContent = `חיפוש ב${catName}`;
 
         } else {
-            // תצוגת בית: הצגת הכל
+            // תצוגת בית
             state.view = 'home';
             state.filters.category = 'all';
             
@@ -318,7 +326,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // 2. חיפוש
-        if (state.filters.search.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
+        if (state.filters.search && state.filters.search.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && state.fuse) {
             const searchResults = state.fuse.search(state.filters.search);
             const ids = new Set(searchResults.map(r => r.item.id));
             result = result.filter(v => ids.has(v.id));
@@ -469,11 +477,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 dom.videoCardsContainer.parentNode.appendChild(loadMoreBtn);
             }
         } else {
-             const btn = document.getElementById('load-more-btn');
-             if(btn) btn.remove();
+             if (loadMoreBtn) loadMoreBtn.remove();
         }
         
-        // אתחול IntersectionObserver
+        // אתחול IntersectionObserver לתמונות
         if (videoObserver) {
             document.querySelectorAll('.video-card:not(.observed)').forEach(card => {
                 videoObserver.observe(card);
@@ -502,12 +509,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
+        // סנכרון שדות קלט
         if(dom.hebrewToggle) dom.hebrewToggle.checked = state.filters.hebrewOnly;
         if(dom.sortSelect) dom.sortSelect.value = state.filters.sort;
-        
-        // סנכרון שדות חיפוש
         dom.searchForms.forEach(f => {
-            if(!f) return;
              const input = f.querySelector('input');
              if(input) input.value = state.filters.search;
         });
@@ -516,7 +521,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTagsCloud() {
         if (!dom.tagsContainer) return;
         
-        // חישוב תגיות מתוך הסרטונים הרלוונטיים
         let sourceVideos = state.allVideos;
         
         if (state.filters.category !== 'all') {
@@ -567,7 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const query = input.value.trim();
         // מציאת קונטיינר ההצעות המתאים לאינפוט הנוכחי
         const suggestionsId = input.id.replace('input', 'suggestions');
-        const suggestionsBox = document.getElementById(suggestionsId);
+        const suggestionsBox = dom.searchSuggestions[input.id];
         
         state.search.currentInput = input;
         state.search.currentSuggestionsContainer = suggestionsBox;
@@ -729,8 +733,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (params.get('search')) {
             state.filters.search = params.get('search');
-            // עדכון כל שדות החיפוש
-            dom.searchForms.forEach(f => { if(f) f.querySelector('input').value = state.filters.search; });
+            if(dom.searchInput) dom.searchInput.value = state.filters.search;
         }
         if (params.get('tags')) state.filters.tags = params.get('tags').split(',');
         if (params.get('hebrew')) {
@@ -856,7 +859,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.filters.search = input.value.trim();
                 
                 // סגירת כל ההצעות
-                Object.values(dom.searchSuggestions).forEach(box => box.classList.add('hidden'));
+                Object.values(dom.searchSuggestions).forEach(box => {
+                    if(box) box.classList.add('hidden');
+                });
 
                 if (state.view === 'video') state.view = 'home';
                 
@@ -868,9 +873,9 @@ document.addEventListener('DOMContentLoaded', () => {
             input.addEventListener('blur', () => {
                  setTimeout(() => {
                       if (!state.search.isSuggestionClicked) {
-                          const boxId = input.id.replace('input', 'suggestions');
-                          const box = document.getElementById(boxId);
-                          if(box) box.classList.add('hidden');
+                          Object.values(dom.searchSuggestions).forEach(box => {
+                             if(box) box.classList.add('hidden');
+                          });
                       }
                       state.search.isSuggestionClicked = false;
                  }, 200);
@@ -881,10 +886,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.addEventListener('click', (e) => {
             const suggestion = e.target.closest('li[data-index]');
             if (suggestion) {
-                state.search.isSuggestionClicked = true; // מניעת סגירה ב-Blur
-                const text = suggestion.innerText; // שימוש ב-innerText לקבלת טקסט נקי
+                state.search.isSuggestionClicked = true;
+                const text = suggestion.innerText;
                 
-                // עדכון כל שדות החיפוש
                 dom.searchForms.forEach(f => { if(f) f.querySelector('input').value = text; });
                 
                 state.filters.search = text;
@@ -934,7 +938,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // כפתורים גלובליים (תגיות, פילטרים)
+        // כפתורים גלובליים
         document.addEventListener('click', (e) => {
             const btn = e.target.closest('button');
             if (!btn) return;
@@ -976,10 +980,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // היסטוריית דפדפן
         window.addEventListener('popstate', readUrl);
         
-        // גלילה
         window.addEventListener('scroll', () => {
             if(dom.backToTopBtn) {
                 dom.backToTopBtn.classList.toggle('opacity-0', window.scrollY < 300);
@@ -989,7 +991,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         if(dom.backToTopBtn) dom.backToTopBtn.addEventListener('click', () => window.scrollTo({top: 0, behavior: 'smooth'}));
         
-        // תפריט מובייל
         if(dom.mobileMenuBtn) {
             dom.mobileMenuBtn.addEventListener('click', () => {
                 dom.mobileMenu.classList.remove('translate-x-full');
@@ -1003,7 +1004,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(dom.closeMenuBtn) dom.closeMenuBtn.addEventListener('click', closeMenu);
         if(dom.backdrop) dom.backdrop.addEventListener('click', closeMenu);
         
-        // מצב כהה
         dom.darkModeToggles.forEach(btn => {
             btn.addEventListener('click', () => {
                 document.documentElement.classList.toggle('dark');
@@ -1011,7 +1011,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // גלילת ערוצים מומלצים
+        // גלילת ערוצים
         if (dom.channelsScrollLeft && dom.channelsScrollRight && dom.channelsTrack) {
              const scrollAmount = 300;
              const container = dom.channelsTrack.parentElement;
@@ -1025,12 +1025,10 @@ document.addEventListener('DOMContentLoaded', () => {
              });
         }
 
-        // ניווט פנימי (לינקים)
         document.body.addEventListener('click', (e) => {
             const link = e.target.closest('a');
             if (!link) return;
 
-            // קישור לקטגוריה (כגון מכפתורי הבית)
             if (link.search && link.search.includes('name=')) {
                 e.preventDefault();
                 const params = new URLSearchParams(link.search);
@@ -1042,7 +1040,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             
-            // חזרה לדף הבית
             if (link.getAttribute('href') === './' || link.getAttribute('href') === './index.html' || link.hash === '#home') {
                  e.preventDefault();
                  if (state.view === 'video') closeVideo();
@@ -1082,9 +1079,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const bottom = top + section.offsetHeight;
 
                 if (scrollPos >= top && scrollPos < bottom) {
-                    link.classList.add('active-nav-link'); // השתמש ב-class מ-styles.css
-                    // אפשרות חלופית אם ה-class לא עובד:
-                    // link.classList.add('text-purple-600', 'dark:text-purple-400', 'bg-purple-50', 'dark:bg-slate-700');
+                    link.classList.add('active-nav-link');
                 } else {
                     link.classList.remove('active-nav-link');
                 }
