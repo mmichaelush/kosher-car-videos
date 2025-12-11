@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { name: 'channel', weight: 0.1 }
             ],
             includeScore: true,
-            threshold: 0.35, // דיוק חיפוש
+            threshold: 0.3, // דיוק חיפוש משופר
             ignoreLocation: true
         },
         CATEGORY_FILES: [
@@ -68,16 +68,18 @@ document.addEventListener('DOMContentLoaded', () => {
         videosGridTitle: document.getElementById('videos-grid-title'),
 
         // חיפוש ופילטרים
-        searchForms: {
-            desktop: document.getElementById('desktop-search-form'),
-            mobile: document.getElementById('mobile-search-form'),
-            main: document.getElementById('main-content-search-form')
-        },
+        searchForms: [
+            document.getElementById('desktop-search-form'),
+            document.getElementById('mobile-search-form'),
+            document.getElementById('main-content-search-form')
+        ].filter(el => el !== null),
+
         searchSuggestions: {
-            desktop: document.getElementById('desktop-search-suggestions'),
-            mobile: document.getElementById('mobile-search-suggestions'),
-            main: document.getElementById('main-content-search-suggestions')
+            'desktop-search-input': document.getElementById('desktop-search-suggestions'),
+            'mobile-search-input': document.getElementById('mobile-search-suggestions'),
+            'main-content-search-input': document.getElementById('main-content-search-suggestions')
         },
+
         popularTagsContainer: document.getElementById('popular-tags-container'),
         selectedTagsContainer: document.getElementById('selected-tags-container'),
         tagSearchInput: document.getElementById('tag-search-input'),
@@ -477,7 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
              if(btn) btn.remove();
         }
         
-        // אתחול IntersectionObserver לתמונות אם צריך
+        // אתחול IntersectionObserver לתמונות
         if (videoObserver) {
             document.querySelectorAll('.video-card:not(.observed)').forEach(card => {
                 videoObserver.observe(card);
@@ -512,8 +514,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // סנכרון שדות קלט
         if(dom.hebrewToggle) dom.hebrewToggle.checked = state.filters.hebrewOnly;
         if(dom.sortSelect) dom.sortSelect.value = state.filters.sort;
-        Object.values(dom.searchForms).forEach(f => {
-             if(!f) return;
+        dom.searchForms.forEach(f => {
              const input = f.querySelector('input');
              if(input) input.value = state.filters.search;
         });
@@ -571,6 +572,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --------------------------------------------------------------------------------
     function handleSearchInput(input) {
         const query = input.value.trim();
+        // עדכון ה-State עם הערך הנוכחי לצורך חיפוש חי
+        state.filters.search = query;
+        
+        // ביצוע פילטור חי (Live Filtering)
+        filterVideos();
+
         // מציאת קונטיינר ההצעות המתאים לאינפוט הנוכחי
         const suggestionsId = input.id.replace('input', 'suggestions');
         const suggestionsBox = dom.searchSuggestions[input.id];
@@ -737,11 +744,9 @@ document.addEventListener('DOMContentLoaded', () => {
             state.filters.search = params.get('search');
             if(dom.tagSearchInput) dom.tagSearchInput.value = state.filters.search;
             // Update search inputs as well
-            Object.values(dom.searchForms).forEach(f => {
-                if(f) {
-                    const input = f.querySelector('input');
-                    if(input) input.value = state.filters.search;
-                }
+            dom.searchForms.forEach(f => {
+                const input = f.querySelector('input');
+                if(input) input.value = state.filters.search;
             });
         }
         if (params.get('tags')) state.filters.tags = params.get('tags').split(',');
@@ -840,12 +845,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.filters.category = 'all';
         state.view = 'home';
         
-        Object.values(dom.searchForms).forEach(f => {
-            if(f) {
-                const input = f.querySelector('input');
-                if(input) input.value = '';
-            }
-        });
+        dom.searchForms.forEach(f => { if(f) f.querySelector('input').value = ''; });
         if(dom.hebrewToggle) dom.hebrewToggle.checked = false;
         
         renderView();
@@ -858,15 +858,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // --------------------------------------------------------------------------------
     function setupEvents() {
         // חיפוש
-        Object.values(dom.searchForms).forEach(form => {
+        dom.searchForms.forEach(form => {
             if (!form) return;
             const input = form.querySelector('input');
             
             input.addEventListener('input', debounce((e) => {
-                // Live Filter
-                state.filters.search = e.target.value.trim();
-                renderView(); // Updates grid
-                handleSearchInput(e.target); // Updates suggestions
+                handleSearchInput(e.target);
             }, 300));
             
             input.addEventListener('keydown', handleSearchKeydown);
@@ -906,12 +903,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 state.search.isSuggestionClicked = true;
                 const text = suggestion.innerText;
                 
-                Object.values(dom.searchForms).forEach(f => {
-                    if(f) {
-                        const input = f.querySelector('input');
-                        if(input) input.value = text;
-                    }
-                });
+                dom.searchForms.forEach(f => { if(f) f.querySelector('input').value = text; });
                 
                 state.filters.search = text;
                 suggestion.closest('.search-suggestions-container').classList.add('hidden');
@@ -950,7 +942,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const card = e.target.closest('article');
-                // אם הלחיצה לא הייתה על קישור אחר (כמו שם הערוץ)
                 if (card && !e.target.closest('a')) {
                     e.preventDefault();
                     openVideo(card.dataset.id);
@@ -1123,7 +1114,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         img.src = img.dataset.src;
                         img.removeAttribute('data-src');
                     }
-                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.add('observed');
                     videoObserver.unobserve(entry.target);
                 }
             });
