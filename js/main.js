@@ -68,16 +68,20 @@ document.addEventListener('DOMContentLoaded', () => {
         videosGridTitle: document.getElementById('videos-grid-title'),
 
         // חיפוש ופילטרים
-        searchForms: {
-            desktop: document.getElementById('desktop-search-form'),
-            mobile: document.getElementById('mobile-search-form'),
-            main: document.getElementById('main-content-search-form')
-        },
+        // שינוי: מערך של טפסים קיימים בלבד
+        searchForms: [
+            document.getElementById('desktop-search-form'),
+            document.getElementById('mobile-search-form'),
+            document.getElementById('main-content-search-form')
+        ].filter(el => el !== null), 
+
+        // מיפוי הצעות לפי ID של שדה הקלט
         searchSuggestions: {
-            desktop: document.getElementById('desktop-search-suggestions'),
-            mobile: document.getElementById('mobile-search-suggestions'),
-            main: document.getElementById('main-content-search-suggestions')
+            'desktop-search-input': document.getElementById('desktop-search-suggestions'),
+            'mobile-search-input': document.getElementById('mobile-search-suggestions'),
+            'main-content-search-input': document.getElementById('main-content-search-suggestions')
         },
+
         popularTagsContainer: document.getElementById('popular-tags-container'),
         selectedTagsContainer: document.getElementById('selected-tags-container'),
         tagSearchInput: document.getElementById('tag-search-input'),
@@ -229,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if(channels.length) {
                 const html = [...channels, ...channels].map(c => `
-                    <a href="${c.channel_url}" target="_blank" rel="noopener noreferrer" class="channel-card group flex-shrink-0 block p-5 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg border border-slate-100 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-500 text-center transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-purple-500 mx-3 snap-center w-64">
+                    <a href="${c.channel_url}" target="_blank" rel="noopener noreferrer" class="channel-card group flex-shrink-0 block p-5 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg border border-slate-100 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-400 text-center transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-purple-500 mx-3 snap-center w-64">
                         <div class="relative w-20 h-20 mx-auto mb-3">
                             <img src="${c.channel_image_url}" alt="${c.channel_name}" class="w-full h-full rounded-full object-cover border-2 border-slate-200 dark:border-slate-500 group-hover:border-purple-400 transition-colors shadow-sm" loading="lazy">
                         </div>
@@ -477,7 +481,7 @@ document.addEventListener('DOMContentLoaded', () => {
              if(btn) btn.remove();
         }
         
-        // אתחול IntersectionObserver לתמונות
+        // אתחול IntersectionObserver לתמונות אם צריך
         if (videoObserver) {
             document.querySelectorAll('.video-card:not(.observed)').forEach(card => {
                 videoObserver.observe(card);
@@ -512,8 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // סנכרון שדות קלט
         if(dom.hebrewToggle) dom.hebrewToggle.checked = state.filters.hebrewOnly;
         if(dom.sortSelect) dom.sortSelect.value = state.filters.sort;
-        Object.values(dom.searchForms).forEach(f => {
-             if(!f) return;
+        dom.searchForms.forEach(f => {
              const input = f.querySelector('input');
              if(input) input.value = state.filters.search;
         });
