@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 { name: 'channel', weight: 0.1 }
             ],
             includeScore: true,
-            threshold: 0.3,
+            threshold: 0.4,
             ignoreLocation: true
         },
         CATEGORY_FILES: [
@@ -186,20 +186,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     const json = await res.json();
                     const list = Array.isArray(json) ? json : (json.videos || []);
                     
-                    return list.map(v => ({
-                        id: v.id,
-                        title: v.title,
-                        category: v.category || file,
-                        channel: v.channel,
-                        channelImage: v.channelImage,
-                        duration: v.duration,
-                        durationSec: parseDuration(v.duration),
-                        date: v.dateAdded ? new Date(v.dateAdded) : new Date(0),
-                        hebrew: v.hebrewContent,
-                        tags: (v.tags || []).map(t => t.toLowerCase()),
-                        content: v.content,
-                        thumbnail: getThumbnail(v.id)
-                    }));
+                    return list.map(v => {
+                        // וידוא שתגיות הן מערך תקין
+                        let safeTags = [];
+                        if (Array.isArray(v.tags)) {
+                            safeTags = v.tags;
+                        } else if (typeof v.tags === 'string') {
+                            safeTags = v.tags.split(',').map(t => t.trim());
+                        }
+
+                        return {
+                            id: v.id,
+                            title: v.title,
+                            category: v.category || file,
+                            channel: v.channel,
+                            channelImage: v.channelImage,
+                            duration: v.duration,
+                            durationSec: parseDuration(v.duration),
+                            date: v.dateAdded ? new Date(v.dateAdded) : new Date(0),
+                            hebrew: v.hebrewContent,
+                            tags: safeTags.map(t => String(t).toLowerCase()),
+                            content: v.content,
+                            thumbnail: getThumbnail(v.id)
+                        };
+                    });
                 } catch (e) {
                     console.error(`Failed to load ${file}`, e);
                     return [];
@@ -479,7 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
              if(btn) btn.remove();
         }
         
-        // אתחול IntersectionObserver לתמונות אם צריך
+        // אתחול IntersectionObserver לתמונות
         if (videoObserver) {
             document.querySelectorAll('.video-card:not(.observed)').forEach(card => {
                 videoObserver.observe(card);
@@ -523,9 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateTagsCloud() {
         if (!dom.tagsContainer) return;
         
-        // חישוב תגיות מתוך הסרטונים הרלוונטיים
-        // שינוי קריטי: אנחנו רוצים להראות את התגיות שרלוונטיות *לקטגוריה הנוכחית* ולחיפוש הנוכחי,
-        // אבל *לפני* שהתחשבנו בתגיות שכבר נבחרו. אחרת, בחירת תגית אחת תעלים את כל השאר.
+        // חישוב תגיות מתוך הסרטונים הרלוונטיים (לפי קטגוריה וחיפוש, אבל *ללא* סינון התגיות עצמן)
         let sourceVideos = state.allVideos;
         
         if (state.filters.category !== 'all') {
@@ -540,15 +548,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const tagCounts = {};
         sourceVideos.forEach(v => {
-            v.tags.forEach(tag => {
-                tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-            });
+            if(v.tags && Array.isArray(v.tags)) {
+                v.tags.forEach(tag => {
+                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                });
+            }
         });
 
         const sortedTags = Object.entries(tagCounts)
             .sort((a, b) => b[1] - a[1])
             .slice(0, CONSTANTS.MAX_POPULAR_TAGS)
             .map(entry => entry[0]);
+
+        if (sortedTags.length === 0) {
+            dom.tagsContainer.innerHTML = `<p class="text-sm text-slate-500">לא נמצאו תגיות</p>`;
+            return;
+        }
 
         dom.tagsContainer.innerHTML = sortedTags.map(tag => `
             <button class="tag-btn bg-slate-100 hover:bg-purple-100 hover:text-purple-700 text-slate-600 px-3 py-1.5 rounded-full text-sm border border-slate-200 transition-all dark:bg-slate-700 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-purple-900/50 dark:hover:text-purple-300 ${state.filters.tags.includes(tag) ? '!bg-purple-600 !text-white !border-purple-600 dark:!bg-purple-500' : ''}" data-tag="${tag}">
@@ -859,10 +874,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const input = form.querySelector('input');
             
             input.addEventListener('input', debounce((e) => {
-                // Live Filter
-                state.filters.search = e.target.value.trim();
-                renderView(); // Updates grid
-                handleSearchInput(e.target); // Updates suggestions
+                handleSearchInput(e.target);
             }, 300));
             
             input.addEventListener('keydown', handleSearchKeydown);
