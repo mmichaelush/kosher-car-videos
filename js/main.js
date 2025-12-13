@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
             'data/videos/diy.json',
             'data/videos/safety.json',
             'data/videos/collectors.json',
-            'data/videos/industry.json'
+            'data/videos/offroad.json'
         ],
         YOUTUBE_IMG_BASE: 'https://i.ytimg.com/vi/',
         YOUTUBE_THUMBNAIL_SUFFIX: '/hqdefault.jpg',
