@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAR-טיב - סרטוני רכבים כשרים</title>
-    
-    <!-- Tailwind CSS (No defer to prevent loading errors) -->
     <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
     <script>
       tailwind.config = {
@@ -13,28 +11,21 @@
         theme: {
           extend: {
             animation: {
-                'bounce-slow': 'bounce 3s infinite',
+                'spin-slow': 'spin 3s linear infinite',
+                'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
             }
           }
         }
       }
     </script>
-
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
-
-    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
-
-    <!-- Dark Mode Init -->
     <script>
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -42,19 +33,15 @@
             document.documentElement.classList.remove('dark');
         }
     </script>
-
-    <!-- App Scripts -->
     <script src="js/data-service.js" defer></script>
     <script src="js/ui-renderer.js" defer></script>
     <script src="js/app.js" defer></script>
-
     <style>
-        /* Preloader Styles inline to ensure immediate rendering */
         #site-preloader {
             position: fixed;
             inset: 0;
             z-index: 9999;
-            background-color: #f8fafc; /* slate-50 */
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -62,15 +49,34 @@
             transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
         }
         .dark #site-preloader {
-            background-color: #0f172a; /* slate-900 */
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+        .loader-content {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .loader-ring {
+            position: absolute;
+            inset: 0;
+            border: 4px solid transparent;
+            border-top-color: #9333ea; /* purple-600 */
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        .dark .loader-ring {
+            border-top-color: #c084fc; /* purple-400 */
         }
         .loader-icon {
-            font-size: 4rem;
-            animation: car-bounce 1.5s infinite ease-in-out;
+            font-size: 3.5rem;
+            animation: pulse 2s infinite;
         }
-        @keyframes car-bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
@@ -78,16 +84,12 @@
 
     <!-- Preloader -->
     <div id="site-preloader">
-        <div class="relative">
+        <div class="loader-content">
+            <div class="loader-ring"></div>
             <i class="fas fa-car-side loader-icon text-purple-600 dark:text-purple-400"></i>
-            <div class="absolute -bottom-2 left-0 right-0 h-1 bg-black/10 dark:bg-white/10 rounded-full blur-sm transform scale-x-75 animate-pulse"></div>
         </div>
-        <h2 class="mt-6 text-2xl font-bold text-slate-800 dark:text-slate-200 tracking-wide">CAR-טיב</h2>
-        <div class="mt-2 flex items-center gap-1">
-            <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 0s"></div>
-            <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
-            <div class="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-        </div>
+        <h2 class="mt-8 text-3xl font-extrabold text-slate-800 dark:text-slate-100 tracking-wide">CAR-טיב</h2>
+        <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm font-medium">טוען תוכן איכותי...</p>
     </div>
 
     <!-- Mobile Menu Backdrop -->
@@ -203,6 +205,10 @@
                      <button id="single-video-share-btn" class="flex items-center justify-center gap-2 bg-purple-100 hover:bg-purple-200 dark:bg-purple-900/30 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-300 font-semibold px-5 py-3 rounded-lg transition-all transform active:scale-95">
                         <i class="fas fa-share-alt"></i>
                         <span>שתף</span>
+                    </button>
+                    <button id="single-video-home-btn" class="flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold px-5 py-3 rounded-lg transition-all transform active:scale-95">
+                        <i class="fas fa-home"></i>
+                        <span>דף הבית</span>
                     </button>
                     <button id="single-video-back-btn" class="flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold px-5 py-3 rounded-lg transition-all transform active:scale-95">
                         <i class="fas fa-arrow-right"></i>
@@ -415,7 +421,62 @@
                     </div>
                 </div>
                 <div id="video-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
-                     <!-- Videos will be injected here -->
+                     <div id="video-skeletons" class="contents">
+                        <div class="animate-pulse flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                            <div class="bg-slate-200 dark:bg-slate-700 aspect-video w-full"></div>
+                            <div class="p-4 sm:p-5 flex flex-col flex-grow">
+                                <div class="flex justify-between items-center mb-2.5">
+                                    <div class="flex items-center gap-2 w-full">
+                                        <div class="h-7 w-7 rounded-full bg-slate-300 dark:bg-slate-600 flex-shrink-0"></div>
+                                        <div class="h-4 bg-slate-300 dark:bg-slate-600 rounded w-1/2"></div>
+                                    </div>
+                                </div>
+                                <div class="h-5 bg-slate-300 dark:bg-slate-600 rounded w-5/6 mb-1"></div>
+                                <div class="h-5 bg-slate-300 dark:bg-slate-600 rounded w-3/4 mb-3"></div>
+                                <div class="flex flex-wrap gap-1.5 mt-1 mb-auto">
+                                    <div class="h-5 w-12 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
+                                    <div class="h-5 w-16 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
+                                </div>
+                                <div class="h-px bg-slate-200 dark:bg-slate-500 mt-4"></div>
+                            </div>
+                        </div>
+                         <div class="animate-pulse flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                            <div class="bg-slate-200 dark:bg-slate-700 aspect-video w-full"></div>
+                            <div class="p-4 sm:p-5 flex flex-col flex-grow">
+                                <div class="flex justify-between items-center mb-2.5">
+                                    <div class="flex items-center gap-2 w-full">
+                                        <div class="h-7 w-7 rounded-full bg-slate-300 dark:bg-slate-600 flex-shrink-0"></div>
+                                        <div class="h-4 bg-slate-300 dark:bg-slate-600 rounded w-1/2"></div>
+                                    </div>
+                                </div>
+                                <div class="h-5 bg-slate-300 dark:bg-slate-600 rounded w-5/6 mb-1"></div>
+                                <div class="h-5 bg-slate-300 dark:bg-slate-600 rounded w-3/4 mb-3"></div>
+                                <div class="flex flex-wrap gap-1.5 mt-1 mb-auto">
+                                    <div class="h-5 w-12 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
+                                    <div class="h-5 w-16 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
+                                </div>
+                                <div class="h-px bg-slate-200 dark:bg-slate-500 mt-4"></div>
+                            </div>
+                        </div>
+                        <div class="animate-pulse hidden sm:flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+                            <div class="bg-slate-200 dark:bg-slate-700 aspect-video w-full"></div>
+                            <div class="p-4 sm:p-5 flex flex-col flex-grow">
+                                <div class="flex justify-between items-center mb-2.5">
+                                    <div class="flex items-center gap-2 w-full">
+                                        <div class="h-7 w-7 rounded-full bg-slate-300 dark:bg-slate-600 flex-shrink-0"></div>
+                                        <div class="h-4 bg-slate-300 dark:bg-slate-600 rounded w-1/2"></div>
+                                    </div>
+                                </div>
+                                <div class="h-5 bg-slate-300 dark:bg-slate-600 rounded w-5/6 mb-1"></div>
+                                <div class="h-5 bg-slate-300 dark:bg-slate-600 rounded w-3/4 mb-3"></div>
+                                <div class="flex flex-wrap gap-1.5 mt-1 mb-auto">
+                                    <div class="h-5 w-12 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
+                                    <div class="h-5 w-16 bg-slate-200 dark:bg-slate-600 rounded-full"></div>
+                                </div>
+                                <div class="h-px bg-slate-200 dark:bg-slate-500 mt-4"></div>
+                            </div>
+                        </div>
+                     </div>
                 </div>
                 <div id="no-videos-found" class="hidden col-span-full text-center text-slate-500 dark:text-slate-400 py-16" aria-live="polite"></div>
             </section>
@@ -556,7 +617,6 @@
                     </div>
                 </div>
             </section>
-
         </div>
     </main>
 
@@ -574,13 +634,13 @@
                 <div>
                     <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">קטגוריות</h3>
                     <ul class="space-y-3">
-                        <li><a href="?name=review#video-grid-section" class="nav-internal-link footer-link"><i class="fas fa-car-on fa-fw ml-2 opacity-70"></i>סקירות רכב</a></li>
-                        <li><a href="?name=maintenance#video-grid-section" class="nav-internal-link footer-link"><i class="fas fa-oil-can fa-fw ml-2 opacity-70"></i>טיפולים</a></li>
-                        <li><a href="?name=diy#video-grid-section" class="nav-internal-link footer-link"><i class="fas fa-tools fa-fw ml-2 opacity-70"></i>עשה זאת בעצמך</a></li>
-                        <li><a href="?name=upgrades#video-grid-section" class="nav-internal-link footer-link"><i class="fas fa-rocket fa-fw ml-2 opacity-70"></i>שיפורים ושדרוגים</a></li>
-                        <li><a href="?name=troubleshooting#video-grid-section" class="nav-internal-link footer-link"><i class="fas fa-microscope fa-fw ml-2 opacity-70"></i>איתור ותיקון תקלות</a></li>
-                        <li><a href="?name=systems#video-grid-section" class="nav-internal-link footer-link"><i class="fas fa-cogs fa-fw ml-2 opacity-70"></i>מערכות הרכב</a></li>
-                        <li><a href="?name=collectors#video-grid-section" class="nav-internal-link footer-link"><i class="fas fa-car-side fa-fw ml-2 opacity-70"></i>רכבי אספנות</a></li>
+                        <li><a href="?name=review" class="nav-internal-link footer-link"><i class="fas fa-car-on fa-fw ml-2 opacity-70"></i>סקירות רכב</a></li>
+                        <li><a href="?name=maintenance" class="nav-internal-link footer-link"><i class="fas fa-oil-can fa-fw ml-2 opacity-70"></i>טיפולים</a></li>
+                        <li><a href="?name=diy" class="nav-internal-link footer-link"><i class="fas fa-tools fa-fw ml-2 opacity-70"></i>עשה זאת בעצמך</a></li>
+                        <li><a href="?name=upgrades" class="nav-internal-link footer-link"><i class="fas fa-rocket fa-fw ml-2 opacity-70"></i>שיפורים ושדרוגים</a></li>
+                        <li><a href="?name=troubleshooting" class="nav-internal-link footer-link"><i class="fas fa-microscope fa-fw ml-2 opacity-70"></i>איתור ותיקון תקלות</a></li>
+                        <li><a href="?name=systems" class="nav-internal-link footer-link"><i class="fas fa-cogs fa-fw ml-2 opacity-70"></i>מערכות הרכב</a></li>
+                        <li><a href="?name=collectors" class="nav-internal-link footer-link"><i class="fas fa-car-side fa-fw ml-2 opacity-70"></i>רכבי אספנות</a></li>
                     </ul>
                 </div>
                 <div>
@@ -610,13 +670,9 @@
             </div>
         </div>
     </footer>
-
-    <!-- Back to Top Button -->
     <button id="back-to-top-btn" aria-label="חזור לראש העמוד" class="fixed bottom-6 right-6 rtl:left-6 rtl:right-auto z-50 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-900 opacity-0 invisible h-12 w-12 flex items-center justify-center transition-all duration-300 transform hover:scale-110">
         <i class="fas fa-arrow-up text-lg"></i>
     </button>
-
-    <!-- Templates -->
     <template id="video-card-template">
         <article class="group flex flex-col bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-xl dark:shadow-black/40 dark:hover:shadow-purple-500/30 transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-[1.03] border border-slate-200 dark:border-slate-700 hover:border-purple-300 dark:hover:border-purple-500 overflow-hidden">
             <div class="video-thumbnail-container bg-slate-200 dark:bg-slate-700 relative overflow-hidden border-b border-slate-200 dark:border-slate-700">
@@ -627,7 +683,7 @@
                         <i class="fas fa-play-circle fa-5x sm:fa-6x text-purple-500 dark:text-purple-400 opacity-80 group-hover:opacity-100 drop-shadow-lg"></i>
                     </div>
                 </a>
-                <iframe class="video-iframe hidden absolute inset-0 w-full h-full z-30" loading="lazy" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>
+                <iframe class="video-iframe hidden absolute inset-0 w-full h-full z-30" loading="lazy" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"></iframe>
             </div>
             <div class="video-details-container bg-slate-50 dark:bg-slate-700 p-4 sm:p-5 flex flex-col flex-grow">
                  <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 mb-2.5">
@@ -662,6 +718,5 @@
             </div>
         </article>
     </template>
-
 </body>
 </html>
