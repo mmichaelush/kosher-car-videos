@@ -1,6 +1,4 @@
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Shortcuts
     const App = window.App;
     const DOM = App.DOM;
     const State = App.state;
@@ -10,7 +8,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let videoObserver;
 
-    // --- Utility Functions ---
+    function handleThemeToggle() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        DOM.darkModeToggles.forEach(toggle => {
+            const moonIcon = toggle.querySelector('.fa-moon');
+            const sunIcon = toggle.querySelector('.fa-sun');
+            if(moonIcon) moonIcon.classList.toggle('hidden', isDark);
+            if(sunIcon) sunIcon.classList.toggle('hidden', !isDark);
+            toggle.setAttribute('aria-checked', String(isDark));
+        });
+    }
+
     const throttle = (callback, time) => {
         if (State.ui.throttleTimer) return;
         State.ui.throttleTimer = true;
@@ -20,21 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }, time);
     };
 
-    // --- Preloader Logic ---
     function initPreloader() {
         const preloader = document.getElementById('site-preloader');
         if (!preloader) return;
 
-        // Force exactly 2 seconds duration
         setTimeout(() => {
             preloader.style.opacity = '0';
             setTimeout(() => {
                 preloader.style.display = 'none';
-            }, 500); // Wait for transition to finish
+            }, 500); 
         }, 2000);
     }
 
-    // --- Search Logic ---
     function handleSearchInput(inputElement) {
         const suggestionsContainer = document.getElementById(`${inputElement.id.replace('-input', '')}-suggestions`);
         State.search.currentInput = inputElement;
@@ -158,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!input) return;
         const searchTerm = input.value.trim();
         
-        // If we are in single video view, force navigation to grid view
         if (!DOM.singleVideoView.container.classList.contains('hidden')) {
              history.pushState(null, '', `./?search=${encodeURIComponent(searchTerm)}#video-grid-section`);
              handleRouting();
@@ -168,8 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-
-    // --- Filtering & Logic ---
     function getFilteredAndSortedVideos() {
         if (!State.allVideos) return [];
         let filtered = State.allVideos;
@@ -250,7 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Navigation / Routing ---
     function handleRouting() {
         const params = new URLSearchParams(window.location.search);
         const videoId = params.get('v');
@@ -284,7 +286,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             applyFilters(false, false);
             
-            // Handle anchors scrolling nicely
             if(window.location.hash) {
                  setTimeout(() => {
                     const targetId = window.location.hash.substring(1);
@@ -358,29 +359,171 @@ document.addEventListener('DOMContentLoaded', () => {
         document.title = 'CAR-טיב - סרטוני רכבים כשרים';
     }
 
+    function playVideoInline(cardElement) {
+        if (!cardElement) return;
+        const videoId = cardElement.dataset.videoId;
+        const iframe = cardElement.querySelector('.video-iframe');
+        const playLink = cardElement.querySelector('.video-play-link');
+        
+        if (videoId && iframe && playLink && iframe.classList.contains('hidden')) {
+            playLink.style.display = 'none';
+            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
+            iframe.classList.remove('hidden');
+        }
+    }
+
+    function scrollToVideoGridIfNeeded() {
+        const gridSection = document.getElementById('video-grid-section');
+        if (gridSection) {
+            const rect = gridSection.getBoundingClientRect();
+            if (rect.top < 0 || rect.bottom > window.innerHeight) {
+                 const header = document.querySelector('header.sticky');
+                 const headerOffset = header ? header.offsetHeight + 20 : 80;
+                 const elementPosition = rect.top + window.pageYOffset - headerOffset;
+                 window.scrollTo({ top: elementPosition, behavior: "smooth" });
+            }
+        }
+    }
+    
+    async function handleCheckYtId(e) {
+        if (e) e.preventDefault();
+        
+        function extractYouTubeVideoId(url) {
+            if (!url) return null;
+            const patterns = [
+                /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|live\/|attribution_link\?a=.*&u=%2Fwatch%3Fv%3D)([\w-]{11})/,
+                /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([\w-]{11})/,
+                /^([\w-]{11})$/
+            ];
+            for (const pattern of patterns) {
+                const match = url.match(pattern);
+                if (match && match[1]) return match[1];
+            }
+            return null;
+        }
+
+        const { value: userInput } = await Swal.fire({
+            title: 'בדיקת סרטון במאגר',
+            text: 'הכנס קישור לסרטון יוטיוב או מזהה (ID) לבדיקה:',
+            input: 'url',
+            inputPlaceholder: 'https://www.youtube.com/watch?v=...',
+            confirmButtonText: 'בדוק',
+            cancelButtonText: 'ביטול',
+            showCancelButton: true,
+            confirmButtonColor: '#7c3aed',
+            inputAutoTrim: true
+        });
+
+        if (!userInput) return;
+
+        const videoId = extractYouTubeVideoId(userInput);
+        if (!videoId) {
+            Swal.fire({
+                icon: 'error',
+                title: 'שגיאה',
+                text: 'לא זוהה מזהה סרטון תקין.',
+                confirmButtonColor: '#7c3aed'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'מחפש במאגר...',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        if (!State.allVideosCache || State.allVideosCache.length === 0) {
+             const promises = CONSTANTS.CATEGORY_FILES.map(file => Data.fetchVideosFromFile(file));
+             const results = await Promise.all(promises);
+             State.allVideosCache = results.flat();
+        }
+
+        const foundVideo = State.allVideosCache.find(v => v.id === videoId);
+
+        if (foundVideo) {
+            Swal.fire({
+                icon: 'info',
+                title: 'הסרטון קיים!',
+                html: `
+                    <div class="text-right">
+                        <p class="mb-2">הסרטון <strong>"${foundVideo.title}"</strong> כבר נמצא במאגר.</p>
+                        <p class="text-sm text-gray-500">קטגוריה: ${foundVideo.category}</p>
+                    </div>
+                `,
+                imageUrl: foundVideo.thumbnail,
+                imageWidth: 320,
+                imageHeight: 180,
+                imageAlt: foundVideo.title,
+                confirmButtonText: 'סגור',
+                confirmButtonColor: '#7c3aed'
+            });
+        } else {
+            Swal.fire({
+                icon: 'success',
+                title: 'הסרטון לא קיים',
+                text: `הסרטון (ID: ${videoId}) טרם נוסף למאגר. אתה מוזמן להוסיף אותו!`,
+                confirmButtonText: 'מעולה, תודה',
+                confirmButtonColor: '#10b981'
+            });
+        }
+    }
+
+    async function shareContent(url, buttonElement, successMessage, title) {
+        const shareData = {
+            title: `CAR-טיב: ${title}`,
+            text: `צפה בסרטון "${title}" באתר CAR-טיב!`,
+            url: url,
+        };
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (err) {
+                console.error('Error sharing:', err);
+            }
+        } else {
+            try {
+                await navigator.clipboard.writeText(url);
+                if (buttonElement && successMessage) {
+                    const icon = buttonElement.querySelector('i');
+                    const originalIconClass = icon ? icon.className : '';
+                    const textSpan = buttonElement.querySelector('span');
+                    const originalText = textSpan ? textSpan.textContent : '';
+                    if (icon) icon.className = 'fas fa-check text-green-500';
+                    if (textSpan) textSpan.textContent = successMessage;
+                    buttonElement.disabled = true;
+                    setTimeout(() => {
+                        if (icon) icon.className = originalIconClass;
+                        if (textSpan) textSpan.textContent = originalText;
+                        buttonElement.disabled = false;
+                    }, 2000);
+                } else {
+                    alert('הקישור הועתק ללוח!');
+                }
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                alert('לא ניתן היה להעתיק את הקישור.');
+            }
+        }
+    }
+
     function setupEventListeners() {
         document.body.addEventListener('click', (e) => {
             const { target } = e;
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
 
-            // Internal Navigation Links
             if (link && link.classList.contains('nav-internal-link')) {
                  const href = link.getAttribute('href');
-                 // Fix for "Home" button reloading or not working correctly
                  if (href === '#' || href === './' || href === './#home-hero') {
                      e.preventDefault();
-                     // If we are deep in the site (single video), go back to home view
                      if (!DOM.singleVideoView.container.classList.contains('hidden')) {
                          history.pushState(null, '', './');
                          handleRouting();
                      } else {
-                         // Just scroll to top
                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                         // Update URL cleanly
                          history.replaceState(null, '', './');
                      }
-                     // Close mobile menu
                      if (DOM.mobileMenu && !DOM.mobileMenu.classList.contains('translate-x-full')) {
                          DOM.mobileMenu.classList.add('translate-x-full');
                          DOM.backdrop.classList.add('invisible', 'opacity-0');
@@ -389,12 +532,10 @@ document.addEventListener('DOMContentLoaded', () => {
                      return;
                  }
                  
-                 // Handle other internal links (anchors)
                  const isHashLink = href.includes('#');
                  if (isHashLink) {
                      const targetId = href.substring(href.lastIndexOf('#') + 1);
                      
-                     // If we are on single video view, force return to list view then scroll
                      if (!DOM.singleVideoView.container.classList.contains('hidden')) {
                          e.preventDefault();
                          history.pushState(null, '', './#' + targetId);
@@ -409,7 +550,6 @@ document.addEventListener('DOMContentLoaded', () => {
                          const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                          window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                          
-                         // Close mobile menu
                          if (DOM.mobileMenu && !DOM.mobileMenu.classList.contains('translate-x-full')) {
                              DOM.mobileMenu.classList.add('translate-x-full');
                              DOM.backdrop.classList.add('invisible', 'opacity-0');
@@ -478,7 +618,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (target.id === 'single-video-back-btn') {
                  e.preventDefault();
-                 // If there's history, go back. If not (direct link), go home.
                  if (history.length > 1 && document.referrer.includes(window.location.host)) {
                     history.back();
                  } else {
@@ -572,10 +711,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function init() {
-        // Init Preloader first
         initPreloader();
         
-        // Define initializeApp here to ensure it's in scope or just run the logic
         if (DOM.currentYearFooter) DOM.currentYearFooter.textContent = new Date().getFullYear();
         
         const isDark = document.documentElement.classList.contains('dark');
