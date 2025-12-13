@@ -32,6 +32,11 @@ window.App.DOM = {
         mobile: document.getElementById('mobile-search-form'),
         main: document.getElementById('main-content-search-form')
     },
+    searchInputs: {
+        desktop: document.getElementById('desktop-search-input'),
+        mobile: document.getElementById('mobile-search-input'),
+        main: document.getElementById('main-content-search-input')
+    },
     searchSuggestions: {
         desktop: document.getElementById('desktop-search-suggestions'),
         mobile: document.getElementById('mobile-search-suggestions'),
@@ -51,7 +56,8 @@ window.App.DOM = {
         duration: document.getElementById('single-video-duration'),
         date: document.getElementById('single-video-date'),
         shareBtn: document.getElementById('single-video-share-btn'),
-        backBtn: document.getElementById('single-video-back-btn')
+        backBtn: document.getElementById('single-video-back-btn'),
+        homeBtn: document.getElementById('single-video-home-btn') // NEW BUTTON
     },
     sections: {
         homeHero: document.getElementById('home-hero'),
@@ -153,7 +159,7 @@ window.App.UI = {
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if(card.channelLogo) {
-            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
+            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==ADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
             card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
             card.channelLogo.classList.toggle('hidden', !video.channelImage);
         }
@@ -360,6 +366,14 @@ window.App.UI = {
         const breadcrumb = document.getElementById('breadcrumb-category-name');
         if (breadcrumb) breadcrumb.textContent = name;
         
+        // Update Search Placeholder Logic
+        const searchPlaceholder = (categoryId && categoryId !== 'all') 
+            ? `חפש סרטונים ב${name}...` 
+            : 'חפש סרטונים באתר...';
+        
+        if (dom.searchInputs.main) dom.searchInputs.main.placeholder = searchPlaceholder;
+        // Desktop/Mobile search inputs usually stay global, but can be updated too if desired
+        
         const countSummaryEl = document.getElementById('category-video-count-summary');
         if(countSummaryEl) {
             const categoryVideos = window.App.state.allVideos.filter(v => v.category === categoryId);
@@ -416,4 +430,3 @@ window.App.UI = {
         window.App.UI.updateActiveTagVisuals();
     }
 };
-
