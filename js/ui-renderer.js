@@ -179,18 +179,19 @@ window.App.UI = {
             const categoryName = categoryData ? categoryData.name : (video.category || '').charAt(0).toUpperCase() + (video.category || '').slice(1);
             const categoryIconEl = cardClone.querySelector('.video-category-icon');
             
-            // Set link href
-            card.categoryDisplay.href = `?name=${video.category}#video-grid-section`;
+            // Set link href without hash
+            card.categoryDisplay.href = `?name=${video.category}`;
             
             if (categoryIconEl) {
                 const icon = categoryData ? categoryData.icon : 'folder-open';
-                categoryIconEl.className = `video-category-icon fas fa-${icon} opacity-70 ml-2`;
+                categoryIconEl.className = `video-category-icon fas fa-${icon} opacity-70 ml-2 text-purple-500 dark:text-purple-400`;
             }
             card.categoryDisplay.appendChild(document.createTextNode(categoryName));
         }
 
         if (card.dateDisplay) {
-            if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
+            // Check if dateAdded is valid date object and not "Invalid Date"
+            if (video.dateAdded && video.dateAdded instanceof Date && !isNaN(video.dateAdded.getTime())) {
                 card.dateDisplay.appendChild(document.createTextNode(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })));
             } else {
                 card.dateDisplay.style.display = 'none';
