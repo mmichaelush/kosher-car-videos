@@ -1,4 +1,7 @@
+// Main application logic, routing, and event handling
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Shortcuts
     const App = window.App;
     const DOM = App.DOM;
     const State = App.state;
@@ -330,7 +333,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.title = `${video.title} - CAR-טיב`;
         
         DOM.singleVideoView.title.innerHTML = video.title;
-        DOM.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+        
+        // Removed allowfullscreen, moved fullscreen to allow attribute
+        DOM.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"></iframe>`;
         
         DOM.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
         DOM.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${video.duration}`;
@@ -367,6 +372,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (videoId && iframe && playLink && iframe.classList.contains('hidden')) {
             playLink.style.display = 'none';
+            // Corrected allow attribute for fullscreen
             iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
             iframe.classList.remove('hidden');
         }
@@ -513,6 +519,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
 
+            // Internal Navigation Links
             if (link && link.classList.contains('nav-internal-link')) {
                  const href = link.getAttribute('href');
                  if (href === '#' || href === './' || href === './#home-hero') {
@@ -616,7 +623,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 const video = State.allVideos.find(v => v.id === videoId);
                 shareContent(window.location.href, target.closest('button'), 'הועתק!', video?.title || 'סרטון');
             }
-            if (target.id === 'single-video-back-btn') {
+
+            // NEW: Home Button Logic
+            if (target.closest('#single-video-home-btn')) {
+                 e.preventDefault();
+                 history.pushState(null, '', './');
+                 handleRouting();
+            }
+
+            // NEW: Back Button Logic
+            if (target.closest('#single-video-back-btn')) {
                  e.preventDefault();
                  if (history.length > 1 && document.referrer.includes(window.location.host)) {
                     history.back();
@@ -625,6 +641,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     handleRouting();
                  }
             }
+
             if (target.id === 'no-results-clear-btn') clearAllFilters();
             
             if(target.closest('#open-menu-btn')) {
