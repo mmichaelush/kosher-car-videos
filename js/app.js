@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     // Shortcuts
     const App = window.App;
@@ -24,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const preloader = document.getElementById('site-preloader');
         if (!preloader) return;
 
-        // Force at least 2 seconds duration
+        // Force exactly 2 seconds duration
         setTimeout(() => {
             preloader.style.opacity = '0';
             setTimeout(() => {
@@ -157,6 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!input) return;
         const searchTerm = input.value.trim();
         
+        // If we are in single video view, force navigation to grid view
         if (!DOM.singleVideoView.container.classList.contains('hidden')) {
              history.pushState(null, '', `./?search=${encodeURIComponent(searchTerm)}#video-grid-section`);
              handleRouting();
@@ -285,7 +287,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // Handle anchors scrolling nicely
             if(window.location.hash) {
                  setTimeout(() => {
-                    const el = document.querySelector(window.location.hash);
+                    const targetId = window.location.hash.substring(1);
+                    const el = document.getElementById(targetId);
                     if(el) {
                          const headerOffset = 100;
                          const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
@@ -293,7 +296,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                  }, 200);
             } else {
-                 // If no hash and we just switched back to home view, scroll top
                  window.scrollTo(0,0);
             }
         }
@@ -321,7 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // KEY CHANGE: Toggle Views via UI Renderer
         UI.toggleSingleVideoMode(true);
         
         window.scrollTo(0, 0);
@@ -363,33 +364,57 @@ document.addEventListener('DOMContentLoaded', () => {
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
 
-            // Internal Navigation Links (with IDs)
+            // Internal Navigation Links
             if (link && link.classList.contains('nav-internal-link')) {
                  const href = link.getAttribute('href');
-                 const isHashLink = href.startsWith('#');
-                 const targetId = isHashLink ? href.substring(1) : href.split('#')[1];
-
-                 // If we are on single video view, force return to home
-                 if (!DOM.singleVideoView.container.classList.contains('hidden')) {
+                 // Fix for "Home" button reloading or not working correctly
+                 if (href === '#' || href === './' || href === './#home-hero') {
                      e.preventDefault();
-                     history.pushState(null, '', './' + (isHashLink ? href : '#' + targetId));
-                     handleRouting();
-                     return;
-                 }
-                 
-                 // Fix: If clicking "Home" (./#home-hero) while on home, just scroll
-                 if (targetId && document.getElementById(targetId)) {
-                     e.preventDefault();
-                     const el = document.getElementById(targetId);
-                     const headerOffset = 100;
-                     const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                     window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                     
-                     // Close mobile menu if open
+                     // If we are deep in the site (single video), go back to home view
+                     if (!DOM.singleVideoView.container.classList.contains('hidden')) {
+                         history.pushState(null, '', './');
+                         handleRouting();
+                     } else {
+                         // Just scroll to top
+                         window.scrollTo({ top: 0, behavior: 'smooth' });
+                         // Update URL cleanly
+                         history.replaceState(null, '', './');
+                     }
+                     // Close mobile menu
                      if (DOM.mobileMenu && !DOM.mobileMenu.classList.contains('translate-x-full')) {
                          DOM.mobileMenu.classList.add('translate-x-full');
                          DOM.backdrop.classList.add('invisible', 'opacity-0');
                          document.body.classList.remove('overflow-hidden');
+                     }
+                     return;
+                 }
+                 
+                 // Handle other internal links (anchors)
+                 const isHashLink = href.includes('#');
+                 if (isHashLink) {
+                     const targetId = href.substring(href.lastIndexOf('#') + 1);
+                     
+                     // If we are on single video view, force return to list view then scroll
+                     if (!DOM.singleVideoView.container.classList.contains('hidden')) {
+                         e.preventDefault();
+                         history.pushState(null, '', './#' + targetId);
+                         handleRouting();
+                         return;
+                     }
+
+                     if (document.getElementById(targetId)) {
+                         e.preventDefault();
+                         const el = document.getElementById(targetId);
+                         const headerOffset = 100;
+                         const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                         window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                         
+                         // Close mobile menu
+                         if (DOM.mobileMenu && !DOM.mobileMenu.classList.contains('translate-x-full')) {
+                             DOM.mobileMenu.classList.add('translate-x-full');
+                             DOM.backdrop.classList.add('invisible', 'opacity-0');
+                             document.body.classList.remove('overflow-hidden');
+                         }
                      }
                  }
             }
@@ -453,7 +478,13 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (target.id === 'single-video-back-btn') {
                  e.preventDefault();
-                 history.back(); 
+                 // If there's history, go back. If not (direct link), go home.
+                 if (history.length > 1 && document.referrer.includes(window.location.host)) {
+                    history.back();
+                 } else {
+                    history.pushState(null, '', './');
+                    handleRouting();
+                 }
             }
             if (target.id === 'no-results-clear-btn') clearAllFilters();
             
@@ -541,8 +572,45 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function init() {
+        // Init Preloader first
         initPreloader();
-        await initializeApp();
+        
+        // Define initializeApp here to ensure it's in scope or just run the logic
+        if (DOM.currentYearFooter) DOM.currentYearFooter.textContent = new Date().getFullYear();
+        
+        const isDark = document.documentElement.classList.contains('dark');
+        DOM.darkModeToggles.forEach(toggle => {
+            const moonIcon = toggle.querySelector('.fa-moon');
+            const sunIcon = toggle.querySelector('.fa-sun');
+            if(moonIcon) moonIcon.classList.toggle('hidden', isDark);
+            if(sunIcon) sunIcon.classList.toggle('hidden', !isDark);
+            toggle.setAttribute('aria-checked', String(isDark));
+        });
+
+        if ('IntersectionObserver' in window) {
+            videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const iframe = entry.target.querySelector('.video-iframe');
+                    const playLink = entry.target.querySelector('.video-play-link');
+                    if (!iframe || !playLink) return;
+                    if (!entry.isIntersecting && !iframe.classList.contains('hidden')) {
+                        iframe.src = '';
+                        iframe.classList.add('hidden');
+                        playLink.style.display = 'block';
+                    }
+                });
+            }, { threshold: 0.1 });
+        }
+
+        await Data.loadVideos();
+        const channels = await Data.loadFeaturedChannels();
+        UI.renderFeaturedChannels(channels);
+        UI.renderHomepageCategoryButtons();
+
+        window.addEventListener('popstate', handleRouting);
+        setupEventListeners();
+        
+        handleRouting();
     }
 
     init();
