@@ -66,6 +66,7 @@ window.App.DOM = {
 };
 
 window.App.UI = {
+    // NEW FUNCTION: Toggles between Single Video View and Home View
     toggleSingleVideoMode: (isSingleVideo) => {
         const dom = window.App.DOM;
         
@@ -75,6 +76,10 @@ window.App.UI = {
             
             // Show single video view
             if (dom.singleVideoView.container) dom.singleVideoView.container.classList.remove('hidden');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+
         } else {
             // Show home/category view
             if (dom.homeViewContainer) dom.homeViewContainer.classList.remove('hidden');
@@ -159,7 +164,7 @@ window.App.UI = {
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if(card.channelLogo) {
-            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==ALAAAAAABAAEAAAIBRAA7'; // Placeholder if missing
+            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==CAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==ALAAAAAABAAEAAAIBRAA7'; // Placeholder if missing
             card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
             card.channelLogo.classList.toggle('hidden', !video.channelImage);
         }
