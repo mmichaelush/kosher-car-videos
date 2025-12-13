@@ -1,3 +1,5 @@
+// Handles DOM manipulations and rendering HTML
+
 window.App = window.App || {};
 
 window.App.DOM = {
@@ -36,9 +38,7 @@ window.App.DOM = {
         main: document.getElementById('main-content-search-suggestions')
     },
     contactForm: document.getElementById('contact-form'),
-    // NEW: Main home view container
     homeViewContainer: document.getElementById('home-view-container'),
-    
     siteFooter: document.getElementById('site-footer'),
     featuredChannelsTrack: document.getElementById('featured-channels-track'),
     singleVideoView: {
@@ -53,7 +53,6 @@ window.App.DOM = {
         shareBtn: document.getElementById('single-video-share-btn'),
         backBtn: document.getElementById('single-video-back-btn')
     },
-    // Sections to toggle visibility (individual sections)
     sections: {
         homeHero: document.getElementById('home-hero'),
         homepageCategories: document.getElementById('homepage-categories-section'),
@@ -66,27 +65,18 @@ window.App.DOM = {
 };
 
 window.App.UI = {
-    // NEW FUNCTION: Toggles between Single Video View and Home View
     toggleSingleVideoMode: (isSingleVideo) => {
         const dom = window.App.DOM;
         
         if (isSingleVideo) {
-            // Hide the entire home/category view container
             if (dom.homeViewContainer) dom.homeViewContainer.classList.add('hidden');
-            
-            // Show single video view
             if (dom.singleVideoView.container) dom.singleVideoView.container.classList.remove('hidden');
-            
-            // Scroll to top
             window.scrollTo(0, 0);
 
         } else {
-            // Show home/category view
             if (dom.homeViewContainer) dom.homeViewContainer.classList.remove('hidden');
-            
-            // Hide single video view
             if (dom.singleVideoView.container) dom.singleVideoView.container.classList.add('hidden');
-            if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = ''; // Stop video
+            if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = '';
         }
     },
 
@@ -94,7 +84,7 @@ window.App.UI = {
         const track = window.App.DOM.featuredChannelsTrack;
         if(!track || channels.length === 0) return;
         
-        const displayChannels = [...channels, ...channels]; // Duplicate for infinite scroll effect
+        const displayChannels = [...channels, ...channels];
         track.innerHTML = displayChannels.map(channel => `
             <a href="${channel.channel_url}" target="_blank" rel="noopener noreferrer" class="channel-card group flex-shrink-0 block p-5 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg border border-slate-100 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-500 text-center transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-purple-500">
                 <div class="relative mx-auto w-20 h-20 mb-4">
@@ -105,7 +95,6 @@ window.App.UI = {
             </a>
         `).join('');
 
-        // Setup scroll buttons logic
         const scrollContainer = document.querySelector('.channels-carousel-container');
         const btnLeft = document.getElementById('channels-scroll-left');
         const btnRight = document.getElementById('channels-scroll-right');
@@ -164,7 +153,7 @@ window.App.UI = {
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if(card.channelLogo) {
-            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==CAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==ALAAAAAABAAEAAAIBRAA7'; // Placeholder if missing
+            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
             card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
             card.channelLogo.classList.toggle('hidden', !video.channelImage);
         }
@@ -206,7 +195,6 @@ window.App.UI = {
         
         if (!isLoadMore) {
             dom.videoCardsContainer.innerHTML = '';
-            // Remove any existing skeletons or clear content
             const skeletons = document.getElementById('video-skeletons');
             if (skeletons) skeletons.remove();
         }
@@ -381,9 +369,7 @@ window.App.UI = {
                 : `בקטגוריה זו קיימים <strong class="text-purple-600 dark:text-purple-400">${count}</strong> סרטונים.`;
         }
 
-        // Toggle Views Logic - Single Source of Truth
         if(categoryId && categoryId !== 'all') {
-            // Category View
             if(dom.sections.homeHero) dom.sections.homeHero.classList.add('hidden');
             if(dom.sections.homepageCategories) dom.sections.homepageCategories.classList.add('hidden');
             if(dom.sections.featuredChannels) dom.sections.featuredChannels.classList.add('hidden');
@@ -393,7 +379,6 @@ window.App.UI = {
             
             if(dom.sections.categoryTitle) dom.sections.categoryTitle.classList.remove('hidden');
         } else {
-            // Home View
             if(dom.sections.homeHero) dom.sections.homeHero.classList.remove('hidden');
             if(dom.sections.homepageCategories) dom.sections.homepageCategories.classList.remove('hidden');
             if(dom.sections.featuredChannels) dom.sections.featuredChannels.classList.remove('hidden');
@@ -431,3 +416,4 @@ window.App.UI = {
         window.App.UI.updateActiveTagVisuals();
     }
 };
+
