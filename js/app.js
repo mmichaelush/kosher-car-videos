@@ -19,7 +19,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }, time);
     };
 
-    const getThumbnailUrl = Data.getThumbnailUrl;
+    // --- Preloader Logic ---
+    function initPreloader() {
+        const preloader = document.getElementById('site-preloader');
+        if (!preloader) return;
+
+        // Force at least 2 seconds duration
+        setTimeout(() => {
+            preloader.style.opacity = '0';
+            setTimeout(() => {
+                preloader.style.display = 'none';
+            }, 500); // Wait for transition to finish
+        }, 2000);
+    }
 
     // --- Search Logic ---
     function handleSearchInput(inputElement) {
@@ -37,7 +49,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Search scope logic: If in category view, search only within category
         const fuseSource = (State.currentFilters.category !== 'all')
             ? State.allVideos.filter(v => v.category === State.currentFilters.category)
             : State.allVideos;
@@ -146,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!input) return;
         const searchTerm = input.value.trim();
         
-        // Ensure we are in video grid view
         if (!DOM.singleVideoView.container.classList.contains('hidden')) {
              history.pushState(null, '', `./?search=${encodeURIComponent(searchTerm)}#video-grid-section`);
              handleRouting();
@@ -162,26 +172,22 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!State.allVideos) return [];
         let filtered = State.allVideos;
 
-        // Category Filter
         if (State.currentFilters.category !== 'all') {
              filtered = filtered.filter(v => v.category === State.currentFilters.category);
         }
 
-        // Fuzzy Search
         if (State.currentFilters.searchTerm.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && State.fuse) {
             const fuseResults = State.fuse.search(State.currentFilters.searchTerm);
             const resultIds = new Set(fuseResults.map(r => r.item.id));
             filtered = filtered.filter(v => resultIds.has(v.id));
         }
 
-        // Tags and Boolean Filters
         let videos = filtered.filter(video => {
             const tagsMatch = State.currentFilters.tags.length === 0 || State.currentFilters.tags.every(filterTag => (video.tags || []).includes(filterTag));
             const hebrewMatch = !State.currentFilters.hebrewOnly || video.hebrewContent;
             return tagsMatch && hebrewMatch;
         });
 
-        // Sorting
         videos.sort((a, b) => {
             switch (State.currentFilters.sortBy) {
                 case 'date-desc': return (b.dateAdded || 0) - (a.dateAdded || 0);
@@ -210,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         clearSearchSuggestions();
         UI.updateFilterSummary();
-        UI.renderPopularTags(); // Re-render tags based on filtered content context
+        UI.renderPopularTags();
     }
 
     function updateFiltersAndURL(andScroll = true) {
@@ -236,7 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const newSearchString = newParams.toString();
-        // Only push state if changed
         if (url.search.substring(1) !== newSearchString) {
              const newUrl = newSearchString ? `${window.location.pathname}?${newSearchString}` : window.location.pathname;
              history.pushState({ videoId, filters: State.currentFilters }, '', newUrl);
@@ -254,19 +259,15 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             hideSingleVideoView();
             
-            // Determine Category
             let category = 'all';
             if (categoryParam) {
-                // Check if it's a valid category
                 const isValid = CONSTANTS.PREDEFINED_CATEGORIES.some(c => c.id === categoryParam.toLowerCase());
                 if(isValid) category = categoryParam.toLowerCase();
             }
             State.currentFilters.category = category;
             
-            // Update UI for Home/Category View
             UI.updateCategoryPageUI(category);
 
-            // Parse Filters
             State.currentFilters.searchTerm = params.get('search') || '';
             State.currentFilters.tags = params.get('tags') ? params.get('tags').split(',').map(tag => tag.trim().toLowerCase()).filter(Boolean) : [];
             State.currentFilters.sortBy = params.get('sort') || 'date-desc';
@@ -274,16 +275,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 ? params.get('hebrew') === 'true'
                 : localStorage.getItem('hebrewOnlyPreference') === 'true';
 
-            // Sync UI inputs
             UI.syncUIToState();
             
-            // Re-init Fuse if category changed
             const fuseSource = category === 'all' ? State.allVideos : State.allVideos.filter(v => v.category === category);
             State.fuse = new Fuse(fuseSource, CONSTANTS.FUSE_OPTIONS);
 
             applyFilters(false, false);
             
-            // Hash scrolling
+            // Handle anchors scrolling nicely
             if(window.location.hash) {
                  setTimeout(() => {
                     const el = document.querySelector(window.location.hash);
@@ -292,7 +291,10 @@ document.addEventListener('DOMContentLoaded', () => {
                          const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                          window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                     }
-                 }, 100);
+                 }, 200);
+            } else {
+                 // If no hash and we just switched back to home view, scroll top
+                 window.scrollTo(0,0);
             }
         }
     }
@@ -300,7 +302,6 @@ document.addEventListener('DOMContentLoaded', () => {
     async function showSingleVideoView(videoId) {
         if (!videoId) return;
         
-        // Ensure videos are loaded
         if (State.allVideos.length === 0) {
              await Data.loadVideos();
         }
@@ -308,7 +309,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const video = State.allVideos.find(v => v.id === videoId);
         
         if (!video) {
-            console.warn(`Video with ID ${videoId} not found.`);
              await Swal.fire({
                 icon: 'error',
                 title: 'הסרטון לא נמצא',
@@ -321,15 +321,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Hide Main Content, Show Video
-        DOM.mainPageContent.classList.add('hidden');
-        DOM.siteFooter.classList.remove('hidden'); // Ensure footer is visible
-        DOM.singleVideoView.container.classList.remove('hidden');
+        // KEY CHANGE: Toggle Views via UI Renderer
+        UI.toggleSingleVideoMode(true);
         
         window.scrollTo(0, 0);
         document.title = `${video.title} - CAR-טיב`;
         
-        // Populate Data
         DOM.singleVideoView.title.innerHTML = video.title;
         DOM.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
         
@@ -356,252 +353,49 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function hideSingleVideoView() {
-        DOM.singleVideoView.container.classList.add('hidden');
-        DOM.singleVideoView.player.innerHTML = ''; // Stop video
-        DOM.mainPageContent.classList.remove('hidden');
+        UI.toggleSingleVideoMode(false);
         document.title = 'CAR-טיב - סרטוני רכבים כשרים';
     }
 
-
-    // --- Other Functionality ---
-    function handleThemeToggle() {
-        const isDark = document.documentElement.classList.toggle('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        DOM.darkModeToggles.forEach(toggle => {
-            const moonIcon = toggle.querySelector('.fa-moon');
-            const sunIcon = toggle.querySelector('.fa-sun');
-            if(moonIcon) moonIcon.classList.toggle('hidden', isDark);
-            if(sunIcon) sunIcon.classList.toggle('hidden', !isDark);
-            toggle.setAttribute('aria-checked', String(isDark));
-        });
-    }
-
-    function playVideoInline(cardElement) {
-        if (!cardElement) return;
-        const videoId = cardElement.dataset.videoId;
-        const iframe = cardElement.querySelector('.video-iframe');
-        const playLink = cardElement.querySelector('.video-play-link');
-        
-        if (videoId && iframe && playLink && iframe.classList.contains('hidden')) {
-            playLink.style.display = 'none';
-            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
-            iframe.classList.remove('hidden');
-        }
-    }
-
-    function scrollToVideoGridIfNeeded() {
-        const gridSection = document.getElementById('video-grid-section');
-        if (gridSection) {
-            const rect = gridSection.getBoundingClientRect();
-            if (rect.top < 0 || rect.bottom > window.innerHeight) {
-                 const header = document.querySelector('header.sticky');
-                 const headerOffset = header ? header.offsetHeight + 20 : 80;
-                 const elementPosition = rect.top + window.pageYOffset - headerOffset;
-                 window.scrollTo({ top: elementPosition, behavior: "smooth" });
-            }
-        }
-    }
-    
-    async function handleCheckYtId(e) {
-        if (e) e.preventDefault();
-        
-        function extractYouTubeVideoId(url) {
-            if (!url) return null;
-            const patterns = [
-                /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|live\/|attribution_link\?a=.*&u=%2Fwatch%3Fv%3D)([\w-]{11})/,
-                /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([\w-]{11})/,
-                /^([\w-]{11})$/
-            ];
-            for (const pattern of patterns) {
-                const match = url.match(pattern);
-                if (match && match[1]) return match[1];
-            }
-            return null;
-        }
-
-        const { value: userInput } = await Swal.fire({
-            title: 'בדיקת סרטון במאגר',
-            text: 'הכנס קישור לסרטון יוטיוב או מזהה (ID) לבדיקה:',
-            input: 'url',
-            inputPlaceholder: 'https://www.youtube.com/watch?v=...',
-            confirmButtonText: 'בדוק',
-            cancelButtonText: 'ביטול',
-            showCancelButton: true,
-            confirmButtonColor: '#7c3aed',
-            inputAutoTrim: true
-        });
-
-        if (!userInput) return;
-
-        const videoId = extractYouTubeVideoId(userInput);
-        if (!videoId) {
-            Swal.fire({
-                icon: 'error',
-                title: 'שגיאה',
-                text: 'לא זוהה מזהה סרטון תקין.',
-                confirmButtonColor: '#7c3aed'
-            });
-            return;
-        }
-
-        Swal.fire({
-            title: 'מחפש במאגר...',
-            allowOutsideClick: false,
-            didOpen: () => Swal.showLoading()
-        });
-
-        // Ensure we search against the FULL database even if not all loaded for display
-        if (!State.allVideosCache || State.allVideosCache.length === 0) {
-             const promises = CONSTANTS.CATEGORY_FILES.map(file => Data.fetchVideosFromFile(file));
-             const results = await Promise.all(promises);
-             State.allVideosCache = results.flat();
-        }
-
-        const foundVideo = State.allVideosCache.find(v => v.id === videoId);
-
-        if (foundVideo) {
-            Swal.fire({
-                icon: 'info',
-                title: 'הסרטון קיים!',
-                html: `
-                    <div class="text-right">
-                        <p class="mb-2">הסרטון <strong>"${foundVideo.title}"</strong> כבר נמצא במאגר.</p>
-                        <p class="text-sm text-gray-500">קטגוריה: ${foundVideo.category}</p>
-                    </div>
-                `,
-                imageUrl: foundVideo.thumbnail,
-                imageWidth: 320,
-                imageHeight: 180,
-                imageAlt: foundVideo.title,
-                confirmButtonText: 'סגור',
-                confirmButtonColor: '#7c3aed'
-            });
-        } else {
-            Swal.fire({
-                icon: 'success',
-                title: 'הסרטון לא קיים',
-                text: `הסרטון (ID: ${videoId}) טרם נוסף למאגר. אתה מוזמן להוסיף אותו!`,
-                confirmButtonText: 'מעולה, תודה',
-                confirmButtonColor: '#10b981'
-            });
-        }
-    }
-
-    async function shareContent(url, buttonElement, successMessage, title) {
-        const shareData = {
-            title: `CAR-טיב: ${title}`,
-            text: `צפה בסרטון "${title}" באתר CAR-טיב!`,
-            url: url,
-        };
-        if (navigator.share) {
-            try {
-                await navigator.share(shareData);
-            } catch (err) {
-                console.error('Error sharing:', err);
-            }
-        } else {
-            try {
-                await navigator.clipboard.writeText(url);
-                if (buttonElement && successMessage) {
-                    const icon = buttonElement.querySelector('i');
-                    const originalIconClass = icon ? icon.className : '';
-                    const textSpan = buttonElement.querySelector('span');
-                    const originalText = textSpan ? textSpan.textContent : '';
-                    if (icon) icon.className = 'fas fa-check text-green-500';
-                    if (textSpan) textSpan.textContent = successMessage;
-                    buttonElement.disabled = true;
-                    setTimeout(() => {
-                        if (icon) icon.className = originalIconClass;
-                        if (textSpan) textSpan.textContent = originalText;
-                        buttonElement.disabled = false;
-                    }, 2000);
-                } else {
-                    alert('הקישור הועתק ללוח!');
-                }
-            } catch (err) {
-                console.error('Failed to copy:', err);
-                alert('לא ניתן היה להעתיק את הקישור.');
-            }
-        }
-    }
-
-
-    // --- Initialization ---
-    async function initializeApp() {
-        // Init DOM elements (Current Year, etc.)
-        if (DOM.currentYearFooter) DOM.currentYearFooter.textContent = new Date().getFullYear();
-        
-        // Theme Init (handled in head, but sync toggles here)
-        const isDark = document.documentElement.classList.contains('dark');
-        DOM.darkModeToggles.forEach(toggle => {
-            const moonIcon = toggle.querySelector('.fa-moon');
-            const sunIcon = toggle.querySelector('.fa-sun');
-            if(moonIcon) moonIcon.classList.toggle('hidden', isDark);
-            if(sunIcon) sunIcon.classList.toggle('hidden', !isDark);
-            toggle.setAttribute('aria-checked', String(isDark));
-        });
-
-        // Intersection Observer for Video Playback/Lazy Load
-        if ('IntersectionObserver' in window) {
-            videoObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    const iframe = entry.target.querySelector('.video-iframe');
-                    const playLink = entry.target.querySelector('.video-play-link');
-                    if (!iframe || !playLink) return;
-                    if (!entry.isIntersecting && !iframe.classList.contains('hidden')) {
-                        iframe.src = '';
-                        iframe.classList.add('hidden');
-                        playLink.style.display = 'block';
-                    }
-                });
-            }, { threshold: 0.1 });
-        }
-
-        // Load Data
-        await Data.loadVideos();
-        const channels = await Data.loadFeaturedChannels();
-        UI.renderFeaturedChannels(channels);
-        UI.renderHomepageCategoryButtons();
-
-        // Setup Router & Event Listeners
-        window.addEventListener('popstate', handleRouting);
-        setupEventListeners();
-        
-        // Initial Route Handler
-        handleRouting();
-
-        // Reveal Content (remove placeholder if any, main is already hidden/shown by router)
-        DOM.mainPageContent.classList.remove('hidden');
-    }
-
     function setupEventListeners() {
-        // Global Click Delegate
         document.body.addEventListener('click', (e) => {
             const { target } = e;
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
 
-            // Navigation Links (Internal SPA routing)
+            // Internal Navigation Links (with IDs)
             if (link && link.classList.contains('nav-internal-link')) {
-                 // If it's just an anchor link on same page (like #about), let default happen unless we need to switch "views"
                  const href = link.getAttribute('href');
-                 if (href.startsWith('#') || href.startsWith('./#') || href.startsWith('index.html#')) {
-                     // Check if we are currently in single video view, if so, we must navigate back to list
-                     if(!DOM.singleVideoView.container.classList.contains('hidden')) {
-                         e.preventDefault();
-                         // Force route to home + anchor
-                         const hash = href.includes('#') ? href.substring(href.indexOf('#')) : '';
-                         history.pushState(null, '', './' + hash);
-                         handleRouting();
+                 const isHashLink = href.startsWith('#');
+                 const targetId = isHashLink ? href.substring(1) : href.split('#')[1];
+
+                 // If we are on single video view, force return to home
+                 if (!DOM.singleVideoView.container.classList.contains('hidden')) {
+                     e.preventDefault();
+                     history.pushState(null, '', './' + (isHashLink ? href : '#' + targetId));
+                     handleRouting();
+                     return;
+                 }
+                 
+                 // Fix: If clicking "Home" (./#home-hero) while on home, just scroll
+                 if (targetId && document.getElementById(targetId)) {
+                     e.preventDefault();
+                     const el = document.getElementById(targetId);
+                     const headerOffset = 100;
+                     const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                     window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                     
+                     // Close mobile menu if open
+                     if (DOM.mobileMenu && !DOM.mobileMenu.classList.contains('translate-x-full')) {
+                         DOM.mobileMenu.classList.add('translate-x-full');
+                         DOM.backdrop.classList.add('invisible', 'opacity-0');
+                         document.body.classList.remove('overflow-hidden');
                      }
-                     // If we are on list view, default anchor behavior is fine
                  }
             }
 
-            // Tag Links (e.g. inside video card)
             if (link && link.dataset.tagLink === "true") {
                  e.preventDefault();
-                 // Route to home with tag filter
                  const url = new URL(link.href, window.location.origin);
                  const tags = url.searchParams.get('tags');
                  history.pushState(null, '', `./?tags=${encodeURIComponent(tags)}#video-grid-section`);
@@ -609,10 +403,8 @@ document.addEventListener('DOMContentLoaded', () => {
                  return;
             }
 
-            // Check YouTube ID Link
             if (target.closest('#check-yt-id-link') || target.closest('#check-yt-id-button')) handleCheckYtId(e);
 
-            // Filter Tags (Chips)
             if (target.closest('button.tag[data-tag-value]')) {
                 const tagName = target.closest('button.tag').dataset.tagValue;
                 toggleTagSelection(tagName);
@@ -621,7 +413,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 toggleTagSelection(target.closest('.remove-tag-btn').dataset.tagToRemove);
             }
 
-            // Video Tag Buttons
             const videoTagButton = target.closest('.video-tag-button[data-tag]');
             if(videoTagButton) {
                 e.preventDefault();
@@ -629,18 +420,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 handleRouting();
             }
 
-            // Video Card Interactions
             if(card) {
                 const videoId = card.dataset.videoId;
-                
-                // Clicking Title or Thumbnail -> Go to Video Page (SPA)
                 if (target.closest('a.video-link') || target.closest('.video-play-link')) {
                     e.preventDefault();
                     if(target.closest('.video-play-link') && window.innerWidth >= 768) {
-                        // On desktop, play inline if clicked thumbnail play button
                          playVideoInline(card);
                     } else {
-                         // Go to single view
                         history.pushState(null, '', `./?v=${videoId}`);
                         handleRouting();
                     }
@@ -660,22 +446,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
 
-            // Single Video View Actions
             if (target.closest('#single-video-share-btn')) {
                 const videoId = new URLSearchParams(window.location.search).get('v');
                 const video = State.allVideos.find(v => v.id === videoId);
                 shareContent(window.location.href, target.closest('button'), 'הועתק!', video?.title || 'סרטון');
             }
             if (target.id === 'single-video-back-btn') {
-                 // Logic handled in init, but if dynamically added:
                  e.preventDefault();
-                 history.back(); // Or explicit route to ./
+                 history.back(); 
             }
-
-            // Clear Filters
             if (target.id === 'no-results-clear-btn') clearAllFilters();
             
-            // Mobile Menu
             if(target.closest('#open-menu-btn')) {
                  DOM.mobileMenu.classList.remove('translate-x-full');
                  DOM.backdrop.classList.remove('invisible', 'opacity-0');
@@ -688,15 +469,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Load More Event (Dispatched from UI renderer)
         document.addEventListener('load-more-clicked', () => {
              applyFilters(true);
         });
 
-        // Theme Toggles
         DOM.darkModeToggles.forEach(toggle => toggle.addEventListener('click', handleThemeToggle));
 
-        // Scroll
         window.addEventListener('scroll', () => throttle(() => {
              const scrollPosition = window.pageYOffset;
              if(DOM.backToTopButton) {
@@ -704,10 +482,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 DOM.backToTopButton.classList.toggle('invisible', !isVisible);
                 DOM.backToTopButton.classList.toggle('opacity-0', !isVisible);
              }
-             // ScrollSpy logic can be added here if needed, simplified for SPA
         }, 100));
 
-        // Search Forms
         Object.values(DOM.searchForms).forEach(form => {
             if(!form) return;
             form.addEventListener('submit', (e) => { e.preventDefault(); handleSearchSubmit(form); });
@@ -719,15 +495,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Contact Form
-        if(DOM.contactForm) {
-            DOM.contactForm.addEventListener('submit', (e) => {
-                 // Existing contact form logic...
-                 // For brevity, assuming standard form submission or existing logic
-            });
-        }
-
-        // Filters
         if(DOM.hebrewFilterToggle) DOM.hebrewFilterToggle.addEventListener('change', (e) => {
             State.currentFilters.hebrewOnly = e.target.checked;
             localStorage.setItem('hebrewOnlyPreference', String(e.target.checked));
@@ -773,6 +540,10 @@ document.addEventListener('DOMContentLoaded', () => {
         updateFiltersAndURL(false);
     }
 
-    // Start App
-    initializeApp();
+    async function init() {
+        initPreloader();
+        await initializeApp();
+    }
+
+    init();
 });
