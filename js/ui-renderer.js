@@ -2,6 +2,7 @@ window.App = window.App || {};
 
 window.App.DOM = {
     body: document.body,
+    preloader: document.getElementById('site-preloader'),
     darkModeToggles: document.querySelectorAll('.dark-mode-toggle-button'),
     openMenuBtn: document.getElementById('open-menu-btn'),
     closeMenuBtn: document.getElementById('close-menu-btn'),
@@ -35,7 +36,9 @@ window.App.DOM = {
         main: document.getElementById('main-content-search-suggestions')
     },
     contactForm: document.getElementById('contact-form'),
-    mainPageContent: document.getElementById('main-page-content'),
+    // NEW: Main home view container
+    homeViewContainer: document.getElementById('home-view-container'),
+    
     siteFooter: document.getElementById('site-footer'),
     featuredChannelsTrack: document.getElementById('featured-channels-track'),
     singleVideoView: {
@@ -50,7 +53,7 @@ window.App.DOM = {
         shareBtn: document.getElementById('single-video-share-btn'),
         backBtn: document.getElementById('single-video-back-btn')
     },
-    // Sections to toggle visibility
+    // Sections to toggle visibility (individual sections)
     sections: {
         homeHero: document.getElementById('home-hero'),
         homepageCategories: document.getElementById('homepage-categories-section'),
@@ -63,6 +66,25 @@ window.App.DOM = {
 };
 
 window.App.UI = {
+    toggleSingleVideoMode: (isSingleVideo) => {
+        const dom = window.App.DOM;
+        
+        if (isSingleVideo) {
+            // Hide the entire home/category view container
+            if (dom.homeViewContainer) dom.homeViewContainer.classList.add('hidden');
+            
+            // Show single video view
+            if (dom.singleVideoView.container) dom.singleVideoView.container.classList.remove('hidden');
+        } else {
+            // Show home/category view
+            if (dom.homeViewContainer) dom.homeViewContainer.classList.remove('hidden');
+            
+            // Hide single video view
+            if (dom.singleVideoView.container) dom.singleVideoView.container.classList.add('hidden');
+            if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = ''; // Stop video
+        }
+    },
+
     renderFeaturedChannels: (channels) => {
         const track = window.App.DOM.featuredChannelsTrack;
         if(!track || channels.length === 0) return;
@@ -137,7 +159,7 @@ window.App.UI = {
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if(card.channelLogo) {
-            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'; // Placeholder if missing
+            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==ALAAAAAABAAEAAAIBRAA7'; // Placeholder if missing
             card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
             card.channelLogo.classList.toggle('hidden', !video.channelImage);
         }
@@ -230,7 +252,6 @@ window.App.UI = {
                 loadMoreBtn.id = 'load-more-videos-btn';
                 loadMoreBtn.className = 'mt-8 mb-4 mx-auto block px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 dark:focus:ring-offset-slate-900 transition-transform hover:scale-105';
                 
-                // Dispatch event instead of direct call to avoid circular dependency
                 loadMoreBtn.addEventListener('click', () => {
                     const event = new CustomEvent('load-more-clicked');
                     document.dispatchEvent(event);
@@ -260,7 +281,7 @@ window.App.UI = {
                 const count = window.App.state.allVideos.filter(v => v.category === cat.id).length;
                 const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`;
                 return `
-                    <a href="?name=${cat.id}#video-grid-section" class="relative category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
+                    <a href="?name=${cat.id}#video-grid-section" class="nav-internal-link relative category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
                         <div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]">
                             <i class="fas fa-${cat.icon || 'folder'} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i>
                             <h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 dark:group-hover:text-yellow-200 transition-colors">${cat.name}</h3>
@@ -355,9 +376,9 @@ window.App.UI = {
                 : `בקטגוריה זו קיימים <strong class="text-purple-600 dark:text-purple-400">${count}</strong> סרטונים.`;
         }
 
-        // Toggle Views
+        // Toggle Views Logic - Single Source of Truth
         if(categoryId && categoryId !== 'all') {
-            // Hide Home Sections
+            // Category View
             if(dom.sections.homeHero) dom.sections.homeHero.classList.add('hidden');
             if(dom.sections.homepageCategories) dom.sections.homepageCategories.classList.add('hidden');
             if(dom.sections.featuredChannels) dom.sections.featuredChannels.classList.add('hidden');
@@ -365,10 +386,9 @@ window.App.UI = {
             if(dom.sections.about) dom.sections.about.classList.add('hidden');
             if(dom.sections.contact) dom.sections.contact.classList.add('hidden');
             
-            // Show Category Title
             if(dom.sections.categoryTitle) dom.sections.categoryTitle.classList.remove('hidden');
         } else {
-            // Show Home Sections
+            // Home View
             if(dom.sections.homeHero) dom.sections.homeHero.classList.remove('hidden');
             if(dom.sections.homepageCategories) dom.sections.homepageCategories.classList.remove('hidden');
             if(dom.sections.featuredChannels) dom.sections.featuredChannels.classList.remove('hidden');
@@ -376,8 +396,7 @@ window.App.UI = {
             if(dom.sections.about) dom.sections.about.classList.remove('hidden');
             if(dom.sections.contact) dom.sections.contact.classList.remove('hidden');
 
-            // Hide Category Title
-             if(dom.sections.categoryTitle) dom.sections.categoryTitle.classList.add('hidden');
+            if(dom.sections.categoryTitle) dom.sections.categoryTitle.classList.add('hidden');
         }
     },
 
