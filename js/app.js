@@ -298,6 +298,8 @@ document.addEventListener('DOMContentLoaded', () => {
                          const headerOffset = 100;
                          const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                          window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                         // Clear hash cleanly after scrolling
+                         history.replaceState(null, '', window.location.pathname + window.location.search);
                     }
                  }, 200);
             } else {
@@ -347,8 +349,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             DOM.singleVideoView.categoryText.textContent = categoryName;
             DOM.singleVideoView.categoryIcon.className = `fas fa-${categoryIcon} fa-fw`;
-            DOM.singleVideoView.category.href = `?name=${video.category}#video-grid-section`;
-            DOM.singleVideoView.category.dataset.tagLink = "true"; // Special handling in click event
+            DOM.singleVideoView.category.href = `?name=${video.category}`; // No hash
+            DOM.singleVideoView.category.dataset.categoryLink = "true";
         }
 
         if (video.content) {
@@ -375,154 +377,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.title = 'CAR-טיב - סרטוני רכבים כשרים';
     }
 
-    function playVideoInline(cardElement) {
-        if (!cardElement) return;
-        const videoId = cardElement.dataset.videoId;
-        const iframe = cardElement.querySelector('.video-iframe');
-        const playLink = cardElement.querySelector('.video-play-link');
-        
-        if (videoId && iframe && playLink && iframe.classList.contains('hidden')) {
-            playLink.style.display = 'none';
-            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
-            iframe.classList.remove('hidden');
-        }
-    }
-
-    function scrollToVideoGridIfNeeded() {
-        const gridSection = document.getElementById('video-grid-section');
-        if (gridSection) {
-            const rect = gridSection.getBoundingClientRect();
-            if (rect.top < 0 || rect.bottom > window.innerHeight) {
-                 const header = document.querySelector('header.sticky');
-                 const headerOffset = header ? header.offsetHeight + 20 : 80;
-                 const elementPosition = rect.top + window.pageYOffset - headerOffset;
-                 window.scrollTo({ top: elementPosition, behavior: "smooth" });
-            }
-        }
-    }
-    
-    async function handleCheckYtId(e) {
-        if (e) e.preventDefault();
-        
-        function extractYouTubeVideoId(url) {
-            if (!url) return null;
-            const patterns = [
-                /(?:https?:\/\/)?(?:www\.)?youtube\.com\/(?:watch\?v=|embed\/|v\/|shorts\/|live\/|attribution_link\?a=.*&u=%2Fwatch%3Fv%3D)([\w-]{11})/,
-                /(?:https?:\/\/)?(?:www\.)?youtu\.be\/([\w-]{11})/,
-                /^([\w-]{11})$/
-            ];
-            for (const pattern of patterns) {
-                const match = url.match(pattern);
-                if (match && match[1]) return match[1];
-            }
-            return null;
-        }
-
-        const { value: userInput } = await Swal.fire({
-            title: 'בדיקת סרטון במאגר',
-            text: 'הכנס קישור לסרטון יוטיוב או מזהה (ID) לבדיקה:',
-            input: 'url',
-            inputPlaceholder: 'https://www.youtube.com/watch?v=...',
-            confirmButtonText: 'בדוק',
-            cancelButtonText: 'ביטול',
-            showCancelButton: true,
-            confirmButtonColor: '#7c3aed',
-            inputAutoTrim: true
-        });
-
-        if (!userInput) return;
-
-        const videoId = extractYouTubeVideoId(userInput);
-        if (!videoId) {
-            Swal.fire({
-                icon: 'error',
-                title: 'שגיאה',
-                text: 'לא זוהה מזהה סרטון תקין.',
-                confirmButtonColor: '#7c3aed'
-            });
-            return;
-        }
-
-        Swal.fire({
-            title: 'מחפש במאגר...',
-            allowOutsideClick: false,
-            didOpen: () => Swal.showLoading()
-        });
-
-        if (!State.allVideosCache || State.allVideosCache.length === 0) {
-             const promises = CONSTANTS.CATEGORY_FILES.map(file => Data.fetchVideosFromFile(file));
-             const results = await Promise.all(promises);
-             State.allVideosCache = results.flat();
-        }
-
-        const foundVideo = State.allVideosCache.find(v => v.id === videoId);
-
-        if (foundVideo) {
-            Swal.fire({
-                icon: 'info',
-                title: 'הסרטון קיים!',
-                html: `
-                    <div class="text-right">
-                        <p class="mb-2">הסרטון <strong>"${foundVideo.title}"</strong> כבר נמצא במאגר.</p>
-                        <p class="text-sm text-gray-500">קטגוריה: ${foundVideo.category}</p>
-                    </div>
-                `,
-                imageUrl: foundVideo.thumbnail,
-                imageWidth: 320,
-                imageHeight: 180,
-                imageAlt: foundVideo.title,
-                confirmButtonText: 'סגור',
-                confirmButtonColor: '#7c3aed'
-            });
-        } else {
-            Swal.fire({
-                icon: 'success',
-                title: 'הסרטון לא קיים',
-                text: `הסרטון (ID: ${videoId}) טרם נוסף למאגר. אתה מוזמן להוסיף אותו!`,
-                confirmButtonText: 'מעולה, תודה',
-                confirmButtonColor: '#10b981'
-            });
-        }
-    }
-
-    async function shareContent(url, buttonElement, successMessage, title) {
-        const shareData = {
-            title: `CAR-טיב: ${title}`,
-            text: `צפה בסרטון "${title}" באתר CAR-טיב!`,
-            url: url,
-        };
-        if (navigator.share) {
-            try {
-                await navigator.share(shareData);
-            } catch (err) {
-                console.error('Error sharing:', err);
-            }
-        } else {
-            try {
-                await navigator.clipboard.writeText(url);
-                if (buttonElement && successMessage) {
-                    const icon = buttonElement.querySelector('i');
-                    const originalIconClass = icon ? icon.className : '';
-                    const textSpan = buttonElement.querySelector('span');
-                    const originalText = textSpan ? textSpan.textContent : '';
-                    if (icon) icon.className = 'fas fa-check text-green-500';
-                    if (textSpan) textSpan.textContent = successMessage;
-                    buttonElement.disabled = true;
-                    setTimeout(() => {
-                        if (icon) icon.className = originalIconClass;
-                        if (textSpan) textSpan.textContent = originalText;
-                        buttonElement.disabled = false;
-                    }, 2000);
-                } else {
-                    alert('הקישור הועתק ללוח!');
-                }
-            } catch (err) {
-                console.error('Failed to copy:', err);
-                alert('לא ניתן היה להעתיק את הקישור.');
-            }
-        }
-    }
-
     function setupEventListeners() {
         document.body.addEventListener('click', (e) => {
             const { target } = e;
@@ -532,7 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Navigation - Logo Click (Hard Reset)
             if (link && link.classList.contains('nav-logo-link')) {
                 e.preventDefault();
-                window.location.href = './'; // Hard reload to home
+                window.location.href = './';
                 return;
             }
 
@@ -542,12 +396,19 @@ document.addEventListener('DOMContentLoaded', () => {
                  const isHashLink = href.includes('#');
                  const targetId = isHashLink ? href.substring(href.lastIndexOf('#') + 1) : href.split('#')[1];
 
+                 // Close mobile menu immediately
+                 if (DOM.mobileMenu && !DOM.mobileMenu.classList.contains('translate-x-full')) {
+                     DOM.mobileMenu.classList.add('translate-x-full');
+                     DOM.backdrop.classList.add('invisible', 'opacity-0');
+                     document.body.classList.remove('overflow-hidden');
+                 }
+
                  // If we are on single video view OR in a specific category (sections hidden)
                  if (!DOM.singleVideoView.container.classList.contains('hidden') || DOM.sections.homeHero.classList.contains('hidden')) {
                      e.preventDefault();
                      // Reset to home view first
-                     UI.toggleSingleVideoMode(false); // Ensure main container is visible
-                     UI.updateCategoryPageUI('all'); // Show all home sections
+                     UI.toggleSingleVideoMode(false); 
+                     UI.updateCategoryPageUI('all'); 
                      
                      // Push state to home
                      history.pushState(null, '', './#' + (targetId || 'home-hero'));
@@ -559,6 +420,7 @@ document.addEventListener('DOMContentLoaded', () => {
                              const headerOffset = 100;
                              const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                              window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                             history.replaceState(null, '', './'); // Clean URL
                         } else {
                              window.scrollTo({ top: 0, behavior: 'smooth' });
                         }
@@ -572,22 +434,15 @@ document.addEventListener('DOMContentLoaded', () => {
                              const headerOffset = 100;
                              const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                              window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                             history.replaceState(null, '', './'); // Clean URL
                          }
                      }
-                 }
-                 
-                 // Close mobile menu
-                 if (DOM.mobileMenu && !DOM.mobileMenu.classList.contains('translate-x-full')) {
-                     DOM.mobileMenu.classList.add('translate-x-full');
-                     DOM.backdrop.classList.add('invisible', 'opacity-0');
-                     document.body.classList.remove('overflow-hidden');
                  }
             }
 
             // Category Links (Chips, Video Badge)
             if (link && link.dataset.categoryLink === "true") {
                 e.preventDefault();
-                // Extract category from href (e.g., ?name=review)
                 const url = new URL(link.href, window.location.origin);
                 const category = url.searchParams.get('name');
                 history.pushState(null, '', `?name=${category}#video-grid-section`);
@@ -701,12 +556,12 @@ document.addEventListener('DOMContentLoaded', () => {
              }
         }, 100));
 
-        // Optimized Search Input Debounce (500ms)
         Object.values(DOM.searchForms).forEach(form => {
             if(!form) return;
             form.addEventListener('submit', (e) => { e.preventDefault(); handleSearchSubmit(form); });
             const input = form.querySelector('input[type="search"]');
             if (input) {
+                // Optimized Search Input Debounce (500ms)
                 input.addEventListener('input', () => throttle(() => handleSearchInput(input), 500));
                 input.addEventListener('keydown', handleSearchKeyDown);
                 input.addEventListener('blur', () => setTimeout(() => { if (!State.search.isSuggestionClicked) clearSearchSuggestions(); }, 150));
@@ -735,6 +590,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+        
+        // Back to top button click
+        if (DOM.backToTopButton) {
+            DOM.backToTopButton.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
     }
 
     function toggleTagSelection(tagName) {
