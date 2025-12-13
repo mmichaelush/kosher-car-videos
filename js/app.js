@@ -36,12 +36,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const preloader = document.getElementById('site-preloader');
         if (!preloader) return;
 
+        // Optimized duration: 1.5s
         setTimeout(() => {
             preloader.style.opacity = '0';
             setTimeout(() => {
                 preloader.style.display = 'none';
             }, 500); 
-        }, 2000);
+        }, 1500);
     }
 
     function handleSearchInput(inputElement) {
@@ -333,18 +334,28 @@ document.addEventListener('DOMContentLoaded', () => {
         document.title = `${video.title} - CAR-טיב`;
         
         DOM.singleVideoView.title.innerHTML = video.title;
-        
-        // Removed allowfullscreen, moved fullscreen to allow attribute
-        DOM.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"></iframe>`;
+        DOM.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
         
         DOM.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
         DOM.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${video.duration}`;
         
-        if (video.content && DOM.singleVideoView.content) {
+        // Category Link Setup
+        if(DOM.singleVideoView.category) {
+            const categoryData = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === video.category);
+            const categoryName = categoryData ? categoryData.name : (video.category || 'כללי');
+            const categoryIcon = categoryData ? categoryData.icon : 'folder';
+            
+            DOM.singleVideoView.categoryText.textContent = categoryName;
+            DOM.singleVideoView.categoryIcon.className = `fas fa-${categoryIcon} fa-fw`;
+            DOM.singleVideoView.category.href = `?name=${video.category}#video-grid-section`;
+            DOM.singleVideoView.category.dataset.tagLink = "true"; // Special handling in click event
+        }
+
+        if (video.content) {
             DOM.singleVideoView.content.innerHTML = `<p class="text-slate-700 dark:text-slate-300 text-lg leading-relaxed bg-slate-50 dark:bg-slate-700/50 p-4 rounded-lg border-r-4 border-purple-500">${video.content}</p>`;
-            DOM.singleVideoView.content.classList.remove('hidden');
-        } else if(DOM.singleVideoView.content) {
-            DOM.singleVideoView.content.classList.add('hidden');
+            DOM.singleVideoView.descriptionContainer.classList.remove('hidden');
+        } else {
+            DOM.singleVideoView.descriptionContainer.classList.add('hidden');
         }
 
         if (video.dateAdded && !isNaN(video.dateAdded.getTime())) {
@@ -372,7 +383,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (videoId && iframe && playLink && iframe.classList.contains('hidden')) {
             playLink.style.display = 'none';
-            // Corrected allow attribute for fullscreen
             iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
             iframe.classList.remove('hidden');
         }
@@ -519,53 +529,73 @@ document.addEventListener('DOMContentLoaded', () => {
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
 
+            // Navigation - Logo Click (Hard Reset)
+            if (link && link.classList.contains('nav-logo-link')) {
+                e.preventDefault();
+                window.location.href = './'; // Hard reload to home
+                return;
+            }
+
             // Internal Navigation Links
             if (link && link.classList.contains('nav-internal-link')) {
                  const href = link.getAttribute('href');
-                 if (href === '#' || href === './' || href === './#home-hero') {
-                     e.preventDefault();
-                     if (!DOM.singleVideoView.container.classList.contains('hidden')) {
-                         history.pushState(null, '', './');
-                         handleRouting();
-                     } else {
-                         window.scrollTo({ top: 0, behavior: 'smooth' });
-                         history.replaceState(null, '', './');
-                     }
-                     if (DOM.mobileMenu && !DOM.mobileMenu.classList.contains('translate-x-full')) {
-                         DOM.mobileMenu.classList.add('translate-x-full');
-                         DOM.backdrop.classList.add('invisible', 'opacity-0');
-                         document.body.classList.remove('overflow-hidden');
-                     }
-                     return;
-                 }
-                 
                  const isHashLink = href.includes('#');
-                 if (isHashLink) {
-                     const targetId = href.substring(href.lastIndexOf('#') + 1);
-                     
-                     if (!DOM.singleVideoView.container.classList.contains('hidden')) {
-                         e.preventDefault();
-                         history.pushState(null, '', './#' + targetId);
-                         handleRouting();
-                         return;
-                     }
+                 const targetId = isHashLink ? href.substring(href.lastIndexOf('#') + 1) : href.split('#')[1];
 
-                     if (document.getElementById(targetId)) {
+                 // If we are on single video view OR in a specific category (sections hidden)
+                 if (!DOM.singleVideoView.container.classList.contains('hidden') || DOM.sections.homeHero.classList.contains('hidden')) {
+                     e.preventDefault();
+                     // Reset to home view first
+                     UI.toggleSingleVideoMode(false); // Ensure main container is visible
+                     UI.updateCategoryPageUI('all'); // Show all home sections
+                     
+                     // Push state to home
+                     history.pushState(null, '', './#' + (targetId || 'home-hero'));
+                     
+                     // Scroll logic
+                     setTimeout(() => {
+                        if (targetId && document.getElementById(targetId)) {
+                             const el = document.getElementById(targetId);
+                             const headerOffset = 100;
+                             const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                             window.scrollTo({ top: elementPosition, behavior: 'smooth' });
+                        } else {
+                             window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }
+                     }, 100);
+                 } else {
+                     // Standard scroll behavior on home page
+                     if (isHashLink && targetId) {
                          e.preventDefault();
                          const el = document.getElementById(targetId);
-                         const headerOffset = 100;
-                         const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-                         window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                         
-                         if (DOM.mobileMenu && !DOM.mobileMenu.classList.contains('translate-x-full')) {
-                             DOM.mobileMenu.classList.add('translate-x-full');
-                             DOM.backdrop.classList.add('invisible', 'opacity-0');
-                             document.body.classList.remove('overflow-hidden');
+                         if (el) {
+                             const headerOffset = 100;
+                             const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+                             window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                          }
                      }
                  }
+                 
+                 // Close mobile menu
+                 if (DOM.mobileMenu && !DOM.mobileMenu.classList.contains('translate-x-full')) {
+                     DOM.mobileMenu.classList.add('translate-x-full');
+                     DOM.backdrop.classList.add('invisible', 'opacity-0');
+                     document.body.classList.remove('overflow-hidden');
+                 }
             }
 
+            // Category Links (Chips, Video Badge)
+            if (link && link.dataset.categoryLink === "true") {
+                e.preventDefault();
+                // Extract category from href (e.g., ?name=review)
+                const url = new URL(link.href, window.location.origin);
+                const category = url.searchParams.get('name');
+                history.pushState(null, '', `?name=${category}#video-grid-section`);
+                handleRouting();
+                return;
+            }
+
+            // Tag Links
             if (link && link.dataset.tagLink === "true") {
                  e.preventDefault();
                  const url = new URL(link.href, window.location.origin);
@@ -624,14 +654,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 shareContent(window.location.href, target.closest('button'), 'הועתק!', video?.title || 'סרטון');
             }
 
-            // NEW: Home Button Logic
+            // Home Button
             if (target.closest('#single-video-home-btn')) {
                  e.preventDefault();
                  history.pushState(null, '', './');
                  handleRouting();
             }
 
-            // NEW: Back Button Logic
+            // Back Button
             if (target.closest('#single-video-back-btn')) {
                  e.preventDefault();
                  if (history.length > 1 && document.referrer.includes(window.location.host)) {
@@ -671,12 +701,13 @@ document.addEventListener('DOMContentLoaded', () => {
              }
         }, 100));
 
+        // Optimized Search Input Debounce (500ms)
         Object.values(DOM.searchForms).forEach(form => {
             if(!form) return;
             form.addEventListener('submit', (e) => { e.preventDefault(); handleSearchSubmit(form); });
             const input = form.querySelector('input[type="search"]');
             if (input) {
-                input.addEventListener('input', () => throttle(() => handleSearchInput(input), 300));
+                input.addEventListener('input', () => throttle(() => handleSearchInput(input), 500));
                 input.addEventListener('keydown', handleSearchKeyDown);
                 input.addEventListener('blur', () => setTimeout(() => { if (!State.search.isSuggestionClicked) clearSearchSuggestions(); }, 150));
             }
