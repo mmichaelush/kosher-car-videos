@@ -51,13 +51,17 @@ window.App.DOM = {
         player: document.getElementById('single-video-player-container'),
         title: document.getElementById('single-video-title'),
         content: document.getElementById('single-video-content'),
+        descriptionContainer: document.getElementById('video-description-container'),
         tags: document.getElementById('single-video-tags'),
         channel: document.getElementById('single-video-channel'),
         duration: document.getElementById('single-video-duration'),
         date: document.getElementById('single-video-date'),
+        category: document.getElementById('single-video-category'),
+        categoryText: document.getElementById('single-video-category-text'),
+        categoryIcon: document.getElementById('single-video-category-icon'),
         shareBtn: document.getElementById('single-video-share-btn'),
         backBtn: document.getElementById('single-video-back-btn'),
-        homeBtn: document.getElementById('single-video-home-btn') // NEW BUTTON
+        homeBtn: document.getElementById('single-video-home-btn')
     },
     sections: {
         homeHero: document.getElementById('home-hero'),
@@ -159,7 +163,7 @@ window.App.UI = {
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if(card.channelLogo) {
-            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==ADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
+            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
             card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
             card.channelLogo.classList.toggle('hidden', !video.channelImage);
         }
@@ -174,9 +178,13 @@ window.App.UI = {
             const categoryData = window.App.CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === video.category);
             const categoryName = categoryData ? categoryData.name : (video.category || '').charAt(0).toUpperCase() + (video.category || '').slice(1);
             const categoryIconEl = cardClone.querySelector('.video-category-icon');
+            
+            // Set link href
+            card.categoryDisplay.href = `?name=${video.category}#video-grid-section`;
+            
             if (categoryIconEl) {
                 const icon = categoryData ? categoryData.icon : 'folder-open';
-                categoryIconEl.className = `video-category-icon fas fa-${icon} opacity-70 text-purple-500 dark:text-purple-400 ml-2`;
+                categoryIconEl.className = `video-category-icon fas fa-${icon} opacity-70 ml-2`;
             }
             card.categoryDisplay.appendChild(document.createTextNode(categoryName));
         }
@@ -366,13 +374,11 @@ window.App.UI = {
         const breadcrumb = document.getElementById('breadcrumb-category-name');
         if (breadcrumb) breadcrumb.textContent = name;
         
-        // Update Search Placeholder Logic
         const searchPlaceholder = (categoryId && categoryId !== 'all') 
             ? `חפש סרטונים ב${name}...` 
             : 'חפש סרטונים באתר...';
         
         if (dom.searchInputs.main) dom.searchInputs.main.placeholder = searchPlaceholder;
-        // Desktop/Mobile search inputs usually stay global, but can be updated too if desired
         
         const countSummaryEl = document.getElementById('category-video-count-summary');
         if(countSummaryEl) {
