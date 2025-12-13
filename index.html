@@ -1,3 +1,16 @@
+אני מתנצל על התקלות. שגיאת `tailwind is not defined` נובעת מכך שהוספנו `defer` לסקריפט של Tailwind, והדפדפן ניסה להריץ את הגדרות הקונפיגורציה לפני שהספרייה נטענה. שגיאת `initializeApp` נובעת ככל הנראה מבעיית סוגריים או סדר הגדרה בקובץ ה-JS הקודם.
+
+הנה הקבצים המתוקנים והמלאים.
+
+**תיקונים שבוצעו:**
+1.  **index.html**: הסרתי את ה-`defer` מ-Tailwind כדי להבטיח טעינה תקינה של העיצוב.
+2.  **js/app.js**: כתבתי מחדש את הקובץ בצורה מסודרת, ווידאתי שפונקציית `initializeApp` מוגדרת כראוי וזמינה לפני הקריאה אליה.
+3.  **js/ui-renderer.js**: וידאתי שפונקציית הסתרת התוכן (`toggleSingleVideoMode`) עובדת בצורה הרמטית ומסתירה את כל דף הבית כשנכנסים לסרטון.
+
+### 1. `index.html` (מתוקן)
+הסרתי `defer` מ-Tailwind וסידרתי את המבנה.
+
+```html
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
@@ -5,9 +18,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CAR-טיב - סרטוני רכבים כשרים</title>
     
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio" defer></script>
-    <script defer>
+    <!-- Tailwind CSS (No defer to prevent loading errors) -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
+    <script>
       tailwind.config = {
         darkMode: 'class',
         theme: {
@@ -96,7 +109,7 @@
     <!-- Mobile Sidebar -->
     <aside id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-800 shadow-xl z-50 p-6 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title">
         <div class="flex justify-between items-center mb-8">
-            <a href="#" class="nav-internal-link flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded" aria-label="CAR-טיב דף הבית" data-target="home">
+            <a href="#" class="nav-internal-link flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded" aria-label="CAR-טיב דף הבית" data-target="home-hero">
                 <img src="data/assets/images/logo.png" alt="לוגו CAR-טיב" class="h-8 w-auto ml-2 dark:hidden">
                 <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב" class="h-8 w-auto ml-2 hidden dark:block">
                 <span id="mobile-menu-title" class="text-xl font-bold text-slate-900 dark:text-slate-100">CAR-טיב</span>
@@ -556,6 +569,7 @@
                     </div>
                 </div>
             </section>
+
         </div>
     </main>
 
@@ -573,13 +587,13 @@
                 <div>
                     <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">קטגוריות</h3>
                     <ul class="space-y-3">
-                        <li><a href="?name=review" class="nav-internal-link footer-link"><i class="fas fa-car-on fa-fw ml-2 opacity-70"></i>סקירות רכב</a></li>
-                        <li><a href="?name=maintenance" class="nav-internal-link footer-link"><i class="fas fa-oil-can fa-fw ml-2 opacity-70"></i>טיפולים</a></li>
-                        <li><a href="?name=diy" class="nav-internal-link footer-link"><i class="fas fa-tools fa-fw ml-2 opacity-70"></i>עשה זאת בעצמך</a></li>
-                        <li><a href="?name=upgrades" class="nav-internal-link footer-link"><i class="fas fa-rocket fa-fw ml-2 opacity-70"></i>שיפורים ושדרוגים</a></li>
-                        <li><a href="?name=troubleshooting" class="nav-internal-link footer-link"><i class="fas fa-microscope fa-fw ml-2 opacity-70"></i>איתור ותיקון תקלות</a></li>
-                        <li><a href="?name=systems" class="nav-internal-link footer-link"><i class="fas fa-cogs fa-fw ml-2 opacity-70"></i>מערכות הרכב</a></li>
-                        <li><a href="?name=collectors" class="nav-internal-link footer-link"><i class="fas fa-car-side fa-fw ml-2 opacity-70"></i>רכבי אספנות</a></li>
+                        <li><a href="?name=review#video-grid-section" class="nav-internal-link footer-link"><i class="fas fa-car-on fa-fw ml-2 opacity-70"></i>סקירות רכב</a></li>
+                        <li><a href="?name=maintenance#video-grid-section" class="nav-internal-link footer-link"><i class="fas fa-oil-can fa-fw ml-2 opacity-70"></i>טיפולים</a></li>
+                        <li><a href="?name=diy#video-grid-section" class="nav-internal-link footer-link"><i class="fas fa-tools fa-fw ml-2 opacity-70"></i>עשה זאת בעצמך</a></li>
+                        <li><a href="?name=upgrades#video-grid-section" class="nav-internal-link footer-link"><i class="fas fa-rocket fa-fw ml-2 opacity-70"></i>שיפורים ושדרוגים</a></li>
+                        <li><a href="?name=troubleshooting#video-grid-section" class="nav-internal-link footer-link"><i class="fas fa-microscope fa-fw ml-2 opacity-70"></i>איתור ותיקון תקלות</a></li>
+                        <li><a href="?name=systems#video-grid-section" class="nav-internal-link footer-link"><i class="fas fa-cogs fa-fw ml-2 opacity-70"></i>מערכות הרכב</a></li>
+                        <li><a href="?name=collectors#video-grid-section" class="nav-internal-link footer-link"><i class="fas fa-car-side fa-fw ml-2 opacity-70"></i>רכבי אספנות</a></li>
                     </ul>
                 </div>
                 <div>
