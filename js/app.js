@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const preloader = document.getElementById('site-preloader');
         if (!preloader) return;
 
-        // Optimized duration: 1.5s
         setTimeout(() => {
             preloader.style.opacity = '0';
             setTimeout(() => {
@@ -65,6 +64,50 @@ document.addEventListener('DOMContentLoaded', () => {
             : State.allVideos;
         
         displaySearchSuggestions(searchTerm, new Fuse(fuseSource, CONSTANTS.FUSE_OPTIONS));
+    }
+
+    // Tag Autocomplete Logic
+    function handleTagInput(inputElement) {
+        const suggestionsContainer = document.getElementById('tag-suggestions');
+        const searchTerm = inputElement.value.trim().toLowerCase();
+        
+        if (searchTerm.length < 1) {
+            suggestionsContainer.classList.add('hidden');
+            return;
+        }
+
+        // Get unique tags from all loaded videos
+        const allTags = new Set();
+        const videosToConsider = (State.currentFilters.category !== 'all')
+            ? State.allVideos.filter(v => v.category === State.currentFilters.category)
+            : State.allVideos;
+            
+        videosToConsider.forEach(v => {
+            if(v.tags) v.tags.forEach(t => allTags.add(t));
+        });
+        
+        const matches = Array.from(allTags).filter(tag => tag.includes(searchTerm)).slice(0, 5);
+
+        if (matches.length > 0) {
+            suggestionsContainer.innerHTML = matches.map(tag => `
+                <div class="px-3 py-2 hover:bg-purple-50 dark:hover:bg-slate-600 cursor-pointer text-sm text-slate-700 dark:text-slate-200" data-tag="${tag}">
+                    ${tag}
+                </div>
+            `).join('');
+            suggestionsContainer.classList.remove('hidden');
+            
+            // Add click handlers
+            suggestionsContainer.querySelectorAll('div').forEach(div => {
+                div.addEventListener('click', () => {
+                    const tag = div.dataset.tag;
+                    toggleTagSelection(tag);
+                    inputElement.value = '';
+                    suggestionsContainer.classList.add('hidden');
+                });
+            });
+        } else {
+             suggestionsContainer.classList.add('hidden');
+        }
     }
 
     function displaySearchSuggestions(searchTerm, fuseInstance) {
@@ -169,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const searchTerm = input.value.trim();
         
         if (!DOM.singleVideoView.container.classList.contains('hidden')) {
-             history.pushState(null, '', `./?search=${encodeURIComponent(searchTerm)}`);
+             history.pushState(null, '', `./?search=${encodeURIComponent(searchTerm)}#video-grid-section`);
              handleRouting();
         } else {
             State.currentFilters.searchTerm = searchTerm;
@@ -212,45 +255,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return videos;
     }
 
-    // Optimization: Calculate tags only from current filter context
-    function calculatePopularTags() {
-        if(!DOM.popularTagsContainer) return;
-        
-        const { category } = State.currentFilters;
-        const videosToConsider = category !== 'all' ? State.allVideos.filter(v => v.category === category) : State.allVideos;
-        
-        if (videosToConsider.length === 0) {
-             DOM.popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא נמצאו תגיות.</p>`;
-             return;
-        }
-
-        // Fast tag counting
-        const tagCounts = {};
-        for (const video of videosToConsider) {
-            if (video.tags) {
-                for (const tag of video.tags) {
-                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-                }
-            }
-        }
-
-        const sortedTags = Object.entries(tagCounts)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, CONSTANTS.MAX_POPULAR_TAGS)
-            .map(entry => entry[0]);
-
-        DOM.popularTagsContainer.innerHTML = sortedTags.map(tag => {
-            return `<button class="tag bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-800 dark:text-purple-200 dark:hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-1 dark:focus:ring-offset-slate-800 transition-colors text-sm font-medium px-3 py-1.5 rounded-full" data-tag-value="${tag}">${tag.charAt(0).toUpperCase() + tag.slice(1)}</button>`;
-        }).join('');
-
-        UI.updateActiveTagVisuals();
-    }
-
     function applyFilters(isLoadMore = false, andScroll = true) {
         if (!isLoadMore) {
             State.ui.currentlyDisplayedVideosCount = 0;
-            // Re-calculate tags only on fresh filter apply (not load more)
-            calculatePopularTags();
+            UI.renderPopularTags(); // Re-render tags based on filtered content context
         }
         
         const allMatchingVideos = getFilteredAndSortedVideos();
@@ -312,7 +320,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if(isValid) category = categoryParam.toLowerCase();
             }
             
-            // Only update tags if category changed
             const categoryChanged = State.currentFilters.category !== category;
             State.currentFilters.category = category;
             
@@ -330,8 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const fuseSource = category === 'all' ? State.allVideos : State.allVideos.filter(v => v.category === category);
             State.fuse = new Fuse(fuseSource, CONSTANTS.FUSE_OPTIONS);
 
-            // If category changed, force recalc of tags
-            if(categoryChanged) calculatePopularTags();
+            if(categoryChanged) UI.renderPopularTags();
             
             applyFilters(false, false);
             
@@ -343,8 +349,6 @@ document.addEventListener('DOMContentLoaded', () => {
                          const headerOffset = 100;
                          const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                          window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                         // Clean URL hash
-                         history.replaceState(null, '', window.location.pathname + window.location.search);
                     }
                  }, 200);
             } else {
@@ -766,6 +770,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.addEventListener('blur', () => setTimeout(() => { if (!State.search.isSuggestionClicked) clearSearchSuggestions(); }, 150));
             }
         });
+        
+        // Tag Input
+        if(DOM.tagSearchInput) {
+            DOM.tagSearchInput.addEventListener('input', () => throttle(() => handleTagInput(DOM.tagSearchInput), 300));
+        }
 
         if(DOM.hebrewFilterToggle) DOM.hebrewFilterToggle.addEventListener('change', (e) => {
             State.currentFilters.hebrewOnly = e.target.checked;
