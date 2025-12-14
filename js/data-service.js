@@ -1,3 +1,6 @@
+// Handles fetching data, constants, and global state
+
+// Global Application Namespace
 window.App = window.App || {};
 
 // Constants
@@ -85,6 +88,35 @@ window.App.DataService = {
         return 0;
     },
 
+    // Robust Date Parser
+    parseDate: (dateString) => {
+        if (!dateString) return null;
+        
+        // Check for DD/MM/YYYY format
+        const parts = dateString.split('/');
+        if (parts.length === 3) {
+            // Assume Day/Month/Year first
+            const day = parseInt(parts[0], 10);
+            const month = parseInt(parts[1], 10) - 1; // Months are 0-11
+            const year = parseInt(parts[2], 10);
+            
+            if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                 const d = new Date(year, month, day);
+                 if (d.getFullYear() === year && d.getMonth() === month && d.getDate() === day) {
+                     return d;
+                 }
+            }
+        }
+
+        // Try standard Date parsing
+        const d = new Date(dateString);
+        if (!isNaN(d.getTime())) {
+            return d;
+        }
+
+        return null;
+    },
+
     fetchVideosFromFile: async (filename) => {
         try {
             const response = await fetch(`data/videos/${filename}.json`);
@@ -104,7 +136,7 @@ window.App.DataService = {
                 category: video.category || filename,
                 tags: (video.tags || []).map(tag => String(tag).toLowerCase()),
                 durationInSeconds: window.App.DataService.parseDurationToSeconds(video.duration),
-                dateAdded: video.dateAdded ? new Date(video.dateAdded) : null
+                dateAdded: window.App.DataService.parseDate(video.dateAdded)
             }));
         } catch (e) {
             console.warn(`Could not load videos for category: ${filename}`, e);
