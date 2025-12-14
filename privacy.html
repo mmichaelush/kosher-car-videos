@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="he" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,12 +19,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
-    
-    <!-- ספריות חיצוניות -->
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
-    <!-- SweetAlert2 - חובה לפונקציית בדיקת סרטונים (קישור בפוטר) -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
     <script>
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -33,31 +28,31 @@
             document.documentElement.classList.remove('dark');
         }
     </script>
+    <script src="js/data-service.js" defer></script>
+    <script src="js/ui-renderer.js" defer></script>
+    <script src="js/app.js" defer></script>
 </head>
-
 <body class="font-rubik bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 antialiased transition-colors duration-300">
-
     <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black bg-opacity-75 z-40 md:hidden transition-opacity duration-300 opacity-0 invisible" aria-hidden="true"></div>
-
     <aside id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-800 shadow-xl z-50 p-6 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title">
         <div class="flex justify-between items-center mb-8">
-            <a href="./" class="flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded" aria-label="CAR-טיב דף הבית">
+            <a href="./" class="nav-logo-link flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded" aria-label="CAR-טיב דף הבית">
                 <img src="data/assets/images/logo.png" alt="לוגו CAR-טיב" class="h-8 w-auto ml-2 dark:hidden">
                 <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב" class="h-8 w-auto ml-2 hidden dark:block">
-                <span id="mobile-menu-title" class="text-xl font-bold text-slate-900 dark:text-slate-100">CAR-טיב</span>
+                <span id="mobile-menu-title" class="text-xl font-bold text-slate-900 dark:text-slate-100 mr-2">CAR-טיב</span>
             </a>
             <button id="close-menu-btn" aria-label="סגירת תפריט" class="text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded p-1">
                 <i class="fas fa-times text-2xl"></i>
             </button>
         </div>
           <nav class="flex flex-col space-y-1">
-            <a href="./#home" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-home w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>בית</a>
-            <a href="./#homepage-categories-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-th-large w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>קטגוריות</a>
-            <a href="./#video-grid-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-play-circle w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>סרטונים</a>
-            <a href="./#featured-channels-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-tv w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>ערוצים</a>
-            <a href="./#forum-inspiration-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-comments w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>שאלות</a>
-            <a href="./#about-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-info-circle w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>אודות</a>
-            <a href="./#contact-section" class="nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-envelope w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>צור קשר</a>
+            <a href="./" class="nav-internal-link nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-home w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>בית</a>
+            <a href="./#homepage-categories-section" class="nav-internal-link nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-th-large w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>קטגוריות</a>
+            <a href="./#video-grid-section" class="nav-internal-link nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-play-circle w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>סרטונים</a>
+            <a href="./#featured-channels-section" class="nav-internal-link nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-tv w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>ערוצים</a>
+            <a href="./#forum-inspiration-section" class="nav-internal-link nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-comments w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>שאלות</a>
+            <a href="./#about-section" class="nav-internal-link nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-info-circle w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>אודות</a>
+            <a href="./#contact-section" class="nav-internal-link nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-envelope w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>צור קשר</a>
         </nav>
         <div class="mt-auto pt-6 border-t border-slate-200 dark:border-slate-700">
             <button role="switch" aria-label="החלף מצב תצוגה" aria-checked="false" class="dark-mode-toggle-button w-full flex items-center justify-between text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 dark:focus:ring-purple-400">
@@ -73,40 +68,26 @@
             </button>
         </div>
     </aside>
-
     <header class="bg-slate-50/80 dark:bg-slate-900/80 shadow-md sticky top-0 z-30 transition-colors duration-300 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <div class="flex items-center">
-                    <a href="./" class="flex-shrink-0 flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-md p-1 -ml-1" aria-label="CAR-טיב דף הבית">
+                    <a href="./" class="nav-logo-link flex-shrink-0 flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-md p-1 -ml-1" aria-label="CAR-טיב דף הבית" data-target="home-hero">
                         <img src="data/assets/images/logo.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 dark:hidden">
                         <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 hidden dark:block">
-                        <span class="text-2xl font-bold text-slate-900 dark:text-slate-100 hidden sm:block">CAR-טיב</span>
+                        <span class="text-2xl font-bold text-slate-900 dark:text-slate-100 hidden sm:block mr-2">CAR-טיב</span>
                     </a>
-                      <nav class="hidden md:mr-4 lg:mr-6 md:flex items-center md:space-x-0.5 lg:space-x-1" aria-label="ניווט ראשי"> 
-                        <a href="./#home" class="nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-home md:ml-1 lg:ml-2 opacity-80"></i>בית</a>
-                        <a href="./#homepage-categories-section" class="nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-th-large md:ml-1 lg:ml-2 opacity-80"></i>קטגוריות</a>
-                        <a href="./#video-grid-section" class="nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-play-circle md:ml-1 lg:ml-2 opacity-80"></i>סרטונים</a>
-                        <a href="./#featured-channels-section" class="nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-tv md:ml-1 lg:ml-2 opacity-80"></i>ערוצים</a>
-                        <a href="./#forum-inspiration-section" class="nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-comments md:ml-1 lg:ml-2 opacity-80"></i>שאלות</a>
-                        <a href="./#about-section" class="nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-info-circle md:ml-1 lg:ml-2 opacity-80"></i>אודות</a>
-                        <a href="./#contact-section" class="nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-envelope md:ml-1 lg:ml-2 opacity-80"></i>צור קשר</a>
+                      <nav class="hidden md:mr-4 lg:mr-6 md:flex items-center md:space-x-0.5 lg:space-x-1" aria-label="ניווט ראשי">
+                        <a href="./" class="nav-internal-link nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300"><i class="fas fa-home md:ml-1 lg:ml-2 opacity-80"></i>בית</a>
+                        <a href="./#homepage-categories-section" class="nav-internal-link nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300 section-link"><i class="fas fa-th-large md:ml-1 lg:ml-2 opacity-80"></i>קטגוריות</a>
+                        <a href="./#video-grid-section" class="nav-internal-link nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300 section-link"><i class="fas fa-play-circle md:ml-1 lg:ml-2 opacity-80"></i>סרטונים</a>
+                        <a href="./#featured-channels-section" class="nav-internal-link nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300 section-link"><i class="fas fa-tv md:ml-1 lg:ml-2 opacity-80"></i>ערוצים</a>
+                        <a href="./#forum-inspiration-section" class="nav-internal-link nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300 section-link"><i class="fas fa-comments md:ml-1 lg:ml-2 opacity-80"></i>שאלות</a>
+                        <a href="./#about-section" class="nav-internal-link nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300 section-link"><i class="fas fa-info-circle md:ml-1 lg:ml-2 opacity-80"></i>אודות</a>
+                        <a href="./#contact-section" class="nav-internal-link nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300 section-link"><i class="fas fa-envelope md:ml-1 lg:ml-2 opacity-80"></i>צור קשר</a>
                     </nav>
                 </div>
-
                    <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                        <div class="hidden md:block">
-                            <form role="search" id="desktop-search-form" class="relative">
-                                <input type="search" id="desktop-search-input" class="search-input block w-48 lg:w-60 pr-4 pl-10 py-2.5 text-sm border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500 transition-all duration-300 focus:w-60 lg:focus:w-72" placeholder="חיפוש סרטונים..." autocomplete="off">
-                                <button type="submit" aria-label="בצע חיפוש" class="absolute left-0 top-0 h-full px-3 text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-300">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                                <div id="desktop-search-suggestions" class="search-suggestions-container absolute top-full left-0 right-0 mt-1 z-50 hidden"> 
-                                    <ul class="max-h-72 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md shadow-lg"></ul>
-                                </div>
-                            </form>
-                        </div>
-                    
                         <button role="switch" aria-label="החלף מצב תצוגה" aria-checked="false" class="dark-mode-toggle-button hidden md:flex items-center justify-center text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-full p-2.5 h-10 w-10 transition-colors">
                             <i class="fas fa-moon text-lg"></i>
                             <i class="fas fa-sun text-lg hidden"></i>
@@ -119,116 +100,106 @@
             </div>
         </div>
     </header>
-    
     <main id="main-page-content" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
         <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 md:p-12 prose prose-lg prose-purple dark:prose-invert max-w-none">
             <h1>מדיניות פרטיות</h1>
-            <p>עודכן לאחרונה: 1 ביולי 2025</p>
+            <p class="text-sm text-slate-500 dark:text-slate-400">עודכן לאחרונה: ינואר 2026 (מותאם לתיקון 13 לחוק הגנת הפרטיות)</p>
             
-            <p>הפרטיות שלך חשובה לנו ב-CAR-טיב ("האתר"). מדיניות פרטיות זו מסבירה איזה מידע אנו אוספים ממך, מדוע אנו אוספים אותו, וכיצד אנו משתמשים בו.</p>
-            
-            <h2>1. מידע שאנו אוספים</h2>
-            <p>אנו אוספים סוגים שונים של מידע כדי לספק ולשפר את השירות עבורך:</p>
+            <p>ברוכים הבאים לאתר CAR-טיב ("האתר", "אנו"). אנו מכבדים את פרטיות המשתמשים שלנו ומחויבים להגן על המידע האישי שאתם משתפים עמנו. מדיניות זו מנוסחת בהתאם להוראות חוק הגנת הפרטיות, התשמ"א-1981, לרבות תיקון מס' 13 לחוק, ותקנות הגנת הפרטיות (אבטחת מידע), התשע"ז-2017.</p>
+
+            <h2>1. הגדרות (בהתאם לתיקון 13)</h2>
             <ul>
-                <li><strong>מידע שנמסר באופן ישיר:</strong> כאשר אתה משתמש בטופס "צור קשר" או בטופס "הוספת סרטון", אנו אוספים את הפרטים שאתה מוסר, כגון שמך, כתובת האימייל שלך, ותוכן הודעתך.</li>
-                <li><strong>מידע שנאסף באופן אוטומטי:</strong>
-                    <ul>
-                        <li><strong>נתוני שימוש:</strong> שרת האחסון שלנו (Netlify) אוסף מידע טכני בסיסי כמו כתובת IP (באופן אנונימי), סוג דפדפן, מערכת הפעלה, ודפים שנצפו באתר. מידע זה משמש אותנו למטרות סטטיסטיות, תפעול ואבטחה.</li>
-                        <li><strong>עוגיות (Cookies) ו-LocalStorage:</strong> אנו משתמשים ב-LocalStorage של הדפדפן כדי לשמור את העדפותיך, כגון בחירת "מצב חשוך". מידע זה נשמר באופן מקומי על מכשירך ואינו נשלח אלינו.</li>
-                    </ul>
-                </li>
+                <li><strong>"מידע אישי":</strong> נתונים הנוגעים לאדם מזוהה או שניתן לזיהוי באמצעים סבירים (כגון שם, כתובת דוא"ל).</li>
+                <li><strong>"בעל מאגר המידע":</strong> מפעיל האתר, אשר קובע את מטרות עיבוד המידע.</li>
+                <li><strong>"מחזיק":</strong> גורם חיצוני (כגון שרתי האחסון) המעבד מידע עבור בעל המאגר.</li>
             </ul>
 
-            <h2>2. שימוש במידע ושירותי צד שלישי</h2>
-            <p>אנו משתמשים במידע שאנו אוספים למטרות הבאות:</p>
+            <h2>2. המידע שאנו אוספים</h2>
+            <p>אנו פועלים על פי עקרון צמצום המידע (Data Minimization) ואוספים רק את המידע הדרוש למתן השירות:</p>
             <ul>
-                <li>כדי לספק, לתחזק ולשפר את האתר.</li>
-                <li>כדי להשיב לפניותיך ולספק לך תמיכה.</li>
-                <li>כדי לנתח את השימוש באתר ולהבין כיצד לשפר את חווית המשתמש.</li>
+                <li><strong>מידע הנמסר ביוזמתך:</strong> בעת פנייה דרך טפסי "צור קשר" או "הוספת סרטון", אנו אוספים את שמך, כתובת הדוא"ל שלך ותוכן הפנייה.</li>
+                <li><strong>מידע טכני אוטומטי:</strong> שרתי האתר עשויים לתעד באופן אוטומטי וסטטיסטי כתובות IP, סוג דפדפן ודפים שנצפו לצורכי אבטחת מידע ותפעול תקין. מידע זה אינו משמש לזיהוי אישי או לפרופיילינג שיווקי.</li>
+                <li><strong>העדפות משתמש:</strong> אנו שומרים את העדפת התצוגה (מצב כהה/בהיר) באופן מקומי על הדפדפן שלך (Local Storage). מידע זה אינו מועבר לשרתים שלנו.</li>
             </ul>
-            <p>חשוב להבהיר כי האתר עושה שימוש בשירותי צד שלישי, והשימוש שלך באתר כפוף גם למדיניות שלהם:</p>
+
+            <h2>3. מטרות השימוש במידע</h2>
+            <p>המידע שנאסף ישמש אך ורק למטרות הבאות, שהוגדרו מראש:</p>
             <ul>
-                <li><strong>YouTube (Google):</strong> סרטוני הווידאו באתר מוטמעים משירות YouTube. צפייה בסרטון באתר כפופה למדיניות הפרטיות של גוגל. Google עשויה לאסוף נתונים על צפייתך, בדומה לצפייה ישירה באתר YouTube. למידע נוסף, אנא עיין ב<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">מדיניות הפרטיות של Google</a>.</li>
-                <li><strong>Google Forms / Apps Script:</strong> טפסי יצירת הקשר והוספת הסרטונים מופעלים באמצעות שירותי גוגל. שליחת טופס כפופה למדיניות של גוגל.</li>
-                <li><strong>Netlify:</strong> האתר מאוחסן על פלטפורמת Netlify. השירות אוסף נתוני תעבורה ואבחון. למידע נוסף, ראה את <a href="https://www.netlify.com/privacy/" target="_blank" rel="noopener noreferrer">מדיניות הפרטיות של Netlify</a>.</li>
+                <li>מתן מענה לפניות משתמשים.</li>
+                <li>בחינת סרטונים שהוצעו על ידי גולשים.</li>
+                <li>שיפור חווית המשתמש ותפעול האתר.</li>
+                <li>עמידה בדרישות חוק ורגולציה.</li>
             </ul>
-            
-            <h2>3. שיתוף מידע</h2>
-            <p><strong>אנו לא מוכרים, סוחרים או משכירים את המידע האישי שלך לצדדים שלישיים.</strong></p>
-            
-            <h2>4. אבטחת מידע</h2>
-            <p>אנו נוקטים באמצעים סבירים כדי להגן על המידע שלך, אך חשוב לזכור ששום שיטת העברה דרך האינטרנט או אחסון אלקטרוני אינה מאובטחת ב-100%.</p>
-            
-            <h2>5. קישורים לאתרים אחרים</h2>
-            <p>האתר עשוי להכיל קישורים לאתרים אחרים שאינם מופעלים על ידינו (למשל, פורום "רכבים זה לזה"). אם תלחץ על קישור של צד שלישי, תועבר לאתר שלו. אנו ממליצים בחום לעיין במדיניות הפרטיות של כל אתר שאתה מבקר בו.</p>
-            
-            <h2>6. שינויים במדיניות הפרטיות</h2>
-            <p>אנו עשויים לעדכן את מדיניות הפרטיות שלנו מעת לעת. אנו נודיע לך על כל שינוי על ידי פרסום מדיניות הפרטיות החדשה בעמוד זה. מומלץ לעיין במדיניות זו מעת לעת.</p>
-            
-            <h2>7. צור קשר</h2>
-            <p>אם יש לך שאלות כלשהן בנוגע למדיניות פרטיות זו, תוכל ליצור איתנו קשר דרך <a href="./#contact-section">עמוד צור הקשר</a>.</p>
+
+            <h2>4. זכויותיך כנושא מידע</h2>
+            <p>בהתאם לתיקון 13 לחוק, עומדות לרשותך הזכויות הבאות:</p>
+            <ul>
+                <li><strong>זכות העיון:</strong> זכותך לפנות אלינו ולבקש לעיין במידע המוחזק עליך במאגרי המידע שלנו.</li>
+                <li><strong>זכות התיקון והמחיקה:</strong> אם מצאת כי המידע עליך אינו נכון, שלם, ברור או מעודכן, רשאי אתה לפנות אלינו בבקשה לתקן את המידע או למחוק אותו.</li>
+                <li><strong>הזכות להישכח:</strong> ניתן לבקש מחיקה מלאה של פרטיך ממאגרי המידע שלנו, בכפוף למגבלות החוק.</li>
+            </ul>
+            <p>למימוש זכויות אלו, ניתן לפנות לממונה הגנת הפרטיות/מפעיל האתר דרך עמוד <a href="./#contact-section">צור קשר</a>.</p>
+
+            <h2>5. אבטחת מידע והעברה לצד ג'</h2>
+            <p>אנו נוקטים באמצעי אבטחה סבירים ומתאימים לאופי המידע המוחזק, בהתאם לתקנות אבטחת מידע. אנו לא מעבירים מידע אישי לצדדים שלישיים למטרות מסחריות.</p>
+            <p>האתר מאוחסן על גבי שירותי ענן (כגון Netlify/Google) העומדים בתקני אבטחה בינלאומיים מחמירים, והמהווים "מחזיק" במידע כהגדרתו בחוק.</p>
+
+            <h2>6. שירותים חיצוניים (YouTube)</h2>
+            <p>האתר מטמיע נגני וידאו של YouTube. השימוש בנגנים אלו כפוף למדיניות הפרטיות של Google ו-YouTube. בעת צפייה בסרטון, Google עשויה לאסוף מידע אודות הצפייה. לפרטים נוספים: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">מדיניות הפרטיות של Google</a>.</p>
+
+            <h2>7. שינויים במדיניות</h2>
+            <p>אנו רשאים לעדכן מדיניות זו מעת לעת. שינויים מהותיים ילוו בהודעה מתאימה באתר. תאריך העדכון האחרון מופיע בראש העמוד.</p>
         </div>
     </main>
-
     <footer id="site-footer" class="bg-slate-900 text-slate-400 dark:bg-gray-950 dark:text-slate-400 transition-colors duration-300">
-        <div class="max-w-7xl mx-auto py-16 md:py-20 px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12"> 
+        <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div class="sm:col-span-2 lg:col-span-1">
-                    <a href="./" class="flex items-center mb-5 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded" aria-label="CAR-טיב דף הבית">
+                    <a href="./" class="nav-logo-link flex items-center mb-5 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded" aria-label="CAR-טיב דף הבית">
                         <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב לבן" class="h-10 w-auto ml-2">
                         <span class="text-xl font-bold text-white dark:text-slate-100">CAR-טיב</span>
                     </a>
                     <p class="text-sm leading-relaxed text-slate-400 dark:text-slate-500">מאגר וידאו ייעודי, כשר ומסונן, לחובבי רכב שומרי התורה והמצוות.</p>
                 </div>
-
                 <div>
-                    <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">קטגוריות</h3>
-                    <ul class="space-y-3">
-                        <li><a href="category.html?name=review" class="footer-link"><i class="fas fa-car-on fa-fw ml-2 opacity-70"></i>סקירות רכב</a></li>
-                        <li><a href="category.html?name=maintenance" class="footer-link"><i class="fas fa-oil-can fa-fw ml-2 opacity-70"></i>טיפולים</a></li>
-                        <li><a href="category.html?name=diy" class="footer-link"><i class="fas fa-tools fa-fw ml-2 opacity-70"></i>עשה זאת בעצמך</a></li>
-                        <li><a href="category.html?name=upgrades" class="footer-link"><i class="fas fa-rocket fa-fw ml-2 opacity-70"></i>שיפורים ושדרוגים</a></li>
-                        <li><a href="category.html?name=troubleshooting" class="footer-link"><i class="fas fa-microscope fa-fw ml-2 opacity-70"></i>איתור ותיקון תקלות</a></li>
-                        <li><a href="category.html?name=systems" class="footer-link"><i class="fas fa-cogs fa-fw ml-2 opacity-70"></i>מערכות הרכב</a></li>
-                        <li><a href="category.html?name=collectors" class="footer-link"><i class="fas fa-car-side fa-fw ml-2 opacity-70"></i>רכבי אספנות</a></li>
+                    <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">קטגוריות מומלצות</h3>
+                    <ul class="space-y-2">
+                        <li><a href="./?name=review" class="nav-internal-link footer-link"><i class="fas fa-car-on fa-fw ml-2 opacity-70"></i>סקירות רכב</a></li>
+                        <li><a href="./?name=maintenance" class="nav-internal-link footer-link"><i class="fas fa-oil-can fa-fw ml-2 opacity-70"></i>טיפולים</a></li>
+                        <li><a href="./?name=diy" class="nav-internal-link footer-link"><i class="fas fa-tools fa-fw ml-2 opacity-70"></i>עשה זאת בעצמך</a></li>
+                        <li><a href="./?name=upgrades" class="nav-internal-link footer-link"><i class="fas fa-rocket fa-fw ml-2 opacity-70"></i>שיפורים ושדרוגים</a></li>
+                        <li><a href="./?name=troubleshooting" class="nav-internal-link footer-link"><i class="fas fa-microscope fa-fw ml-2 opacity-70"></i>איתור ותיקון תקלות</a></li>
+                        <li><a href="./?name=collectors" class="nav-internal-link footer-link"><i class="fas fa-car-side fa-fw ml-2 opacity-70"></i>רכבי אספנות</a></li>
                     </ul>
                 </div>
-
                 <div>
                     <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">קישורים</h3>
-                    <ul class="space-y-3">
-                        <li><a href="./#about-section" class="footer-link nav-link"><i class="fas fa-info-circle fa-fw ml-2 opacity-70"></i>אודות</a></li>
+                    <ul class="space-y-2">
                         <li><a href="https://rechavimzelaze.ovh" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fas fa-users fa-fw ml-2 opacity-70"></i>פורום רכבים זה לזה</a></li>
                         <li><a href="https://rechavimzelaze.ovh/post/683722" target="_blank" rel="noopener noreferrer" class="footer-link"> <i class="fas fa-book fa-fw ml-2 opacity-70"></i>עוד על האתר</a></li>
                         <li><a href="https://github.com/mmichaelush/kosher-car-videos" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fab fa-github fa-fw ml-2 opacity-70"></i>הפרוייקט ב-GitHub</a></li>
-                        <li><a href="./#contact-section" class="footer-link nav-link"><i class="fas fa-envelope fa-fw ml-2 opacity-70"></i>צור קשר</a></li>
+                        <li><a href="./#contact-section" class="nav-internal-link footer-link nav-link"><i class="fas fa-envelope fa-fw ml-2 opacity-70"></i>צור קשר</a></li>
                         <li><a href="#" id="check-yt-id-link" class="footer-link"><i class="fas fa-search fa-fw ml-2 opacity-70"></i>בדוק אם סרטון קיים</a></li>
                         <li><a href="add-video.html" class="footer-link"><i class="fas fa-video fa-fw ml-2 opacity-70"></i>הוספת סרטונים</a></li>
                     </ul>
                 </div>
-
-                <div>
+                 <div>
                     <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">משפטי</h3>
-                    <ul class="space-y-3">
-                        <li><a href="privacy.html" class="footer-link"><i class="fas fa-shield-alt fa-fw ml-2 opacity-70"></i>מדיניות פרטיות</a></li>
-                        <li><a href="terms.html" class="footer-link"><i class="fas fa-file-contract fa-fw ml-2 opacity-70"></i>תנאי שימוש</a></li>
-                        <li><a href="./#contact-section" class="footer-link nav-link"><i class="fas fa-exclamation-triangle fa-fw ml-2 opacity-70"></i>דיווח על תוכן</a></li>
+                    <ul class="space-y-2">
+                        <li><a href="privacy.html" class="footer-link nav-internal-link"><i class="fas fa-shield-alt fa-fw ml-2 opacity-70"></i>מדיניות פרטיות</a></li>
+                        <li><a href="terms.html" class="footer-link nav-internal-link"><i class="fas fa-file-contract fa-fw ml-2 opacity-70"></i>תנאי שימוש</a></li>
+                        <li><a href="./#contact-section" class="nav-internal-link footer-link nav-link"><i class="fas fa-exclamation-triangle fa-fw ml-2 opacity-70"></i>דיווח על תוכן</a></li>
                     </ul>
                 </div>
-            </div> 
-
-            <div class="mt-16 border-t border-slate-700 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-xs text-center md:text-right text-slate-500 dark:text-slate-600">© <span id="current-year-footer"></span> CAR-טיב. כל הזכויות שמורות.</p>
+            </div>
+            <div class="mt-12 border-t border-slate-700 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-xs text-center md:text-right text-slate-500 dark:text-slate-600">© 2026 CAR-טיב. כל הזכויות שמורות.</p>
                 <p class="text-xs text-center md:text-left text-slate-500 dark:text-slate-600">עיצוב ופיתוח: <a href="https://github.com/mmichaelush" target="_blank" rel="noopener noreferrer" class="hover:text-purple-300 dark:hover:text-purple-400 underline"> @מיכאלוש</a> בסיוע AI</p>
             </div>
         </div>
-    </footer> 
-
-    <button id="back-to-top-btn" aria-label="חזור לראש העמוד" class="fixed bottom-6 right-6 rtl:left-6 rtl:right-auto z-50 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-900 opacity-0 invisible h-12 w-12 flex items-center justify-center">
+    </footer>
+    <button id="back-to-top-btn" aria-label="חזור לראש העמוד" class="fixed bottom-6 right-6 rtl:left-6 rtl:right-auto z-50 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-900 opacity-0 invisible h-12 w-12 flex items-center justify-center transition-all duration-300 transform hover:scale-110">
         <i class="fas fa-arrow-up text-lg"></i>
     </button>
-    
-    <script src="js/main.js"></script>
 </body>
-
 </html>
