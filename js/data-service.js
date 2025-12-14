@@ -35,18 +35,19 @@ window.App.CONSTANTS = {
         'safety',
         'offroad',
     ],
+    // Reordered and recolored based on user request
     PREDEFINED_CATEGORIES: [
         { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "film" },
-        { id: "review", name: "סקירות רכב", description: "מבחנים והשוואות", icon: "magnifying-glass-chart", gradient: "from-purple-500 to-indigo-600", darkGradient: "dark:from-purple-600 dark:to-indigo-700" },
-        { id: "safety", name: "מבחני בטיחות", description: "מבחני ריסוק וציוני בטיחות", icon: "shield-halved", gradient: "from-red-500 to-rose-600", darkGradient: "dark:from-red-600 dark:to-rose-700" },
-        { id: "offroad", name: "שטח ו-4X4", description: "טיולים, עבירות וחילוצים", icon: "mountain", gradient: "from-amber-600 to-orange-700", darkGradient: "dark:from-amber-700 dark:to-orange-800" },
-        { id: "maintenance", name: "טיפולים", description: "תחזוקה שוטפת ומניעתית", icon: "oil-can", gradient: "from-blue-500 to-cyan-600", darkGradient: "dark:from-blue-600 dark:to-cyan-700" },
-        { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה", icon: "tools", gradient: "from-green-500 to-teal-600", darkGradient: "dark:from-green-600 dark:to-teal-700" },
-        { id: "troubleshooting", name: "איתור ותיקון תקלות", description: "אבחון ופתרון בעיות", icon: "microscope", gradient: "from-lime-400 to-yellow-500", darkGradient: "dark:from-lime-500 dark:to-yellow-600" },
-        { id: "driving", name: "נהיגה נכונה", description: "טיפים לנהיגה בכביש ובשטח", icon: "road", gradient: "from-teal-500 to-emerald-600", darkGradient: "dark:from-teal-600 dark:to-emerald-700" },
-        { id: "upgrades", name: "שיפורים ושדרוגים", description: "שדרוג הרכב והוספת אביזרים", icon: "rocket", gradient: "from-orange-500 to-red-600", darkGradient: "dark:from-orange-600 dark:to-red-700" },
-        { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "cogs", gradient: "from-yellow-500 to-amber-600", darkGradient: "dark:from-yellow-600 dark:to-amber-700" },
-        { id: "collectors", name: "רכבי אספנות", description: "רכבים נוסטלגיים שחזרו לכביש", icon: "car-side", gradient: "from-red-500 to-pink-600", darkGradient: "dark:from-red-600 dark:to-pink-700" }
+        { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה", icon: "tools", gradient: "from-emerald-500 to-green-600", darkGradient: "dark:from-emerald-600 dark:to-green-700" },
+        { id: "troubleshooting", name: "איתור ותיקון תקלות", description: "אבחון ופתרון בעיות", icon: "microscope", gradient: "from-orange-500 to-amber-600", darkGradient: "dark:from-orange-600 dark:to-amber-700" },
+        { id: "maintenance", name: "טיפולים", description: "תחזוקה שוטפת ומניעתית", icon: "oil-can", gradient: "from-blue-600 to-indigo-700", darkGradient: "dark:from-blue-700 dark:to-indigo-800" },
+        { id: "review", name: "סקירות רכב", description: "מבחנים והשוואות", icon: "magnifying-glass-chart", gradient: "from-purple-600 to-violet-700", darkGradient: "dark:from-purple-700 dark:to-violet-800" },
+        { id: "safety", name: "מבחני בטיחות", description: "מבחני ריסוק וציוני בטיחות", icon: "shield-halved", gradient: "from-red-600 to-rose-700", darkGradient: "dark:from-red-700 dark:to-rose-800" },
+        { id: "upgrades", name: "שיפורים ושדרוגים", description: "שדרוג הרכב והוספת אביזרים", icon: "rocket", gradient: "from-fuchsia-600 to-pink-700", darkGradient: "dark:from-fuchsia-700 dark:to-pink-800" },
+        { id: "offroad", name: "שטח ו-4X4", description: "טיולים, עבירות וחילוצים", icon: "mountain", gradient: "from-yellow-600 to-orange-800", darkGradient: "dark:from-yellow-700 dark:to-orange-900" },
+        { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "cogs", gradient: "from-slate-600 to-gray-700", darkGradient: "dark:from-slate-700 dark:to-gray-800" },
+        { id: "collectors", name: "רכבי אספנות", description: "רכבים נוסטלגיים שחזרו לכביש", icon: "car-side", gradient: "from-amber-400 to-yellow-600", darkGradient: "dark:from-amber-500 dark:to-yellow-700" },
+        { id: "driving", name: "נהיגה נכונה", description: "טיפים לנהיגה בכביש ובשטח", icon: "road", gradient: "from-cyan-500 to-teal-600", darkGradient: "dark:from-cyan-600 dark:to-teal-700" }
     ]
 };
 
