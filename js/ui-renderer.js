@@ -1,10 +1,3 @@
-```
-
-### 3. `js/ui-renderer.js`
-תיקון קישורים בקטגוריות ועיצוב דף סרטון.
-
-```javascript
-// ui-renderer.js
 // Handles DOM manipulations and rendering HTML
 
 window.App = window.App || {};
