@@ -83,6 +83,15 @@
             width: 1.25rem;
             height: 1.25rem;
         }
+        
+        /* Modern Switch Styling */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #9333ea;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #9333ea;
+        }
     </style>
 </head>
 <body class="font-rubik bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 antialiased transition-colors duration-300 overflow-x-hidden">
@@ -103,10 +112,10 @@
     <!-- Mobile Sidebar -->
     <aside id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-800 shadow-xl z-50 p-6 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title">
         <div class="flex justify-between items-center mb-8">
-            <a href="#" class="nav-internal-link flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded" aria-label="CAR-טיב דף הבית" data-target="home-hero">
+            <a href="./" class="nav-logo-link flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded" aria-label="CAR-טיב דף הבית">
                 <img src="data/assets/images/logo.png" alt="לוגו CAR-טיב" class="h-8 w-auto ml-2 dark:hidden">
                 <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב" class="h-8 w-auto ml-2 hidden dark:block">
-                <span id="mobile-menu-title" class="text-xl font-bold text-slate-900 dark:text-slate-100 mr-2">CAR-טיב</span>
+                <span id="mobile-menu-title" class="text-xl font-bold text-slate-900 dark:text-slate-100">CAR-טיב</span>
             </a>
             <button id="close-menu-btn" aria-label="סגירת תפריט" class="text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded p-1">
                 <i class="fas fa-times text-2xl"></i>
@@ -141,7 +150,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
                 <div class="flex items-center">
-                    <a href="#" class="nav-internal-link flex-shrink-0 flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-md p-1 -ml-1" aria-label="CAR-טיב דף הבית" data-target="home-hero">
+                    <a href="./" class="nav-logo-link flex-shrink-0 flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-md p-1 -ml-1" aria-label="CAR-טיב דף הבית" data-target="home-hero">
                         <img src="data/assets/images/logo.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 dark:hidden">
                         <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 hidden dark:block">
                         <span class="text-2xl font-bold text-slate-900 dark:text-slate-100 hidden sm:block mr-2">CAR-טיב</span>
@@ -358,12 +367,12 @@
                 </div>
             </section>
 
-            <!-- Filters Section -->
+            <!-- Improved Filters Section -->
             <section class="mb-12 md:mb-16 bg-white dark:bg-slate-800/75 backdrop-blur-sm p-6 sm:p-8 rounded-2xl shadow-xl dark:shadow-black/30 border border-slate-200 dark:border-slate-700" aria-labelledby="filter-heading">
                 <div class="flex flex-col sm:flex-row justify-between items-start mb-6 gap-4">
                     <h2 id="filter-heading" class="text-2xl font-semibold text-slate-900 dark:text-slate-100 flex items-center shrink-0">
                         <i class="fas fa-filter text-purple-600 dark:text-purple-400 mr-3"></i>
-                        סנן תוצאות
+                        סינון מתקדם
                     </h2>
                     <div id="filter-summary-container" class="hidden" aria-live="polite" aria-atomic="true">
                         <div class="flex flex-wrap items-center justify-start sm:justify-end gap-x-4 gap-y-2 bg-purple-50 dark:bg-slate-700/50 p-3 rounded-lg border border-purple-200 dark:border-slate-600">
@@ -379,33 +388,38 @@
                         </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-8">
-                    <div class="md:col-span-2 flex flex-col space-y-4">
-                        <div>
-                            <h3 class="text-lg font-medium text-slate-800 dark:text-slate-200 mb-3" id="popular-tags-label">סנן לפי תגיות פופולריות:</h3>
-                            <div id="popular-tags-container" class="flex flex-wrap gap-2 mb-4" aria-labelledby="popular-tags-label">
+                
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <!-- Right Side: Filter Content -->
+                    <div class="lg:w-3/4 flex flex-col space-y-6">
+                         <div>
+                            <h3 class="text-lg font-medium text-slate-800 dark:text-slate-200 mb-3" id="popular-tags-label">תגיות פופולריות:</h3>
+                            <div id="popular-tags-container" class="flex flex-wrap gap-2" aria-labelledby="popular-tags-label">
                                 <p class="w-full text-slate-500 dark:text-slate-400 text-sm">טוען תגיות...</p>
                             </div>
                         </div>
                         <div>
-                            <form id="custom-tag-form" class="relative mb-4">
+                            <form id="custom-tag-form" class="relative">
                                 <label for="tag-search-input" class="sr-only">הוסף תגית לסינון</label>
-                                <input type="text" id="tag-search-input" class="tag-input pr-28 sm:pr-32 w-full border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500" placeholder="הקלד תגית והקש Enter...">
+                                <input type="text" id="tag-search-input" class="tag-input pr-28 sm:pr-32 w-full border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500 shadow-sm" placeholder="הקלד תגית והקש Enter...">
                                 <button type="submit" class="absolute left-1.5 top-1/2 transform -translate-y-1/2 bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 text-white px-4 py-1.5 rounded-md text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-2 dark:focus:ring-offset-slate-800">הוסף</button>
                             </form>
-                            <div id="selected-tags-container" class="flex flex-wrap gap-2" aria-label="תגיות שנבחרו"></div>
+                            <div id="selected-tags-container" class="flex flex-wrap gap-2 mt-3 min-h-[1.5rem]" aria-label="תגיות שנבחרו"></div>
                         </div>
                     </div>
-                    <div class="md:col-span-1">
-                        <h3 class="text-lg font-medium text-slate-800 dark:text-slate-200 mb-3">סנן לפי שפה:</h3>
-                        <label for="hebrew-filter-toggle" class="flex items-center cursor-pointer w-fit p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-md">
-                            <div class="relative">
-                                <input type="checkbox" id="hebrew-filter-toggle" class="sr-only peer">
-                                <div class="block bg-slate-300 dark:bg-slate-600 w-14 h-8 rounded-full transition-colors peer-checked:bg-purple-600 dark:peer-checked:bg-purple-500"></div>
-                                <div class="dot absolute left-1 top-1 bg-white dark:bg-slate-300 w-6 h-6 rounded-full transition transform peer-checked:translate-x-full peer-checked:bg-white dark:peer-checked:bg-slate-100"></div>
+                    
+                    <!-- Left Side: Controls -->
+                    <div class="lg:w-1/4 bg-slate-50 dark:bg-slate-800/50 rounded-xl p-5 border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
+                        <div class="flex flex-col space-y-6">
+                            <!-- Hebrew Only Toggle -->
+                            <div class="flex items-center justify-between">
+                                <span class="text-slate-700 dark:text-slate-300 font-medium">עברית בלבד</span>
+                                <label for="hebrew-filter-toggle" class="flex items-center cursor-pointer relative">
+                                    <input type="checkbox" id="hebrew-filter-toggle" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-300 dark:peer-focus:ring-purple-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600"></div>
+                                </label>
                             </div>
-                            <span class="ml-3 text-slate-700 dark:text-slate-300 font-medium">הצג סרטונים בעברית בלבד</span>
-                        </label>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -549,9 +563,9 @@
                                 <label for="contact-message" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">הודעה</label>
                                 <textarea id="contact-message" name="message" rows="5" required class="form-textarea py-3 px-4 block w-full shadow-sm focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 border-slate-300 dark:border-slate-500 bg-slate-50 dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg placeholder-slate-400 dark:placeholder-slate-500"></textarea>
                             </div>
-                            <div class="flex items-start mt-4 mb-2">
+                            <div class="flex items-start mt-4 mb-2 p-3 bg-purple-50 dark:bg-slate-600/50 rounded-lg">
                                 <input id="privacy-policy-checkbox" name="privacy_policy" type="checkbox" required class="custom-checkbox text-purple-600 focus:ring-purple-500 border-gray-300 rounded dark:bg-slate-700 dark:border-slate-500 mt-1">
-                                <label for="privacy-policy-checkbox" class="mr-3 block text-base font-medium text-slate-700 dark:text-slate-300">
+                                <label for="privacy-policy-checkbox" class="mr-3 block text-base font-semibold text-slate-800 dark:text-slate-200">
                                     קראתי ואני מאשר את <a href="privacy.html" class="text-purple-600 hover:text-purple-500 dark:text-purple-400 dark:hover:text-purple-300 underline font-bold">מדיניות הפרטיות</a> שלנו.
                                 </label>
                             </div>
