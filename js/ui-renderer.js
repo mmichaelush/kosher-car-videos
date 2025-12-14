@@ -150,7 +150,22 @@ window.App.UI = {
         card.thumbnailImg.src = video.thumbnail || window.App.DataService.getThumbnailUrl(video.id);
         card.thumbnailImg.alt = video.title;
         
-        if(card.duration) card.duration.textContent = video.duration || '';
+        // Format Duration
+        if(card.duration) {
+            let dur = video.duration || '';
+            // If format is like '1:5' change to '01:05' or similar standard
+            if(dur.includes(':')) {
+                 const parts = dur.split(':');
+                 if(parts.length === 2) {
+                     // MM:SS
+                     if(parts[0].length === 1) parts[0] = '0' + parts[0];
+                     if(parts[1].length === 1) parts[1] = '0' + parts[1];
+                     dur = parts.join(':');
+                 }
+            }
+            card.duration.textContent = dur;
+        }
+
         if(card.playLink) card.playLink.href = "#";
         if(card.iframe) card.iframe.title = `נגן וידאו: ${video.title}`;
         
@@ -163,7 +178,7 @@ window.App.UI = {
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if(card.channelLogo) {
-            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==EAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
+            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==AAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
             card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
             card.channelLogo.classList.toggle('hidden', !video.channelImage);
         }
@@ -190,6 +205,7 @@ window.App.UI = {
         }
 
         if (card.dateDisplay) {
+            // Check if dateAdded is valid date object and not "Invalid Date"
             if (video.dateAdded && video.dateAdded instanceof Date && !isNaN(video.dateAdded.getTime())) {
                 card.dateDisplay.appendChild(document.createTextNode(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })));
             } else {
@@ -288,7 +304,7 @@ window.App.UI = {
                 const count = window.App.state.allVideos.filter(v => v.category === cat.id).length;
                 const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`;
                 return `
-                    <a href="?name=${cat.id}#video-grid-section" class="nav-internal-link relative category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
+                    <a href="?name=${cat.id}" class="nav-internal-link relative category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
                         <div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]">
                             <i class="fas fa-${cat.icon || 'folder'} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i>
                             <h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 dark:group-hover:text-yellow-200 transition-colors">${cat.name}</h3>
