@@ -35,7 +35,7 @@ window.App.CONSTANTS = {
         'safety',
         'offroad',
     ],
-    // Reordered and recolored based on user request
+    // Reordered and Updated Colors (Systems changed to cyan/teal)
     PREDEFINED_CATEGORIES: [
         { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "film" },
         { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה", icon: "tools", gradient: "from-emerald-500 to-green-600", darkGradient: "dark:from-emerald-600 dark:to-green-700" },
@@ -45,9 +45,9 @@ window.App.CONSTANTS = {
         { id: "safety", name: "מבחני בטיחות", description: "מבחני ריסוק וציוני בטיחות", icon: "shield-halved", gradient: "from-red-600 to-rose-700", darkGradient: "dark:from-red-700 dark:to-rose-800" },
         { id: "upgrades", name: "שיפורים ושדרוגים", description: "שדרוג הרכב והוספת אביזרים", icon: "rocket", gradient: "from-fuchsia-600 to-pink-700", darkGradient: "dark:from-fuchsia-700 dark:to-pink-800" },
         { id: "offroad", name: "שטח ו-4X4", description: "טיולים, עבירות וחילוצים", icon: "mountain", gradient: "from-yellow-600 to-orange-800", darkGradient: "dark:from-yellow-700 dark:to-orange-900" },
-        { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "cogs", gradient: "from-slate-600 to-gray-700", darkGradient: "dark:from-slate-700 dark:to-gray-800" },
+        { id: "systems", name: "מערכות הרכב", description: "הסברים על מכלולים וטכנולוגיות", icon: "cogs", gradient: "from-cyan-600 to-sky-700", darkGradient: "dark:from-cyan-700 dark:to-sky-800" },
         { id: "collectors", name: "רכבי אספנות", description: "רכבים נוסטלגיים שחזרו לכביש", icon: "car-side", gradient: "from-amber-400 to-yellow-600", darkGradient: "dark:from-amber-500 dark:to-yellow-700" },
-        { id: "driving", name: "נהיגה נכונה", description: "טיפים לנהיגה בכביש ובשטח", icon: "road", gradient: "from-cyan-500 to-teal-600", darkGradient: "dark:from-cyan-600 dark:to-teal-700" }
+        { id: "driving", name: "נהיגה נכונה", description: "טיפים לנהיגה בכביש ובשטח", icon: "road", gradient: "from-teal-500 to-emerald-600", darkGradient: "dark:from-teal-600 dark:to-emerald-700" }
     ]
 };
 
@@ -73,7 +73,9 @@ window.App.state = {
         currentInput: null,
         currentSuggestionsContainer: null,
         isSuggestionClicked: false
-    }
+    },
+    // Cache for unique tags per category to improve performance
+    tagsCache: {}
 };
 
 // Data Fetching Functions
@@ -93,19 +95,25 @@ window.App.DataService = {
     parseDate: (dateString) => {
         if (!dateString) return null;
         
+        // Handle Excel/Sheet format sometimes seen in JSON (e.g. "44123")
+        if (!isNaN(dateString) && !dateString.includes('/') && !dateString.includes('-')) {
+             return new Date((dateString - (25567 + 2)) * 86400 * 1000);
+        }
+
         // Check for DD/MM/YYYY format
-        const parts = dateString.split('/');
-        if (parts.length === 3) {
-            // Assume Day/Month/Year first
-            const day = parseInt(parts[0], 10);
-            const month = parseInt(parts[1], 10) - 1; // Months are 0-11
-            const year = parseInt(parts[2], 10);
-            
-            if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
-                 const d = new Date(year, month, day);
-                 if (d.getFullYear() === year && d.getMonth() === month && d.getDate() === day) {
-                     return d;
-                 }
+        if (typeof dateString === 'string') {
+            const parts = dateString.split('/');
+            if (parts.length === 3) {
+                const day = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1; 
+                const year = parseInt(parts[2], 10);
+                
+                if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
+                     const d = new Date(year, month, day);
+                     if (d.getFullYear() === year && d.getMonth() === month && d.getDate() === day) {
+                         return d;
+                     }
+                }
             }
         }
 
@@ -152,6 +160,13 @@ window.App.DataService = {
             window.App.state.allVideos = results.flat();
             window.App.state.allVideosCache = window.App.state.allVideos;
             
+            // Pre-calculate unique tags for "all" category
+            const allTags = new Set();
+            window.App.state.allVideos.forEach(v => {
+                if(v.tags) v.tags.forEach(t => allTags.add(t));
+            });
+            window.App.state.tagsCache['all'] = Array.from(allTags);
+
             // Update hero count if exists
             const videoCountHero = document.getElementById('video-count-hero');
             if (videoCountHero) {
