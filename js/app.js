@@ -1,7 +1,5 @@
-// Main application logic, routing, and event handling
-
 document.addEventListener('DOMContentLoaded', () => {
-    // Shortcuts
+
     const App = window.App;
     const DOM = App.DOM;
     const State = App.state;
@@ -40,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
             preloader.style.opacity = '0';
             setTimeout(() => {
                 preloader.style.display = 'none';
-            }, 500); 
+            }, 500);
         }, 1500);
     }
 
@@ -48,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const suggestionsContainer = document.getElementById(`${inputElement.id.replace('-input', '')}-suggestions`);
         State.search.currentInput = inputElement;
         State.search.currentSuggestionsContainer = suggestionsContainer;
-        
+
         const searchTerm = inputElement.value.trim();
         if (searchTerm.length < CONSTANTS.MIN_SEARCH_TERM_LENGTH) {
             clearSearchSuggestions();
@@ -62,30 +60,30 @@ document.addEventListener('DOMContentLoaded', () => {
         const fuseSource = (State.currentFilters.category !== 'all')
             ? State.allVideos.filter(v => v.category === State.currentFilters.category)
             : State.allVideos;
-        
+
         displaySearchSuggestions(searchTerm, new Fuse(fuseSource, CONSTANTS.FUSE_OPTIONS));
     }
 
-    // Tag Autocomplete Logic
+
     function handleTagInput(inputElement) {
         const suggestionsContainer = document.getElementById('tag-suggestions');
         const searchTerm = inputElement.value.trim().toLowerCase();
-        
+
         if (searchTerm.length < 1) {
             suggestionsContainer.classList.add('hidden');
             return;
         }
 
-        // Get unique tags from all loaded videos
+
         const allTags = new Set();
         const videosToConsider = (State.currentFilters.category !== 'all')
             ? State.allVideos.filter(v => v.category === State.currentFilters.category)
             : State.allVideos;
-            
+
         videosToConsider.forEach(v => {
             if(v.tags) v.tags.forEach(t => allTags.add(t));
         });
-        
+
         const matches = Array.from(allTags).filter(tag => tag.includes(searchTerm)).slice(0, 5);
 
         if (matches.length > 0) {
@@ -95,8 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `).join('');
             suggestionsContainer.classList.remove('hidden');
-            
-            // Add click handlers
+
+
             suggestionsContainer.querySelectorAll('div').forEach(div => {
                 div.addEventListener('click', () => {
                     const tag = div.dataset.tag;
@@ -114,10 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!fuseInstance || !State.search.currentSuggestionsContainer) return;
         const suggestionsList = State.search.currentSuggestionsContainer.querySelector('ul');
         if (!suggestionsList) return;
-        
+
         const results = fuseInstance.search(searchTerm).slice(0, CONSTANTS.MAX_SUGGESTIONS);
         suggestionsList.innerHTML = '';
-        
+
         if (results.length === 0) {
             clearSearchSuggestions();
             return;
@@ -127,17 +125,17 @@ document.addEventListener('DOMContentLoaded', () => {
             const li = document.createElement('li');
             li.className = 'px-4 py-2.5 text-sm text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-slate-700 cursor-pointer transition-colors';
             li.dataset.index = index;
-            
+
             const titleMatch = result.matches && result.matches.find(m => m.key === 'title');
             li.innerHTML = titleMatch ? generateHighlightedText(result.item.title, titleMatch.indices) : result.item.title;
-            
+
             li.addEventListener('mousedown', () => {
                 State.search.isSuggestionClicked = true;
                 const inputElement = State.search.currentInput;
                 inputElement.value = result.item.title;
                 handleSearchSubmit(inputElement.form);
             });
-            
+
             li.addEventListener('mouseup', () => setTimeout(() => { State.search.isSuggestionClicked = false; }, 50));
             suggestionsList.appendChild(li);
         });
@@ -176,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             default: return;
         }
-        
+
         items.forEach((item, index) => {
             item.classList.toggle('active-suggestion', index === State.search.activeSuggestionIndex);
             if (index === State.search.activeSuggestionIndex) item.scrollIntoView({ block: 'nearest' });
@@ -210,7 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const input = form.querySelector('input[type="search"]');
         if (!input) return;
         const searchTerm = input.value.trim();
-        
+
         if (!DOM.singleVideoView.container.classList.contains('hidden')) {
              history.pushState(null, '', `./?search=${encodeURIComponent(searchTerm)}#video-grid-section`);
              handleRouting();
@@ -258,16 +256,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function applyFilters(isLoadMore = false, andScroll = true) {
         if (!isLoadMore) {
             State.ui.currentlyDisplayedVideosCount = 0;
-            UI.renderPopularTags(); // Re-render tags based on filtered content context
+            UI.renderPopularTags();
         }
-        
+
         const allMatchingVideos = getFilteredAndSortedVideos();
         UI.renderVideoCards(allMatchingVideos, isLoadMore, videoObserver);
-        
+
         if (andScroll && !isLoadMore) {
             scrollToVideoGridIfNeeded();
         }
-        
+
         clearSearchSuggestions();
         UI.updateFilterSummary();
     }
@@ -286,7 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
             newParams.set('v', videoId);
         } else {
             const { searchTerm, tags, hebrewOnly, sortBy, category } = State.currentFilters;
-            
+
             if (category && category !== 'all') newParams.set('name', category);
             if (searchTerm) newParams.set('search', searchTerm);
             if (tags.length > 0) newParams.set('tags', tags.join(','));
@@ -295,9 +293,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const newSearchString = newParams.toString();
-        // Check if path or search params changed
+
         const currentSearchString = url.search.substring(1);
-        
+
         if (currentSearchString !== newSearchString) {
              const newUrl = newSearchString ? `${window.location.pathname}?${newSearchString}` : window.location.pathname;
              history.pushState({ videoId, filters: State.currentFilters }, '', newUrl);
@@ -309,20 +307,23 @@ document.addEventListener('DOMContentLoaded', () => {
         const videoId = params.get('v');
         const categoryParam = params.get('name');
         
+        // Auto Scroll Logic - if we have filters in URL on load
+        const hasFilters = params.has('search') || params.has('tags') || (categoryParam && categoryParam !== 'all');
+
         if (videoId) {
             showSingleVideoView(videoId);
         } else {
             hideSingleVideoView();
-            
+
             let category = 'all';
             if (categoryParam) {
                 const isValid = CONSTANTS.PREDEFINED_CATEGORIES.some(c => c.id === categoryParam.toLowerCase());
                 if(isValid) category = categoryParam.toLowerCase();
             }
-            
+
             const categoryChanged = State.currentFilters.category !== category;
             State.currentFilters.category = category;
-            
+
             UI.updateCategoryPageUI(category);
 
             State.currentFilters.searchTerm = params.get('search') || '';
@@ -333,14 +334,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 : localStorage.getItem('hebrewOnlyPreference') === 'true';
 
             UI.syncUIToState();
-            
+
             const fuseSource = category === 'all' ? State.allVideos : State.allVideos.filter(v => v.category === category);
             State.fuse = new Fuse(fuseSource, CONSTANTS.FUSE_OPTIONS);
 
             if(categoryChanged) UI.renderPopularTags();
-            
+
             applyFilters(false, false);
-            
+
             if(window.location.hash) {
                  setTimeout(() => {
                     const targetId = window.location.hash.substring(1);
@@ -351,6 +352,9 @@ document.addEventListener('DOMContentLoaded', () => {
                          window.scrollTo({ top: elementPosition, behavior: 'smooth' });
                     }
                  }, 200);
+            } else if (hasFilters) {
+                 // Auto scroll to results if filtered via URL
+                 setTimeout(() => scrollToVideoGridIfNeeded(), 300);
             } else {
                  window.scrollTo(0,0);
             }
@@ -359,13 +363,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function showSingleVideoView(videoId) {
         if (!videoId) return;
-        
+
         if (State.allVideos.length === 0) {
              await Data.loadVideos();
         }
 
         const video = State.allVideos.find(v => v.id === videoId);
-        
+
         if (!video) {
              await Swal.fire({
                 icon: 'error',
@@ -380,22 +384,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         UI.toggleSingleVideoMode(true);
-        
+
         window.scrollTo(0, 0);
         document.title = `${video.title} - CAR-טיב`;
-        
+
         DOM.singleVideoView.title.innerHTML = video.title;
         DOM.singleVideoView.player.innerHTML = `<iframe class="absolute top-0 left-0 w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3" title="${video.title}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
-        
+
         DOM.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
         DOM.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${video.duration}`;
-        
+
         // Category Link Setup
         if(DOM.singleVideoView.category) {
             const categoryData = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === video.category);
             const categoryName = categoryData ? categoryData.name : (video.category || 'כללי');
             const categoryIcon = categoryData ? categoryData.icon : 'folder';
-            
+
             DOM.singleVideoView.categoryText.textContent = categoryName;
             DOM.singleVideoView.categoryIcon.className = `fas fa-${categoryIcon} fa-fw`;
             DOM.singleVideoView.category.href = `?name=${video.category}`;
@@ -431,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const videoId = cardElement.dataset.videoId;
         const iframe = cardElement.querySelector('.video-iframe');
         const playLink = cardElement.querySelector('.video-play-link');
-        
+
         if (videoId && iframe && playLink && iframe.classList.contains('hidden')) {
             playLink.style.display = 'none';
             iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&iv_load_policy=3`;
@@ -451,10 +455,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-    
+
     async function handleCheckYtId(e) {
         if (e) e.preventDefault();
-        
+
         function extractYouTubeVideoId(url) {
             if (!url) return null;
             const patterns = [
@@ -580,37 +584,37 @@ document.addEventListener('DOMContentLoaded', () => {
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
 
-            // Navigation - Logo Click (Hard Reset)
+
             if (link && link.classList.contains('nav-logo-link')) {
                 e.preventDefault();
                 window.location.href = './';
                 return;
             }
 
-            // Internal Navigation Links
+
             if (link && link.classList.contains('nav-internal-link')) {
                  const href = link.getAttribute('href');
                  const isHashLink = href.includes('#');
                  const targetId = isHashLink ? href.substring(href.lastIndexOf('#') + 1) : href.split('#')[1];
 
-                 // Close mobile menu immediately
+
                  if (DOM.mobileMenu && !DOM.mobileMenu.classList.contains('translate-x-full')) {
                      DOM.mobileMenu.classList.add('translate-x-full');
                      DOM.backdrop.classList.add('invisible', 'opacity-0');
                      document.body.classList.remove('overflow-hidden');
                  }
 
-                 // If we are on single video view OR in a specific category (sections hidden)
+
                  if (!DOM.singleVideoView.container.classList.contains('hidden') || DOM.sections.homeHero.classList.contains('hidden')) {
                      e.preventDefault();
-                     // Reset to home view first
-                     UI.toggleSingleVideoMode(false); 
-                     UI.updateCategoryPageUI('all'); 
-                     
-                     // Push state to home
+
+                     UI.toggleSingleVideoMode(false);
+                     UI.updateCategoryPageUI('all');
+
+
                      history.pushState(null, '', './#' + (targetId || 'home-hero'));
-                     
-                     // Scroll logic
+
+
                      setTimeout(() => {
                         if (targetId && document.getElementById(targetId)) {
                              const el = document.getElementById(targetId);
@@ -623,7 +627,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                      }, 100);
                  } else {
-                     // Standard scroll behavior on home page
+
                      if (isHashLink && targetId) {
                          e.preventDefault();
                          const el = document.getElementById(targetId);
@@ -688,7 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         history.pushState(null, '', `./?v=${videoId}`);
                         handleRouting();
                     }
-                } 
+                }
                 else if (target.closest('.fullscreen-btn')) {
                     e.preventDefault();
                     playVideoInline(card);
@@ -710,7 +714,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 shareContent(window.location.href, target.closest('button'), 'הועתק!', video?.title || 'סרטון');
             }
 
-            // Home Button
+
             if (target.closest('#single-video-home-btn')) {
                  e.preventDefault();
                  history.pushState(null, '', './');
@@ -728,9 +732,9 @@ document.addEventListener('DOMContentLoaded', () => {
                  }
             }
 
-            if (target.id === 'no-results-clear-btn' || target.id === 'clear-filters-btn') clearAllFilters();
-            
-            if (target.id === 'share-filters-btn') shareContent(window.location.href, target, 'הועתק!', 'סינון נוכחי');
+            if (target.closest('#no-results-clear-btn') || target.closest('#clear-filters-btn')) clearAllFilters();
+
+            if (target.closest('#share-filters-btn')) shareContent(window.location.href, target.closest('#share-filters-btn'), 'הועתק!', 'סינון נוכחי');
 
             if(target.closest('#open-menu-btn')) {
                  DOM.mobileMenu.classList.remove('translate-x-full');
@@ -759,7 +763,7 @@ document.addEventListener('DOMContentLoaded', () => {
              }
         }, 100));
 
-        // Optimized Search Input Debounce (500ms)
+
         Object.values(DOM.searchForms).forEach(form => {
             if(!form) return;
             form.addEventListener('submit', (e) => { e.preventDefault(); handleSearchSubmit(form); });
@@ -770,8 +774,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.addEventListener('blur', () => setTimeout(() => { if (!State.search.isSuggestionClicked) clearSearchSuggestions(); }, 150));
             }
         });
-        
-        // Tag Input
+
+
         if(DOM.tagSearchInput) {
             DOM.tagSearchInput.addEventListener('input', () => throttle(() => handleTagInput(DOM.tagSearchInput), 300));
         }
@@ -785,7 +789,7 @@ document.addEventListener('DOMContentLoaded', () => {
             State.currentFilters.sortBy = e.target.value;
             updateFiltersAndURL(false);
         });
-        
+
         if(DOM.customTagForm) DOM.customTagForm.addEventListener('submit', (e) => {
             e.preventDefault();
             if(DOM.tagSearchInput) {
@@ -793,10 +797,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (newTagName && !State.currentFilters.tags.includes(newTagName)) {
                     toggleTagSelection(newTagName);
                     DOM.tagSearchInput.value = '';
+                    const suggestionsContainer = document.getElementById('tag-suggestions');
+                    if (suggestionsContainer) suggestionsContainer.classList.add('hidden');
                 }
             }
         });
-        
+
         // Back to top button click
         if (DOM.backToTopButton) {
             DOM.backToTopButton.addEventListener('click', () => {
@@ -828,9 +834,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function init() {
         initPreloader();
-        
+
         if (DOM.currentYearFooter) DOM.currentYearFooter.textContent = new Date().getFullYear();
-        
+
         const isDark = document.documentElement.classList.contains('dark');
         DOM.darkModeToggles.forEach(toggle => {
             const moonIcon = toggle.querySelector('.fa-moon');
@@ -862,7 +868,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.addEventListener('popstate', handleRouting);
         setupEventListeners();
-        
+
         handleRouting();
     }
 
