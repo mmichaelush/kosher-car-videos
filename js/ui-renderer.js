@@ -96,12 +96,12 @@ window.App.UI = {
         
         const displayChannels = [...channels, ...channels];
         track.innerHTML = displayChannels.map(channel => `
-            <a href="${channel.channel_url}" target="_blank" rel="noopener noreferrer" class="channel-card group flex-shrink-0 block p-5 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg border border-slate-100 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-500 text-center transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-purple-500">
+            <a href="${channel.channel_url}" target="_blank" rel="noopener noreferrer" class="channel-card group flex-shrink-0 block p-5 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg border border-slate-100 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-500 text-center transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64 md:w-72">
                 <div class="relative mx-auto w-20 h-20 mb-4">
                     <img src="${channel.channel_image_url}" alt="${channel.channel_name}" class="w-full h-full rounded-full object-cover border-2 border-slate-200 dark:border-slate-500 group-hover:border-purple-400 transition-colors shadow-sm" loading="lazy">
                 </div>
-                <h3 class="font-bold text-slate-800 dark:text-slate-100 text-lg mb-2 truncate group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors" title="${channel.channel_name}">${channel.channel_name}</h3>
-                <p class="text-slate-500 dark:text-slate-400 text-sm line-clamp-3 leading-snug px-1">${channel.content_description}</p>
+                <h3 class="font-bold text-slate-800 dark:text-slate-100 text-lg mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors" title="${channel.channel_name}">${channel.channel_name}</h3>
+                <p class="text-slate-500 dark:text-slate-400 text-sm leading-snug px-1 line-clamp-3">${channel.content_description}</p>
             </a>
         `).join('');
 
@@ -152,14 +152,13 @@ window.App.UI = {
         
         if(card.duration) {
             let dur = video.duration || '';
-            // FIX: If just number like "25", make it "0:25"
             if (!dur.includes(':') && !isNaN(parseInt(dur))) {
                  dur = '0:' + dur;
             }
             if(dur.includes(':')) {
                  const parts = dur.split(':');
                  if(parts.length === 2) {
-                     if(parts[1].length === 1) parts[1] = '0' + parts[1]; // seconds
+                     if(parts[1].length === 1) parts[1] = '0' + parts[1];
                      dur = parts.join(':');
                  }
             }
@@ -178,7 +177,7 @@ window.App.UI = {
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if(card.channelLogo) {
-            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
+            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==EAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
             card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
             card.channelLogo.classList.toggle('hidden', !video.channelImage);
         }
@@ -194,7 +193,6 @@ window.App.UI = {
             const categoryName = categoryData ? categoryData.name : (video.category || '').charAt(0).toUpperCase() + (video.category || '').slice(1);
             const categoryIconEl = cardClone.querySelector('.video-category-icon');
             
-            // Set link href WITHOUT hash
             card.categoryDisplay.href = `?name=${video.category}`;
             
             if (categoryIconEl) {
@@ -205,7 +203,6 @@ window.App.UI = {
         }
 
         if (card.dateDisplay) {
-            // Robust Date Check
             if (video.dateAdded && video.dateAdded instanceof Date && !isNaN(video.dateAdded.getTime())) {
                 card.dateDisplay.style.display = 'flex';
                 card.dateDisplay.appendChild(document.createTextNode(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })));
@@ -305,7 +302,7 @@ window.App.UI = {
                 const count = window.App.state.allVideos.filter(v => v.category === cat.id).length;
                 const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`;
                 return `
-                    <a href="?name=${cat.id}" class="nav-internal-link relative category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
+                    <a href="?name=${cat.id}#video-grid-section" class="nav-internal-link relative category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
                         <div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]">
                             <i class="fas fa-${cat.icon || 'folder'} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i>
                             <h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 dark:group-hover:text-yellow-200 transition-colors">${cat.name}</h3>
@@ -319,8 +316,36 @@ window.App.UI = {
     renderPopularTags: () => {
         const dom = window.App.DOM;
         if (!dom.popularTagsContainer) return;
-        // Logic moved to App.js for performance, renderer only updates DOM
-        // Placeholder to keep structure valid
+        
+        const state = window.App.state;
+        const { category } = state.currentFilters;
+        const videosToConsider = category !== 'all' ? state.allVideos.filter(v => v.category === category) : state.allVideos;
+        
+        if (videosToConsider.length === 0) {
+             dom.popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא נמצאו תגיות.</p>`;
+             return;
+        }
+
+        // Fast tag counting
+        const tagCounts = {};
+        for (const video of videosToConsider) {
+            if (video.tags) {
+                for (const tag of video.tags) {
+                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                }
+            }
+        }
+
+        const sortedTags = Object.entries(tagCounts)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, window.App.CONSTANTS.MAX_POPULAR_TAGS)
+            .map(entry => entry[0]);
+
+        dom.popularTagsContainer.innerHTML = sortedTags.map(tag => {
+            return `<button class="tag bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-800 dark:text-purple-200 dark:hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-1 dark:focus:ring-offset-slate-800 transition-colors text-sm font-medium px-3 py-1.5 rounded-full" data-tag-value="${tag}">${tag.charAt(0).toUpperCase() + tag.slice(1)}</button>`;
+        }).join('');
+
+        window.App.UI.updateActiveTagVisuals();
     },
 
     updateActiveTagVisuals: () => {
