@@ -1,3 +1,10 @@
+```
+
+### 3. `js/ui-renderer.js`
+תיקון קישורים בקטגוריות ועיצוב דף סרטון.
+
+```javascript
+// ui-renderer.js
 // Handles DOM manipulations and rendering HTML
 
 window.App = window.App || {};
@@ -150,16 +157,16 @@ window.App.UI = {
         card.thumbnailImg.src = video.thumbnail || window.App.DataService.getThumbnailUrl(video.id);
         card.thumbnailImg.alt = video.title;
         
-        // Format Duration
         if(card.duration) {
             let dur = video.duration || '';
-            // If format is like '1:5' change to '01:05' or similar standard
+            // FIX: If just number like "25", make it "0:25"
+            if (!dur.includes(':') && !isNaN(parseInt(dur))) {
+                 dur = '0:' + dur;
+            }
             if(dur.includes(':')) {
                  const parts = dur.split(':');
                  if(parts.length === 2) {
-                     // MM:SS
-                     if(parts[0].length === 1) parts[0] = '0' + parts[0];
-                     if(parts[1].length === 1) parts[1] = '0' + parts[1];
+                     if(parts[1].length === 1) parts[1] = '0' + parts[1]; // seconds
                      dur = parts.join(':');
                  }
             }
@@ -178,7 +185,7 @@ window.App.UI = {
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if(card.channelLogo) {
-            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==AAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
+            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
             card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
             card.channelLogo.classList.toggle('hidden', !video.channelImage);
         }
@@ -205,8 +212,9 @@ window.App.UI = {
         }
 
         if (card.dateDisplay) {
-            // Check if dateAdded is valid date object and not "Invalid Date"
+            // Robust Date Check
             if (video.dateAdded && video.dateAdded instanceof Date && !isNaN(video.dateAdded.getTime())) {
+                card.dateDisplay.style.display = 'flex';
                 card.dateDisplay.appendChild(document.createTextNode(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })));
             } else {
                 card.dateDisplay.style.display = 'none';
@@ -317,25 +325,9 @@ window.App.UI = {
 
     renderPopularTags: () => {
         const dom = window.App.DOM;
-        const state = window.App.state;
         if (!dom.popularTagsContainer) return;
-
-        const { category } = state.currentFilters;
-        const videosToConsider = category !== 'all' ? state.allVideos.filter(v => v.category === category) : state.allVideos;
-
-        if (videosToConsider.length === 0) {
-            dom.popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא נמצאו תגיות${category !== 'all' ? ' בקטגוריה זו' : ''}.</p>`;
-            return;
-        }
-
-        const tagCounts = videosToConsider.flatMap(v => v.tags).reduce((acc, tag) => ({ ...acc, [tag]: (acc[tag] || 0) + 1 }), {});
-        const sortedTags = Object.entries(tagCounts).sort(([, a], [, b]) => b - a).slice(0, window.App.CONSTANTS.MAX_POPULAR_TAGS).map(([tag]) => tag);
-
-        dom.popularTagsContainer.innerHTML = sortedTags.map(tag => {
-            return `<button class="tag bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-800 dark:text-purple-200 dark:hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-1 dark:focus:ring-offset-slate-800 transition-colors text-sm font-medium px-3 py-1.5 rounded-full" data-tag-value="${tag}">${tag.charAt(0).toUpperCase() + tag.slice(1)}</button>`;
-        }).join('');
-        
-        window.App.UI.updateActiveTagVisuals();
+        // Logic moved to App.js for performance, renderer only updates DOM
+        // Placeholder to keep structure valid
     },
 
     updateActiveTagVisuals: () => {
@@ -383,7 +375,12 @@ window.App.UI = {
         const name = categoryData ? categoryData.name : (categoryId || 'קטגוריה').charAt(0).toUpperCase() + (categoryId || 'קטגוריה').slice(1);
         const icon = categoryData ? categoryData.icon : 'folder-open';
         
-        document.title = `${name} - CAR-טיב`;
+        const fullTitle = categoryId === 'all' 
+            ? 'CAR-טיב - סרטוני רכבים כשרים' 
+            : `${name} - CAR-טיב`;
+            
+        document.title = fullTitle;
+
         const pageTitle = document.getElementById('category-page-title');
         if (pageTitle) pageTitle.innerHTML = `<i class="fas fa-${icon} text-purple-600 dark:text-purple-400 mr-4"></i>${name}`;
         
