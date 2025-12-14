@@ -27,6 +27,8 @@ window.App.DOM = {
     clearFiltersBtn: document.getElementById('clear-filters-btn'),
     shareFiltersBtn: document.getElementById('share-filters-btn'),
     sortSelect: document.getElementById('sort-by-select'),
+    videosHeadingText: document.getElementById('videos-heading-text'),
+    tagSuggestions: document.getElementById('tag-suggestions'),
     searchForms: {
         desktop: document.getElementById('desktop-search-form'),
         mobile: document.getElementById('mobile-search-form'),
@@ -150,13 +152,16 @@ window.App.UI = {
         card.thumbnailImg.src = video.thumbnail || window.App.DataService.getThumbnailUrl(video.id);
         card.thumbnailImg.alt = video.title;
         
+        // Format Duration - Fix single digits
         if(card.duration) {
             let dur = video.duration || '';
+            // If just number like "25", make it "0:25"
             if (!dur.includes(':') && !isNaN(parseInt(dur))) {
                  dur = '0:' + dur;
             }
             if(dur.includes(':')) {
                  const parts = dur.split(':');
+                 // Ensure MM:SS has leading zeros if needed
                  if(parts.length === 2) {
                      if(parts[1].length === 1) parts[1] = '0' + parts[1];
                      dur = parts.join(':');
@@ -177,7 +182,7 @@ window.App.UI = {
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if(card.channelLogo) {
-            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==EAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
+            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==AAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
             card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
             card.channelLogo.classList.toggle('hidden', !video.channelImage);
         }
@@ -193,6 +198,7 @@ window.App.UI = {
             const categoryName = categoryData ? categoryData.name : (video.category || '').charAt(0).toUpperCase() + (video.category || '').slice(1);
             const categoryIconEl = cardClone.querySelector('.video-category-icon');
             
+            // Set link href WITHOUT hash
             card.categoryDisplay.href = `?name=${video.category}`;
             
             if (categoryIconEl) {
@@ -203,6 +209,7 @@ window.App.UI = {
         }
 
         if (card.dateDisplay) {
+            // Updated check for valid date
             if (video.dateAdded && video.dateAdded instanceof Date && !isNaN(video.dateAdded.getTime())) {
                 card.dateDisplay.style.display = 'flex';
                 card.dateDisplay.appendChild(document.createTextNode(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })));
@@ -302,7 +309,7 @@ window.App.UI = {
                 const count = window.App.state.allVideos.filter(v => v.category === cat.id).length;
                 const gradientClasses = `${cat.gradient} ${cat.darkGradient || ''}`;
                 return `
-                    <a href="?name=${cat.id}#video-grid-section" class="nav-internal-link relative category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
+                    <a href="?name=${cat.id}" class="nav-internal-link relative category-showcase-card group block p-6 md:p-8 rounded-xl shadow-lg hover:shadow-2xl focus:shadow-2xl transition-all duration-300 ease-out transform hover:-translate-y-1.5 focus:-translate-y-1.5 bg-gradient-to-br ${gradientClasses} text-white text-center focus:outline-none focus:ring-4 focus:ring-opacity-50 focus:ring-white dark:focus:ring-purple-500/50">
                         <div class="flex flex-col items-center justify-center h-full min-h-[150px] sm:min-h-[180px]">
                             <i class="fas fa-${cat.icon || 'folder'} fa-3x mb-4 opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300"></i>
                             <h3 class="text-xl md:text-2xl font-semibold group-hover:text-yellow-300 dark:group-hover:text-yellow-200 transition-colors">${cat.name}</h3>
@@ -315,18 +322,18 @@ window.App.UI = {
 
     renderPopularTags: () => {
         const dom = window.App.DOM;
-        if (!dom.popularTagsContainer) return;
-        
         const state = window.App.state;
+        if (!dom.popularTagsContainer) return;
+
         const { category } = state.currentFilters;
         const videosToConsider = category !== 'all' ? state.allVideos.filter(v => v.category === category) : state.allVideos;
-        
+
         if (videosToConsider.length === 0) {
-             dom.popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא נמצאו תגיות.</p>`;
-             return;
+            dom.popularTagsContainer.innerHTML = `<p class="w-full text-slate-500 dark:text-slate-400 text-sm">לא נמצאו תגיות.</p>`;
+            return;
         }
 
-        // Fast tag counting
+        // Optimized counting using a loop instead of flatMap/reduce
         const tagCounts = {};
         for (const video of videosToConsider) {
             if (video.tags) {
@@ -344,7 +351,7 @@ window.App.UI = {
         dom.popularTagsContainer.innerHTML = sortedTags.map(tag => {
             return `<button class="tag bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-800 dark:text-purple-200 dark:hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 focus:ring-offset-1 dark:focus:ring-offset-slate-800 transition-colors text-sm font-medium px-3 py-1.5 rounded-full" data-tag-value="${tag}">${tag.charAt(0).toUpperCase() + tag.slice(1)}</button>`;
         }).join('');
-
+        
         window.App.UI.updateActiveTagVisuals();
     },
 
@@ -404,6 +411,14 @@ window.App.UI = {
         
         const breadcrumb = document.getElementById('breadcrumb-category-name');
         if (breadcrumb) breadcrumb.textContent = name;
+        
+        // Update Video Grid Heading dynamically
+        const headingText = dom.videosHeadingText;
+        if(headingText) {
+             headingText.innerHTML = (categoryId === 'all') 
+                ? '<i class="fas fa-film text-purple-600 dark:text-purple-400 mr-3"></i> כל הסרטונים' 
+                : `<i class="fas fa-film text-purple-600 dark:text-purple-400 mr-3"></i> סרטונים בקטגוריה: ${name}`;
+        }
         
         const searchPlaceholder = (categoryId && categoryId !== 'all') 
             ? `חפש סרטונים ב${name}...` 
