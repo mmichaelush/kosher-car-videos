@@ -251,7 +251,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const newSearchString = newParams.toString();
-        if (url.search.substring(1) !== newSearchString) {
+        // Fixed condition to update URL even if only path changes (e.g. category)
+        const currentSearchString = url.search.substring(1);
+        
+        if (currentSearchString !== newSearchString) {
              const newUrl = newSearchString ? `${window.location.pathname}?${newSearchString}` : window.location.pathname;
              history.pushState({ videoId, filters: State.currentFilters }, '', newUrl);
         }
