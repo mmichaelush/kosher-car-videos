@@ -455,6 +455,30 @@
     "channel_url": "https://www.youtube.com/@EuroNCAP_forsafercars",
     "channel_image_url": "https://yt3.googleusercontent.com/Mmwm43JDaW8-aBkem7nuCFMT94oE5_XgX4XSMTxnSsMivp1__Frvzf1ynXsPP_JzxFKxmsltyVw=s72-c-k-c0x00ffffff-no-rj",
     "content_description": "מבחני ריסוק רשמיים לרכבים."
-  }
+  },
+
+
+  
+  {
+  "channel_name": "Out of Spec Renew | חידוש טכנולוגי מתקדם",
+  "channel_url": "https://www.youtube.com/@OutofSpecRenew",
+  "channel_image_url": "https://yt3.googleusercontent.com/4Rkc1xuhT2w-swkIAy2wh6pAu8_VFOA78stfSQ8AJAg-LBiZoXH9rFrAH_lL_7qBKZYHgvym=s160-c-k-c0x00ffffff-no-rj",
+  "content_description": "שיפוץ, תיקון והחייאה של רכבים חשמליים והיברידיים – סוללות, מערכות הנעה, תקלות מורכבות ותהליכי ריבילד מעשיים."
+},
+{
+  "channel_name": "Alfred Kour | אלפרד קור",
+  "channel_url": "https://www.youtube.com/@alfredkour419",
+  "channel_image_url": "https://yt3.googleusercontent.com/ytc/AIdro_nonPyE_S-WjmKtWWpWXihyidPlk0tk9Mehe_LhxVGZNiCO=s160-c-k-c0x00ffffff-no-rj",
+  "content_description": "ערוץ לימוד תיאוריה לרכב – הסברים על תמרורים, חוקים ותרגולים לקראת מבחן התאוריה."
+},
+{
+  "channel_name": "Adom Lavan | אדום לבן",
+  "channel_url": "https://www.youtube.com/@ADOM_LAVAN",
+  "channel_image_url": "https://yt3.googleusercontent.com/9xgleASRl2KRpTAd36-1Lmkw6oli7MBQJx3gnPa7uSaH_v-Xn7Qs4wSrFngSqbrPSMxK-CmeRng=s160-c-k-c0x00ffffff-no-rj",
+  "content_description": "הכנה למבחן תאוריה לנהיגה – שיעורים על כללי נהיגה, צמתים וחוקים בצורה לימודית."
+},
+
+
+  
 ]
 }
