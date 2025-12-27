@@ -17,11 +17,8 @@
     <link rel="stylesheet" href="css/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="css/rubik.css">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/sweetalert2.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
-
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
@@ -29,9 +26,11 @@
             document.documentElement.classList.remove('dark');
         }
     </script>
+    <script src="js/fuse.min.js"></script>
     <script src="js/data-service.js" defer></script>
     <script src="js/ui-renderer.js" defer></script>
     <script src="js/app.js" defer></script>
+    <script src="js/sweetalert2.all.min.js"></script>
     <style>
         #site-preloader {
             position: fixed;
