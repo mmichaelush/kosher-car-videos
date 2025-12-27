@@ -18,10 +18,11 @@
         }
       }
     </script>
+    <link rel="stylesheet" href="css/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="css/rubik.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
+    
     <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
     <script>
@@ -365,10 +366,8 @@
                     </h2>
                 </div>
         
-                <!-- Toolbar Row: Toggle | Input | Actions -->
                 <div class="flex flex-col lg:flex-row gap-4 lg:items-center justify-between mb-6">
                     
-                    <!-- Hebrew Toggle -->
                     <label for="hebrew-filter-toggle" class="flex items-center cursor-pointer p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-600">
                         <div class="relative">
                             <input type="checkbox" id="hebrew-filter-toggle" class="sr-only peer">
@@ -377,7 +376,6 @@
                         <span class="mr-3 text-sm font-medium text-slate-700 dark:text-slate-300 select-none">הצג סרטונים בעברית בלבד</span>
                     </label>
         
-                    <!-- Tag Input -->
                     <div class="relative flex-grow max-w-lg">
                         <form id="custom-tag-form" class="relative">
                             <label for="tag-search-input" class="sr-only">הוסף תגית לסינון</label>
@@ -391,7 +389,6 @@
                         <div id="tag-suggestions" class="absolute z-50 w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-md shadow-lg mt-1 hidden max-h-48 overflow-y-auto"></div>
                     </div>
         
-                    <!-- Action Buttons (Hidden by default until active) -->
                     <div id="filter-summary-container" class="hidden animate-fade-in">
                          <div class="flex items-center gap-2">
                             <span id="filter-summary-text" class="text-xs font-medium text-slate-500 dark:text-slate-400 hidden sm:inline-block"></span>
@@ -405,7 +402,6 @@
                     </div>
                 </div>
         
-                <!-- Tags Area -->
                 <div class="border-t border-slate-100 dark:border-slate-700/50 pt-4">
                      <div class="flex items-start gap-3">
                         <span class="text-sm font-semibold text-slate-500 dark:text-slate-400 mt-1.5 whitespace-nowrap">תגיות פופולריות:</span>
