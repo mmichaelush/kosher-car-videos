@@ -23,7 +23,6 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
     
-    <script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11" defer></script>
     <script>
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
@@ -32,6 +31,7 @@
             document.documentElement.classList.remove('dark');
         }
     </script>
+    <script src="js/fuse.min.js"></script>
     <script src="js/data-service.js" defer></script>
     <script src="js/ui-renderer.js" defer></script>
     <script src="js/app.js" defer></script>
