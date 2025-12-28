@@ -76,147 +76,272 @@
     </style>
 </head>
 
-<body class="font-rubik bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 antialiased transition-colors duration-300">
+<div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 md:p-12 max-w-none">
+  <header class="mb-10">
+    <h1 class="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+      מדיניות פרטיות
+    </h1>
+    <p class="mt-3 text-sm text-slate-600 dark:text-slate-400">
+      עודכן לאחרונה: <strong>1 בינואר 2026</strong>
+    </p>
 
-    <div id="site-preloader">
-        <div class="loader-content">
-            <div class="loader-ring"></div>
-            <i class="fas fa-car-side loader-icon text-purple-600 dark:text-purple-400"></i>
+    <div class="mt-6 rounded-2xl border border-slate-200/80 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-900/40 p-5">
+      <div class="flex items-start gap-3">
+        <div class="mt-0.5 text-purple-600 dark:text-purple-400">
+          <i class="fas fa-shield-alt text-xl"></i>
         </div>
-        <h2 class="mt-8 text-3xl font-extrabold text-slate-800 dark:text-slate-100 tracking-wide">CAR-טיב</h2>
-        <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm font-medium">טוען...</p>
+        <div>
+          <p class="text-slate-800 dark:text-slate-200 leading-relaxed">
+            אנחנו ב-<strong>CAR-טיב</strong> ("האתר") מכבדים את פרטיותך. מדיניות זו מסבירה איזה מידע אישי אנו אוספים,
+            לאילו מטרות, עם מי הוא עשוי להיות משותף, וכיצד ניתן לממש זכויות לפי חוק הגנת הפרטיות (כולל תיקון 13).
+          </p>
+
+          <ul class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-slate-700 dark:text-slate-300">
+            <li class="flex items-center gap-2">
+              <i class="fas fa-circle-check text-purple-600 dark:text-purple-400"></i>
+              אין מכירה של מידע אישי לצדדים שלישיים
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="fas fa-circle-check text-purple-600 dark:text-purple-400"></i>
+              פירוט מטרות, שיתופים והשלכות סירוב למסירת מידע
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="fas fa-circle-check text-purple-600 dark:text-purple-400"></i>
+              פירוט זכויות עיון ותיקון ודרך לפנייה
+            </li>
+            <li class="flex items-center gap-2">
+              <i class="fas fa-circle-check text-purple-600 dark:text-purple-400"></i>
+              שקיפות לגבי שירותי צד שלישי (YouTube / Google / Netlify)
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
+  </header>
 
-    <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black bg-opacity-75 z-40 md:hidden transition-opacity duration-300 opacity-0 invisible" aria-hidden="true"></div>
+  <nav class="mb-10">
+    <h2 class="text-lg font-bold text-slate-900 dark:text-slate-100">תוכן עניינים</h2>
+    <div class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+      <a href="#pp-collection" class="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 hover:bg-purple-50 dark:hover:bg-slate-900/60">
+        1) איזה מידע אנו אוספים
+      </a>
+      <a href="#pp-notice" class="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 hover:bg-purple-50 dark:hover:bg-slate-900/60">
+        2) הודעה לנושא המידע (שקיפות)
+      </a>
+      <a href="#pp-use" class="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 hover:bg-purple-50 dark:hover:bg-slate-900/60">
+        3) מטרות השימוש במידע
+      </a>
+      <a href="#pp-thirdparties" class="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 hover:bg-purple-50 dark:hover:bg-slate-900/60">
+        4) שירותי צד שלישי והעברות מידע
+      </a>
+      <a href="#pp-retention" class="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 hover:bg-purple-50 dark:hover:bg-slate-900/60">
+        5) שמירת מידע (Retention)
+      </a>
+      <a href="#pp-security" class="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 hover:bg-purple-50 dark:hover:bg-slate-900/60">
+        6) אבטחת מידע
+      </a>
+      <a href="#pp-rights" class="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 hover:bg-purple-50 dark:hover:bg-slate-900/60">
+        7) זכויותיך (עיון/תיקון)
+      </a>
+      <a href="#pp-contact" class="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 hover:bg-purple-50 dark:hover:bg-slate-900/60">
+        8) יצירת קשר
+      </a>
+    </div>
+  </nav>
 
-    <aside id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-800 shadow-xl z-50 p-6 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title">
-        <div class="flex justify-between items-center mb-8">
-            <a href="./" class="nav-logo-link flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded" aria-label="CAR-טיב דף הבית">
-                <img src="data/assets/images/logo.png" alt="לוגו CAR-טיב" class="h-8 w-auto ml-2 dark:hidden">
-                <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב" class="h-8 w-auto ml-2 hidden dark:block">
-                <span id="mobile-menu-title" class="text-xl font-bold text-slate-900 dark:text-slate-100 mr-2">CAR-טיב</span>
-            </a>
-            <button id="close-menu-btn" aria-label="סגירת תפריט" class="text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded p-1">
-                <i class="fas fa-times text-2xl"></i>
-            </button>
+  <section id="pp-collection" class="mb-10">
+    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100">1. איזה מידע אנו אוספים</h2>
+
+    <div class="mt-4 grid gap-4">
+      <div class="rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+          <i class="fas fa-pen-to-square text-purple-600 dark:text-purple-400"></i>
+          מידע שנמסר ישירות על ידך
+        </h3>
+        <p class="mt-2 text-slate-700 dark:text-slate-300 leading-relaxed">
+          כאשר אתה משתמש בטופס "צור קשר" או בטופס "הוספת סרטון", אנו אוספים את הפרטים שאתה מזין, כגון:
+          שם, כתובת אימייל ותוכן ההודעה/הבקשה (וכן מידע נוסף שתבחר למסור בשדות חופשיים).
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+          <i class="fas fa-chart-line text-purple-600 dark:text-purple-400"></i>
+          מידע טכני הנאסף אוטומטית (לוגים ותפעול)
+        </h3>
+        <p class="mt-2 text-slate-700 dark:text-slate-300 leading-relaxed">
+          פלטפורמת האחסון וההפצה (Netlify) עשויה לאסוף נתוני תעבורה ואבחון כגון כתובת IP, מזהים מקוונים, סוג דפדפן,
+          מערכת הפעלה, תאריך/שעה ובקשות לדפים – למטרות תפעול, אבטחה וסטטיסטיקה.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+          <i class="fas fa-cookie-bite text-purple-600 dark:text-purple-400"></i>
+          Cookies ו-LocalStorage
+        </h3>
+        <p class="mt-2 text-slate-700 dark:text-slate-300 leading-relaxed">
+          אנו משתמשים ב-LocalStorage של הדפדפן כדי לשמור העדפות תצוגה (למשל "מצב חשוך").
+          מידע זה נשמר מקומית במכשירך, ולרוב אינו נשלח אלינו כשלעצמו.
+          ייתכן ששירותי צד שלישי (כגון YouTube/Google) יעשו שימוש בעוגיות/מזהים בהתאם למדיניות שלהם.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section id="pp-notice" class="mb-10">
+    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100">2. הודעה לנושא המידע (שקיפות)</h2>
+
+    <div class="mt-4 rounded-2xl border border-purple-200/70 dark:border-purple-900/50 bg-purple-50/60 dark:bg-purple-950/20 p-5">
+      <p class="text-slate-800 dark:text-slate-200 leading-relaxed">
+        כאשר אנו מבקשים ממך למסור מידע אישי באמצעות טפסי האתר, אנו מספקים לך הודעה ברורה הכוללת:
+        (א) האם יש חובה למסור את המידע או שמסירתו תלויה ברצונך; (ב) מטרות הבקשה;
+        (ג) למי המידע עשוי להימסר ולשם מה; וכן הרחבות שנוספו בתיקון 13:
+        <strong>השלכות סירוב למסור מידע</strong>, <strong>זהות בעל השליטה ופרטי קשר</strong>,
+        ו-<strong>זכויות עיון ותיקון</strong>.
+      </p>
+      <p class="mt-3 text-sm text-slate-700 dark:text-slate-300">
+        לדוגמה: אם לא תמסור אימייל בטופס יצירת קשר, לא נוכל לחזור אליך.
+      </p>
+    </div>
+  </section>
+
+  <section id="pp-use" class="mb-10">
+    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100">3. מטרות השימוש במידע</h2>
+    <ul class="mt-4 grid gap-3 text-slate-700 dark:text-slate-300">
+      <li class="rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+        <strong>תפעול האתר ושיפורו:</strong> תחזוקה, אבטחה, בדיקות תקינות, ניתוח שימושים ושיפור חוויית המשתמש.
+      </li>
+      <li class="rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+        <strong>מענה לפניות:</strong> טיפול בפניות דרך "צור קשר" ובקשות להוספת סרטונים/תוכן.
+      </li>
+      <li class="rounded-xl border border-slate-200 dark:border-slate-700 p-4">
+        <strong>ציות לדין והגנה משפטית:</strong> מניעת הונאות, טיפול בתלונות/דיווחים ושמירה על זכויות.
+      </li>
+    </ul>
+  </section>
+
+  <section id="pp-thirdparties" class="mb-10">
+    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100">4. שירותי צד שלישי והעברות מידע</h2>
+
+    <p class="mt-4 text-slate-700 dark:text-slate-300 leading-relaxed">
+      האתר משתמש בשירותים חיצוניים. כאשר אתה משתמש בהם (למשל צפייה בווידאו מוטמע), ייתכן שתתבצע העברת מידע לשירותים אלה,
+      בכפוף למדיניות שלהם:
+    </p>
+
+    <div class="mt-4 grid gap-4">
+      <div class="rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+          <i class="fab fa-youtube text-purple-600 dark:text-purple-400"></i>
+          YouTube (Google)
+        </h3>
+        <p class="mt-2 text-slate-700 dark:text-slate-300 leading-relaxed">
+          סרטונים מוטמעים משירות YouTube. צפייה בסרטון באתר עשויה לגרום ל-Google/YouTube לאסוף נתונים על הצפייה והדפדפן,
+          בדומה לצפייה ב-YouTube ישירות.
+          למידע נוסף, עיין במדיניות של Google.
+        </p>
+        <a class="inline-flex items-center gap-2 mt-3 text-sm font-semibold text-purple-700 dark:text-purple-300 hover:underline"
+           href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
+          מדיניות הפרטיות של Google <i class="fas fa-arrow-up-left-from-square text-xs"></i>
+        </a>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+          <i class="fab fa-google text-purple-600 dark:text-purple-400"></i>
+          Google Forms / Apps Script
+        </h3>
+        <p class="mt-2 text-slate-700 dark:text-slate-300 leading-relaxed">
+          טפסי "צור קשר" ו/או "הוספת סרטון" עשויים להיות מופעלים באמצעות שירותי Google (למשל Forms/Apps Script).
+          המידע שתשלח בטופס יועבר ל-Google לצורך עיבוד ושליחה בהתאם להגדרות האתר.
+        </p>
+      </div>
+
+      <div class="rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+        <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+          <i class="fas fa-cloud text-purple-600 dark:text-purple-400"></i>
+          Netlify (אחסון והפצה)
+        </h3>
+        <p class="mt-2 text-slate-700 dark:text-slate-300 leading-relaxed">
+          האתר מאוחסן ומופץ באמצעות Netlify. השירות עשוי לאסוף לוגים ונתוני תעבורה לצורכי תפעול, אבטחה ושיפור השירות.
+        </p>
+        <a class="inline-flex items-center gap-2 mt-3 text-sm font-semibold text-purple-700 dark:text-purple-300 hover:underline"
+           href="https://www.netlify.com/privacy/" target="_blank" rel="noopener noreferrer">
+          מדיניות הפרטיות של Netlify <i class="fas fa-arrow-up-left-from-square text-xs"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="pp-retention" class="mb-10">
+    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100">5. שמירת מידע (Retention)</h2>
+    <div class="mt-4 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+      <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+        אנו שומרים מידע אישי רק למשך הזמן הנדרש למטרות שלשמן נאסף, ובהתאם לדין ולצרכים תפעוליים.
+        לדוגמה:
+      </p>
+      <ul class="mt-3 space-y-2 text-slate-700 dark:text-slate-300">
+        <li>פניות "צור קשר": נשמרות ככל הנדרש לטיפול בפנייה, תיעוד ושיפור השירות.</li>
+        <li>לוגים טכניים: נשמרים לתקופה מוגבלת לצורכי אבטחה, תפעול וניתוח תקלות.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="pp-security" class="mb-10">
+    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100">6. אבטחת מידע</h2>
+    <div class="mt-4 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+      <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+        אנו נוקטים באמצעים סבירים ומקובלים להגנת המידע (הקשחות תצורה, הגבלות גישה, שימוש בתשתיות ענן מוכרות וכדומה),
+        אך חשוב לזכור שאין אבטחה מוחלטת בכל מערכת.
+      </p>
+    </div>
+  </section>
+
+  <section id="pp-rights" class="mb-10">
+    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100">7. זכויותיך (עיון ותיקון)</h2>
+
+    <div class="mt-4 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+      <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+        בהתאם לחוק הגנת הפרטיות, עומדות לך זכויות <strong>לעיין</strong> במידע אישי שנשמר עליך במאגר מידע,
+        ולבקש <strong>תיקון</strong> מידע שאינו נכון/שלם/מעודכן, ככל שהדין חל בנסיבות העניין.
+      </p>
+
+      <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="rounded-xl bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 p-4">
+          <h3 class="font-bold text-slate-900 dark:text-slate-100">איך מגישים בקשה?</h3>
+          <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">
+            שולחים פנייה דרך עמוד "צור קשר" ומציינים: שם, פרטי התקשרות, סוג הבקשה (עיון/תיקון),
+            ופירוט מספק לאיתור המידע.
+          </p>
         </div>
-          <nav class="flex flex-col space-y-1">
-            <a href="index.html#home" class="nav-internal-link nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-home w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>בית</a>
-            <a href="index.html#homepage-categories-section" class="nav-internal-link nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-th-large w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>קטגוריות</a>
-            <a href="index.html#video-grid-section" class="nav-internal-link nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-play-circle w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>סרטונים</a>
-            <a href="index.html#featured-channels-section" class="nav-internal-link nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-tv w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>ערוצים</a>
-            <a href="index.html#forum-inspiration-section" class="nav-internal-link nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-comments w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>שאלות</a>
-            <a href="index.html#about-section" class="nav-internal-link nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-info-circle w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>אודות</a>
-            <a href="index.html#contact-section" class="nav-internal-link nav-link text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md flex items-center"><i class="fas fa-envelope w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>צור קשר</a>
-        </nav>
-        <div class="mt-auto pt-6 border-t border-slate-200 dark:border-slate-700">
-            <button role="switch" aria-label="החלף מצב תצוגה" aria-checked="false" class="dark-mode-toggle-button w-full flex items-center justify-between text-slate-700 dark:text-slate-300 py-3 px-4 hover:bg-purple-50 dark:hover:bg-slate-700 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 dark:focus:ring-purple-400">
-                <span class="flex items-center">
-                    <i class="fas fa-moon w-6 text-center ml-3 text-purple-600 dark:text-purple-400"></i>
-                    <i class="fas fa-sun w-6 text-center ml-3 text-purple-600 dark:text-purple-400 hidden"></i>
-                    מצב תצוגה
-                </span>
-                <div class="relative">
-                    <div class="block bg-slate-300 dark:bg-slate-600 w-10 h-6 rounded-full"></div>
-                    <div class="dot absolute right-1 top-1 bg-white dark:bg-slate-300 w-4 h-4 rounded-full transition-transform duration-300 ease-in-out"></div>
-                </div>
-            </button>
+        <div class="rounded-xl bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-slate-700 p-4">
+          <h3 class="font-bold text-slate-900 dark:text-slate-100">מה קורה אם מסרבים למסור מידע?</h3>
+          <p class="mt-2 text-sm text-slate-700 dark:text-slate-300">
+            מסירת מידע בטפסי האתר היא בדרך כלל וולונטרית, אך ללא פרטים חיוניים (למשל אימייל) לא נוכל
+            להשיב או לטפל בבקשה.
+          </p>
         </div>
-    </aside>
+      </div>
+    </div>
+  </section>
 
-    <header class="bg-slate-50/80 dark:bg-slate-900/80 shadow-md sticky top-0 z-30 transition-colors duration-300 backdrop-blur-md">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20 items-center">
-                <div class="flex items-center">
-                    <a href="./" class="nav-logo-link flex-shrink-0 flex items-center focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-md p-1 -ml-1" aria-label="CAR-טיב דף הבית" data-target="home-hero">
-                        <img src="data/assets/images/logo.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 dark:hidden">
-                        <img src="data/assets/images/logo-white.png" alt="לוגו CAR-טיב" class="h-10 w-auto ml-2 hidden dark:block">
-                        <span class="text-2xl font-bold text-slate-900 dark:text-slate-100 hidden sm:block mr-2">CAR-טיב</span>
-                    </a>
-                      <nav class="hidden md:mr-4 lg:mr-6 md:flex items-center md:space-x-0.5 lg:space-x-1" aria-label="ניווט ראשי">
-                        <a href="index.html#home" class="nav-internal-link nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300" data-target="home-hero"><i class="fas fa-home md:ml-1 lg:ml-2 opacity-80"></i>בית</a>
-                        <a href="index.html#homepage-categories-section" class="nav-internal-link nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300 section-link"><i class="fas fa-th-large md:ml-1 lg:ml-2 opacity-80"></i>קטגוריות</a>
-                        <a href="index.html#video-grid-section" class="nav-internal-link nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300 section-link"><i class="fas fa-play-circle md:ml-1 lg:ml-2 opacity-80"></i>סרטונים</a>
-                        <a href="index.html#featured-channels-section" class="nav-internal-link nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300 section-link"><i class="fas fa-tv md:ml-1 lg:ml-2 opacity-80"></i>ערוצים</a>
-                        <a href="index.html#forum-inspiration-section" class="nav-internal-link nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300 section-link"><i class="fas fa-comments md:ml-1 lg:ml-2 opacity-80"></i>שאלות</a>
-                        <a href="index.html#about-section" class="nav-internal-link nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300 section-link"><i class="fas fa-info-circle md:ml-1 lg:ml-2 opacity-80"></i>אודות</a>
-                        <a href="index.html#contact-section" class="nav-internal-link nav-link flex items-center md:px-1 lg:px-2 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-purple-100 dark:hover:bg-slate-700 hover:text-purple-600 dark:hover:text-purple-300 section-link"><i class="fas fa-envelope md:ml-1 lg:ml-2 opacity-80"></i>צור קשר</a>
-                    </nav>
-                </div>
-                   <div class="flex items-center space-x-2 rtl:space-x-reverse">
-                        <div class="hidden md:block">
-                            <form role="search" id="desktop-search-form" class="relative">
-                                <input type="search" id="desktop-search-input" class="search-input block w-48 lg:w-60 pr-4 pl-10 py-2.5 text-sm border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500 transition-all duration-300 focus:w-60 lg:focus:w-72" placeholder="חיפוש סרטונים..." autocomplete="off">
-                                <button type="submit" aria-label="בצע חיפוש" class="absolute left-0 top-0 h-full px-3 text-slate-400 dark:text-slate-500 hover:text-purple-600 dark:hover:text-purple-300">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                                <div id="desktop-search-suggestions" class="search-suggestions-container absolute top-full left-0 right-0 mt-1 z-50 hidden">
-                                    <ul class="max-h-72 overflow-y-auto bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-md shadow-lg"></ul>
-                                </div>
-                            </form>
-                        </div>
-                        <button role="switch" aria-label="החלף מצב תצוגה" aria-checked="false" class="dark-mode-toggle-button hidden md:flex items-center justify-center text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded-full p-2.5 h-10 w-10 transition-colors">
-                            <i class="fas fa-moon text-lg"></i>
-                            <i class="fas fa-sun text-lg hidden"></i>
-                        </button>
-                        <button id="open-menu-btn" aria-label="פתיחת תפריט" aria-expanded="false" aria-controls="mobile-menu" class="md:hidden text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 dark:focus:ring-purple-400 rounded p-2">
-                            <i class="fas fa-bars text-xl"></i>
-                        </button>
-                   </div>
-                </div>
-            </div>
-        </div>
-    </header>
+  <section id="pp-contact" class="mb-2">
+    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-slate-100">8. יצירת קשר</h2>
 
-    <main id="main-page-content" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-8 md:p-12 prose prose-lg prose-purple dark:prose-invert max-w-none">
-            <h1>מדיניות פרטיות</h1>
-            <p>עודכן לאחרונה: 1 בינואר 2026</p>
+    <div class="mt-4 rounded-2xl border border-slate-200 dark:border-slate-700 p-5">
+      <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+        בעל השליטה במידע/מפעיל האתר: <strong>CAR-טיב</strong>.<br>
+        ניתן ליצור קשר בכל שאלה בנושא פרטיות, בקשות עיון/תיקון, או דיווחים – דרך
+        <a href="./#contact-section" class="text-purple-700 dark:text-purple-300 font-semibold hover:underline">עמוד צור הקשר</a>.
+      </p>
 
-            <p>הפרטיות שלך חשובה לנו ב-CAR-טיב ("האתר"). מדיניות פרטיות זו מסבירה איזה מידע אנו אוספים ממך, מדוע אנו אוספים אותו, וכיצד אנו משתמשים בו.</p>
+      <p class="mt-3 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+        אם וככל שעל פי דין חלה חובה למנות <strong>ממונה/ת על הגנת הפרטיות</strong>, פרטי ההתקשרות יעודכנו בעמוד זה.
+      </p>
+    </div>
+  </section>
+</div>
 
-            <h2>1. מידע שאנו אוספים</h2>
-            <p>אנו אוספים סוגים שונים של מידע כדי לספק ולשפר את השירות עבורך:</p>
-            <ul>
-                <li><strong>מידע שנמסר באופן ישיר:</strong> כאשר אתה משתמש בטופס "צור קשר" או בטופס "הוספת סרטון", אנו אוספים את הפרטים שאתה מוסר, כגון שמך, כתובת האימייל שלך, ותוכן הודעתך.</li>
-                <li><strong>מידע שנאסף באופן אוטומטי:</strong>
-                    <ul>
-                        <li><strong>נתוני שימוש:</strong> שרת האחסון שלנו (Netlify) אוסף מידע טכני בסיסי כמו כתובת IP (באופן אנונימי), סוג דפדפן, מערכת הפעלה, ודפים שנצפו באתר. מידע זה משמש אותנו למטרות סטטיסטיות, תפעול ואבטחה.</li>
-                        <li><strong>עוגיות (Cookies) ו-LocalStorage:</strong> אנו משתמשים ב-LocalStorage של הדפדפן כדי לשמור את העדפותיך, כגון בחירת "מצב חשוך". מידע זה נשמר באופן מקומי על מכשירך ואינו נשלח אלינו.</li>
-                    </ul>
-                </li>
-            </ul>
-
-            <h2>2. שימוש במידע ושירותי צד שלישי</h2>
-            <p>אנו משתמשים במידע שאנו אוספים למטרות הבאות:</p>
-            <ul>
-                <li>כדי לספק, לתחזק ולשפר את האתר.</li>
-                <li>כדי להשיב לפניותיך ולספק לך תמיכה.</li>
-                <li>כדי לנתח את השימוש באתר ולהבין כיצד לשפר את חווית המשתמש.</li>
-            </ul>
-            <p>חשוב להבהיר כי האתר עושה שימוש בשירותי צד שלישי, והשימוש שלך באתר כפוף גם למדיניות שלהם:</p>
-            <ul>
-                <li><strong>YouTube (Google):</strong> סרטוני הווידאו באתר מוטמעים משירות YouTube. צפייה בסרטון באתר כפופה למדיניות הפרטיות של גוגל. Google עשויה לאסוף נתונים על צפייתך, בדומה לצפייה ישירה באתר YouTube. למידע נוסף, אנא עיין ב<a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">מדיניות הפרטיות של Google</a>.</li>
-                <li><strong>Google Forms / Apps Script:</strong> טפסי יצירת הקשר והוספת הסרטונים מופעלים באמצעות שירותי גוגל. שליחת טופס כפופה למדיניות של גוגל.</li>
-                <li><strong>Netlify:</strong> האתר מאוחסן על פלטפורמת Netlify. השירות אוסף נתוני תעבורה ואבחון. למידע נוסף, ראה את <a href="https://www.netlify.com/privacy/" target="_blank" rel="noopener noreferrer">מדיניות הפרטיות של Netlify</a>.</li>
-            </ul>
-
-            <h2>3. שיתוף מידע</h2>
-            <p><strong>אנו לא מוכרים, סוחרים או משכירים את המידע האישי שלך לצדדים שלישיים.</strong></p>
-
-            <h2>4. אבטחת מידע</h2>
-            <p>אנו נוקטים באמצעים סבירים כדי להגן על המידע שלך, אך חשוב לזכור ששום שיטת העברה דרך האינטרנט או אחסון אלקטרוני אינה מאובטחת ב-100%.</p>
-
-            <h2>5. קישורים לאתרים אחרים</h2>
-            <p>האתר עשוי להכיל קישורים לאתרים אחרים שאינם מופעלים על ידינו (למשל, פורום "רכבים זה לזה"). אם תלחץ על קישור של צד שלישי, תועבר לאתר שלו. אנו ממליצים בחום לעיין במדיניות הפרטיות של כל אתר שאתה מבקר בו.</p>
-
-            <h2>6. שינויים במדיניות הפרטיות</h2>
-            <p>אנו עשויים לעדכן את מדיניות הפרטיות שלנו מעת לעת. אנו נודיע לך על כל שינוי על ידי פרסום מדיניות הפרטיות החדשה בעמוד זה. מומלץ לעיין במדיניות זו מעת לעת.</p>
-
-            <h2>7. צור קשר</h2>
-            <p>אם יש לך שאלות כלשהן בנוגע למדיניות פרטיות זו, תוכל ליצור איתנו קשר דרך <a href="./#contact-section">עמוד צור הקשר</a>.</p>
-        </div>
-    </main>
 
     <footer id="site-footer" class="bg-slate-900 text-slate-400 dark:bg-gray-950 dark:text-slate-400 transition-colors duration-300">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
