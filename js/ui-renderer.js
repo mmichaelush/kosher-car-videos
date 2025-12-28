@@ -1,5 +1,3 @@
-// Handles DOM manipulations and rendering HTML
-
 window.App = window.App || {};
 
 window.App.DOM = {
@@ -69,6 +67,8 @@ window.App.DOM = {
         homeHero: document.getElementById('home-hero'),
         homepageCategories: document.getElementById('homepage-categories-section'),
         categoryTitle: document.getElementById('category-title-section'),
+        categoryTitleHeading: document.getElementById('category-page-title-heading'),  
+        categoryDescription: document.getElementById('category-page-description'), 
         featuredChannels: document.getElementById('featured-channels-section'),
         forum: document.getElementById('forum-inspiration-section'),
         about: document.getElementById('about-section'),
@@ -152,16 +152,13 @@ window.App.UI = {
         card.thumbnailImg.src = video.thumbnail || window.App.DataService.getThumbnailUrl(video.id);
         card.thumbnailImg.alt = video.title;
         
-        // Format Duration - Fix single digits
         if(card.duration) {
             let dur = video.duration || '';
-            // If just number like "25", make it "0:25"
             if (!dur.includes(':') && !isNaN(parseInt(dur))) {
                  dur = '0:' + dur;
             }
             if(dur.includes(':')) {
                  const parts = dur.split(':');
-                 // Ensure MM:SS has leading zeros if needed
                  if(parts.length === 2) {
                      if(parts[1].length === 1) parts[1] = '0' + parts[1];
                      dur = parts.join(':');
@@ -182,7 +179,7 @@ window.App.UI = {
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if(card.channelLogo) {
-            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==AAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
+            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==FcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==AAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
             card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
             card.channelLogo.classList.toggle('hidden', !video.channelImage);
         }
@@ -198,7 +195,6 @@ window.App.UI = {
             const categoryName = categoryData ? categoryData.name : (video.category || '').charAt(0).toUpperCase() + (video.category || '').slice(1);
             const categoryIconEl = cardClone.querySelector('.video-category-icon');
             
-            // Set link href WITHOUT hash
             card.categoryDisplay.href = `?name=${video.category}`;
             
             if (categoryIconEl) {
@@ -209,7 +205,6 @@ window.App.UI = {
         }
 
         if (card.dateDisplay) {
-            // Updated check for valid date
             if (video.dateAdded && video.dateAdded instanceof Date && !isNaN(video.dateAdded.getTime())) {
                 card.dateDisplay.style.display = 'flex';
                 card.dateDisplay.appendChild(document.createTextNode(video.dateAdded.toLocaleDateString('he-IL', { day: 'numeric', month: 'short', year: 'numeric' })));
@@ -333,7 +328,6 @@ window.App.UI = {
             return;
         }
 
-        // Optimized counting using a loop instead of flatMap/reduce
         const tagCounts = {};
         for (const video of videosToConsider) {
             if (video.tags) {
@@ -398,6 +392,7 @@ window.App.UI = {
         const CONSTANTS = window.App.CONSTANTS;
         const categoryData = CONSTANTS.PREDEFINED_CATEGORIES.find(cat => cat.id === categoryId);
         const name = categoryData ? categoryData.name : (categoryId || 'קטגוריה').charAt(0).toUpperCase() + (categoryId || 'קטגוריה').slice(1);
+        const description = categoryData ? categoryData.description : '';
         const icon = categoryData ? categoryData.icon : 'folder-open';
         
         const fullTitle = categoryId === 'all' 
@@ -406,13 +401,25 @@ window.App.UI = {
             
         document.title = fullTitle;
 
-        const pageTitle = document.getElementById('category-page-title');
-        if (pageTitle) pageTitle.innerHTML = `<i class="fas fa-${icon} text-purple-600 dark:text-purple-400 mr-4"></i>${name}`;
+        if (dom.sections.categoryTitleHeading) {
+            dom.sections.categoryTitleHeading.innerHTML = `
+                <i class="fas fa-${icon} text-purple-600 dark:text-purple-400 ml-4 md:ml-0 md:mr-4"></i>
+                <span class="text-slate-900 dark:text-slate-100 flex-1 text-center md:text-right">סרטונים בקטגוריה: <span class="category-title-color">${name}</span></span>
+            `;
+        }
+
+        if (dom.sections.categoryDescription) {
+            if (description) {
+                dom.sections.categoryDescription.textContent = description;
+                dom.sections.categoryDescription.classList.remove('hidden');
+            } else {
+                dom.sections.categoryDescription.classList.add('hidden');
+            }
+        }
         
         const breadcrumb = document.getElementById('breadcrumb-category-name');
         if (breadcrumb) breadcrumb.textContent = name;
         
-        // Update Video Grid Heading dynamically
         const headingText = dom.videosHeadingText;
         if(headingText) {
              headingText.innerHTML = (categoryId === 'all') 
