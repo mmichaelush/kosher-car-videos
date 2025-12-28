@@ -3,6 +3,7 @@
 window.App = window.App || {};
 
 window.App.DOM = {
+    // ... (חלק ה-DOM נשאר זהה)
     body: document.body,
     preloader: document.getElementById('site-preloader'),
     darkModeToggles: document.querySelectorAll('.dark-mode-toggle-button'),
@@ -79,6 +80,7 @@ window.App.DOM = {
 };
 
 window.App.UI = {
+    // ... (שאר הפונקציות ללא שינוי עד updateCategoryPageUI)
     toggleSingleVideoMode: (isSingleVideo) => {
         const dom = window.App.DOM;
         
@@ -323,7 +325,6 @@ window.App.UI = {
         if (!dom.popularTagsContainer) return;
 
         const { category } = state.currentFilters;
-        // לוגיקה משופרת לוודא סינון לפי הקטגוריה שנבחרה
         const videosToConsider = category !== 'all' ? state.allVideos.filter(v => v.category === category) : state.allVideos;
 
         if (videosToConsider.length === 0) {
@@ -404,7 +405,7 @@ window.App.UI = {
             
         document.title = fullTitle;
 
-        // עדכון כותרת הקטגוריה - שינוי סדר ויישור
+        // עדכון כותרת הקטגוריה
         if (dom.sections.categoryTitleHeading) {
             dom.sections.categoryTitleHeading.innerHTML = `
                 <span class="text-slate-900 dark:text-slate-100">סרטונים בקטגוריה: <span class="category-title-color">${name}</span></span>
