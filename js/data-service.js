@@ -1,9 +1,5 @@
-// Handles fetching data, constants, and global state
-
-// Global Application Namespace
 window.App = window.App || {};
 
-// Constants
 window.App.CONSTANTS = {
     MAX_POPULAR_TAGS: 50,
     VIDEOS_TO_SHOW_INITIALLY: 30,
@@ -61,7 +57,6 @@ window.App.CONSTANTS = {
     ]
 };
 
-// Global State
 window.App.state = {
     allVideos: [],
     allVideosCache: null,
@@ -88,7 +83,6 @@ window.App.state = {
     tagsCache: {}
 };
 
-// Data Fetching Functions
 window.App.DataService = {
     getThumbnailUrl: (videoId) => `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`,
 
@@ -136,7 +130,6 @@ window.App.DataService = {
                  return [];
             }
             
-            // שיפור: טיפול פרטני בשגיאות JSON
             let data;
             try {
                 data = await response.json();
