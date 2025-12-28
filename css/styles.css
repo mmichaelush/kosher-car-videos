@@ -155,3 +155,11 @@ html[dir="rtl"] .channels-track {
 .dark-mode-toggle-button .fas.hidden {
     display: none !important;
 }
+
+.category-title-color {
+    color: #7c3aed; /* purple-600 */
+}
+
+.dark .category-title-color {
+    color: #c084fc; /* purple-400 */
+}
