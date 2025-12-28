@@ -5,32 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מדיניות פרטיות - CAR-טיב</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio"></script>
-    <script>
-      tailwind.config = {
-        darkMode: 'class',
-        theme: {
-          extend: {}
-        }
-      }
-    </script>
+    
     <link rel="stylesheet" href="css/fontawesome/css/all.min.css">
     <link rel="stylesheet" href="css/rubik.css">
+    <link rel="stylesheet" href="css/tailwind.css">
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/sweetalert2.css">
     <link rel="icon" href="data/assets/images/favicon.ico" type="image/x-icon">
-    <script>
+    <link rel="stylesheet" href="css/sweetalert2.css">
+
+    <script src="js/data-service.js" defer></script>
+    <script src="js/ui-renderer.js" defer></script>
+    <script src="js/app.js" defer></script>
+    <script src="js/fuse.min.js"></script>
+    <script src="js/sweetalert2.all.min.js"></script>
+    
+        <script>
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
             document.documentElement.classList.remove('dark');
         }
     </script>
-    <script src="js/fuse.min.js"></script>
-    <script src="js/data-service.js" defer></script>
-    <script src="js/ui-renderer.js" defer></script>
-    <script src="js/app.js" defer></script>
-    <script src="js/sweetalert2.all.min.js"></script>
     <style>
         #site-preloader {
             position: fixed;
