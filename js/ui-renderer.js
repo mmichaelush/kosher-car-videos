@@ -323,6 +323,7 @@ window.App.UI = {
         if (!dom.popularTagsContainer) return;
 
         const { category } = state.currentFilters;
+        // לוגיקה משופרת לוודא סינון לפי הקטגוריה שנבחרה
         const videosToConsider = category !== 'all' ? state.allVideos.filter(v => v.category === category) : state.allVideos;
 
         if (videosToConsider.length === 0) {
@@ -403,11 +404,11 @@ window.App.UI = {
             
         document.title = fullTitle;
 
-        // עדכון כותרת הקטגוריה
+        // עדכון כותרת הקטגוריה - שינוי סדר ויישור
         if (dom.sections.categoryTitleHeading) {
             dom.sections.categoryTitleHeading.innerHTML = `
-                <i class="fas fa-${icon} text-purple-600 dark:text-purple-400 floating text-4xl md:text-5xl"></i>
                 <span class="text-slate-900 dark:text-slate-100">סרטונים בקטגוריה: <span class="category-title-color">${name}</span></span>
+                <i class="fas fa-${icon} text-purple-600 dark:text-purple-400 floating text-4xl md:text-5xl ml-4"></i>
             `;
         }
 
@@ -433,7 +434,7 @@ window.App.UI = {
         }
         
         const searchPlaceholder = (categoryId && categoryId !== 'all') 
-            ? `חפש סרטונים ב${name}...` 
+            ? `חפש סרטונים בקטגוריית ${name}...` 
             : 'חפש סרטונים באתר...';
         
         if (dom.searchInputs.main) dom.searchInputs.main.placeholder = searchPlaceholder;
