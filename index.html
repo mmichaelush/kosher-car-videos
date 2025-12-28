@@ -18,7 +18,7 @@
     <script src="js/fuse.min.js"></script>
     <script src="js/sweetalert2.all.min.js"></script>
     
-        <script>
+    <script>
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
             document.documentElement.classList.add('dark');
         } else {
@@ -68,7 +68,6 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        /* Custom Checkbox Size */
         .custom-checkbox {
             width: 1.25rem;
             height: 1.25rem;
@@ -76,7 +75,6 @@
     </style>
 </head>
 <body class="font-rubik bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 antialiased transition-colors duration-300 overflow-x-hidden">
-
 
     <div id="site-preloader">
         <div class="loader-content">
@@ -87,9 +85,7 @@
         <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm font-medium">טוען תוכן איכותי...</p>
     </div>
 
-
     <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black bg-opacity-75 z-40 md:hidden transition-opacity duration-300 opacity-0 invisible" aria-hidden="true"></div>
-
 
     <aside id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-800 shadow-xl z-50 p-6 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title">
         <div class="flex justify-between items-center mb-8">
@@ -125,7 +121,6 @@
             </button>
         </div>
     </aside>
-
 
     <header class="bg-slate-50/80 dark:bg-slate-900/80 shadow-md sticky top-0 z-30 transition-colors duration-300 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -171,12 +166,10 @@
         </div>
     </header>
 
-
     <div id="single-video-view" class="hidden min-h-[calc(100vh-80px)]">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
 
-            <div id="single-video-player-container" class="aspect-w-16 aspect-h-9 bg-black rounded-xl shadow-2xl overflow-hidden mb-6 ring-1 ring-slate-900/5 dark:ring-white/10">
-
+            <div id="single-video-player-container" class="relative w-full bg-black rounded-xl shadow-2xl overflow-hidden mb-6 ring-1 ring-slate-900/5 dark:ring-white/10" style="aspect-ratio: 16/9;">
             </div>
 
              <div class="flex flex-col lg:flex-row justify-between items-start gap-6 mb-8">
@@ -229,14 +222,9 @@
         </div>
     </div>
 
-
     <main id="home-view-container">
-
-
         <section id="category-title-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 text-center md:text-right hidden">
-            <h1 id="category-page-title" class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 flex items-center justify-center md:justify-start">
-
-            </h1>
+            <h1 id="category-page-title" class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 flex items-center justify-center md:justify-start"></h1>
             <nav aria-label="Breadcrumb" class="mt-2 text-sm text-slate-500 dark:text-slate-400">
                 <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                     <li class="inline-flex items-center">
@@ -256,7 +244,6 @@
             </nav>
              <p id="category-video-count-summary" class="mt-4 text-lg text-slate-600 dark:text-slate-300 text-center"></p>
         </section>
-
 
         <section id="home-hero" class="hero-gradient text-white relative overflow-hidden pt-10 pb-20 md:pt-16 md:pb-28">
             <div class="absolute inset-0 opacity-10 dark:opacity-[0.07]">
@@ -298,7 +285,6 @@
             </div>
         </section>
 
-
         <div class="md:hidden px-4 -mt-10 mb-8 relative z-20">
             <form role="search" id="mobile-search-form" class="relative flex items-center">
                <input type="search" id="mobile-search-input" class="search-input block w-full pr-4 pl-12 py-3.5 text-base shadow-xl border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500" placeholder="חיפוש סרטונים..." autocomplete="off">
@@ -312,23 +298,18 @@
         </div>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-
-
             <section id="homepage-categories-section" class="mb-12 md:mb-20 bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 sm:p-8" aria-labelledby="homepage-categories-heading">
                 <h2 id="homepage-categories-heading" class="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 mb-10 text-center">
                     <i class="fas fa-compass text-purple-600 dark:text-purple-400 mr-3"></i>
                     גלה את עולם הרכב
                 </h2>
-                <div id="homepage-categories-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8">
-
-                </div>
+                <div id="homepage-categories-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8"></div>
                 <div class="text-center my-12 md:my-16">
                     <a href="#video-grid-section" class="nav-internal-link inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 dark:focus:ring-offset-slate-900 transition-transform hover:scale-105">
                         <i class="fas fa-film ml-2"></i> לכל הסרטונים
                     </a>
                 </div>
             </section>
-
 
             <section id="main-content-search-section" class="my-12 md:my-16">
                 <div class="max-w-2xl mx-auto px-4">
@@ -348,7 +329,6 @@
                 </div>
             </section>
 
-
             <section class="mb-10 bg-white dark:bg-slate-800/75 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700" aria-labelledby="filter-heading">
                 <div class="flex items-center justify-between mb-6">
                     <h2 id="filter-heading" class="text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center">
@@ -356,9 +336,7 @@
                         סינון מתקדם
                     </h2>
                 </div>
-        
                 <div class="flex flex-col lg:flex-row gap-4 lg:items-center justify-between mb-6">
-                    
                     <label for="hebrew-filter-toggle" class="flex items-center cursor-pointer p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-600">
                         <div class="relative">
                             <input type="checkbox" id="hebrew-filter-toggle" class="sr-only peer">
@@ -366,33 +344,22 @@
                         </div>
                         <span class="mr-3 text-sm font-medium text-slate-700 dark:text-slate-300 select-none">הצג סרטונים בעברית בלבד</span>
                     </label>
-        
                     <div class="relative flex-grow max-w-lg">
                         <form id="custom-tag-form" class="relative">
                             <label for="tag-search-input" class="sr-only">הוסף תגית לסינון</label>
-                            <input type="text" id="tag-search-input" 
-                                   class="w-full pl-20 pr-4 py-2 text-sm text-right border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-1 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500 transition-all" 
-                                   placeholder="הקלד תגית לסינון..." autocomplete="off">
-                            <button type="submit" class="absolute left-1 top-1/2 transform -translate-y-1/2 bg-purple-100 hover:bg-purple-200 dark:bg-purple-900/50 dark:hover:bg-purple-800 text-purple-700 dark:text-purple-200 px-3 py-1 rounded text-xs font-medium transition-colors">
-                                הוסף
-                            </button>
+                            <input type="text" id="tag-search-input" class="w-full pl-20 pr-4 py-2 text-sm text-right border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-1 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500 transition-all" placeholder="הקלד תגית לסינון..." autocomplete="off">
+                            <button type="submit" class="absolute left-1 top-1/2 transform -translate-y-1/2 bg-purple-100 hover:bg-purple-200 dark:bg-purple-900/50 dark:hover:bg-purple-800 text-purple-700 dark:text-purple-200 px-3 py-1 rounded text-xs font-medium transition-colors">הוסף</button>
                         </form>
                         <div id="tag-suggestions" class="absolute z-50 w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-md shadow-lg mt-1 hidden max-h-48 overflow-y-auto"></div>
                     </div>
-        
                     <div id="filter-summary-container" class="hidden animate-fade-in">
                          <div class="flex items-center gap-2">
                             <span id="filter-summary-text" class="text-xs font-medium text-slate-500 dark:text-slate-400 hidden sm:inline-block"></span>
-                            <button id="clear-filters-btn" class="flex items-center justify-center gap-1.5 bg-red-50 hover:bg-red-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/30 px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm">
-                                <i class="fas fa-trash-alt"></i> <span>נקה</span>
-                            </button>
-                            <button id="share-filters-btn" class="flex items-center justify-center gap-1.5 bg-purple-100 hover:bg-purple-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-purple-700 dark:text-purple-300 border border-transparent px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm">
-                                <i class="fas fa-share-alt"></i> <span>שתף</span>
-                            </button>
+                            <button id="clear-filters-btn" class="flex items-center justify-center gap-1.5 bg-red-50 hover:bg-red-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/30 px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm"><i class="fas fa-trash-alt"></i> <span>נקה</span></button>
+                            <button id="share-filters-btn" class="flex items-center justify-center gap-1.5 bg-purple-100 hover:bg-purple-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-purple-700 dark:text-purple-300 border border-transparent px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm"><i class="fas fa-share-alt"></i> <span>שתף</span></button>
                         </div>
                     </div>
                 </div>
-        
                 <div class="border-t border-slate-100 dark:border-slate-700/50 pt-4">
                      <div class="flex items-start gap-3">
                         <span class="text-sm font-semibold text-slate-500 dark:text-slate-400 mt-1.5 whitespace-nowrap">תגיות פופולריות:</span>
@@ -403,7 +370,6 @@
                     <div id="selected-tags-container" class="flex flex-wrap gap-2 mt-3 min-h-[1.5rem] empty:hidden"></div>
                 </div>
             </section>
-
 
             <section id="video-grid-section" class="mb-12 md:mb-16 bg-white dark:bg-slate-800 rounded-2xl shadow-xl p-6 sm:p-8" aria-labelledby="videos-heading">
                 <div class="flex flex-col sm:flex-row justify-between items-center mb-8 gap-4">
@@ -425,12 +391,9 @@
                         </select>
                     </div>
                 </div>
-                <div id="video-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8">
-
-                </div>
+                <div id="video-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8"></div>
                 <div id="no-videos-found" class="hidden col-span-full text-center text-slate-500 dark:text-slate-400 py-16" aria-live="polite"></div>
             </section>
-
 
             <section id="featured-channels-section" class="bg-purple-50 dark:bg-slate-800/60 py-16 md:py-20 transition-colors duration-300 rounded-2xl overflow-hidden" aria-labelledby="featured-channels-heading">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -448,9 +411,7 @@
                         </p>
                     </div>
                     <div class="channels-carousel-wrapper relative group px-4 md:px-12">
-                        <button id="channels-scroll-right" class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 dark:bg-slate-700/80 p-3 rounded-full shadow-lg text-purple-600 dark:text-purple-400 hover:bg-white dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hidden md:block opacity-0 group-hover:opacity-100" aria-label="גלול ימינה">
-                             <i class="fas fa-chevron-right text-xl"></i>
-                        </button>
+                        <button id="channels-scroll-right" class="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 dark:bg-slate-700/80 p-3 rounded-full shadow-lg text-purple-600 dark:text-purple-400 hover:bg-white dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hidden md:block opacity-0 group-hover:opacity-100" aria-label="גלול ימינה"><i class="fas fa-chevron-right text-xl"></i></button>
                         <div class="channels-carousel-container no-scrollbar">
                             <div id="featured-channels-track" class="channels-track">
                                 <div class="flex items-center justify-center w-full py-10 text-slate-500">
@@ -458,13 +419,10 @@
                                 </div>
                             </div>
                         </div>
-                         <button id="channels-scroll-left" class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 dark:bg-slate-700/80 p-3 rounded-full shadow-lg text-purple-600 dark:text-purple-400 hover:bg-white dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hidden md:block opacity-0 group-hover:opacity-100" aria-label="גלול שמאלה">
-                             <i class="fas fa-chevron-left text-xl"></i>
-                        </button>
+                         <button id="channels-scroll-left" class="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white/80 dark:bg-slate-700/80 p-3 rounded-full shadow-lg text-purple-600 dark:text-purple-400 hover:bg-white dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all hidden md:block opacity-0 group-hover:opacity-100" aria-label="גלול שמאלה"><i class="fas fa-chevron-left text-xl"></i></button>
                     </div>
                 </div>
             </section>
-
 
             <section id="forum-inspiration-section" class="bg-gradient-to-br from-purple-700 to-indigo-700 dark:from-purple-800 dark:to-indigo-900 text-white py-20 md:py-28 relative overflow-hidden my-12 rounded-2xl shadow-2xl" aria-labelledby="forum-heading">
                 <div class="absolute inset-0 opacity-[0.03] mix-blend-overlay dark:opacity-[0.05]" aria-hidden="true">
@@ -491,7 +449,6 @@
                 </div>
             </section>
 
-
             <section id="about-section" class="py-20 md:py-28 bg-white dark:bg-slate-800 backdrop-blur-sm transition-colors duration-300 rounded-2xl" aria-labelledby="about-heading">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="text-center mb-16 md:mb-20">
@@ -505,9 +462,7 @@
                             <p>ב-CAR-טיב, אנו מחויבים לספק פלטפורמה ייחודית ונגישה לחובבי רכב מהמגזר הדתי והחרדי. אנו מבינים את הצורך בתוכן "כשר ומסונן" התואם את ערכי הקהילה, ולכן כל סרטון באתר נבדק בקפידה שאושר על ידי מערכת הסינון של נטפרי.</p>
                             <h3 class="text-2xl font-semibold mt-8 mb-3 text-slate-800 dark:text-slate-100">מה תמצאו אצלנו?</h3>
                             <p>האתר מרכז מגוון רחב של סרטונים: מסקירות דגמים חדשים ויד שנייה, דרך מדריכי "עשה זאת בעצמך" לתחזוקה ותיקונים, ועד לטיפים לבחירת הרכב המשפחתי המושלם. אנו שואפים להעשיר את הידע שלכם, לחסוך זמן וכסף, בסביבה נקייה וכשרה.</p>
-                            <a href="#contact-section" class="nav-internal-link btn-primary mt-8 no-underline inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 dark:focus:ring-offset-slate-800 transition-all duration-300 ease-out text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600" data-target="contact-section">
-                                <i class="fas fa-envelope ml-2"></i> דברו איתנו
-                            </a>
+                            <a href="#contact-section" class="nav-internal-link btn-primary mt-8 no-underline inline-flex items-center justify-center px-6 py-3 text-base font-semibold rounded-lg shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 dark:focus:ring-offset-slate-800 transition-all duration-300 ease-out text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600" data-target="contact-section"><i class="fas fa-envelope ml-2"></i> דברו איתנו</a>
                         </div>
                         <div class="relative order-first md:order-last group">
                             <div class="aspect-w-16 aspect-h-9 sm:aspect-w-4 sm:aspect-h-3 rounded-2xl overflow-hidden shadow-2xl dark:shadow-black/50">
@@ -518,7 +473,6 @@
                     </div>
                 </div>
             </section>
-
 
             <section id="contact-section" class="py-20 md:py-28 bg-purple-50 dark:bg-slate-800/60 transition-colors duration-300 rounded-2xl" aria-labelledby="contact-heading">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -552,9 +506,7 @@
                                 </label>
                             </div>
                             <div class="text-center pt-3">
-                                <button id="submit-button" type="submit" class="btn-primary !text-lg !px-10 !py-3.5 w-full sm:w-auto text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:ring-offset-2 dark:focus:ring-offset-slate-700 rounded-lg">
-                                    <i class="fas fa-paper-plane mr-2"></i> שלח הודעה
-                                </button>
+                                <button id="submit-button" type="submit" class="btn-primary !text-lg !px-10 !py-3.5 w-full sm:w-auto text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:ring-offset-2 dark:focus:ring-offset-slate-700 rounded-lg"><i class="fas fa-paper-plane mr-2"></i> שלח הודעה</button>
                             </div>
                             <div id="form-status" class="text-center mt-4 h-6"></div>
                         </form>
@@ -569,7 +521,6 @@
             </section>
         </div>
     </main>
-
 
     <footer id="site-footer" class="bg-slate-900 text-slate-400 dark:bg-gray-950 dark:text-slate-400 transition-colors duration-300">
         <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
