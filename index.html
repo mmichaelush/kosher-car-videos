@@ -76,7 +76,6 @@
 </head>
 <body class="font-rubik bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100 antialiased transition-colors duration-300 overflow-x-hidden">
 
-
     <div id="site-preloader">
         <div class="loader-content">
             <div class="loader-ring"></div>
@@ -86,9 +85,7 @@
         <p class="mt-2 text-slate-500 dark:text-slate-400 text-sm font-medium">טוען תוכן איכותי...</p>
     </div>
 
-
     <div id="mobile-menu-backdrop" class="fixed inset-0 bg-black bg-opacity-75 z-40 md:hidden transition-opacity duration-300 opacity-0 invisible" aria-hidden="true"></div>
-
 
     <aside id="mobile-menu" class="fixed inset-y-0 right-0 w-72 bg-white dark:bg-slate-800 shadow-xl z-50 p-6 md:hidden transform translate-x-full transition-transform duration-300 ease-in-out" role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title">
         <div class="flex justify-between items-center mb-8">
@@ -124,7 +121,6 @@
             </button>
         </div>
     </aside>
-
 
     <header class="bg-slate-50/80 dark:bg-slate-900/80 shadow-md sticky top-0 z-30 transition-colors duration-300 backdrop-blur-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -231,32 +227,41 @@
 
     <main id="home-view-container">
 
+        <!-- אזור כותרת הקטגוריה המעוצב החדש -->
+        <section id="category-title-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 hidden">
+            <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-slate-800 dark:to-slate-800/80 border border-purple-100 dark:border-slate-700 p-8 md:p-12 text-center shadow-sm">
+                <!-- Decorative Elements -->
+                <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-purple-100 dark:bg-purple-900/20 opacity-50 blur-3xl pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 rounded-full bg-indigo-100 dark:bg-indigo-900/20 opacity-50 blur-3xl pointer-events-none"></div>
 
-        <section id="category-title-section" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 text-center md:text-right hidden">
-            <div class="flex flex-col md:flex-row items-center justify-center md:justify-start gap-4 mb-4">
-                 <h1 id="category-page-title-heading" class="text-3xl sm:text-4xl font-extrabold flex items-center justify-center md:justify-start flex-wrap gap-x-2">
-                    <!-- תוכן זה יועדכן ע"י JS -->
-                 </h1>
+                <!-- Breadcrumbs - Top -->
+                <nav aria-label="Breadcrumb" class="relative z-10 flex justify-center mb-6">
+                    <ol class="inline-flex items-center space-x-2 rtl:space-x-reverse text-sm font-medium text-slate-500 dark:text-slate-400">
+                        <li class="inline-flex items-center">
+                            <a href="#" class="nav-internal-link hover:text-purple-600 dark:hover:text-purple-400 transition-colors flex items-center" data-target="home-hero">
+                                <i class="fas fa-home ml-1.5"></i> דף הבית
+                            </a>
+                        </li>
+                        <li><span class="mx-1 text-slate-300 dark:text-slate-600">/</span></li>
+                        <li>
+                            <span id="breadcrumb-category-name" class="text-purple-600 dark:text-purple-400 font-semibold" aria-current="page">קטגוריה</span>
+                        </li>
+                    </ol>
+                </nav>
+
+                <!-- Heading - Center -->
+                <h1 id="category-page-title-heading" class="relative z-10 text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 mb-4 flex flex-col md:flex-row items-center justify-center gap-3">
+                    <!-- תוכן זה יתמלא ב-JS -->
+                </h1>
+
+                <!-- Description - Center -->
+                <p id="category-page-description" class="relative z-10 text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-6 leading-relaxed hidden"></p>
+
+                <!-- Count - Bottom Center -->
+                <div class="relative z-10 inline-block bg-white dark:bg-slate-700/50 backdrop-blur-sm rounded-full px-4 py-1.5 border border-slate-200 dark:border-slate-600 shadow-sm">
+                    <p id="category-video-count-summary" class="text-sm md:text-base text-slate-600 dark:text-slate-300 m-0"></p>
+                </div>
             </div>
-            <p id="category-page-description" class="text-lg text-slate-600 dark:text-slate-300 max-w-3xl mx-auto mb-4 hidden"></p>
-            <nav aria-label="Breadcrumb" class="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-                    <li class="inline-flex items-center">
-                        <a href="#" class="nav-internal-link inline-flex items-center hover:text-purple-600 dark:hover:text-purple-400 transition-colors" data-target="home-hero">
-                            <i class="fas fa-home ml-1.5"></i>
-                            דף הבית
-                        </a>
-                    </li>
-                    <li>
-                        <div class="flex items-center">
-                            <i class="fas fa-chevron-left fa-xs text-slate-400 dark:text-slate-500 rtl:hidden"></i>
-                            <i class="fas fa-chevron-right fa-xs text-slate-400 dark:text-slate-500 hidden rtl:inline"></i>
-                            <span id="breadcrumb-category-name" class="ms-1 md:ms-2" aria-current="page">קטגוריה</span>
-                        </div>
-                    </li>
-                </ol>
-            </nav>
-             <p id="category-video-count-summary" class="mt-4 text-lg text-slate-600 dark:text-slate-300 text-center"></p>
         </section>
 
 
@@ -332,7 +337,7 @@
             </section>
 
 
-            <section id="main-content-search-section" class="my-12 md:my-16">
+            <section id="main-content-search-section" class="my-8 md:my-12">
                 <div class="max-w-2xl mx-auto px-4">
                     <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100 mb-6 text-center">
                         <i class="fas fa-search text-purple-600 dark:text-purple-400 mr-2"></i>
@@ -352,15 +357,14 @@
 
 
             <section class="mb-10 bg-white dark:bg-slate-800/75 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700" aria-labelledby="filter-heading">
+                <!-- Filter content same as before -->
                 <div class="flex items-center justify-between mb-6">
                     <h2 id="filter-heading" class="text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center">
                         <i class="fas fa-filter text-purple-600 dark:text-purple-400 mr-2"></i>
                         סינון מתקדם
                     </h2>
                 </div>
-        
                 <div class="flex flex-col lg:flex-row gap-4 lg:items-center justify-between mb-6">
-                    
                     <label for="hebrew-filter-toggle" class="flex items-center cursor-pointer p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors border border-transparent hover:border-slate-200 dark:hover:border-slate-600">
                         <div class="relative">
                             <input type="checkbox" id="hebrew-filter-toggle" class="sr-only peer">
@@ -368,33 +372,22 @@
                         </div>
                         <span class="mr-3 text-sm font-medium text-slate-700 dark:text-slate-300 select-none">הצג סרטונים בעברית בלבד</span>
                     </label>
-        
                     <div class="relative flex-grow max-w-lg">
                         <form id="custom-tag-form" class="relative">
                             <label for="tag-search-input" class="sr-only">הוסף תגית לסינון</label>
-                            <input type="text" id="tag-search-input" 
-                                   class="w-full pl-20 pr-4 py-2 text-sm text-right border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-1 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500 transition-all" 
-                                   placeholder="הקלד תגית לסינון..." autocomplete="off">
-                            <button type="submit" class="absolute left-1 top-1/2 transform -translate-y-1/2 bg-purple-100 hover:bg-purple-200 dark:bg-purple-900/50 dark:hover:bg-purple-800 text-purple-700 dark:text-purple-200 px-3 py-1 rounded text-xs font-medium transition-colors">
-                                הוסף
-                            </button>
+                            <input type="text" id="tag-search-input" class="w-full pl-20 pr-4 py-2 text-sm text-right border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700/80 text-slate-900 dark:text-slate-100 rounded-lg focus:ring-1 focus:ring-purple-500 dark:focus:ring-purple-400 focus:border-purple-500 dark:focus:border-purple-400 placeholder-slate-400 dark:placeholder-slate-500 transition-all" placeholder="הקלד תגית לסינון..." autocomplete="off">
+                            <button type="submit" class="absolute left-1 top-1/2 transform -translate-y-1/2 bg-purple-100 hover:bg-purple-200 dark:bg-purple-900/50 dark:hover:bg-purple-800 text-purple-700 dark:text-purple-200 px-3 py-1 rounded text-xs font-medium transition-colors">הוסף</button>
                         </form>
                         <div id="tag-suggestions" class="absolute z-50 w-full bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-md shadow-lg mt-1 hidden max-h-48 overflow-y-auto"></div>
                     </div>
-        
                     <div id="filter-summary-container" class="hidden animate-fade-in">
                          <div class="flex items-center gap-2">
                             <span id="filter-summary-text" class="text-xs font-medium text-slate-500 dark:text-slate-400 hidden sm:inline-block"></span>
-                            <button id="clear-filters-btn" class="flex items-center justify-center gap-1.5 bg-red-50 hover:bg-red-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/30 px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm">
-                                <i class="fas fa-trash-alt"></i> <span>נקה</span>
-                            </button>
-                            <button id="share-filters-btn" class="flex items-center justify-center gap-1.5 bg-purple-100 hover:bg-purple-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-purple-700 dark:text-purple-300 border border-transparent px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm">
-                                <i class="fas fa-share-alt"></i> <span>שתף</span>
-                            </button>
+                            <button id="clear-filters-btn" class="flex items-center justify-center gap-1.5 bg-red-50 hover:bg-red-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-red-600 dark:text-red-400 border border-red-200 dark:border-red-900/30 px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm"><i class="fas fa-trash-alt"></i> <span>נקה</span></button>
+                            <button id="share-filters-btn" class="flex items-center justify-center gap-1.5 bg-purple-100 hover:bg-purple-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-purple-700 dark:text-purple-300 border border-transparent px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-sm"><i class="fas fa-share-alt"></i> <span>שתף</span></button>
                         </div>
                     </div>
                 </div>
-        
                 <div class="border-t border-slate-100 dark:border-slate-700/50 pt-4">
                      <div class="flex items-start gap-3">
                         <span class="text-sm font-semibold text-slate-500 dark:text-slate-400 mt-1.5 whitespace-nowrap">תגיות פופולריות:</span>
