@@ -1,3 +1,5 @@
+// Handles DOM manipulations and rendering HTML
+
 window.App = window.App || {};
 
 window.App.DOM = {
@@ -67,8 +69,8 @@ window.App.DOM = {
         homeHero: document.getElementById('home-hero'),
         homepageCategories: document.getElementById('homepage-categories-section'),
         categoryTitle: document.getElementById('category-title-section'),
-        categoryTitleHeading: document.getElementById('category-page-title-heading'),  
-        categoryDescription: document.getElementById('category-page-description'), 
+        categoryTitleHeading: document.getElementById('category-page-title-heading'),
+        categoryDescription: document.getElementById('category-page-description'),
         featuredChannels: document.getElementById('featured-channels-section'),
         forum: document.getElementById('forum-inspiration-section'),
         about: document.getElementById('about-section'),
@@ -179,7 +181,7 @@ window.App.UI = {
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if(card.channelLogo) {
-            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==FcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==AAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
+            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
             card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
             card.channelLogo.classList.toggle('hidden', !video.channelImage);
         }
@@ -401,13 +403,15 @@ window.App.UI = {
             
         document.title = fullTitle;
 
+        // עדכון כותרת הקטגוריה
         if (dom.sections.categoryTitleHeading) {
             dom.sections.categoryTitleHeading.innerHTML = `
-                <i class="fas fa-${icon} text-purple-600 dark:text-purple-400 ml-4 md:ml-0 md:mr-4"></i>
-                <span class="text-slate-900 dark:text-slate-100 flex-1 text-center md:text-right">סרטונים בקטגוריה: <span class="category-title-color">${name}</span></span>
+                <i class="fas fa-${icon} text-purple-600 dark:text-purple-400 floating text-4xl md:text-5xl"></i>
+                <span class="text-slate-900 dark:text-slate-100">סרטונים בקטגוריה: <span class="category-title-color">${name}</span></span>
             `;
         }
 
+        // עדכון תיאור הקטגוריה
         if (dom.sections.categoryDescription) {
             if (description) {
                 dom.sections.categoryDescription.textContent = description;
@@ -420,6 +424,7 @@ window.App.UI = {
         const breadcrumb = document.getElementById('breadcrumb-category-name');
         if (breadcrumb) breadcrumb.textContent = name;
         
+        // Update Video Grid Heading dynamically
         const headingText = dom.videosHeadingText;
         if(headingText) {
              headingText.innerHTML = (categoryId === 'all') 
@@ -438,8 +443,8 @@ window.App.UI = {
             const categoryVideos = window.App.state.allVideos.filter(v => v.category === categoryId);
             const count = categoryVideos.length;
             countSummaryEl.innerHTML = count === 1
-                ? `נמצא <strong class="text-purple-600 dark:text-purple-400">סרטון אחד</strong> בקטגוריה זו.`
-                : `בקטגוריה זו קיימים <strong class="text-purple-600 dark:text-purple-400">${count}</strong> סרטונים.`;
+                ? `נמצא <strong class="text-purple-600 dark:text-purple-400 font-bold">סרטון אחד</strong> בקטגוריה זו.`
+                : `בקטגוריה זו קיימים <strong class="text-purple-600 dark:text-purple-400 font-bold">${count}</strong> סרטונים.`;
         }
 
         if(categoryId && categoryId !== 'all') {
