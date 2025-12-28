@@ -152,10 +152,14 @@ html[dir="rtl"] .channels-track {
     scrollbar-width: none;
 }
 
+/* --- תיקון באג אייקונים של מצב לילה --- */
+/* FontAwesome מגדיר display: inline-block, זה גובר לעיתים על hidden של טיילווינד */
+/* הפקודה הזו מכריחה את האייקון להעלם כשיש לו קלאס hidden */
 .dark-mode-toggle-button .fas.hidden {
     display: none !important;
 }
 
+/* --- עיצוב כותרת קטגוריה --- */
 .category-title-color {
     color: #7c3aed; /* purple-600 */
 }
