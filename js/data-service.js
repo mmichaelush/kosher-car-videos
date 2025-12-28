@@ -13,13 +13,13 @@ window.App.CONSTANTS = {
     FUSE_OPTIONS: {
         keys: [
             { name: 'title', weight: 0.4 },
-            { name: 'content', weight: 0.3 }, 
+            { name: 'content', weight: 0.3 },
             { name: 'tags', weight: 0.2 },
             { name: 'channel', weight: 0.1 }
         ],
         includeScore: true,
         includeMatches: true,
-        threshold: 0.3, 
+        threshold: 0.3,
         minMatchCharLength: 2,
         ignoreLocation: true
     },
@@ -31,7 +31,7 @@ window.App.CONSTANTS = {
             { name: 'channel', weight: 0.1 }
         ],
         includeScore: true,
-        threshold: 0.6, 
+        threshold: 0.6,
         ignoreLocation: true
     },
     CATEGORY_FILES: [
@@ -66,7 +66,7 @@ window.App.state = {
     allVideos: [],
     allVideosCache: null,
     fuse: null,
-    looseFuse: null, // מנוע חיפוש משני
+    looseFuse: null,
     currentFilters: {
         category: 'all',
         tags: [],
@@ -128,12 +128,25 @@ window.App.DataService = {
     },
 
     fetchVideosFromFile: async (filename) => {
+        const filePath = `data/videos/${filename}.json`;
         try {
-            const response = await fetch(`data/videos/${filename}.json`);
+            const response = await fetch(filePath);
             if (!response.ok) {
+                 console.warn(`File not found or network error: ${filePath}`);
                  return [];
             }
-            const data = await response.json();
+            
+            // שיפור: טיפול פרטני בשגיאות JSON
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonError) {
+                console.error(`%c שגיאת תחביר בקובץ JSON! `, 'background: #ef4444; color: #fff; font-size: 14px; padding: 4px; border-radius: 4px;');
+                console.error(`הקובץ הבעייתי: %c${filePath}`, 'font-weight: bold; color: #facc15;');
+                console.error(`פרטי השגיאה:`, jsonError.message);
+                return []; // החזרת מערך ריק כדי לא לשבור את שאר האתר
+            }
+
             let videosArray = [];
             if (Array.isArray(data)) {
                 videosArray = data;
@@ -149,7 +162,7 @@ window.App.DataService = {
                 dateAdded: window.App.DataService.parseDate(video.dateAdded)
             }));
         } catch (e) {
-            console.warn(`Could not load videos for category: ${filename}`, e);
+            console.error(`General error loading ${filename}:`, e);
             return [];
         }
     },
@@ -173,7 +186,7 @@ window.App.DataService = {
                 if (countSpan) countSpan.textContent = window.App.state.allVideos.length;
             }
         } catch (error) {
-            console.error("Error loading videos:", error);
+            console.error("Critical error loading videos:", error);
             window.App.state.allVideos = [];
         }
     },
