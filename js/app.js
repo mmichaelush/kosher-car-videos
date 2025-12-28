@@ -12,11 +12,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleThemeToggle() {
         const isDark = document.documentElement.classList.toggle('dark');
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        
         DOM.darkModeToggles.forEach(toggle => {
             const moonIcon = toggle.querySelector('.fa-moon');
             const sunIcon = toggle.querySelector('.fa-sun');
-            if(moonIcon) moonIcon.classList.toggle('hidden', isDark);
-            if(sunIcon) sunIcon.classList.toggle('hidden', !isDark);
+            
+            if (isDark) {
+                if(moonIcon) moonIcon.classList.add('hidden');
+                if(sunIcon) sunIcon.classList.remove('hidden');
+            } else {
+                if(moonIcon) moonIcon.classList.remove('hidden');
+                if(sunIcon) sunIcon.classList.add('hidden');
+            }
             toggle.setAttribute('aria-checked', String(isDark));
         });
     }
@@ -74,7 +81,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-
         const allTags = new Set();
         const videosToConsider = (State.currentFilters.category !== 'all')
             ? State.allVideos.filter(v => v.category === State.currentFilters.category)
@@ -93,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `).join('');
             suggestionsContainer.classList.remove('hidden');
-
 
             suggestionsContainer.querySelectorAll('div').forEach(div => {
                 div.addEventListener('click', () => {
@@ -227,7 +232,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (State.currentFilters.searchTerm.length >= CONSTANTS.MIN_SEARCH_TERM_LENGTH && State.fuse) {
-            const fuseResults = State.fuse.search(State.currentFilters.searchTerm);
+            
+            let fuseResults = State.fuse.search(State.currentFilters.searchTerm);
+            
+            if (fuseResults.length < 5 && State.looseFuse) {
+                const looseResults = State.looseFuse.search(State.currentFilters.searchTerm);
+                
+                const existingIds = new Set(fuseResults.map(r => r.item.id));
+                const newResults = looseResults.filter(r => !existingIds.has(r.item.id));
+                
+                fuseResults = [...fuseResults, ...newResults];
+            }
+
             const resultIds = new Set(fuseResults.map(r => r.item.id));
             filtered = filtered.filter(v => resultIds.has(v.id));
         }
@@ -307,7 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const videoId = params.get('v');
         const categoryParam = params.get('name');
         
-        // Auto Scroll Logic - if we have filters in URL on load
         const hasFilters = params.has('search') || params.has('tags') || (categoryParam && categoryParam !== 'all');
 
         if (videoId) {
@@ -337,6 +352,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const fuseSource = category === 'all' ? State.allVideos : State.allVideos.filter(v => v.category === category);
             State.fuse = new Fuse(fuseSource, CONSTANTS.FUSE_OPTIONS);
+            State.looseFuse = new Fuse(fuseSource, CONSTANTS.FUSE_LOOSE_OPTIONS); // מנוע משני להשלמה סמנטית
 
             if(categoryChanged) UI.renderPopularTags();
 
@@ -353,7 +369,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                  }, 200);
             } else if (hasFilters) {
-                 // Auto scroll to results if filtered via URL
                  setTimeout(() => scrollToVideoGridIfNeeded(), 300);
             } else {
                  window.scrollTo(0,0);
@@ -394,7 +409,6 @@ document.addEventListener('DOMContentLoaded', () => {
         DOM.singleVideoView.channel.innerHTML = `<img src="${video.channelImage || ''}" alt="" class="h-6 w-6 rounded-full"><span class="font-medium">${video.channel}</span>`;
         DOM.singleVideoView.duration.innerHTML = `<i class="fas fa-clock fa-fw"></i> ${video.duration}`;
 
-        // Category Link Setup
         if(DOM.singleVideoView.category) {
             const categoryData = CONSTANTS.PREDEFINED_CATEGORIES.find(c => c.id === video.category);
             const categoryName = categoryData ? categoryData.name : (video.category || 'כללי');
@@ -584,19 +598,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
 
-
             if (link && link.classList.contains('nav-logo-link')) {
                 e.preventDefault();
                 window.location.href = './';
                 return;
             }
 
-
             if (link && link.classList.contains('nav-internal-link')) {
                  const href = link.getAttribute('href');
                  const isHashLink = href.includes('#');
                  const targetId = isHashLink ? href.substring(href.lastIndexOf('#') + 1) : href.split('#')[1];
-
 
                  if (DOM.mobileMenu && !DOM.mobileMenu.classList.contains('translate-x-full')) {
                      DOM.mobileMenu.classList.add('translate-x-full');
@@ -604,16 +615,13 @@ document.addEventListener('DOMContentLoaded', () => {
                      document.body.classList.remove('overflow-hidden');
                  }
 
-
                  if (!DOM.singleVideoView.container.classList.contains('hidden') || DOM.sections.homeHero.classList.contains('hidden')) {
                      e.preventDefault();
 
                      UI.toggleSingleVideoMode(false);
                      UI.updateCategoryPageUI('all');
 
-
                      history.pushState(null, '', './#' + (targetId || 'home-hero'));
-
 
                      setTimeout(() => {
                         if (targetId && document.getElementById(targetId)) {
@@ -621,13 +629,12 @@ document.addEventListener('DOMContentLoaded', () => {
                              const headerOffset = 100;
                              const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                              window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                             history.replaceState(null, '', './'); // Clean URL
+                             history.replaceState(null, '', './');
                         } else {
                              window.scrollTo({ top: 0, behavior: 'smooth' });
                         }
                      }, 100);
                  } else {
-
                      if (isHashLink && targetId) {
                          e.preventDefault();
                          const el = document.getElementById(targetId);
@@ -635,25 +642,22 @@ document.addEventListener('DOMContentLoaded', () => {
                              const headerOffset = 100;
                              const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                              window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                             history.replaceState(null, '', './'); // Clean URL
+                             history.replaceState(null, '', './');
                          }
                      }
                  }
             }
 
-            // Category Links (Chips, Video Badge)
             if (link && link.dataset.categoryLink === "true") {
                 e.preventDefault();
                 const url = new URL(link.href, window.location.origin);
                 const category = url.searchParams.get('name');
-                history.pushState(null, '', `?name=${category}`); // No hash in URL for cleaner look
+                history.pushState(null, '', `?name=${category}`);
                 handleRouting();
-                // Manually scroll to grid
                 setTimeout(() => scrollToVideoGridIfNeeded(), 100);
                 return;
             }
 
-            // Tag Links
             if (link && link.dataset.tagLink === "true") {
                  e.preventDefault();
                  const url = new URL(link.href, window.location.origin);
@@ -714,14 +718,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 shareContent(window.location.href, target.closest('button'), 'הועתק!', video?.title || 'סרטון');
             }
 
-
             if (target.closest('#single-video-home-btn')) {
                  e.preventDefault();
                  history.pushState(null, '', './');
                  handleRouting();
             }
 
-            // Back Button
             if (target.closest('#single-video-back-btn')) {
                  e.preventDefault();
                  if (history.length > 1 && document.referrer.includes(window.location.host)) {
@@ -763,7 +765,6 @@ document.addEventListener('DOMContentLoaded', () => {
              }
         }, 100));
 
-
         Object.values(DOM.searchForms).forEach(form => {
             if(!form) return;
             form.addEventListener('submit', (e) => { e.preventDefault(); handleSearchSubmit(form); });
@@ -774,7 +775,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.addEventListener('blur', () => setTimeout(() => { if (!State.search.isSuggestionClicked) clearSearchSuggestions(); }, 150));
             }
         });
-
 
         if(DOM.tagSearchInput) {
             DOM.tagSearchInput.addEventListener('input', () => throttle(() => handleTagInput(DOM.tagSearchInput), 300));
@@ -803,7 +803,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Back to top button click
         if (DOM.backToTopButton) {
             DOM.backToTopButton.addEventListener('click', () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -841,8 +840,14 @@ document.addEventListener('DOMContentLoaded', () => {
         DOM.darkModeToggles.forEach(toggle => {
             const moonIcon = toggle.querySelector('.fa-moon');
             const sunIcon = toggle.querySelector('.fa-sun');
-            if(moonIcon) moonIcon.classList.toggle('hidden', isDark);
-            if(sunIcon) sunIcon.classList.toggle('hidden', !isDark);
+            
+            if (isDark) {
+                if(moonIcon) moonIcon.classList.add('hidden');
+                if(sunIcon) sunIcon.classList.remove('hidden');
+            } else {
+                if(moonIcon) moonIcon.classList.remove('hidden');
+                if(sunIcon) sunIcon.classList.add('hidden');
+            }
             toggle.setAttribute('aria-checked', String(isDark));
         });
 
