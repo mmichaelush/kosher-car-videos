@@ -151,3 +151,7 @@ html[dir="rtl"] .channels-track {
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+
+.dark-mode-toggle-button .fas.hidden {
+    display: none !important;
+}
