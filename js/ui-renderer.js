@@ -1,9 +1,5 @@
-// Handles DOM manipulations and rendering HTML
-
 window.App = window.App || {};
-
 window.App.DOM = {
-    // ... (חלק ה-DOM נשאר זהה)
     body: document.body,
     preloader: document.getElementById('site-preloader'),
     darkModeToggles: document.querySelectorAll('.dark-mode-toggle-button'),
@@ -80,7 +76,6 @@ window.App.DOM = {
 };
 
 window.App.UI = {
-    // ... (שאר הפונקציות ללא שינוי עד updateCategoryPageUI)
     toggleSingleVideoMode: (isSingleVideo) => {
         const dom = window.App.DOM;
         
@@ -405,7 +400,6 @@ window.App.UI = {
             
         document.title = fullTitle;
 
-        // עדכון כותרת הקטגוריה
         if (dom.sections.categoryTitleHeading) {
             dom.sections.categoryTitleHeading.innerHTML = `
                 <span class="text-slate-900 dark:text-slate-100">סרטונים בקטגוריה: <span class="category-title-color">${name}</span></span>
@@ -413,7 +407,6 @@ window.App.UI = {
             `;
         }
 
-        // עדכון תיאור הקטגוריה
         if (dom.sections.categoryDescription) {
             if (description) {
                 dom.sections.categoryDescription.textContent = description;
@@ -426,7 +419,6 @@ window.App.UI = {
         const breadcrumb = document.getElementById('breadcrumb-category-name');
         if (breadcrumb) breadcrumb.textContent = name;
         
-        // Update Video Grid Heading dynamically
         const headingText = dom.videosHeadingText;
         if(headingText) {
              headingText.innerHTML = (categoryId === 'all') 
