@@ -89,13 +89,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if(v.tags) v.tags.forEach(t => allTags.add(t));
         });
 
-        // תיקון: שימוש בבדיקת רווחים במקום \b לתמיכה בעברית
-        // בודק אם המחרוזת נמצאת בהתחלה/סוף או מוקפת רווחים
         const matches = Array.from(allTags).filter(tag => {
-            // Escape special chars in search term
             const safeTerm = searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             const regex = new RegExp(`(^|\\s)${safeTerm}($|\\s)`, 'i');
-            return regex.test(tag) || tag.includes(searchTerm); // Fallback to includes for partial typing
+            return regex.test(tag) || tag.includes(searchTerm);
         }).slice(0, 5);
 
         if (matches.length > 0) {
@@ -255,14 +252,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let videos = filtered.filter(video => {
-            // תיקון קריטי: החלפת \b בלוגיקה שתומכת בעברית
             const tagsMatch = State.currentFilters.tags.length === 0 || State.currentFilters.tags.every(filterTag => {
                 const videoTags = video.tags || [];
-                // נרמול וניקוי כדי למנוע בעיות רגישות
                 const safeFilterTag = filterTag.trim().toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-                
-                // בדיקה: האם התגית היא מילה שלמה בתוך אחת מתגיות הסרטון
-                // ביטוי: (התחלה או רווח) + המילה + (סוף או רווח)
                 const regex = new RegExp(`(^|\\s)${safeFilterTag}($|\\s)`, 'i');
                 
                 return videoTags.some(videoTag => regex.test(videoTag));
@@ -647,7 +639,7 @@ document.addEventListener('DOMContentLoaded', () => {
                              const headerOffset = 100;
                              const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                              window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                             history.replaceState(null, '', './'); // Clean URL
+                             history.replaceState(null, '', './');
                         } else {
                              window.scrollTo({ top: 0, behavior: 'smooth' });
                         }
@@ -661,25 +653,22 @@ document.addEventListener('DOMContentLoaded', () => {
                              const headerOffset = 100;
                              const elementPosition = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
                              window.scrollTo({ top: elementPosition, behavior: 'smooth' });
-                             history.replaceState(null, '', './'); // Clean URL
+                             history.replaceState(null, '', './');
                          }
                      }
                  }
             }
 
-            // Category Links (Chips, Video Badge)
             if (link && link.dataset.categoryLink === "true") {
                 e.preventDefault();
                 const url = new URL(link.href, window.location.origin);
                 const category = url.searchParams.get('name');
-                history.pushState(null, '', `?name=${category}`); // No hash in URL for cleaner look
+                history.pushState(null, '', `?name=${category}`);
                 handleRouting();
-                // Manually scroll to grid
                 setTimeout(() => scrollToVideoGridIfNeeded(), 100);
                 return;
             }
 
-            // Tag Links
             if (link && link.dataset.tagLink === "true") {
                  e.preventDefault();
                  const url = new URL(link.href, window.location.origin);
@@ -747,7 +736,6 @@ document.addEventListener('DOMContentLoaded', () => {
                  handleRouting();
             }
 
-            // Back Button
             if (target.closest('#single-video-back-btn')) {
                  e.preventDefault();
                  if (history.length > 1 && document.referrer.includes(window.location.host)) {
@@ -829,7 +817,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Back to top button click
         if (DOM.backToTopButton) {
             DOM.backToTopButton.addEventListener('click', () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -864,7 +851,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (DOM.currentYearFooter) DOM.currentYearFooter.textContent = new Date().getFullYear();
 
         const isDark = document.documentElement.classList.contains('dark');
-        // אתחול כפתורי מצב לילה
         updateDarkModeButtons(isDark);
 
         if ('IntersectionObserver' in window) {
