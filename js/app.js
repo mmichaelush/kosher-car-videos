@@ -9,23 +9,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let videoObserver;
 
-    function handleThemeToggle() {
-        const isDark = document.documentElement.classList.toggle('dark');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        
+    function updateDarkModeButtons(isDark) {
         DOM.darkModeToggles.forEach(toggle => {
             const moonIcon = toggle.querySelector('.fa-moon');
             const sunIcon = toggle.querySelector('.fa-sun');
             
-            if (isDark) {
-                if(moonIcon) moonIcon.classList.add('hidden');
-                if(sunIcon) sunIcon.classList.remove('hidden');
-            } else {
-                if(moonIcon) moonIcon.classList.remove('hidden');
-                if(sunIcon) sunIcon.classList.add('hidden');
-            }
+            if (moonIcon) moonIcon.classList.toggle('hidden', isDark);
+            if (sunIcon) sunIcon.classList.toggle('hidden', !isDark);
+            
             toggle.setAttribute('aria-checked', String(isDark));
         });
+    }
+
+    function handleThemeToggle() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        updateDarkModeButtons(isDark);
     }
 
     const throttle = (callback, time) => {
@@ -90,7 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if(v.tags) v.tags.forEach(t => allTags.add(t));
         });
 
-        const matches = Array.from(allTags).filter(tag => tag.includes(searchTerm)).slice(0, 5);
+        const searchTermRegex = new RegExp(`\\b${searchTerm}\\b`, 'i'); 
+        const matches = Array.from(allTags).filter(tag => searchTermRegex.test(tag)).slice(0, 5);
 
         if (matches.length > 0) {
             suggestionsContainer.innerHTML = matches.map(tag => `
@@ -249,7 +249,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         let videos = filtered.filter(video => {
-            const tagsMatch = State.currentFilters.tags.length === 0 || State.currentFilters.tags.every(filterTag => (video.tags || []).includes(filterTag));
+            const tagsMatch = State.currentFilters.tags.length === 0 || State.currentFilters.tags.every(filterTag => {
+                const filterTagRegex = new RegExp(`\\b${filterTag}\\b`, 'i');
+                return (video.tags || []).some(videoTag => filterTagRegex.test(videoTag));
+            });
             const hebrewMatch = !State.currentFilters.hebrewOnly || video.hebrewContent;
             return tagsMatch && hebrewMatch;
         });
@@ -352,7 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const fuseSource = category === 'all' ? State.allVideos : State.allVideos.filter(v => v.category === category);
             State.fuse = new Fuse(fuseSource, CONSTANTS.FUSE_OPTIONS);
-            State.looseFuse = new Fuse(fuseSource, CONSTANTS.FUSE_LOOSE_OPTIONS); // מנוע משני להשלמה סמנטית
+            State.looseFuse = new Fuse(fuseSource, CONSTANTS.FUSE_LOOSE_OPTIONS);
 
             if(categoryChanged) UI.renderPopularTags();
 
@@ -609,11 +612,13 @@ document.addEventListener('DOMContentLoaded', () => {
                  const isHashLink = href.includes('#');
                  const targetId = isHashLink ? href.substring(href.lastIndexOf('#') + 1) : href.split('#')[1];
 
+
                  if (DOM.mobileMenu && !DOM.mobileMenu.classList.contains('translate-x-full')) {
                      DOM.mobileMenu.classList.add('translate-x-full');
                      DOM.backdrop.classList.add('invisible', 'opacity-0');
                      document.body.classList.remove('overflow-hidden');
                  }
+
 
                  if (!DOM.singleVideoView.container.classList.contains('hidden') || DOM.sections.homeHero.classList.contains('hidden')) {
                      e.preventDefault();
@@ -621,7 +626,9 @@ document.addEventListener('DOMContentLoaded', () => {
                      UI.toggleSingleVideoMode(false);
                      UI.updateCategoryPageUI('all');
 
+
                      history.pushState(null, '', './#' + (targetId || 'home-hero'));
+
 
                      setTimeout(() => {
                         if (targetId && document.getElementById(targetId)) {
@@ -635,6 +642,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                      }, 100);
                  } else {
+
                      if (isHashLink && targetId) {
                          e.preventDefault();
                          const el = document.getElementById(targetId);
@@ -718,6 +726,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 shareContent(window.location.href, target.closest('button'), 'הועתק!', video?.title || 'סרטון');
             }
 
+
             if (target.closest('#single-video-home-btn')) {
                  e.preventDefault();
                  history.pushState(null, '', './');
@@ -765,6 +774,7 @@ document.addEventListener('DOMContentLoaded', () => {
              }
         }, 100));
 
+
         Object.values(DOM.searchForms).forEach(form => {
             if(!form) return;
             form.addEventListener('submit', (e) => { e.preventDefault(); handleSearchSubmit(form); });
@@ -775,6 +785,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.addEventListener('blur', () => setTimeout(() => { if (!State.search.isSuggestionClicked) clearSearchSuggestions(); }, 150));
             }
         });
+
 
         if(DOM.tagSearchInput) {
             DOM.tagSearchInput.addEventListener('input', () => throttle(() => handleTagInput(DOM.tagSearchInput), 300));
@@ -837,19 +848,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (DOM.currentYearFooter) DOM.currentYearFooter.textContent = new Date().getFullYear();
 
         const isDark = document.documentElement.classList.contains('dark');
-        DOM.darkModeToggles.forEach(toggle => {
-            const moonIcon = toggle.querySelector('.fa-moon');
-            const sunIcon = toggle.querySelector('.fa-sun');
-            
-            if (isDark) {
-                if(moonIcon) moonIcon.classList.add('hidden');
-                if(sunIcon) sunIcon.classList.remove('hidden');
-            } else {
-                if(moonIcon) moonIcon.classList.remove('hidden');
-                if(sunIcon) sunIcon.classList.add('hidden');
-            }
-            toggle.setAttribute('aria-checked', String(isDark));
-        });
+        updateDarkModeButtons(isDark);
 
         if ('IntersectionObserver' in window) {
             videoObserver = new IntersectionObserver((entries) => {
