@@ -12,15 +12,26 @@ window.App.CONSTANTS = {
     MAX_SUGGESTIONS: 7,
     FUSE_OPTIONS: {
         keys: [
-            { name: 'title', weight: 0.6 },
-            { name: 'tags', weight: 0.3 },
-            { name: 'channel', weight: 0.1 },
-            { name: 'content', weight: 0.1 }
+            { name: 'title', weight: 0.4 },
+            { name: 'content', weight: 0.3 }, 
+            { name: 'tags', weight: 0.2 },
+            { name: 'channel', weight: 0.1 }
         ],
         includeScore: true,
         includeMatches: true,
-        threshold: 0.4,
+        threshold: 0.3, 
         minMatchCharLength: 2,
+        ignoreLocation: true
+    },
+    FUSE_LOOSE_OPTIONS: {
+        keys: [
+            { name: 'title', weight: 0.4 },
+            { name: 'content', weight: 0.3 },
+            { name: 'tags', weight: 0.2 },
+            { name: 'channel', weight: 0.1 }
+        ],
+        includeScore: true,
+        threshold: 0.6, 
         ignoreLocation: true
     },
     CATEGORY_FILES: [
@@ -35,7 +46,6 @@ window.App.CONSTANTS = {
         'safety',
         'offroad',
     ],
-    // Reordered and Updated Colors (Systems changed to cyan/teal)
     PREDEFINED_CATEGORIES: [
         { id: "all", name: "הכל", description: "כל הסרטונים באתר", icon: "film" },
         { id: "diy", name: "עשה זאת בעצמך", description: "מדריכי תיקונים ותחזוקה", icon: "tools", gradient: "from-emerald-500 to-green-600", darkGradient: "dark:from-emerald-600 dark:to-green-700" },
@@ -56,6 +66,7 @@ window.App.state = {
     allVideos: [],
     allVideosCache: null,
     fuse: null,
+    looseFuse: null, // מנוע חיפוש משני
     currentFilters: {
         category: 'all',
         tags: [],
@@ -74,7 +85,6 @@ window.App.state = {
         currentSuggestionsContainer: null,
         isSuggestionClicked: false
     },
-    // Cache for unique tags per category to improve performance
     tagsCache: {}
 };
 
@@ -91,23 +101,17 @@ window.App.DataService = {
         return 0;
     },
 
-    // Robust Date Parser
     parseDate: (dateString) => {
         if (!dateString) return null;
-        
-        // Handle Excel/Sheet format sometimes seen in JSON (e.g. "44123")
         if (!isNaN(dateString) && !dateString.includes('/') && !dateString.includes('-')) {
              return new Date((dateString - (25567 + 2)) * 86400 * 1000);
         }
-
-        // Check for DD/MM/YYYY format
         if (typeof dateString === 'string') {
             const parts = dateString.split('/');
             if (parts.length === 3) {
                 const day = parseInt(parts[0], 10);
                 const month = parseInt(parts[1], 10) - 1; 
                 const year = parseInt(parts[2], 10);
-                
                 if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
                      const d = new Date(year, month, day);
                      if (d.getFullYear() === year && d.getMonth() === month && d.getDate() === day) {
@@ -116,13 +120,10 @@ window.App.DataService = {
                 }
             }
         }
-
-        // Try standard Date parsing
         const d = new Date(dateString);
         if (!isNaN(d.getTime())) {
             return d;
         }
-
         return null;
     },
 
@@ -160,14 +161,12 @@ window.App.DataService = {
             window.App.state.allVideos = results.flat();
             window.App.state.allVideosCache = window.App.state.allVideos;
             
-            // Pre-calculate unique tags for "all" category
             const allTags = new Set();
             window.App.state.allVideos.forEach(v => {
                 if(v.tags) v.tags.forEach(t => allTags.add(t));
             });
             window.App.state.tagsCache['all'] = Array.from(allTags);
 
-            // Update hero count if exists
             const videoCountHero = document.getElementById('video-count-hero');
             if (videoCountHero) {
                 const countSpan = videoCountHero.querySelector('span');
