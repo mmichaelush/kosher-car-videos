@@ -98,11 +98,12 @@ body {
     color: #c4b5fd; /* purple-300 */
 }
 
-html[dir="rtl"].dark #mobile-menu .dark-mode-toggle-button .dot {
-    transform: translateX(-100%);
-}
 html[dir="rtl"] #mobile-menu .dark-mode-toggle-button .dot {
-    transform: translateX(0%);
+    translate: 0 0;
+}
+
+html[dir="rtl"].dark #mobile-menu .dark-mode-toggle-button .dot {
+    translate: -100% 0;
 }
 
 .search-suggestions-container ul li.active-suggestion {
