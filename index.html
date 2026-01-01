@@ -235,22 +235,58 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <!-- All Channels View (Hidden by default) -->
     <div id="all-channels-view" class="hidden min-h-[calc(100vh-80px)]">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-            <div class="text-center mb-16">
-                <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight mb-4">
-                    <i class="fas fa-tv text-purple-600 dark:text-purple-400 mr-3"></i>
-                    כל הערוצים
+        
+        <!-- Channels Header with Matching Category Design -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+            <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-8 md:p-12 text-center shadow-lg mb-12">
+                <!-- Decorative Elements -->
+                <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-purple-50 dark:bg-purple-900/10 opacity-60 blur-3xl pointer-events-none"></div>
+                <div class="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 rounded-full bg-indigo-50 dark:bg-indigo-900/10 opacity-60 blur-3xl pointer-events-none"></div>
+
+                <!-- Breadcrumbs -->
+                <nav aria-label="Breadcrumb" class="relative z-10 flex justify-center mb-6">
+                    <ol class="inline-flex items-center space-x-2 rtl:space-x-reverse text-sm font-medium text-slate-500 dark:text-slate-400">
+                        <li class="inline-flex items-center">
+                            <a href="./" class="nav-internal-link hover:text-purple-600 dark:hover:text-purple-400 transition-colors flex items-center">
+                                <i class="fas fa-home ml-1.5"></i> דף הבית
+                            </a>
+                        </li>
+                        <li><span class="mx-3 text-slate-300 dark:text-slate-600">/</span></li>
+                        <li>
+                            <span class="text-purple-600 dark:text-purple-400 font-semibold" aria-current="page">ערוצים מומלצים</span>
+                        </li>
+                    </ol>
+                </nav>
+
+                <!-- Heading -->
+                <h1 class="relative z-10 text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-slate-100 mb-6 flex flex-col md:flex-row items-center justify-center gap-3">
+                    <span class="text-slate-900 dark:text-slate-100">ערוצים <span class="category-title-color">מומלצים</span></span>
+                    <i class="fas fa-star text-yellow-400 floating text-4xl md:text-5xl ml-4"></i>
                 </h1>
-                <p class="text-xl text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
-                    רשימת כל הערוצים המומלצים באתר, מסודרים לנוחיותכם.
-                    <span id="all-channels-count" class="font-bold text-purple-600 dark:text-purple-400"></span>
+
+                <!-- Subtitle -->
+                <p class="relative z-10 text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto mb-6 leading-relaxed flex flex-wrap items-center justify-center gap-2">
+                    ערוצים מומלצים שדף הבית של הערוץ פתוח ב
+                    <a href="https://netfree.link/" target="_blank" rel="noopener noreferrer" class="font-semibold underline hover:text-purple-600 dark:hover:text-purple-400 transition-colors inline-flex items-center">
+                        נטפרי
+                        <img src="https://netfree.link/wiki/images/6/6f/Netfree.png" alt="סמל נטפרי" class="w-5 h-5 ms-1.5 align-middle">
+                    </a>
                 </p>
+
+                <!-- Count -->
+                <div class="relative z-10 inline-block bg-slate-50 dark:bg-slate-700/50 backdrop-blur-sm rounded-full px-4 py-1.5 border border-slate-100 dark:border-slate-600 shadow-sm mb-2">
+                    <p class="text-sm md:text-base text-slate-600 dark:text-slate-300 m-0">
+                        במאגר קיימים <strong id="all-channels-count" class="text-purple-600 dark:text-purple-400 font-bold"></strong> ערוצים
+                    </p>
+                </div>
             </div>
 
+            <!-- Grid -->
             <div id="all-channels-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
                 <!-- Channels rendered via JS -->
             </div>
 
+            <!-- Back Button -->
             <div class="text-center mt-16">
                 <a href="./" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-lg font-medium rounded-xl text-white bg-purple-600 hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 dark:focus:ring-purple-400 shadow-lg transition-transform hover:scale-105">
                     <i class="fas fa-home ml-2"></i> חזרה לדף הבית
@@ -621,9 +657,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     </a>
                     <p class="text-sm leading-relaxed text-slate-400 dark:text-slate-500">מאגר וידאו ייעודי, כשר ומסונן, לחובבי רכב שומרי התורה והמצוות.</p>
                 </div>
+
                 <div>
                     <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">קטגוריות מומלצות</h3>
-                    <ul class="space-y-2">
+                    <ul class="space-y-3">
                         <li><a href="?name=review" class="nav-internal-link footer-link"><i class="fas fa-car-on fa-fw ml-2 opacity-70"></i>סקירות רכב</a></li>
                         <li><a href="?name=maintenance" class="nav-internal-link footer-link"><i class="fas fa-oil-can fa-fw ml-2 opacity-70"></i>טיפולים</a></li>
                         <li><a href="?name=diy" class="nav-internal-link footer-link"><i class="fas fa-tools fa-fw ml-2 opacity-70"></i>עשה זאת בעצמך</a></li>
@@ -632,9 +669,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <li><a href="?name=collectors" class="nav-internal-link footer-link"><i class="fas fa-car-side fa-fw ml-2 opacity-70"></i>רכבי אספנות</a></li>
                     </ul>
                 </div>
+
                 <div>
                     <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">קישורים</h3>
-                    <ul class="space-y-2">
+                    <ul class="space-y-3">
                         <li><a href="https://rechavimzelaze.ovh" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fas fa-users fa-fw ml-2 opacity-70"></i>פורום רכבים זה לזה</a></li>
                         <li><a href="https://rechavimzelaze.ovh/post/683722" target="_blank" rel="noopener noreferrer" class="footer-link"> <i class="fas fa-book fa-fw ml-2 opacity-70"></i>עוד על האתר</a></li>
                         <li><a href="https://github.com/mmichaelush/kosher-car-videos" target="_blank" rel="noopener noreferrer" class="footer-link"><i class="fab fa-github fa-fw ml-2 opacity-70"></i>הפרוייקט ב-GitHub</a></li>
@@ -643,15 +681,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         <li><a href="add-video.html" class="footer-link"><i class="fas fa-video fa-fw ml-2 opacity-70"></i>הוספת סרטונים</a></li>
                     </ul>
                 </div>
-                 <div>
+
+                <div>
                     <h3 class="text-base font-semibold text-white dark:text-slate-100 uppercase tracking-wider mb-5">משפטי</h3>
-                    <ul class="space-y-2">
+                    <ul class="space-y-3">
                         <li><a href="privacy.html" class="footer-link"><i class="fas fa-shield-alt fa-fw ml-2 opacity-70"></i>מדיניות פרטיות</a></li>
                         <li><a href="terms.html" class="footer-link"><i class="fas fa-file-contract fa-fw ml-2 opacity-70"></i>תנאי שימוש</a></li>
                         <li><a href="#contact-section" class="nav-internal-link footer-link nav-link"><i class="fas fa-exclamation-triangle fa-fw ml-2 opacity-70"></i>דיווח על תוכן</a></li>
                     </ul>
                 </div>
             </div>
+
             <div class="mt-12 border-t border-slate-700 dark:border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                 <p class="text-xs text-center md:text-right text-slate-500 dark:text-slate-600">© 2026 CAR-טיב. כל הזכויות שמורות.</p>
                 <p class="text-xs text-center md:text-left text-slate-500 dark:text-slate-600">עיצוב ופיתוח: <a href="https://github.com/mmichaelush" target="_blank" rel="noopener noreferrer" class="hover:text-purple-300 dark:hover:text-purple-400 underline"> @מיכאלוש</a> בסיוע AI</p>
