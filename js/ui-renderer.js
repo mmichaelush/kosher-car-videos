@@ -163,30 +163,25 @@ window.App.UI = {
             dom.allChannelsView.count.textContent = `(${channels.length})`;
         }
 
-        // Updated Card Design
+        // Updated Card Design - Matching video cards style and hover effects
         dom.allChannelsView.grid.innerHTML = channels.map(channel => `
-            <div class="group relative flex flex-col items-center text-center h-full p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-500 ease-out transform hover:-translate-y-1">
+            <a href="${channel.channel_url}" target="_blank" rel="noopener noreferrer" class="group flex flex-col items-center text-center h-full p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-lg hover:shadow-xl dark:shadow-black/40 dark:hover:shadow-purple-500/30 transition-all duration-300 ease-out transform hover:-translate-y-1 hover:scale-[1.03] border border-slate-200 dark:border-slate-700 hover:border-purple-300 dark:hover:border-purple-500 overflow-hidden focus:outline-none focus:ring-2 focus:ring-purple-500">
                 
                 <!-- Image -->
                 <div class="relative w-24 h-24 mb-5">
-                    <img src="${channel.channel_image_url}" alt="${channel.channel_name}" class="w-full h-full rounded-full shadow-lg object-cover border-4 border-white dark:border-slate-700 group-hover:scale-110 group-hover:border-purple-100 dark:group-hover:border-purple-900 transition-transform duration-500" loading="lazy">
+                    <img src="${channel.channel_image_url}" alt="${channel.channel_name}" class="w-full h-full rounded-full shadow-md object-cover border-4 border-white dark:border-slate-700 group-hover:border-purple-100 dark:group-hover:border-purple-900 transition-colors duration-300" loading="lazy">
                 </div>
 
                 <!-- Title -->
-                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-2 leading-tight">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-300 transition-colors line-clamp-2 leading-tight">
                     ${channel.channel_name}
                 </h3>
 
                 <!-- Description -->
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-2 line-clamp-4">
                     ${channel.content_description}
                 </p>
-
-                <!-- Button -->
-                <a href="${channel.channel_url}" target="_blank" rel="noopener noreferrer" class="mt-auto inline-flex items-center justify-center px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-sm font-medium rounded-full shadow-md hover:shadow-lg transform transition-all duration-300 group-hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
-                    צפה בערוץ <i class="fas fa-external-link-alt mr-2 text-xs"></i>
-                </a>
-            </div>
+            </a>
         `).join('');
     },
 
@@ -247,7 +242,7 @@ window.App.UI = {
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if(card.channelLogo) {
-            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
+            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==AAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
             card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
             card.channelLogo.classList.toggle('hidden', !video.channelImage);
         }
