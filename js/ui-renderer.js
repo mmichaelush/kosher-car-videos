@@ -45,6 +45,11 @@ window.App.DOM = {
     homeViewContainer: document.getElementById('home-view-container'),
     siteFooter: document.getElementById('site-footer'),
     featuredChannelsTrack: document.getElementById('featured-channels-track'),
+    allChannelsView: {
+        container: document.getElementById('all-channels-view'),
+        grid: document.getElementById('all-channels-grid'),
+        count: document.getElementById('all-channels-count')
+    },
     singleVideoView: {
         container: document.getElementById('single-video-view'),
         player: document.getElementById('single-video-player-container'),
@@ -76,26 +81,43 @@ window.App.DOM = {
 };
 
 window.App.UI = {
-    toggleSingleVideoMode: (isSingleVideo) => {
+    // Modified to handle "channels" view as well
+    toggleView: (viewName) => {
         const dom = window.App.DOM;
         
-        if (isSingleVideo) {
-            if (dom.homeViewContainer) dom.homeViewContainer.classList.add('hidden');
-            if (dom.singleVideoView.container) dom.singleVideoView.container.classList.remove('hidden');
-            window.scrollTo(0, 0);
+        // Hide everything first
+        if (dom.homeViewContainer) dom.homeViewContainer.classList.add('hidden');
+        if (dom.singleVideoView.container) dom.singleVideoView.container.classList.add('hidden');
+        if (dom.allChannelsView.container) dom.allChannelsView.container.classList.add('hidden');
+        
+        // Reset specific elements
+        if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = '';
 
+        // Show requested view
+        if (viewName === 'video') {
+            if (dom.singleVideoView.container) dom.singleVideoView.container.classList.remove('hidden');
+        } else if (viewName === 'channels') {
+            if (dom.allChannelsView.container) dom.allChannelsView.container.classList.remove('hidden');
         } else {
+            // Default to home
             if (dom.homeViewContainer) dom.homeViewContainer.classList.remove('hidden');
-            if (dom.singleVideoView.container) dom.singleVideoView.container.classList.add('hidden');
-            if (dom.singleVideoView.player) dom.singleVideoView.player.innerHTML = '';
         }
+        
+        window.scrollTo(0, 0);
+    },
+
+    // Legacy support alias
+    toggleSingleVideoMode: (isSingleVideo) => {
+        window.App.UI.toggleView(isSingleVideo ? 'video' : 'home');
     },
 
     renderFeaturedChannels: (channels) => {
         const track = window.App.DOM.featuredChannelsTrack;
         if(!track || channels.length === 0) return;
         
+        // Duplicate channels for infinite scroll effect in CSS
         const displayChannels = [...channels, ...channels];
+        
         track.innerHTML = displayChannels.map(channel => `
             <a href="${channel.channel_url}" target="_blank" rel="noopener noreferrer" class="channel-card group flex-shrink-0 block p-5 bg-white dark:bg-slate-700 backdrop-blur-sm rounded-xl shadow-lg border border-slate-100 dark:border-slate-600 hover:border-purple-300 dark:hover:border-purple-500 text-center transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-purple-500 w-64 md:w-72">
                 <div class="relative mx-auto w-20 h-20 mb-4">
@@ -109,16 +131,63 @@ window.App.UI = {
         const scrollContainer = document.querySelector('.channels-carousel-container');
         const btnLeft = document.getElementById('channels-scroll-left');
         const btnRight = document.getElementById('channels-scroll-right');
+        
         if(btnLeft && btnRight && scrollContainer) {
+            const scrollAmount = 300; // Approximate width of card + gap
+
             btnRight.addEventListener('click', () => {
                 track.style.animationPlayState = 'paused';
-                scrollContainer.scrollBy({ left: -300, behavior: 'smooth' });
+                const maxScrollLeft = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+                
+                // Circular Logic: If close to end, jump to start (RTL logic)
+                // Note: RTL scrolling values can be tricky. Usually scrollLeft is negative or behaves differently.
+                // Assuming standard behavior where we just scroll.
+                
+                // Simple logic:
+                if (Math.abs(scrollContainer.scrollLeft) >= maxScrollLeft - 10) {
+                     scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                     scrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' }); // Negative for RTL often moves left visually
+                }
             });
+
             btnLeft.addEventListener('click', () => {
                 track.style.animationPlayState = 'paused';
-                scrollContainer.scrollBy({ left: 300, behavior: 'smooth' });
+                // Circular Logic: If at start, jump to end
+                if (Math.abs(scrollContainer.scrollLeft) < 10) {
+                     scrollContainer.scrollTo({ left: -scrollContainer.scrollWidth, behavior: 'smooth' });
+                } else {
+                     scrollContainer.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
             });
         }
+    },
+
+    renderAllChannelsPage: (channels) => {
+        const dom = window.App.DOM;
+        if (!dom.allChannelsView.grid) return;
+
+        document.title = 'כל הערוצים - CAR-טיב';
+        if (dom.allChannelsView.count) {
+            dom.allChannelsView.count.textContent = `(${channels.length})`;
+        }
+
+        dom.allChannelsView.grid.innerHTML = channels.map(channel => `
+            <a href="${channel.channel_url}" target="_blank" rel="noopener noreferrer" class="group block p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-md hover:shadow-xl border border-slate-200 dark:border-slate-700 hover:border-purple-400 dark:hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-1">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="relative w-16 h-16 flex-shrink-0">
+                        <img src="${channel.channel_image_url}" alt="${channel.channel_name}" class="w-full h-full rounded-full object-cover border-2 border-slate-100 dark:border-slate-600 group-hover:border-purple-400 transition-colors shadow-sm" loading="lazy">
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-slate-900 dark:text-slate-100 text-lg group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-2">${channel.channel_name}</h3>
+                    </div>
+                </div>
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4 min-h-[3rem] line-clamp-3">${channel.content_description}</p>
+                <div class="flex items-center text-purple-600 dark:text-purple-400 text-sm font-semibold group-hover:underline">
+                    צפה בערוץ <i class="fas fa-external-link-alt mr-2 text-xs"></i>
+                </div>
+            </a>
+        `).join('');
     },
 
     createVideoCardElement: (video) => {
@@ -178,7 +247,7 @@ window.App.UI = {
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if(card.channelLogo) {
-            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
+            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==AAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
             card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
             card.channelLogo.classList.toggle('hidden', !video.channelImage);
         }
