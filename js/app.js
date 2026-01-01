@@ -217,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!input) return;
         const searchTerm = input.value.trim();
 
-        if (!DOM.singleVideoView.container.classList.contains('hidden')) {
+        if (!DOM.singleVideoView.container.classList.contains('hidden') || !DOM.allChannelsView.container.classList.contains('hidden')) {
              history.pushState(null, '', `./?search=${encodeURIComponent(searchTerm)}#video-grid-section`);
              handleRouting();
         } else {
@@ -331,14 +331,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleRouting() {
         const params = new URLSearchParams(window.location.search);
         const videoId = params.get('v');
+        const pageParam = params.get('page');
         const categoryParam = params.get('name');
         
         const hasFilters = params.has('search') || params.has('tags') || (categoryParam && categoryParam !== 'all');
 
         if (videoId) {
             showSingleVideoView(videoId);
+        } else if (pageParam === 'channels') {
+            showChannelsView();
         } else {
-            hideSingleVideoView();
+            UI.toggleView('home');
 
             let category = 'all';
             if (categoryParam) {
@@ -408,9 +411,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        UI.toggleSingleVideoMode(true);
+        UI.toggleView('video');
 
-        window.scrollTo(0, 0);
         document.title = `${video.title} - CAR-טיב`;
 
         DOM.singleVideoView.title.innerHTML = video.title;
@@ -449,9 +451,10 @@ document.addEventListener('DOMContentLoaded', () => {
         ).join('');
     }
 
-    function hideSingleVideoView() {
-        UI.toggleSingleVideoMode(false);
-        document.title = 'CAR-טיב - סרטוני רכבים כשרים';
+    async function showChannelsView() {
+        UI.toggleView('channels');
+        const channels = await Data.loadFeaturedChannels();
+        UI.renderAllChannelsPage(channels);
     }
 
     function playVideoInline(cardElement) {
@@ -608,6 +611,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const link = target.closest('a');
             const card = target.closest('article[data-video-id]');
 
+            // Check if link goes to channels page
+            if (link && link.getAttribute('href') === '?page=channels') {
+                e.preventDefault();
+                history.pushState(null, '', '?page=channels');
+                handleRouting();
+                return;
+            }
+
             if (link && link.classList.contains('nav-logo-link')) {
                 e.preventDefault();
                 window.location.href = './';
@@ -625,10 +636,10 @@ document.addEventListener('DOMContentLoaded', () => {
                      document.body.classList.remove('overflow-hidden');
                  }
 
-                 if (!DOM.singleVideoView.container.classList.contains('hidden') || DOM.sections.homeHero.classList.contains('hidden')) {
+                 if (!DOM.singleVideoView.container.classList.contains('hidden') || !DOM.allChannelsView.container.classList.contains('hidden')) {
                      e.preventDefault();
 
-                     UI.toggleSingleVideoMode(false);
+                     UI.toggleView('home');
                      UI.updateCategoryPageUI('all');
 
                      history.pushState(null, '', './#' + (targetId || 'home-hero'));
