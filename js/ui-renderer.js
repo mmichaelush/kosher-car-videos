@@ -81,7 +81,6 @@ window.App.DOM = {
 };
 
 window.App.UI = {
-    // Modified to handle "channels" view as well
     toggleView: (viewName) => {
         const dom = window.App.DOM;
         
@@ -106,7 +105,6 @@ window.App.UI = {
         window.scrollTo(0, 0);
     },
 
-    // Legacy support alias
     toggleSingleVideoMode: (isSingleVideo) => {
         window.App.UI.toggleView(isSingleVideo ? 'video' : 'home');
     },
@@ -115,7 +113,6 @@ window.App.UI = {
         const track = window.App.DOM.featuredChannelsTrack;
         if(!track || channels.length === 0) return;
         
-        // Duplicate channels for infinite scroll effect in CSS
         const displayChannels = [...channels, ...channels];
         
         track.innerHTML = displayChannels.map(channel => `
@@ -133,27 +130,21 @@ window.App.UI = {
         const btnRight = document.getElementById('channels-scroll-right');
         
         if(btnLeft && btnRight && scrollContainer) {
-            const scrollAmount = 300; // Approximate width of card + gap
+            const scrollAmount = 300; 
 
             btnRight.addEventListener('click', () => {
                 track.style.animationPlayState = 'paused';
                 const maxScrollLeft = scrollContainer.scrollWidth - scrollContainer.clientWidth;
                 
-                // Circular Logic: If close to end, jump to start (RTL logic)
-                // Note: RTL scrolling values can be tricky. Usually scrollLeft is negative or behaves differently.
-                // Assuming standard behavior where we just scroll.
-                
-                // Simple logic:
                 if (Math.abs(scrollContainer.scrollLeft) >= maxScrollLeft - 10) {
                      scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
                 } else {
-                     scrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' }); // Negative for RTL often moves left visually
+                     scrollContainer.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
                 }
             });
 
             btnLeft.addEventListener('click', () => {
                 track.style.animationPlayState = 'paused';
-                // Circular Logic: If at start, jump to end
                 if (Math.abs(scrollContainer.scrollLeft) < 10) {
                      scrollContainer.scrollTo({ left: -scrollContainer.scrollWidth, behavior: 'smooth' });
                 } else {
@@ -172,21 +163,30 @@ window.App.UI = {
             dom.allChannelsView.count.textContent = `(${channels.length})`;
         }
 
+        // Updated Card Design
         dom.allChannelsView.grid.innerHTML = channels.map(channel => `
-            <a href="${channel.channel_url}" target="_blank" rel="noopener noreferrer" class="group block p-6 bg-white dark:bg-slate-800 rounded-2xl shadow-md hover:shadow-xl border border-slate-200 dark:border-slate-700 hover:border-purple-400 dark:hover:border-purple-500 transition-all duration-300 transform hover:-translate-y-1">
-                <div class="flex items-center gap-4 mb-4">
-                    <div class="relative w-16 h-16 flex-shrink-0">
-                        <img src="${channel.channel_image_url}" alt="${channel.channel_name}" class="w-full h-full rounded-full object-cover border-2 border-slate-100 dark:border-slate-600 group-hover:border-purple-400 transition-colors shadow-sm" loading="lazy">
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-900 dark:text-slate-100 text-lg group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-2">${channel.channel_name}</h3>
-                    </div>
+            <div class="group relative flex flex-col items-center text-center h-full p-6 bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-md hover:shadow-2xl hover:shadow-purple-500/20 transition-all duration-500 ease-out transform hover:-translate-y-1">
+                
+                <!-- Image -->
+                <div class="relative w-24 h-24 mb-5">
+                    <img src="${channel.channel_image_url}" alt="${channel.channel_name}" class="w-full h-full rounded-full shadow-lg object-cover border-4 border-white dark:border-slate-700 group-hover:scale-110 group-hover:border-purple-100 dark:group-hover:border-purple-900 transition-transform duration-500" loading="lazy">
                 </div>
-                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-4 min-h-[3rem] line-clamp-3">${channel.content_description}</p>
-                <div class="flex items-center text-purple-600 dark:text-purple-400 text-sm font-semibold group-hover:underline">
+
+                <!-- Title -->
+                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors line-clamp-2 leading-tight">
+                    ${channel.channel_name}
+                </h3>
+
+                <!-- Description -->
+                <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6 flex-grow line-clamp-3">
+                    ${channel.content_description}
+                </p>
+
+                <!-- Button -->
+                <a href="${channel.channel_url}" target="_blank" rel="noopener noreferrer" class="mt-auto inline-flex items-center justify-center px-6 py-2.5 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-sm font-medium rounded-full shadow-md hover:shadow-lg transform transition-all duration-300 group-hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
                     צפה בערוץ <i class="fas fa-external-link-alt mr-2 text-xs"></i>
-                </div>
-            </a>
+                </a>
+            </div>
         `).join('');
     },
 
@@ -247,7 +247,7 @@ window.App.UI = {
         if (card.fullscreenBtn) card.fullscreenBtn.dataset.videoId = video.id;
         
         if(card.channelLogo) {
-            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==AAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
+            card.channelLogo.src = video.channelImage || 'data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQI12NgYGBgAAAABQABXvMqOgAAAABJRU5ErkJggg==';
             card.channelLogo.alt = `לוגו ערוץ ${video.channel}`;
             card.channelLogo.classList.toggle('hidden', !video.channelImage);
         }
